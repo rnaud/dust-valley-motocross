@@ -1,17 +1,20 @@
 import * as C from 'cannon-es';
+import {parkHeight} from './jump-park.js';
+import {BikeVehicle} from './bike-vehicle.js';
 import {tireForces} from './tires.js';
 export const TAU = Math.PI * 2;
 export function track(t) { return { x: Math.cos(t) * (102 + 12 * Math.sin(t * 3)), z: Math.sin(t) * (78 + 9 * Math.sin(t * 2)) }; }
 export function freeTerrain(x,z) {
-  return 1.7*Math.sin(x*.023)+1.8*Math.cos(z*.031)+.7*Math.sin((x+z)*.045)
+  const natural=1.7*Math.sin(x*.023)+1.8*Math.cos(z*.031)+.7*Math.sin((x+z)*.045)
     +Math.sin(x*.044)*Math.cos(z*.038)*6+Math.sin(z*.018+x*.014)*7;
+  return parkHeight(x,z,natural);
 }
 export function terrain(x,z) {
   const t = Math.atan2(z / 78, x / 102), p = track(t);
   const d = Math.hypot(x-p.x,z-p.z);
   const base = 1.7*Math.sin(x*.023)+1.8*Math.cos(z*.031)+.7*Math.sin((x+z)*.045);
   let jumps = 0;
-  for(const a of [.58,1.5,2.7,3.8,5.15]) { const j=track(a); jumps += 5.5*Math.exp(-((x-j.x)**2+(z-j.z)**2)/90); }
+  for(const [i,a] of [.48,.98,1.5,2.08,2.7,3.22,3.8,4.38,4.95,5.5,5.98].entries()) { const j=track(a); jumps += (i%3===0?4:2.6)*Math.exp(-((x-j.x)**2+(z-j.z)**2)/(i%3===0?100:64)); }
   const hills = (Math.sin(x*.044)*Math.cos(z*.038)*6 + Math.sin(z*.018+x*.014)*7) * Math.min(1,Math.max(0,(d-12)/40));
   return base + jumps + hills;
 }
@@ -36,7 +39,7 @@ export function createState(options={}) {
   // Rider mass sits above the small collision box; include it in rotational inertia.
   chassis.inertia.set(110,100,75);chassis.invInertia.set(1/110,1/100,1/75);chassis.updateInertiaWorld(true);
   chassis.position.set(p.x,height(p.x,p.z)+1.15,p.z);chassis.quaternion.setFromEuler(0,options.spawn?.yaw ?? (options.flat?0:Math.atan2(36,78)),0);
-  const vehicle=new C.RaycastVehicle({chassisBody:chassis,indexRightAxis:0,indexUpAxis:1,indexForwardAxis:2});
+  const vehicle=new BikeVehicle({chassisBody:chassis,indexRightAxis:0,indexUpAxis:1,indexForwardAxis:2});
   for(const z of [-1.05,1.1])vehicle.addWheel({radius:.61,directionLocal:new C.Vec3(0,-1,0),axleLocal:new C.Vec3(-1,0,0),chassisConnectionPointLocal:new C.Vec3(0,-.12,z),suspensionRestLength:.55,maxSuspensionTravel:.3,suspensionStiffness:55,dampingRelaxation:4.5,dampingCompression:3.5,maxSuspensionForce:10000,frictionSlip:0,rollInfluence:.08,isFrontWheel:z>0});
   vehicle.addToWorld(world);
   const s={x:p.x,z:p.z,y:chassis.position.y-.5,yaw:0,speed:0,vy:0,pitch:0,roll:0,air:false,airtime:0,boost:100,steer:0,throttle:0,contacts:0,crashed:false,crashTime:0,slip:0,compression:[0,0],quaternion:{x:0,y:0,z:0,w:1},wheelTransforms:[],landingRecovery:0,wheelContacts:[],balanceRoll:0,tireLoads:[0,0]};
@@ -56,13 +59,21 @@ export function stepBike(s,input,dt) {
   // Stick requests corner lean; bars steer more at walking speed and less at speed.
   // atan(v² / gR) couples the requested lean to turn curvature.
   const intent=Math.sign(steerInput)*Math.pow(Math.min(1,Math.abs(steerInput)),.8);
-  const maxLean=.98;
-  const steeringLimit=Math.atan(2.15*9.81*Math.tan(maxLean)/(s.speed*s.speed+4));
-  const geometricSteer=-intent*Math.min(.62,steeringLimit);
-  const targetYaw=Math.tan(geometricSteer)*s.speed/2.15;
-  // Virtual rider corrects the handlebars when the rear starts rotating faster
-  // than the requested corner. This is steering feedback, not a chassis yaw motor.
-  const correction=Math.max(-.22,Math.min(.22,(targetYaw-s.yawRate)*.22))*Math.min(1,s.speed/5);
+  const maxLean=1.0;
+  const normal=new C.Vec3(0,1,0);
+  if(s.contacts){normal.setZero();for(const w of v.wheelInfos)if(w.raycastResult.hasHit)normal.vadd(w.raycastResult.hitNormalWorld,normal);normal.normalize();}
+  const slopeRoll=-Math.asin(Math.max(-1,Math.min(1,normal.dot(new C.Vec3(Math.cos(s.yaw),0,-Math.sin(s.yaw))))));
+  const fwd=b.quaternion.vmult(new C.Vec3(0,0,1));
+  const rollRate=b.angularVelocity.dot(fwd);
+  const leanForSteering=Math.max(-maxLean,Math.min(maxLean,s.roll-slopeRoll+rollRate*.28));
+  const leanYaw=-9.81*Math.tan(leanForSteering)/Math.max(4,s.speed);
+  const lowSpeedYaw=Math.tan(-intent*.62)*s.speed/2.15;
+  const leanBlend=Math.max(0,Math.min(1,(s.speed-3)/7));
+  const targetYaw=lowSpeedYaw*(1-leanBlend)+leanYaw*leanBlend;
+  const geometricSteer=Math.atan(2.15*targetYaw/Math.max(2,s.speed));
+  // The virtual rider turns the bars to support the current bank. Banking and
+  // changing heading now describe the same corner, including through reversals.
+  const correction=Math.max(-.18,Math.min(.18,(targetYaw-s.yawRate)*.18))*Math.min(1,s.speed/5);
   const steerTarget=Math.max(-.65,Math.min(.65,geometricSteer+correction));
   s.steer+=(steerTarget-s.steer)*(1-Math.exp(-dt*18));
   v.setSteeringValue(s.crashed?0:s.steer,1);
@@ -83,7 +94,6 @@ export function stepBike(s,input,dt) {
       n.normalize();
       const forward=f.vsub(n.scale(f.dot(n)));forward.normalize();
       const side=n.cross(forward);side.normalize();
-      let lateralForce=0,normalLoad=0;
       const support=v.wheelInfos.reduce((sum,w)=>sum+(w.raycastResult.hasHit?Math.max(0,w.suspensionForce*w.raycastResult.hitNormalWorld.dot(n)):0),0);
       // Equilibrium load transfer for the reduced planar tire model. Raw per-ray
       // loads also include the artificial balance torque and must not feed back
@@ -104,12 +114,12 @@ export function stepBike(s,input,dt) {
         s.tireLoads[i]+=(rawLoad-s.tireLoads[i])*(1-Math.exp(-dt*20));
         const load=s.tireLoads[i];
         const forces=tireForces({longSpeed:velocity.dot(wheelForward),sideSpeed:velocity.dot(wheelSide),load,
-          drive:i===0?driveForce:0,brake:brake?(i===1?1200:700):gas?0:35,camber:s.roll,front:i===1,dt});
+          drive:i===0?driveForce:0,brake:brake?(i===1?1200:700):gas?0:35,camber:s.roll-slopeRoll,front:i===1,dt});
         const force=wheelForward.scale(forces.longitudinal).vadd(wheelSide.scale(forces.lateral));
         // With one wheel touching, taper yaw leverage during touchdown; a full
         // one-wheel cornering impulse would pivot the bike around that ray.
         b.applyForce(force,contacts===2?lever:lever.scale(.25));
-        lateralForce+=force.dot(side);normalLoad+=load;s.tires.push({load,...forces});
+        s.tires.push({load,...forces});
       }
       const lean=input.lean ?? ((input.leanBack?1:0)-(input.leanForward?1:0));
       b.torque.vadd(side.scale(-lean*180),b.torque);
@@ -119,13 +129,14 @@ export function stepBike(s,input,dt) {
       const excess=s.pitch-slope;
       const antiFlip=Math.max(0,excess-.12)*5000+Math.min(0,excess+.2)*5000;
       b.torque.vadd(side.scale(Math.max(-2200,Math.min(2200,antiFlip))-b.angularVelocity.dot(side)*450),b.torque);
-      // Balance against actual tire and support forces, as opposed to yaw speed.
       // Only both-wheel support gets strong ground balance; one-wheel touchdown
       // must not receive a violent roll correction.
-      const slopeRoll=-Math.asin(Math.max(-1,Math.min(1,n.dot(new C.Vec3(Math.cos(s.yaw),0,-Math.sin(s.yaw))))));
-      const desiredRoll=Math.max(-.92,Math.min(.92,slopeRoll-Math.atan2(lateralForce,Math.max(1,normalLoad))));
+      // Player intent moves the rider/bike bank; tire grip still determines
+      // the path. Keep lean modest at walking speed so a tight turn stays balanced.
+      const requestedLean=intent*maxLean*Math.min(1,s.speed/9);
+      const desiredRoll=Math.max(-1.05,Math.min(1.05,slopeRoll+requestedLean));
       const balance=contacts===2||Math.abs(s.roll)>1?1:.6;
-      s.balanceRoll+=Math.max(-2.8*dt,Math.min(2.8*dt,(desiredRoll-s.balanceRoll)*(1-Math.exp(-dt*12))));
+      s.balanceRoll+=Math.max(-4.5*dt,Math.min(4.5*dt,(desiredRoll-s.balanceRoll)*(1-Math.exp(-dt*18))));
       const torqueLimit=Math.abs(s.roll)>1?6000:2200;
       const torque=Math.max(-torqueLimit,Math.min(torqueLimit,(s.balanceRoll-s.roll)*11000-b.angularVelocity.dot(f)*1700));
       b.torque.vadd(f.scale(torque*balance),b.torque);
