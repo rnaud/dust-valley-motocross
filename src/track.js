@@ -38,6 +38,12 @@ export function track(t){
 export function trackAt(s){const p=at(s*trackLength);return {...p,s};}
 export function trackAngle(s){return Math.atan2(at(s*trackLength).tx,at(s*trackLength).tz);}
 
+// Signed curvature (1/m) from a short tangent difference; used to shape berms.
+export function trackCurvature(s){
+ const ds=1.5/trackLength,a=trackAt((s+ds)%1),b=trackAt((s-ds+1)%1);
+ return (a.tx*b.tz-a.tz*b.tx)/(3);
+}
+
 // Segments are bucketed into a coarse grid; nearest() is exact within ~24 m of
 // the course and falls back to a 64-point approximation farther out.
 const CELL=12,GRID=Math.ceil(900/CELL)+1,GRID_ORIGIN=-450;
@@ -87,9 +93,17 @@ export function nearestTrack(x,z){
 // jumps are placed only where the track is straighter.
 export function trackGrade(s){return 2.1*Math.sin(TAU*2*s+.4)+1.0*Math.sin(TAU*3*s+2.1);}
 export const raceFeatures=[
+ {s:.04,height:.45,up:4,top:3,down:5,width:9},
  {s:.13,height:1.7,up:9,top:6,down:12,width:11},
+ {s:.21,height:.55,up:4,top:4,down:6,width:9},
+ {s:.29,height:.7,up:5,top:3,down:6,width:10},
  {s:.34,height:1.15,up:7,top:5,down:10,width:10},
+ {s:.46,height:.5,up:4,top:3,down:5,width:9},
  {s:.53,height:2.1,up:10,top:4,down:14,width:12},
+ {s:.61,height:.6,up:4,top:4,down:6,width:9},
+ {s:.69,height:.5,up:4,top:3,down:5,width:9},
  {s:.72,height:1.5,up:8,top:6,down:12,width:11},
- {s:.88,height:1.9,up:9,top:5,down:13,width:12}
+ {s:.79,height:.6,up:4,top:4,down:6,width:9},
+ {s:.88,height:1.9,up:9,top:5,down:13,width:12},
+ {s:.95,height:.45,up:4,top:3,down:5,width:9}
 ];
