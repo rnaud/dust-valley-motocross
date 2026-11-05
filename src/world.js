@@ -32,7 +32,7 @@ export function createState(options={}) {
   chassis.inertia.set(110,100,75);chassis.invInertia.set(1/110,1/100,1/75);chassis.updateInertiaWorld(true);
   chassis.position.set(p.x,height(p.x,p.z)+1.15,p.z);chassis.quaternion.setFromEuler(0,options.flat?0:Math.atan2(36,78),0);
   const vehicle=new C.RaycastVehicle({chassisBody:chassis,indexRightAxis:0,indexUpAxis:1,indexForwardAxis:2});
-  for(const z of [-1.05,1.1])vehicle.addWheel({radius:.61,directionLocal:new C.Vec3(0,-1,0),axleLocal:new C.Vec3(-1,0,0),chassisConnectionPointLocal:new C.Vec3(0,-.12,z),suspensionRestLength:.55,maxSuspensionTravel:.3,suspensionStiffness:55,dampingRelaxation:4.5,dampingCompression:3.5,maxSuspensionForce:10000,frictionSlip:2.6,rollInfluence:1,isFrontWheel:z>0});
+  for(const z of [-1.05,1.1])vehicle.addWheel({radius:.61,directionLocal:new C.Vec3(0,-1,0),axleLocal:new C.Vec3(-1,0,0),chassisConnectionPointLocal:new C.Vec3(0,-.12,z),suspensionRestLength:.55,maxSuspensionTravel:.3,suspensionStiffness:55,dampingRelaxation:4.5,dampingCompression:3.5,maxSuspensionForce:10000,frictionSlip:2.6,rollInfluence:.08,isFrontWheel:z>0});
   vehicle.addToWorld(world);
   const s={x:p.x,z:p.z,y:chassis.position.y-.5,yaw:0,speed:0,vy:0,pitch:0,roll:0,air:false,airtime:0,boost:100,steer:0,throttle:0,contacts:0,crashed:false,crashTime:0,slip:0,compression:[0,0],quaternion:{x:0,y:0,z:0,w:1},wheelTransforms:[]};
   Object.defineProperty(s,'physics',{value:{world,chassis,vehicle,height},enumerable:false});
@@ -48,7 +48,10 @@ export function stepBike(s,input,dt) {
   s.boost=Math.max(0,Math.min(100,s.boost+(boosting?-28:10)*dt));
   // Forward is +Z, so rider-right is local -X (also screen-right in the chase camera).
   const steerInput=input.steer ?? ((input.right?1:0)-(input.left?1:0));
-  const steerTarget=-steerInput*(.42/(1+s.speed*.075));
+  // Limit requested lateral acceleration, rather than allowing high-speed steering
+  // to demand several g from two inline tire contacts.
+  const steeringLimit=Math.min(.42,Math.atan(2.15*10/(s.speed*s.speed+12)));
+  const steerTarget=-steerInput*steeringLimit;
   s.steer+=(steerTarget-s.steer)*Math.min(1,dt*14);
   v.setSteeringValue(s.crashed?0:s.steer,1);
   // Torque falls with road speed; drag, not a velocity clamp, sets top speed.
@@ -69,9 +72,9 @@ export function stepBike(s,input,dt) {
       const slope=normal?Math.atan2(-(normal.x*f.x+normal.z*f.z),Math.max(.1,normal.y)):0;
       const excess=s.pitch-slope;
       const antiFlip=Math.max(0,excess-.12)*5000+Math.min(0,excess+.2)*5000;
-      b.torque.vadd(right.scale(driveForce*.85+Math.max(-2200,Math.min(2200,antiFlip))-b.angularVelocity.dot(right)*450),b.torque);
-      const desiredRoll=Math.max(-.65,Math.min(.65,-s.steer*s.speed*.14));
-      const torque=Math.max(-4500,Math.min(4500,(desiredRoll-s.roll)*6500-b.angularVelocity.dot(f)*1300-b.angularVelocity.y*s.speed*105));
+      b.torque.vadd(right.scale((v.wheelInfos[0].raycastResult.hasHit?driveForce*.85:0)+Math.max(-2200,Math.min(2200,antiFlip))-b.angularVelocity.dot(right)*450),b.torque);
+      const desiredRoll=Math.max(-.48,Math.min(.48,-Math.atan(s.speed*b.angularVelocity.y/9.81)*.65));
+      const torque=Math.max(-10000,Math.min(10000,(desiredRoll-s.roll)*14000-b.angularVelocity.dot(f)*1900));
       b.torque.vadd(f.scale(torque),b.torque);
     }else{
       // Rider weight shift and wheel reaction torque rotate the bike, not its velocity.
@@ -79,7 +82,7 @@ export function stepBike(s,input,dt) {
       const targetPitch=lean*.8+(gas-brake)*.06;
       b.torque.vadd(right.scale((s.pitch-targetPitch)*260-b.angularVelocity.dot(right)*110),b.torque);
       // Air steering is a bounded whip, not an accumulating barrel roll.
-      b.torque.vadd(f.scale((steerInput*.3-s.roll)*220-b.angularVelocity.dot(f)*120),b.torque);
+      b.torque.vadd(f.scale((steerInput*.25-s.roll)*1500-b.angularVelocity.dot(f)*650),b.torque);
       b.torque.y+=-steerInput*65-b.angularVelocity.y*45;
     }
   }
