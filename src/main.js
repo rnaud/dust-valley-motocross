@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import './style.css';
+import {GroundDetail} from './ground-detail.js';
 import { TireTracks, createTreadTexture } from './tire-tracks.js';
 import { createTextures, applyTerrainTexture, createSkyTexture } from './textures.js';
 import {track,terrain as raceTerrain,freeTerrain,trackDistance,createState,resetBike,stepBike,TAU} from './world.js';
@@ -22,6 +23,7 @@ materials.rock.map=textures.rock;materials.rock.color.set('#ffffff');materials.r
 materials.green.map=textures.cactus;materials.green.color.set('#ffffff');materials.green.bumpMap=textures.cactus;materials.green.bumpScale=.06;
 materials.dark.map=textures.rubber;materials.dark.color.set('#ffffff');
 const groundGeo=new THREE.PlaneGeometry(900,900,300,300);groundGeo.rotateX(-Math.PI/2);const pos=groundGeo.attributes.position,colors=[];const c=new THREE.Color();for(let i=0;i<pos.count;i++){const x=pos.getX(i),z=pos.getZ(i);pos.setY(i,terrain(x,z));const t=Math.atan2(z/78,x/102),p=track(t);const d=Math.hypot(x-p.x,z-p.z);c.set(d<10?'#a66b42':d<12?'#be8a57':'#c49765');c.multiplyScalar(.94+.07*Math.sin(x*3+z*6));colors.push(c.r,c.g,c.b);}groundGeo.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));groundGeo.computeVertexNormals();const ground=new THREE.Mesh(groundGeo,materials.dirt);ground.receiveShadow=true;scene.add(ground);
+const groundDetail=new GroundDetail(scene,(x,z)=>surfaceHeight(x,z));
 const tireTracks=new TireTracks(scene,{capacity:mobile?3000:6000,texture:createTreadTexture()});
 // Sample the rendered triangles so tread decals sit on the visible ground.
 function surfaceHeight(x,z){
@@ -123,6 +125,7 @@ function updateEnvironment(){
   for(let i=0;i<pos.count;i++)pos.setY(i,terrain(pos.getX(i),pos.getZ(i)));
   pos.needsUpdate=true;groundGeo.computeVertexNormals();groundGeo.computeBoundingSphere();
   mountains.forEach(groundMountain);
+  groundDetail.update(state.x,state.z,true);
   decorations.forEach(o=>{o.position.y=terrain(o.position.x,o.position.z)+o.userData.groundOffset;o.visible=mode==='free'||!o.userData.onTrack;});
   document.querySelector('.gate-stat').hidden=mode==='free';
 }
@@ -161,10 +164,10 @@ else{
   const headingDelta=Math.atan2(Math.sin(state.yaw-chaseYaw),Math.cos(state.yaw-chaseYaw));
   chaseYaw+=headingDelta*(1-Math.exp(-dt*8));
   // Position and look-ahead share one filtered heading, avoiding camera whip on reversal.
-  target.set(chaseAnchor.x-Math.sin(chaseYaw)*10,chaseAnchor.y+5.2,chaseAnchor.z-Math.cos(chaseYaw)*10);
-  target.y=Math.max(target.y,surfaceHeight(target.x,target.z)+2.5);
-  look.set(chaseAnchor.x+Math.sin(chaseYaw)*6,chaseAnchor.y+1.5,chaseAnchor.z+Math.cos(chaseYaw)*6);
-  camera.position.copy(target);camera.lookAt(look);camera.fov=58+state.speed*.2;camera.updateProjectionMatrix();
+  target.set(chaseAnchor.x-Math.sin(chaseYaw)*6.2,chaseAnchor.y+2.7,chaseAnchor.z-Math.cos(chaseYaw)*6.2);
+  target.y=Math.max(target.y,surfaceHeight(target.x,target.z)+1.4);
+  look.set(chaseAnchor.x+Math.sin(chaseYaw)*6,chaseAnchor.y+1.2,chaseAnchor.z+Math.cos(chaseYaw)*6);
+  camera.position.copy(target);camera.lookAt(look);camera.fov+=(70+Math.min(14,state.speed*.42)-camera.fov)*(1-Math.exp(-dt*4));camera.updateProjectionMatrix();
 }
 if(phase==='menu'){
  bike.position.set(state.x,state.y+.5,state.z);bike.rotation.set(0,state.yaw,0);bike.updateMatrixWorld(true);
@@ -174,14 +177,16 @@ if(phase==='menu'){
  wheels.forEach((w,i)=>{const t=state.wheelTransforms[i];w.position.copy(t.position);w.quaternion.copy(t.quaternion);});
 }
 handlebar.rotation.y=state.steer;
-rider.rotation.x=(input.lean ?? ((input.leanBack?1:0)-(input.leanForward?1:0)))*-.18;
+rider.position.x=Math.sin(state.roll)*.12;
+rider.rotation.z=-state.roll*.14;
+rider.rotation.x=-Math.abs(state.steer)*.15+(input.lean ?? ((input.leanBack?1:0)-(input.leanForward?1:0)))*-.18;
 rider.position.y=-Math.min(.12,Math.max(...state.compression)*.15);
 bike.updateMatrixWorld(true);
 forks.forEach((fork,i)=>{const front=i>=2,side=i%2?1:-1;const start=bike.localToWorld(new THREE.Vector3(side*.23,front?.68:.1,front?.7:-.05));const end=wheels[front?1:0].position.clone().add(new THREE.Vector3(side*.23,0,0).applyQuaternion(bike.quaternion));fork.position.copy(start).add(end).multiplyScalar(.5);fork.scale.y=start.distanceTo(end);fork.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),end.sub(start).normalize());});
 sun.position.set(state.x-60,state.y+100,state.z+50);sun.target.position.set(state.x,state.y,state.z);
 if(phase==='playing'&&state.speed>5&&!state.air&&countdown<=0){for(let i=0;i<2;i++){const p=particles[dustIndex++%dustCount];Object.assign(p,{life:1,x:state.x+(Math.random()-.5),y:state.y-.5,z:state.z-Math.cos(state.yaw)});}}particles.forEach((p,i)=>{p.life-=dt*.7;if(p.life>0){p.y+=dt*.6;p.x+=dt*.5;}dustPositions[i*3]=p.x;dustPositions[i*3+1]=p.life>0?p.y:-100;dustPositions[i*3+2]=p.z;});dustGeo.attributes.position.needsUpdate=true;
 if(audio){osc.frequency.setTargetAtTime(45+state.speed*4+(input.gas?20:0),audio.currentTime,.08);gain.gain.setTargetAtTime(sound&&phase==='playing'?.025:0,audio.currentTime,.1);}
-$('speed').textContent=Math.round(state.speed*3.6);$('time').textContent=formatTime(elapsed);$('lap').innerHTML=mode==='race'?`${String(Math.min(lap,3)).padStart(2,'0')}<span>/03</span>`:String(score);$('gate').innerHTML=`${String(nextGate===0?12:nextGate).padStart(2,'0')}<span>/12</span>`;$('boost').style.width=state.boost+'%';sky.position.copy(camera.position);drawMap();gates.forEach(g=>{g.group.visible=phase==='menu'||g.group.position.distanceTo(camera.position)>13;});renderer.render(scene,camera);}
+$('speed').textContent=Math.round(state.speed*3.6);$('time').textContent=formatTime(elapsed);$('lap').innerHTML=mode==='race'?`${String(Math.min(lap,3)).padStart(2,'0')}<span>/03</span>`:String(score);$('gate').innerHTML=`${String(nextGate===0?12:nextGate).padStart(2,'0')}<span>/12</span>`;$('boost').style.width=state.boost+'%';groundDetail.update(state.x,state.z);sky.position.copy(camera.position);drawMap();gates.forEach(g=>{g.group.visible=phase==='menu'||g.group.position.distanceTo(camera.position)>13;});renderer.render(scene,camera);}
 function resize(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}window.addEventListener('resize',resize);resize();requestAnimationFrame(animate);
 // Read-only diagnostics for smoke tests and performance inspection.
 window.__game={environment:()=>({trackVisible:trackObjects.visible,trackTexture:materials.dirt.map===textures.macro,height:state.physics.height(state.x,state.z),visualHeight:terrain(state.x,state.z),mountains:mountains.map(m=>({x:m.position.x,z:m.position.z,radius:m.userData.radius*Math.max(m.scale.x,m.scale.z),foundation:m.userData.foundation}))}),snapshot:()=>({phase,mode,elapsed,lap,nextGate,score,countdown,tireTrackSegments:tireTracks.count,...state}),renderer};
