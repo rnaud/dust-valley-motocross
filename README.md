@@ -8,8 +8,8 @@ https://rnaud.github.io/dust-valley-motocross/
 
 - **Desert circuit:** three laps through twelve ordered gates, with a timer and locally saved personal best.
 - **Free ride:** explore the basin, jump the hills, and accumulate airtime points.
-- **Keyboard:** WASD or arrow keys to ride; Space to boost; R to recover; P or Escape to pause. Forward/backward input adjusts pitch in the air. Land level to avoid a speed penalty.
-- **Mobile:** hold GAS and a steering button together. BRAKE controls braking/air lean; BOOST adds speed. Use ↺ to recover. Portrait and landscape supported.
+- **Keyboard:** WASD or arrow keys to ride; Space to boost; R to recover; P or Escape to pause. I/K shifts rider weight and adjusts pitch in the air. Land level; a hard impact or tipped chassis can cause a wipeout.
+- **Mobile:** drag the left thumb joystick for proportional steering (horizontal) and rider lean (vertical), while holding GAS on the right. BRAKE slows the bike; BOOST adds engine power. Use ↺ to recover. Portrait and landscape supported.
 - Sound is optional and starts only after pressing SOUND.
 
 Requires a modern browser with WebGL 2. Touch controls were checked using mobile browser emulation and simultaneous touch events; physical-device performance will vary.
@@ -23,6 +23,8 @@ npm test
 npm run build
 ```
 
-The pure physics tests run with Node's test runner. `scripts/smoke.mjs` exercises desktop and mobile gameplay with Playwright and a local Chrome installation, against a development server on port 5189. Update the Chrome executable path for your platform.
+The simulation uses Cannon ES at 120 Hz: a 150 kg rigid chassis, two independent raycast spring/damper suspensions, rear-wheel drive, tire friction impulses, drag, gravity, rider pitch torque, and bounded roll-balance assistance. Suspension movement drives the rendered wheels and forks. This is an assisted arcade physics model, not a reconstruction of the original game's proprietary simulation. Decorative scenery has no collision bodies; terrain and the chassis do.
+
+The physics tests run with Node's test runner. `scripts/smoke.mjs` exercises desktop and mobile gameplay with Playwright and a local Chrome installation, against a development server on port 5189. Update the Chrome executable path for your platform.
 
 GitHub Actions builds and publishes `dist/` on every push to `main`. Vite uses relative asset paths for GitHub Pages project hosting. Google Fonts is optional; local system fonts are the fallback.
