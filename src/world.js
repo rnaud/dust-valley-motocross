@@ -2,7 +2,8 @@ import * as C from 'cannon-es';
 import {parkHeight} from './jump-park.js';
 import {BikeVehicle} from './bike-vehicle.js';
 import {tireForces} from './tires.js';
-import {TAU,track,trackLength,trackGrade,trackCurvature,raceFeatures,nearestTrack} from './track.js';
+import {TAU,trackAt,track,trackLength,trackGrade,trackCurvature,raceFeatures,nearestTrack} from './track.js';
+import {heroRocks} from './props.js';
 export {TAU,track,trackLength,nearestTrack};
 
 const smooth=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
@@ -63,14 +64,19 @@ export function createState(options={}) {
   // Rider mass sits above the small collision box; include it in rotational inertia.
   chassis.inertia.set(110,100,75);chassis.invInertia.set(1/110,1/100,1/75);chassis.updateInertiaWorld(true);
   chassis.position.set(p.x,height(p.x,p.z)+1.15,p.z);chassis.quaternion.setFromEuler(0,yaw,0);
+  // A handful of large boulders are real colliders; the rest of the scatter is scenery.
+  for(const rock of heroRocks){
+   const q=trackAt(rock.s),x=q.x+q.tz*rock.side,z=q.z-q.tx*rock.side,b=new C.Body({mass:0});
+   b.addShape(new C.Sphere(rock.r*.78));b.position.set(x,height(x,z)+rock.r*.55,z);world.addBody(b);
+  }
   const vehicle=new BikeVehicle({chassisBody:chassis,indexRightAxis:0,indexUpAxis:1,indexForwardAxis:2});
   for(const z of [-1.05,1.1])vehicle.addWheel({radius:.61,directionLocal:new C.Vec3(0,-1,0),axleLocal:new C.Vec3(-1,0,0),chassisConnectionPointLocal:new C.Vec3(0,-.12,z),suspensionRestLength:.55,maxSuspensionTravel:.3,suspensionStiffness:55,dampingRelaxation:4.5,dampingCompression:3.5,maxSuspensionForce:10000,frictionSlip:0,rollInfluence:.08,isFrontWheel:z>0});
   vehicle.addToWorld(world);
-  const s={x:p.x,z:p.z,y:chassis.position.y-.5,yaw:0,speed:0,vy:0,pitch:0,roll:0,air:false,airtime:0,boost:100,steer:0,throttle:0,contacts:0,crashed:false,crashTime:0,slip:0,compression:[0,0],quaternion:{x:0,y:0,z:0,w:1},wheelTransforms:[],landingRecovery:0,wheelContacts:[],balanceRoll:0,tireLoads:[0,0]};
+  const s={x:p.x,z:p.z,y:chassis.position.y-.5,yaw:0,speed:0,vy:0,pitch:0,roll:0,air:false,airtime:0,boost:100,steer:0,throttle:0,contacts:0,crashed:false,crashTime:0,slip:0,compression:[0,0],gear:1,rpm:1200,quaternion:{x:0,y:0,z:0,w:1},wheelTransforms:[],landingRecovery:0,wheelContacts:[],balanceRoll:0,tireLoads:[0,0]};
   Object.defineProperty(s,'physics',{value:{world,chassis,vehicle,height},enumerable:false});
   sync(s);return s;
 }
-function sync(s){const {chassis:b,vehicle:v}=s.physics;const f=b.quaternion.vmult(new C.Vec3(0,0,1)),up=b.quaternion.vmult(new C.Vec3(0,1,0));s.x=b.position.x;s.y=b.position.y-.5;s.z=b.position.z;s.yaw=Math.atan2(f.x,f.z);s.pitch=Math.asin(Math.max(-1,Math.min(1,f.y)));s.roll=Math.atan2(-up.x*Math.cos(s.yaw)+up.z*Math.sin(s.yaw),up.y);s.speed=Math.hypot(b.velocity.x,b.velocity.z);s.vy=b.velocity.y;s.yawRate=b.angularVelocity.y;s.quaternion={...b.quaternion};s.wheelTransforms=v.wheelInfos.map((w,i)=>{v.updateWheelTransform(i);return {position:{...w.worldTransform.position},quaternion:{...w.worldTransform.quaternion},direction:{...w.directionWorld}};});s.compression=v.wheelInfos.map(w=>Math.max(0,1-w.suspensionLength/.55));}
+function sync(s){const {chassis:b,vehicle:v}=s.physics;const f=b.quaternion.vmult(new C.Vec3(0,0,1)),up=b.quaternion.vmult(new C.Vec3(0,1,0));s.x=b.position.x;s.y=b.position.y-.5;s.z=b.position.z;s.yaw=Math.atan2(f.x,f.z);s.pitch=Math.asin(Math.max(-1,Math.min(1,f.y)));s.roll=Math.atan2(-up.x*Math.cos(s.yaw)+up.z*Math.sin(s.yaw),up.y);s.speed=Math.hypot(b.velocity.x,b.velocity.z);s.vy=b.velocity.y;s.yawRate=b.angularVelocity.y;s.gear=Math.max(1,Math.min(6,1+Math.floor(s.speed/6.5)));s.rpm=Math.round(1200+Math.max(0,Math.min(1,(s.speed-(s.gear-1)*6.5)/6.5))*6500+(s.throttle||0)*400);s.quaternion={...b.quaternion};s.wheelTransforms=v.wheelInfos.map((w,i)=>{v.updateWheelTransform(i);return {position:{...w.worldTransform.position},quaternion:{...w.worldTransform.quaternion},direction:{...w.directionWorld}};});s.compression=v.wheelInfos.map(w=>Math.max(0,1-w.suspensionLength/.55));}
 export function resetBike(s,x,z,yaw){const {chassis:b,height}=s.physics;b.position.set(x,height(x,z)+1.2,z);b.quaternion.setFromEuler(0,yaw,0);b.velocity.setZero();b.angularVelocity.setZero();b.force.setZero();b.torque.setZero();s.crashed=false;s.crashTime=0;s.airtime=0;s.landingRecovery=0;s.wheelContacts=[];s.throttle=0;s.steer=0;s.balanceRoll=0;s.tireLoads=[0,0];b.wakeUp();sync(s);}
 export function stepBike(s,input,dt) {
   const {world,chassis:b,vehicle:v}=s.physics;

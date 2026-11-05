@@ -8,10 +8,13 @@ https://rnaud.github.io/dust-valley-motocross/
 
 - **Desert circuit:** three laps of a hand-authored 1.33 km circuit through twelve ordered gates, with rolling grade, five tabletop jump features, start lights, gate splits, a translucent best-lap ghost, best lap and a locally saved personal best.
 - **Free ride:** ride nine shaped jumps across several lines, follow the flags and compass markers, explore the outer hills, and build a combo multiplier from clean landings.
-- **Keyboard:** WASD or arrow keys to ride; Space to boost; R to recover; P or Escape to pause. I/K shifts rider weight and adjusts pitch in the air. Land level; a hard impact or tipped chassis can cause a wipeout.
+- **Keyboard:** WASD or arrow keys to ride; Space to boost; R to recover; C cycles near/far/helmet cameras; P or Escape pauses; I/K shifts rider weight and adjusts pitch in the air. Land level; a hard impact or tipped chassis can cause a wipeout.
 - **Gamepad:** left stick steers and leans, RT/A throttles, LT/B brakes, RB/X boosts, Start pauses.
 - **Mobile:** drag the left thumb joystick for proportional steering (horizontal) and rider lean (vertical), while holding GAS on the right. BRAKE slows the bike; BOOST adds engine power. Use ↺ to recover. Portrait and landscape supported.
-- Sound is optional and starts only after pressing SOUND: synthesized engine load and shifts, wind, tire roost and landing impacts. Camera shake follows hard landings.
+- Sound is optional and starts only after pressing SOUND: RPM/gear-driven engine load and shifts, wind, tire roost and landing impacts. Camera shake follows hard landings.
+- **Daily sprint:** one lap of the circuit against today's local best, with a local top-five board and a share/download result card.
+- **Photo mode:** pause, hide the HUD, orbit/inspect the bike, and save a PNG.
+- **Settings:** near/far/helmet cameras, quality (auto/high/low), dawn/day/dusk light, touch sensitivity. First launch includes a three-step ride tutorial.
 
 Requires a modern browser with WebGL 2. Touch controls were checked using mobile browser emulation and simultaneous touch events; physical-device performance will vary.
 
@@ -24,7 +27,7 @@ npm test
 npm run build
 ```
 
-The simulation uses Cannon ES at 120 Hz: a 150 kg rigid chassis, two independent raycast spring/damper suspensions, contact-gated rear-wheel traction, separate front/rear slip-angle tire forces, combined grip limits, virtual-rider steering feedback, drag, gravity, rider pitch torque, and bounded roll-balance assistance. Suspension movement drives the rendered wheels and forks. This is an assisted arcade physics model, not a reconstruction of the original game's proprietary simulation. Decorative scenery has no collision bodies; terrain and the chassis do.
+The simulation uses Cannon ES at 120 Hz: a 150 kg rigid chassis, two independent raycast spring/damper suspensions, contact-gated rear-wheel traction, separate front/rear slip-angle tire forces, combined grip limits, virtual-rider steering feedback, drag, gravity, rider pitch torque, and bounded roll-balance assistance. Suspension movement drives the rendered wheels and forks. This is an assisted arcade physics model, not a reconstruction of the original game's proprietary simulation. Terrain and the chassis collide; six hero boulders have static Cannon spheres, while the rest of the scenery is visual only.
 
 The physics and geometry tests run with Node's test runner, including circuit closure, centreline lookup and self-intersection checks in `tests/track.test.js`. `scripts/smoke.mjs` exercises desktop and mobile gameplay with Playwright and a local Chrome installation, against a development server on port 5189. Update the Chrome executable path for your platform.
 
@@ -36,7 +39,9 @@ GitHub Actions builds and publishes `dist/` on every push to `main`. Vite uses r
 
 The terrain heightfield is 360² at 2.5 m spacing. The circuit has outer berms, a graded surface, five tabletop features and eight smaller rollers/whoops; wind-shaped dunes, 520 instanced boulders and 380 batched cacti/rocks fill the basin. The 320 boundary stakes are one instanced draw, and the 45 buttes are merged by material after each terrain rebuild; a typical riding frame is around 100 draw calls and 350k triangles at 1440×900.
 
-Race feedback includes three-light start sequencing, a split time at every gate, best-lap and personal-best storage, a translucent best-lap ghost, a wrong-way warning after sustained opposing travel, and a combo multiplier for chained airtime. Free ride flags mark each jump takeoff, and its compass shows nearby jump markers.
+Race feedback includes three-light start sequencing, a split time at every gate, best-lap and personal-best storage, a translucent best-lap ghost, a wrong-way warning after sustained opposing travel, and a combo multiplier for chained airtime. A live gear/RPM readout shares state with the synthesized engine. Free ride flags carry numbered boards and the compass shows nearby jump markers. Large hero boulders have matching Cannon spheres; tyre-stack barriers mark the start area.
+
+Quality presets control pixel ratio, shadow resolution, boulder density and dust; auto lowers quality once if sustained frame rate falls below 48 fps. A branded loading screen covers procedural texture generation.
 
 Handling tuning: joystick directions are tested in the chase camera's coordinate frame. Normal throttle reaches 60 km/h in approximately 1.9 seconds on the flat test surface (about 1.4 seconds with boost). Rider torque assists power delivery and landing recovery; airborne steering targets a bounded lean and yaw rather than continuously rolling the bike. These are arcade handling targets, not specifications for a real motorcycle.
 
