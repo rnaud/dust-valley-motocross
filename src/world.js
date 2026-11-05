@@ -36,13 +36,13 @@ export function createState(options={}) {
   chassis.inertia.set(110,100,75);chassis.invInertia.set(1/110,1/100,1/75);chassis.updateInertiaWorld(true);
   chassis.position.set(p.x,height(p.x,p.z)+1.15,p.z);chassis.quaternion.setFromEuler(0,options.spawn?.yaw ?? (options.flat?0:Math.atan2(36,78)),0);
   const vehicle=new C.RaycastVehicle({chassisBody:chassis,indexRightAxis:0,indexUpAxis:1,indexForwardAxis:2});
-  for(const z of [-1.05,1.1])vehicle.addWheel({radius:.61,directionLocal:new C.Vec3(0,-1,0),axleLocal:new C.Vec3(-1,0,0),chassisConnectionPointLocal:new C.Vec3(0,-.12,z),suspensionRestLength:.55,maxSuspensionTravel:.3,suspensionStiffness:55,dampingRelaxation:4.5,dampingCompression:3.5,maxSuspensionForce:10000,frictionSlip:2.6,rollInfluence:.08,isFrontWheel:z>0});
+  for(const z of [-1.05,1.1])vehicle.addWheel({radius:.61,directionLocal:new C.Vec3(0,-1,0),axleLocal:new C.Vec3(-1,0,0),chassisConnectionPointLocal:new C.Vec3(0,-.12,z),suspensionRestLength:.55,maxSuspensionTravel:.3,suspensionStiffness:55,dampingRelaxation:4.5,dampingCompression:3.5,maxSuspensionForce:10000,frictionSlip:0,rollInfluence:.08,isFrontWheel:z>0});
   vehicle.addToWorld(world);
   const s={x:p.x,z:p.z,y:chassis.position.y-.5,yaw:0,speed:0,vy:0,pitch:0,roll:0,air:false,airtime:0,boost:100,steer:0,throttle:0,contacts:0,crashed:false,crashTime:0,slip:0,compression:[0,0],quaternion:{x:0,y:0,z:0,w:1},wheelTransforms:[],landingRecovery:0,wheelContacts:[]};
   Object.defineProperty(s,'physics',{value:{world,chassis,vehicle,height},enumerable:false});
   sync(s);return s;
 }
-function sync(s){const {chassis:b,vehicle:v}=s.physics;const f=b.quaternion.vmult(new C.Vec3(0,0,1)),up=b.quaternion.vmult(new C.Vec3(0,1,0));s.x=b.position.x;s.y=b.position.y-.5;s.z=b.position.z;s.yaw=Math.atan2(f.x,f.z);s.pitch=Math.asin(Math.max(-1,Math.min(1,f.y)));s.roll=Math.atan2(-up.x*Math.cos(s.yaw)+up.z*Math.sin(s.yaw),up.y);s.speed=Math.hypot(b.velocity.x,b.velocity.z);s.vy=b.velocity.y;s.quaternion={...b.quaternion};s.wheelTransforms=v.wheelInfos.map((w,i)=>{v.updateWheelTransform(i);return {position:{...w.worldTransform.position},quaternion:{...w.worldTransform.quaternion}};});s.compression=v.wheelInfos.map(w=>Math.max(0,1-w.suspensionLength/.55));}
+function sync(s){const {chassis:b,vehicle:v}=s.physics;const f=b.quaternion.vmult(new C.Vec3(0,0,1)),up=b.quaternion.vmult(new C.Vec3(0,1,0));s.x=b.position.x;s.y=b.position.y-.5;s.z=b.position.z;s.yaw=Math.atan2(f.x,f.z);s.pitch=Math.asin(Math.max(-1,Math.min(1,f.y)));s.roll=Math.atan2(-up.x*Math.cos(s.yaw)+up.z*Math.sin(s.yaw),up.y);s.speed=Math.hypot(b.velocity.x,b.velocity.z);s.vy=b.velocity.y;s.yawRate=b.angularVelocity.y;s.quaternion={...b.quaternion};s.wheelTransforms=v.wheelInfos.map((w,i)=>{v.updateWheelTransform(i);return {position:{...w.worldTransform.position},quaternion:{...w.worldTransform.quaternion}};});s.compression=v.wheelInfos.map(w=>Math.max(0,1-w.suspensionLength/.55));}
 export function resetBike(s,x,z,yaw){const {chassis:b,height}=s.physics;b.position.set(x,height(x,z)+1.2,z);b.quaternion.setFromEuler(0,yaw,0);b.velocity.setZero();b.angularVelocity.setZero();b.force.setZero();b.torque.setZero();s.crashed=false;s.crashTime=0;s.airtime=0;s.landingRecovery=0;s.wheelContacts=[];s.throttle=0;s.steer=0;b.wakeUp();sync(s);}
 export function stepBike(s,input,dt) {
   const {world,chassis:b,vehicle:v}=s.physics;
@@ -60,8 +60,9 @@ export function stepBike(s,input,dt) {
   v.setSteeringValue(s.crashed?0:s.steer,1);
   // Torque falls with road speed; drag, not a velocity clamp, sets top speed.
   const driveForce=s.throttle*(boosting?2300:1700)/(1+s.speed/40);
-  v.applyEngineForce(-driveForce,0);
-  v.setBrake(brake?4:gas?0:.3,0);v.setBrake(brake?6:0,1);
+  // RaycastVehicle supplies suspension and wheel rotation only. Its car tire
+  // impulses fight roll balance on two inline wheels during steering reversals.
+  v.applyEngineForce(0,0);v.setBrake(0,0);v.setBrake(0,1);
   const f=b.quaternion.vmult(new C.Vec3(0,0,1));
   const right=b.quaternion.vmult(new C.Vec3(1,0,0));
   const contacts=s.contacts;
@@ -69,15 +70,29 @@ export function stepBike(s,input,dt) {
   b.force.x-=b.velocity.x*s.speed*.55;b.force.z-=b.velocity.z*s.speed*.55;
   if(!s.crashed){
     if(contacts){
+      const n=new C.Vec3();
+      for(const w of v.wheelInfos)if(w.raycastResult.hasHit)n.vadd(w.raycastResult.hitNormalWorld,n);
+      n.normalize();
+      const forward=f.vsub(n.scale(f.dot(n)));forward.normalize();
+      const side=n.cross(forward);side.normalize();
+      const forwardSpeed=b.velocity.dot(forward),sideSpeed=b.velocity.dot(side);
+      const tireForce=Math.max(-1500,Math.min(1500,-sideSpeed*b.mass*10));
+      b.force.vadd(side.scale(tireForce),b.force);
+      const traction=v.wheelInfos[0].raycastResult.hasHit?driveForce:0;
+      const braking=brake?Math.min(1500,Math.abs(forwardSpeed)*b.mass/dt):gas?0:70;
+      b.force.vadd(forward.scale(traction-Math.sign(forwardSpeed)*braking),b.force);
+      const requestedYaw=Math.tan(s.steer)*Math.max(0,forwardSpeed)/2.15;
+      const yawTorque=Math.max(-1800,Math.min(1800,(requestedYaw-b.angularVelocity.y)*1200));
+      b.torque.y+=yawTorque;
       const lean=input.lean ?? ((input.leanBack?1:0)-(input.leanForward?1:0));
       b.torque.vadd(right.scale(-lean*180),b.torque);
-      // Active rider weight transfer limits power wheelies without locking pitch.
+      // Rider pitch stabilization follows the slope without locking the chassis orientation.
       const normal=v.wheelInfos.find(w=>w.raycastResult.hasHit)?.raycastResult.hitNormalWorld;
       const slope=normal?Math.atan2(-(normal.x*f.x+normal.z*f.z),Math.max(.1,normal.y)):0;
       const excess=s.pitch-slope;
       const antiFlip=Math.max(0,excess-.12)*5000+Math.min(0,excess+.2)*5000;
-      b.torque.vadd(right.scale((v.wheelInfos[0].raycastResult.hasHit?driveForce*.85:0)+Math.max(-2200,Math.min(2200,antiFlip))-b.angularVelocity.dot(right)*450),b.torque);
-      const desiredRoll=Math.max(-.48,Math.min(.48,-Math.atan(s.speed*b.angularVelocity.y/9.81)*.65));
+      b.torque.vadd(right.scale(Math.max(-2200,Math.min(2200,antiFlip))-b.angularVelocity.dot(right)*450),b.torque);
+      const desiredRoll=Math.max(-.48,Math.min(.48,-Math.atan(s.speed*requestedYaw/9.81)*.65));
       const torque=Math.max(-10000,Math.min(10000,(desiredRoll-s.roll)*14000-b.angularVelocity.dot(f)*1900));
       b.torque.vadd(f.scale(torque),b.torque);
     }else{

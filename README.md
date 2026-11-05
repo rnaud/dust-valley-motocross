@@ -23,7 +23,7 @@ npm test
 npm run build
 ```
 
-The simulation uses Cannon ES at 120 Hz: a 150 kg rigid chassis, two independent raycast spring/damper suspensions, rear-wheel drive, tire friction impulses, drag, gravity, rider pitch torque, and bounded roll-balance assistance. Suspension movement drives the rendered wheels and forks. This is an assisted arcade physics model, not a reconstruction of the original game's proprietary simulation. Decorative scenery has no collision bodies; terrain and the chassis do.
+The simulation uses Cannon ES at 120 Hz: a 150 kg rigid chassis, two independent raycast spring/damper suspensions, contact-gated rear-wheel traction, bounded lateral grip forces, assisted yaw response, drag, gravity, rider pitch torque, and bounded roll-balance assistance. Suspension movement drives the rendered wheels and forks. This is an assisted arcade physics model, not a reconstruction of the original game's proprietary simulation. Decorative scenery has no collision bodies; terrain and the chassis do.
 
 The physics tests run with Node's test runner. `scripts/smoke.mjs` exercises desktop and mobile gameplay with Playwright and a local Chrome installation, against a development server on port 5189. Update the Chrome executable path for your platform.
 
@@ -40,3 +40,5 @@ Cornering stability: steering angle now limits requested lateral acceleration as
 Free ride uses natural hills without the circuit grading, painted lanes, ruts, stakes, gates, or checkpoint HUD. Its compass replaces the route map, and recovery resets the bike at its current location. Switching modes updates both rendered terrain and the physics heightfield. Mountain foundations extend below the lowest terrain across their full footprints, with their tops preserved and their bases contained within the ground mesh.
 
 Landing recovery temporarily increases compression damping and suspension force capacity to absorb jump impacts without bottoming the chassis into the dirt. Downward speed alone no longer declares a wipeout on an upright landing. Tests check retained speed and settled wheel contact after drops and course-shaped jumps. Both tires leave procedural tread ribbons from actual contact points; the trail breaks while airborne or recovering and is cleared on a new ride or mode change. A bounded ring buffer limits trail memory on mobile.
+
+Steering reversals: suspension rays still apply ground impulses, but Cannon’s car tire solver is disabled for the two inline wheels. Ground-plane traction and lateral grip act at the chassis center, while bounded yaw torque follows the requested turn rate. This avoids tire impulses fighting rider balance and causing spins during left/right reversals. Camera position and aim use a shared filtered heading. `scripts/reversal-smoke.mjs` drives the real arrow-key sequence in both modes and checks reversal response and retained speed.
