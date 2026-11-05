@@ -5,7 +5,7 @@ export function terrainIndices(segments){
  }
  return indices;
 }
-export function sampleGrid(getHeight,x,z,segments=300,spacing=3){
+export function sampleGrid(getHeight,x,z,segments=360,spacing=2.5){
  const half=segments*spacing/2,gx=Math.max(0,Math.min(segments-.00001,(x+half)/spacing)),gz=Math.max(0,Math.min(segments-.00001,(z+half)/spacing));
  const ix=Math.floor(gx),iz=Math.floor(gz),u=gx-ix,v=gz-iz;
  const a=getHeight(iz*(segments+1)+ix),b=getHeight((iz+1)*(segments+1)+ix),c=getHeight((iz+1)*(segments+1)+ix+1),d=getHeight(iz*(segments+1)+ix+1);

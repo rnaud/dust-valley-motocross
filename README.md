@@ -6,11 +6,12 @@ An original, arcade-style motocross playground built in Three.js, inspired by th
 
 https://rnaud.github.io/dust-valley-motocross/
 
-- **Desert circuit:** three laps through twelve ordered gates, with a timer and locally saved personal best.
-- **Free ride:** ride nine shaped jumps across several lines, explore the outer hills, and accumulate airtime points.
+- **Desert circuit:** three laps of a hand-authored 1.33 km circuit through twelve ordered gates, with rolling grade, five tabletop jump features, start lights, gate splits, a translucent best-lap ghost, best lap and a locally saved personal best.
+- **Free ride:** ride nine shaped jumps across several lines, follow the flags and compass markers, explore the outer hills, and build a combo multiplier from clean landings.
 - **Keyboard:** WASD or arrow keys to ride; Space to boost; R to recover; P or Escape to pause. I/K shifts rider weight and adjusts pitch in the air. Land level; a hard impact or tipped chassis can cause a wipeout.
+- **Gamepad:** left stick steers and leans, RT/A throttles, LT/B brakes, RB/X boosts, Start pauses.
 - **Mobile:** drag the left thumb joystick for proportional steering (horizontal) and rider lean (vertical), while holding GAS on the right. BRAKE slows the bike; BOOST adds engine power. Use ↺ to recover. Portrait and landscape supported.
-- Sound is optional and starts only after pressing SOUND.
+- Sound is optional and starts only after pressing SOUND: synthesized engine load and shifts, wind, tire roost and landing impacts. Camera shake follows hard landings.
 
 Requires a modern browser with WebGL 2. Touch controls were checked using mobile browser emulation and simultaneous touch events; physical-device performance will vary.
 
@@ -25,13 +26,17 @@ npm run build
 
 The simulation uses Cannon ES at 120 Hz: a 150 kg rigid chassis, two independent raycast spring/damper suspensions, contact-gated rear-wheel traction, separate front/rear slip-angle tire forces, combined grip limits, virtual-rider steering feedback, drag, gravity, rider pitch torque, and bounded roll-balance assistance. Suspension movement drives the rendered wheels and forks. This is an assisted arcade physics model, not a reconstruction of the original game's proprietary simulation. Decorative scenery has no collision bodies; terrain and the chassis do.
 
-The physics tests run with Node's test runner. `scripts/smoke.mjs` exercises desktop and mobile gameplay with Playwright and a local Chrome installation, against a development server on port 5189. Update the Chrome executable path for your platform.
+The physics and geometry tests run with Node's test runner, including circuit closure, centreline lookup and self-intersection checks in `tests/track.test.js`. `scripts/smoke.mjs` exercises desktop and mobile gameplay with Playwright and a local Chrome installation, against a development server on port 5189. Update the Chrome executable path for your platform.
 
 GitHub Actions builds and publishes `dist/` on every push to `main`. Vite uses relative asset paths for GitHub Pages project hosting. Google Fonts is optional; local system fonts are the fallback.
 
 ## Procedural artwork
 
-`src/textures.js` generates seeded soil and scrub color maps, course-aligned worn lanes and ruts, world-space gravel detail, sandstone strata, cactus ribs, rubber grain, and a cloudy sky. No original Motocross Madness textures are used. The terrain color map is 1536² on desktop and 1024² on touch devices; smaller repeating detail maps provide close-up texture without large downloads.
+`src/textures.js` generates seeded soil and scrub color maps, course-aligned worn lanes and ruts, world-space gravel detail, sandstone strata, cactus ribs, rubber grain, and a cloudy sky. No original Motocross Madness textures are used. The terrain color map is 1536² on desktop and 1024² on touch devices; smaller repeating detail maps provide close-up texture without large downloads. `src/track.js` owns the closed spline, arc-length table, bucketed nearest-point queries, grade and tabletop feature list, so paint, collision, gates, stakes and the minimap all follow the same course.
+
+The terrain heightfield is 360² at 2.5 m spacing. The 320 boundary stakes are one instanced draw, and the 45 buttes are merged by material after each terrain rebuild; a typical riding frame is around 70 draw calls and 330k triangles at 1440×900.
+
+Race feedback includes three-light start sequencing, a split time at every gate, best-lap and personal-best storage, a translucent best-lap ghost, a wrong-way warning after sustained opposing travel, and a combo multiplier for chained airtime. Free ride flags mark each jump takeoff, and its compass shows nearby jump markers.
 
 Handling tuning: joystick directions are tested in the chase camera's coordinate frame. Normal throttle reaches 60 km/h in approximately 1.9 seconds on the flat test surface (about 1.4 seconds with boost). Rider torque assists power delivery and landing recovery; airborne steering targets a bounded lean and yaw rather than continuously rolling the bike. These are arcade handling targets, not specifications for a real motorcycle.
 

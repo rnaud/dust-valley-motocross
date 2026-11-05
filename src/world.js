@@ -2,23 +2,34 @@ import * as C from 'cannon-es';
 import {parkHeight} from './jump-park.js';
 import {BikeVehicle} from './bike-vehicle.js';
 import {tireForces} from './tires.js';
-export const TAU = Math.PI * 2;
-export function track(t) { return { x: Math.cos(t) * (102 + 12 * Math.sin(t * 3)), z: Math.sin(t) * (78 + 9 * Math.sin(t * 2)) }; }
+import {TAU,track,trackLength,trackGrade,raceFeatures,nearestTrack} from './track.js';
+export {TAU,track,trackLength,nearestTrack};
+
+const smooth=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
+
 export function freeTerrain(x,z) {
   const natural=1.7*Math.sin(x*.023)+1.8*Math.cos(z*.031)+.7*Math.sin((x+z)*.045)
     +Math.sin(x*.044)*Math.cos(z*.038)*6+Math.sin(z*.018+x*.014)*7;
   return parkHeight(x,z,natural);
 }
 export function terrain(x,z) {
-  const t = Math.atan2(z / 78, x / 102), p = track(t);
-  const d = Math.hypot(x-p.x,z-p.z);
-  const base = 1.7*Math.sin(x*.023)+1.8*Math.cos(z*.031)+.7*Math.sin((x+z)*.045);
-  let jumps = 0;
-  for(const [i,a] of [.48,.98,1.5,2.08,2.7,3.22,3.8,4.38,4.95,5.5,5.98].entries()) { const j=track(a); jumps += (i%3===0?4:2.6)*Math.exp(-((x-j.x)**2+(z-j.z)**2)/(i%3===0?100:64)); }
-  const hills = (Math.sin(x*.044)*Math.cos(z*.038)*6 + Math.sin(z*.018+x*.014)*7) * Math.min(1,Math.max(0,(d-12)/40));
-  return base + jumps + hills;
+  const near=nearestTrack(x,z),d=near.distance;
+  const base=1.7*Math.sin(x*.023)+1.8*Math.cos(z*.031)+.7*Math.sin((x+z)*.045);
+  let jumps=0;
+  for(const f of raceFeatures){
+    let delta=near.s-f.s;delta-=Math.round(delta);
+    const along=delta*trackLength,end=f.up+f.top+f.down;
+    if(along<0||along>end||Math.abs(near.side)>f.width+6)continue;
+    const lateral=1-smooth((Math.abs(near.side)-f.width*.55)/(f.width*.45+6));
+    const profile=along<f.up?Math.pow(along/f.up,1.5):along<f.up+f.top?1:1-smooth((along-f.up-f.top)/f.down);
+    jumps+=f.height*profile*lateral;
+  }
+  const hills=(Math.sin(x*.044)*Math.cos(z*.038)*6+Math.sin(z*.018+x*.014)*7)*Math.min(1,Math.max(0,(d-12)/40));
+  // The grade only lifts the racing surface; the surrounding basin keeps its natural roll.
+  const grade=trackGrade(near.s)*(1-smooth((d-9)/16));
+  return base+jumps+hills+grade;
 }
-export function trackDistance(x,z) { let best=Infinity; for(let i=0;i<160;i++){const p=track(i/160*TAU);best=Math.min(best,Math.hypot(x-p.x,z-p.z));}return best; }
+export function trackDistance(x,z) { return nearestTrack(x,z).distance; }
 
 // SI units: 150 kg bike+rider, 9.81 m/s² gravity, forces in newtons.
 // Two independent suspension rays transfer ground impulses to a six-DOF chassis.
@@ -29,16 +40,18 @@ export function createState(options={}) {
   const world=new C.World({gravity:new C.Vec3(0,-9.81,0)});
   world.solver.iterations=12;
   world.defaultContactMaterial.friction=.65;
-  const data=[],size=options.flat?60:300,spacing=options.flat?10:3;
+  const data=[],size=options.flat?60:360,spacing=options.flat?10:2.5;
   const half=size*spacing/2;
   for(let i=0;i<=size;i++){const row=[];for(let j=0;j<=size;j++)row.push(height(i*spacing-half,half-j*spacing));data.push(row);}
   const ground=new C.Body({mass:0});ground.addShape(new C.Heightfield(data,{elementSize:spacing}));ground.quaternion.setFromEuler(-Math.PI/2,0,0);ground.position.set(-half,0,half);world.addBody(ground);
-  const p=options.spawn ?? (options.flat?{x:0,z:0}:track(0));
+  const start=options.flat?{x:0,z:0,tx:0,tz:1}:track(0);
+  const p=options.spawn ?? start;
+  const yaw=options.spawn?.yaw ?? (options.flat?0:Math.atan2(start.tx,start.tz));
   const chassis=new C.Body({mass:150,linearDamping:.015,angularDamping:.15});
   chassis.addShape(new C.Box(new C.Vec3(.28,.32,.72)));
   // Rider mass sits above the small collision box; include it in rotational inertia.
   chassis.inertia.set(110,100,75);chassis.invInertia.set(1/110,1/100,1/75);chassis.updateInertiaWorld(true);
-  chassis.position.set(p.x,height(p.x,p.z)+1.15,p.z);chassis.quaternion.setFromEuler(0,options.spawn?.yaw ?? (options.flat?0:Math.atan2(36,78)),0);
+  chassis.position.set(p.x,height(p.x,p.z)+1.15,p.z);chassis.quaternion.setFromEuler(0,yaw,0);
   const vehicle=new BikeVehicle({chassisBody:chassis,indexRightAxis:0,indexUpAxis:1,indexForwardAxis:2});
   for(const z of [-1.05,1.1])vehicle.addWheel({radius:.61,directionLocal:new C.Vec3(0,-1,0),axleLocal:new C.Vec3(-1,0,0),chassisConnectionPointLocal:new C.Vec3(0,-.12,z),suspensionRestLength:.55,maxSuspensionTravel:.3,suspensionStiffness:55,dampingRelaxation:4.5,dampingCompression:3.5,maxSuspensionForce:10000,frictionSlip:0,rollInfluence:.08,isFrontWheel:z>0});
   vehicle.addToWorld(world);

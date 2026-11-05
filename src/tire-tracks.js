@@ -9,7 +9,7 @@ export class TireTracks {
     this.geometry.setAttribute('position',new THREE.BufferAttribute(this.positions,3).setUsage(THREE.DynamicDrawUsage));
     this.geometry.setAttribute('uv',new THREE.BufferAttribute(this.uvs,2).setUsage(THREE.DynamicDrawUsage));
     this.geometry.setDrawRange(0,0);
-    this.mesh=new THREE.Mesh(this.geometry,new THREE.MeshBasicMaterial({map:texture,color:0x604326,transparent:true,opacity:.55,depthWrite:false,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-2}));
+    this.mesh=new THREE.Mesh(this.geometry,new THREE.MeshBasicMaterial({map:texture,color:0x46311c,transparent:true,opacity:.48,depthWrite:false,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-2}));
     this.mesh.frustumCulled=false;this.mesh.renderOrder=1;scene.add(this.mesh);
   }
   breakTrail(){this.last=[null,null];}
@@ -23,7 +23,7 @@ export class TireTracks {
       const dx=p.x-before.x,dz=p.z-before.z,length=Math.hypot(dx,dz);
       if(length<.28)continue;
       if(length>2){this.last[wheel]={...p};continue;}
-      const nx=dz/length*.17,nz=-dx/length*.17;
+      const nx=dz/length*.15,nz=-dx/length*.15;
       const corners=[[before.x+nx,before.z+nz],[before.x-nx,before.z-nz],[p.x+nx,p.z+nz],[p.x-nx,p.z-nz]];
       const v0=this.distance[wheel],v1=v0+length/.55;
       const uv=[[0,v0],[1,v0],[0,v1],[1,v1]];
@@ -43,8 +43,8 @@ export class TireTracks {
 
 export function createTreadTexture(){
   const canvas=document.createElement('canvas');canvas.width=64;canvas.height=128;
-  const ctx=canvas.getContext('2d');ctx.fillStyle='rgba(255,255,255,.2)';ctx.fillRect(3,0,58,128);
-  ctx.fillStyle='rgba(255,255,255,.85)';
+  const ctx=canvas.getContext('2d');ctx.fillStyle='rgba(255,255,255,.1)';ctx.fillRect(3,0,58,128);
+  ctx.fillStyle='rgba(255,255,255,.5)';
   for(let y=-16;y<144;y+=24){
     ctx.beginPath();ctx.moveTo(7,y);ctx.lineTo(29,y+7);ctx.lineTo(29,y+18);ctx.lineTo(7,y+11);ctx.fill();
     ctx.beginPath();ctx.moveTo(35,y+7);ctx.lineTo(57,y);ctx.lineTo(57,y+11);ctx.lineTo(35,y+18);ctx.fill();
