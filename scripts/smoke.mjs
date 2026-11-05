@@ -18,7 +18,7 @@ for(const direction of [-1,1]){
   const before=await phone.evaluate(()=>window.__game.snapshot());
   const gasPoint={x:gas.x+gas.width/2,y:gas.y+gas.height/2,id:1};
   await session.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[gasPoint,{x:stick.x+stick.width/2,y:stick.y+stick.height/2,id:2}]});
-  await session.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[gasPoint,{x:stick.x+stick.width*(.5+direction*.24),y:stick.y+stick.height/2,id:2}]});
+  await session.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[gasPoint,{x:stick.x+stick.width*(.5+direction*.34),y:stick.y+stick.height/2,id:2}]});
   await phone.waitForFunction(start=>window.__game.snapshot().elapsed>start+1.3,before.elapsed);
   const after=await phone.evaluate(()=>window.__game.snapshot());
   // Project displacement onto the initial camera's screen-right vector.
@@ -26,11 +26,15 @@ for(const direction of [-1,1]){
   assert.ok(screenRightTravel*direction>.4,`wrong screen direction: ${screenRightTravel}, input ${direction}`);
   assert.ok(after.speed>8,`slow launch: ${after.speed}`);
   assert.equal(after.crashed,false);
+  await phone.waitForFunction(start=>window.__game.snapshot().elapsed>start+20||window.__game.snapshot().crashed,before.elapsed,{timeout:90000});
+  const sustained=await phone.evaluate(()=>window.__game.snapshot());
+  assert.equal(sustained.crashed,false,`sustained-turn wipeout: ${JSON.stringify(sustained)}`);
+  assert.ok(sustained.speed>5,'must keep moving through the turn');
   await session.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
   await phone.waitForFunction(()=>Math.abs(window.__game.snapshot().steer)<.005);
   assert.equal(await phone.locator('.pressed').count(),0);
   assert.equal(await phone.locator('#joystick-knob').evaluate(el=>el.style.transform),'translate(-50%, -50%)');
-  console.log(`Mobile ${direction<0?'left':'right'} drag passed: correct screen direction, fast launch, auto-center.`);
+  console.log(`Mobile ${direction<0?'left':'right'} drag passed: correct direction, 20-second full turn without wipeout, auto-center.`);
 }
 await phone.screenshot({path:'/tmp/dust-mobile-ride.png'});
 assert.equal(await phone.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
