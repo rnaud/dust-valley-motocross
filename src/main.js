@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import './style.css';
+import { TireTracks, createTreadTexture } from './tire-tracks.js';
 import { createTextures, applyTerrainTexture, createSkyTexture } from './textures.js';
 import {track,terrain as raceTerrain,freeTerrain,trackDistance,createState,resetBike,stepBike,TAU} from './world.js';
 let mode='race';
@@ -21,6 +22,14 @@ materials.rock.map=textures.rock;materials.rock.color.set('#ffffff');materials.r
 materials.green.map=textures.cactus;materials.green.color.set('#ffffff');materials.green.bumpMap=textures.cactus;materials.green.bumpScale=.06;
 materials.dark.map=textures.rubber;materials.dark.color.set('#ffffff');
 const groundGeo=new THREE.PlaneGeometry(900,900,300,300);groundGeo.rotateX(-Math.PI/2);const pos=groundGeo.attributes.position,colors=[];const c=new THREE.Color();for(let i=0;i<pos.count;i++){const x=pos.getX(i),z=pos.getZ(i);pos.setY(i,terrain(x,z));const t=Math.atan2(z/78,x/102),p=track(t);const d=Math.hypot(x-p.x,z-p.z);c.set(d<10?'#a66b42':d<12?'#be8a57':'#c49765');c.multiplyScalar(.94+.07*Math.sin(x*3+z*6));colors.push(c.r,c.g,c.b);}groundGeo.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));groundGeo.computeVertexNormals();const ground=new THREE.Mesh(groundGeo,materials.dirt);ground.receiveShadow=true;scene.add(ground);
+const tireTracks=new TireTracks(scene,{capacity:mobile?3000:6000,texture:createTreadTexture()});
+// Sample the rendered triangles so tread decals sit on the visible ground.
+function surfaceHeight(x,z){
+  const gx=THREE.MathUtils.clamp((x+450)/3,0,299.9999),gz=THREE.MathUtils.clamp((z+450)/3,0,299.9999);
+  const ix=Math.floor(gx),iz=Math.floor(gz),u=gx-ix,v=gz-iz;
+  const a=pos.getY(iz*301+ix),b=pos.getY((iz+1)*301+ix),c=pos.getY((iz+1)*301+ix+1),d=pos.getY(iz*301+ix+1);
+  return u+v<=1?a+(d-a)*u+(b-a)*v:c+(b-c)*(1-u)+(d-c)*(1-v);
+}
 function mesh(geo,mat,x,y,z,parent=scene){const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);parent.add(m);return m;}
 function box(w,h,d,mat,x,y,z,parent){return mesh(new THREE.BoxGeometry(w,h,d),mat,x,y,z,parent);}
 let seed=42;function rand(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;}
@@ -109,6 +118,7 @@ function toast(text,duration=2){$('toast').textContent=text;toastTime=duration;}
 function formatTime(t){return `${String(Math.floor(t/60)).padStart(2,'0')}:${(t%60).toFixed(2).padStart(5,'0')}`;}
 function highlight(){gates.forEach((g,i)=>{g.mat.color.set(i===nextGate?'#e4ff69':'#e4d8b2');g.mat.emissive.set(i===nextGate?'#556500':'#000000');});}
 function updateEnvironment(){
+  tireTracks.clear();
   trackObjects.visible=mode==='race';materials.dirt.map=mode==='free'?textures.freeMacro:textures.macro;
   for(let i=0;i<pos.count;i++)pos.setY(i,terrain(pos.getX(i),pos.getZ(i)));
   pos.needsUpdate=true;groundGeo.computeVertexNormals();groundGeo.computeBoundingSphere();
@@ -116,9 +126,9 @@ function updateEnvironment(){
   decorations.forEach(o=>{o.position.y=terrain(o.position.x,o.position.z)+o.userData.groundOffset;o.visible=mode==='free'||!o.userData.onTrack;});
   document.querySelector('.gate-stat').hidden=mode==='free';
 }
-function start(){state=createState(mode==='free'?{height:freeTerrain,spawn:{x:0,z:0,yaw:0}}:{});elapsed=0;lap=1;nextGate=1;score=0;countdown=3;phase='playing';cameraReady=false;accumulator=0;clearInput();document.body.classList.add('playing');for(const id of ['menu','location','footer','overlay'])$(id).hidden=true;for(const id of ['hud','pause'])$(id).hidden=false;$('touch').hidden=!mobile;$('lap-label').textContent=mode==='race'?'LAP':'STUNT SCORE';$('resume').hidden=false;highlight();}
+function start(){tireTracks.clear();state=createState(mode==='free'?{height:freeTerrain,spawn:{x:0,z:0,yaw:0}}:{});elapsed=0;lap=1;nextGate=1;score=0;countdown=3;phase='playing';cameraReady=false;accumulator=0;clearInput();document.body.classList.add('playing');for(const id of ['menu','location','footer','overlay'])$(id).hidden=true;for(const id of ['hud','pause'])$(id).hidden=false;$('touch').hidden=!mobile;$('lap-label').textContent=mode==='race'?'LAP':'STUNT SCORE';$('resume').hidden=false;highlight();}
 $('start').onclick=start;$('restart').onclick=start;$('reset').onclick=()=>{if(phase==='playing')recover();};
-function recover(){if(mode==='free'){const radius=Math.hypot(state.x,state.z),scale=radius>380?380/radius:1;resetBike(state,state.x*scale,state.z*scale,state.yaw);cameraReady=false;toast('BACK ON THE DIRT');return;}const a=(nextGate-1+12)%12/12*TAU,p=track(a),q=track(a+.03);resetBike(state,p.x,p.z,Math.atan2(q.x-p.x,q.z-p.z));cameraReady=false;toast('BACK ON THE DIRT');}
+function recover(){tireTracks.breakTrail();if(mode==='free'){const radius=Math.hypot(state.x,state.z),scale=radius>380?380/radius:1;resetBike(state,state.x*scale,state.z*scale,state.yaw);cameraReady=false;toast('BACK ON THE DIRT');return;}const a=(nextGate-1+12)%12/12*TAU,p=track(a),q=track(a+.03);resetBike(state,p.x,p.z,Math.atan2(q.x-p.x,q.z-p.z));cameraReady=false;toast('BACK ON THE DIRT');}
 function togglePause(){if(phase==='playing'){phase='paused';clearInput();$('overlay').hidden=false;$('overlay-label').textContent='TAKE A BREATHER';$('overlay-title').textContent='Ride paused.';$('overlay-copy').textContent='The desert isn’t going anywhere.';$('resume').hidden=false;}else if(phase==='paused'){phase='playing';$('overlay').hidden=true;}}$('pause').onclick=togglePause;$('resume').onclick=togglePause;
 $('home').onclick=()=>{phase='menu';clearInput();document.body.classList.remove('playing');for(const id of ['menu','location','footer'])$(id).hidden=false;for(const id of ['hud','pause','touch','overlay'])$(id).hidden=true;};
 function finish(){phase='finished';clearInput();let best;try{best=Number(localStorage.getItem('dust-valley-best'))||Infinity;if(elapsed<best)localStorage.setItem('dust-valley-best',String(elapsed));}catch{}$('overlay').hidden=false;$('overlay-label').textContent='THREE LAPS. ALL DUST.';$('overlay-title').textContent='Nicely ridden.';$('overlay-copy').textContent=`Your time: ${formatTime(elapsed)} · Stunt score: ${score}. ${elapsed<(best||Infinity)?'New personal best!':`Best: ${formatTime(best)}`}`;$('resume').hidden=true;}
@@ -140,7 +150,7 @@ const mapCtx=$('map').getContext('2d');function drawMap(){
 }
 const target=new THREE.Vector3(),look=new THREE.Vector3();let prev=performance.now(),accumulator=0,total=0;
 function animate(now){requestAnimationFrame(animate);const dt=Math.min((now-prev)/1000,.06);prev=now;total+=dt;
-if(phase==='playing'){if(countdown>0){countdown-=dt;toast(countdown>0?String(Math.ceil(countdown)):'SEND IT',.8);}else{elapsed+=dt;accumulator+=dt;while(accumulator>=1/120){const result=stepBike(state,input,1/120);if(result.landed>.5){if(result.crashed){toast('WIPEOUT · R OR ↺ TO RECOVER',3);}else{const points=Math.round(result.landed*100);score+=points;toast(`AIR TIME +${points}`);}}accumulator-=1/120;}
+if(phase==='playing'){if(countdown>0){countdown-=dt;toast(countdown>0?String(Math.ceil(countdown)):'SEND IT',.8);}else{elapsed+=dt;accumulator+=dt;while(accumulator>=1/120){const result=stepBike(state,input,1/120);tireTracks.update(state.crashed?[]:state.wheelContacts,surfaceHeight);if(result.landed>.5){if(result.crashed){toast('WIPEOUT · R OR ↺ TO RECOVER',3);}else{const points=Math.round(result.landed*100);score+=points;toast(`AIR TIME +${points}`);}}accumulator-=1/120;}
 if(Math.hypot(state.x,state.z)>400){recover();toast('BACK TO THE BASIN');}
 if(mode==='race'){const p=gates[nextGate].p;if(Math.hypot(state.x-p.x,state.z-p.z)<12){if(nextGate===0){lap++;if(lap>3)finish();else toast(`LAP ${lap} / 3`);}else toast(`GATE ${nextGate} / 12`,.8);nextGate=(nextGate+1)%12;highlight();}}
 }if(state.crashed)toast('WIPEOUT · R OR ↺ TO RECOVER',1);toastTime-=dt;if(toastTime<=0)$('toast').textContent='';}
@@ -164,4 +174,4 @@ if(audio){osc.frequency.setTargetAtTime(45+state.speed*4+(input.gas?20:0),audio.
 $('speed').textContent=Math.round(state.speed*3.6);$('time').textContent=formatTime(elapsed);$('lap').innerHTML=mode==='race'?`${String(Math.min(lap,3)).padStart(2,'0')}<span>/03</span>`:String(score);$('gate').innerHTML=`${String(nextGate===0?12:nextGate).padStart(2,'0')}<span>/12</span>`;$('boost').style.width=state.boost+'%';sky.position.copy(camera.position);drawMap();gates.forEach(g=>{g.group.visible=phase==='menu'||g.group.position.distanceTo(camera.position)>13;});renderer.render(scene,camera);}
 function resize(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}window.addEventListener('resize',resize);resize();requestAnimationFrame(animate);
 // Read-only diagnostics for smoke tests and performance inspection.
-window.__game={environment:()=>({trackVisible:trackObjects.visible,trackTexture:materials.dirt.map===textures.macro,height:state.physics.height(state.x,state.z),visualHeight:terrain(state.x,state.z),mountains:mountains.map(m=>({x:m.position.x,z:m.position.z,radius:m.userData.radius*Math.max(m.scale.x,m.scale.z),foundation:m.userData.foundation}))}),snapshot:()=>({phase,mode,elapsed,lap,nextGate,score,countdown,...state}),renderer};
+window.__game={environment:()=>({trackVisible:trackObjects.visible,trackTexture:materials.dirt.map===textures.macro,height:state.physics.height(state.x,state.z),visualHeight:terrain(state.x,state.z),mountains:mountains.map(m=>({x:m.position.x,z:m.position.z,radius:m.userData.radius*Math.max(m.scale.x,m.scale.z),foundation:m.userData.foundation}))}),snapshot:()=>({phase,mode,elapsed,lap,nextGate,score,countdown,tireTrackSegments:tireTracks.count,...state}),renderer};

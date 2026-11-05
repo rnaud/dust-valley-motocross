@@ -43,3 +43,28 @@ test('an upside-down ground impact still causes a genuine wipeout',()=>{
   stepBike(s,{},1/120);
   assert.equal(s.crashed,true);
 });
+for(const height of [3,6,10,15])for(const pitch of [-.3,0,.3])test(`landing from ${height}m at pitch ${pitch} retains speed and settles`,()=>{
+ const s=flat();s.physics.chassis.position.y=height;s.physics.chassis.velocity.z=20;s.physics.chassis.quaternion.setFromEuler(-pitch,0,0);
+ let first=-1,landingSpeed=0,minSpeed=Infinity;
+ for(let i=0;i<800;i++){
+   const r=stepBike(s,{gas:true},1/120);
+   if(r.landed&&first<0){first=i;landingSpeed=s.speed;}
+   if(first>=0)minSpeed=Math.min(minSpeed,s.speed);
+   assert.equal(s.crashed,false);
+   if(first>=0&&i>=first+120)break;
+ }
+ assert.ok(first>0);assert.ok(minSpeed>landingSpeed*.8,`landing scrubbed speed: ${minSpeed}/${landingSpeed}`);
+ assert.equal(s.contacts,2);assert.ok(Math.abs(s.pitch)<.15);assert.ok(s.speed>20);
+});
+for(const speed of [15,22,30])test(`course-shaped jump at ${speed}m/s lands and rides away`,()=>{
+ const s=createState({height:(x,z)=>5.5*Math.exp(-z*z/90),spawn:{x:0,z:-35,yaw:0}});
+ s.physics.chassis.velocity.z=speed;let first=-1,landingSpeed=0,minSpeed=Infinity;
+ for(let i=0;i<1000;i++){
+  const r=stepBike(s,{gas:true},1/120);
+  if(r.landed>.4&&first<0){first=i;landingSpeed=s.speed;}
+  if(first>=0)minSpeed=Math.min(minSpeed,s.speed);
+  assert.equal(s.crashed,false);
+  if(first>=0&&i>first+120)break;
+ }
+ assert.ok(first>0);assert.ok(minSpeed>landingSpeed*.8);assert.equal(s.contacts,2);assert.ok(s.speed>20);
+});

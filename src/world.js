@@ -38,12 +38,12 @@ export function createState(options={}) {
   const vehicle=new C.RaycastVehicle({chassisBody:chassis,indexRightAxis:0,indexUpAxis:1,indexForwardAxis:2});
   for(const z of [-1.05,1.1])vehicle.addWheel({radius:.61,directionLocal:new C.Vec3(0,-1,0),axleLocal:new C.Vec3(-1,0,0),chassisConnectionPointLocal:new C.Vec3(0,-.12,z),suspensionRestLength:.55,maxSuspensionTravel:.3,suspensionStiffness:55,dampingRelaxation:4.5,dampingCompression:3.5,maxSuspensionForce:10000,frictionSlip:2.6,rollInfluence:.08,isFrontWheel:z>0});
   vehicle.addToWorld(world);
-  const s={x:p.x,z:p.z,y:chassis.position.y-.5,yaw:0,speed:0,vy:0,pitch:0,roll:0,air:false,airtime:0,boost:100,steer:0,throttle:0,contacts:0,crashed:false,crashTime:0,slip:0,compression:[0,0],quaternion:{x:0,y:0,z:0,w:1},wheelTransforms:[]};
+  const s={x:p.x,z:p.z,y:chassis.position.y-.5,yaw:0,speed:0,vy:0,pitch:0,roll:0,air:false,airtime:0,boost:100,steer:0,throttle:0,contacts:0,crashed:false,crashTime:0,slip:0,compression:[0,0],quaternion:{x:0,y:0,z:0,w:1},wheelTransforms:[],landingRecovery:0,wheelContacts:[]};
   Object.defineProperty(s,'physics',{value:{world,chassis,vehicle,height},enumerable:false});
   sync(s);return s;
 }
 function sync(s){const {chassis:b,vehicle:v}=s.physics;const f=b.quaternion.vmult(new C.Vec3(0,0,1)),up=b.quaternion.vmult(new C.Vec3(0,1,0));s.x=b.position.x;s.y=b.position.y-.5;s.z=b.position.z;s.yaw=Math.atan2(f.x,f.z);s.pitch=Math.asin(Math.max(-1,Math.min(1,f.y)));s.roll=Math.atan2(-up.x*Math.cos(s.yaw)+up.z*Math.sin(s.yaw),up.y);s.speed=Math.hypot(b.velocity.x,b.velocity.z);s.vy=b.velocity.y;s.quaternion={...b.quaternion};s.wheelTransforms=v.wheelInfos.map((w,i)=>{v.updateWheelTransform(i);return {position:{...w.worldTransform.position},quaternion:{...w.worldTransform.quaternion}};});s.compression=v.wheelInfos.map(w=>Math.max(0,1-w.suspensionLength/.55));}
-export function resetBike(s,x,z,yaw){const {chassis:b,height}=s.physics;b.position.set(x,height(x,z)+1.2,z);b.quaternion.setFromEuler(0,yaw,0);b.velocity.setZero();b.angularVelocity.setZero();b.force.setZero();b.torque.setZero();s.crashed=false;s.crashTime=0;s.airtime=0;s.throttle=0;s.steer=0;b.wakeUp();sync(s);}
+export function resetBike(s,x,z,yaw){const {chassis:b,height}=s.physics;b.position.set(x,height(x,z)+1.2,z);b.quaternion.setFromEuler(0,yaw,0);b.velocity.setZero();b.angularVelocity.setZero();b.force.setZero();b.torque.setZero();s.crashed=false;s.crashTime=0;s.airtime=0;s.landingRecovery=0;s.wheelContacts=[];s.throttle=0;s.steer=0;b.wakeUp();sync(s);}
 export function stepBike(s,input,dt) {
   const {world,chassis:b,vehicle:v}=s.physics;
   const gas=input.gas&&!s.crashed?1:0,brake=input.brake?1:0;
@@ -90,15 +90,20 @@ export function stepBike(s,input,dt) {
       b.torque.y+=-steerInput*65-b.angularVelocity.y*45;
     }
   }
+  s.landingRecovery=Math.max(0,s.landingRecovery-dt);
+  // Reserve high compression damping for landings; normal riding retains its travel.
+  const landingShock=s.airtime>.12||s.landingRecovery>0;
+  for(const wheel of v.wheelInfos){wheel.dampingCompression=landingShock?12:3.5;wheel.dampingRelaxation=landingShock?6:4.5;wheel.maxSuspensionForce=landingShock?30000:10000;}
   const previousAir=s.airtime,impact=-b.velocity.y;
   world.step(dt);
+  s.wheelContacts=v.wheelInfos.map(w=>w.isInContact?{x:w.raycastResult.hitPointWorld.x,y:w.raycastResult.hitPointWorld.y,z:w.raycastResult.hitPointWorld.z}:null);
   s.contacts=v.wheelInfos.filter(w=>w.isInContact).length;sync(s);
   s.air=s.contacts===0;
   let landed=0;
   if(s.air)s.airtime+=dt;
-  else {if(previousAir>.12)landed=previousAir;s.airtime=0;}
+  else {if(previousAir>.12){landed=previousAir;s.landingRecovery=.6;}s.airtime=0;}
   const up=b.quaternion.vmult(new C.Vec3(0,1,0));
-  if(!s.crashed&&((world.contacts.some(c=>c.bi===b||c.bj===b)&&up.y<.45)||(landed>.3&&impact>17))){s.crashed=true;s.crashTime=0;}
+  if(!s.crashed&&((world.contacts.some(c=>c.bi===b||c.bj===b)&&up.y<.45)||(landed>.3&&impact>17&&up.y<.65))){s.crashed=true;s.crashTime=0;}
   if(s.crashed)s.crashTime+=dt;
   return {landed,crashed:s.crashed,boosting};
 }
