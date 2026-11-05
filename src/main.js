@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import './style.css';
+import { createTextures, applyTerrainTexture, createSkyTexture } from './textures.js';
 import {track,terrain,trackDistance,createState,resetBike,stepBike,TAU} from './world.js';
 const $=id=>document.getElementById(id);
 const mobile=matchMedia('(pointer: coarse)').matches||navigator.maxTouchPoints>0;
@@ -8,14 +9,15 @@ const scene=new THREE.Scene();scene.background=new THREE.Color('#a9cbd4');scene.
 let renderer;
 try{renderer=new THREE.WebGLRenderer({canvas:$('game'),antialias:true,powerPreference:'high-performance'});}catch(e){$('menu').innerHTML='<h2>WebGL is unavailable</h2><p>Please open this game in a browser with hardware acceleration enabled.</p>';throw e;}
 renderer.setPixelRatio(Math.min(devicePixelRatio,mobile?1.5:2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;
+const sky=new THREE.Mesh(new THREE.SphereGeometry(650,32,16),new THREE.MeshBasicMaterial({map:createSkyTexture(),side:THREE.BackSide,depthWrite:false,fog:false}));scene.add(sky);
 const camera=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,.1,1000);
-scene.add(new THREE.HemisphereLight('#e5f6ff','#84603e',2.7));const sun=new THREE.DirectionalLight('#fff0ce',3.3);sun.position.set(-90,130,70);sun.castShadow=true;sun.shadow.mapSize.set(mobile?1024:2048,mobile?1024:2048);Object.assign(sun.shadow.camera,{left:-65,right:65,top:65,bottom:-65,near:1,far:320});sun.shadow.bias=-.0005;scene.add(sun);scene.add(sun.target);
+scene.add(new THREE.HemisphereLight('#dceaf2','#66533d',2.0));const sun=new THREE.DirectionalLight('#fff1d8',2.5);sun.position.set(-90,130,70);sun.castShadow=true;sun.shadow.mapSize.set(mobile?1024:2048,mobile?1024:2048);Object.assign(sun.shadow.camera,{left:-65,right:65,top:65,bottom:-65,near:1,far:320});sun.shadow.bias=-.0005;scene.add(sun);scene.add(sun.target);
 const materials={dirt:new THREE.MeshStandardMaterial({vertexColors:true,roughness:1,flatShading:true}),sand:new THREE.MeshStandardMaterial({color:'#b5794c',roughness:1}),rock:new THREE.MeshStandardMaterial({color:'#ac6846',roughness:1,flatShading:true}),dark:new THREE.MeshStandardMaterial({color:'#202b28',roughness:.8}),lime:new THREE.MeshStandardMaterial({color:'#d5f461',roughness:.5}),steel:new THREE.MeshStandardMaterial({color:'#b5c1ba',metalness:.7,roughness:.35}),white:new THREE.MeshStandardMaterial({color:'#eee9d4'}),green:new THREE.MeshStandardMaterial({color:'#727849',roughness:1})};
-// Fine gravel texture keeps terrain legible close to the tires.
-const dirtCanvas=document.createElement('canvas');dirtCanvas.width=dirtCanvas.height=256;
-const dirtCtx=dirtCanvas.getContext('2d'),dirtImage=dirtCtx.createImageData(256,256);
-let dirtSeed=31415;for(let i=0;i<dirtImage.data.length;i+=4){dirtSeed=(dirtSeed*1664525+1013904223)>>>0;const value=195+(dirtSeed%60);dirtImage.data[i]=dirtImage.data[i+1]=dirtImage.data[i+2]=value;dirtImage.data[i+3]=255;}dirtCtx.putImageData(dirtImage,0,0);
-const dirtTexture=new THREE.CanvasTexture(dirtCanvas);dirtTexture.wrapS=dirtTexture.wrapT=THREE.RepeatWrapping;dirtTexture.repeat.set(100,100);dirtTexture.colorSpace=THREE.SRGBColorSpace;dirtTexture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());materials.dirt.map=dirtTexture;materials.dirt.bumpMap=dirtTexture;materials.dirt.bumpScale=.035;
+const textures=createTextures(renderer,mobile);
+applyTerrainTexture(materials.dirt,textures);
+materials.rock.map=textures.rock;materials.rock.color.set('#ffffff');materials.rock.bumpMap=textures.rock;materials.rock.bumpScale=.22;
+materials.green.map=textures.cactus;materials.green.color.set('#ffffff');materials.green.bumpMap=textures.cactus;materials.green.bumpScale=.06;
+materials.dark.map=textures.rubber;materials.dark.color.set('#ffffff');
 const groundGeo=new THREE.PlaneGeometry(900,900,300,300);groundGeo.rotateX(-Math.PI/2);const pos=groundGeo.attributes.position,colors=[];const c=new THREE.Color();for(let i=0;i<pos.count;i++){const x=pos.getX(i),z=pos.getZ(i);pos.setY(i,terrain(x,z));const t=Math.atan2(z/78,x/102),p=track(t);const d=Math.hypot(x-p.x,z-p.z);c.set(d<10?'#a66b42':d<12?'#be8a57':'#c49765');c.multiplyScalar(.94+.07*Math.sin(x*3+z*6));colors.push(c.r,c.g,c.b);}groundGeo.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));groundGeo.computeVertexNormals();const ground=new THREE.Mesh(groundGeo,materials.dirt);ground.receiveShadow=true;scene.add(ground);
 function mesh(geo,mat,x,y,z,parent=scene){const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);parent.add(m);return m;}
 function box(w,h,d,mat,x,y,z,parent){return mesh(new THREE.BoxGeometry(w,h,d),mat,x,y,z,parent);}
@@ -99,7 +101,7 @@ forks.forEach((fork,i)=>{const front=i>=2,side=i%2?1:-1;const start=bike.localTo
 sun.position.set(state.x-60,state.y+100,state.z+50);sun.target.position.set(state.x,state.y,state.z);
 if(phase==='playing'&&state.speed>5&&!state.air&&countdown<=0){for(let i=0;i<2;i++){const p=particles[dustIndex++%dustCount];Object.assign(p,{life:1,x:state.x+(Math.random()-.5),y:state.y-.5,z:state.z-Math.cos(state.yaw)});}}particles.forEach((p,i)=>{p.life-=dt*.7;if(p.life>0){p.y+=dt*.6;p.x+=dt*.5;}dustPositions[i*3]=p.x;dustPositions[i*3+1]=p.life>0?p.y:-100;dustPositions[i*3+2]=p.z;});dustGeo.attributes.position.needsUpdate=true;
 if(audio){osc.frequency.setTargetAtTime(45+state.speed*4+(input.gas?20:0),audio.currentTime,.08);gain.gain.setTargetAtTime(sound&&phase==='playing'?.025:0,audio.currentTime,.1);}
-$('speed').textContent=Math.round(state.speed*3.6);$('time').textContent=formatTime(elapsed);$('lap').innerHTML=mode==='race'?`${String(Math.min(lap,3)).padStart(2,'0')}<span>/03</span>`:String(score);$('gate').innerHTML=`${String(nextGate===0?12:nextGate).padStart(2,'0')}<span>/12</span>`;$('boost').style.width=state.boost+'%';drawMap();gates.forEach(g=>{g.group.visible=phase==='menu'||g.group.position.distanceTo(camera.position)>13;});renderer.render(scene,camera);}
+$('speed').textContent=Math.round(state.speed*3.6);$('time').textContent=formatTime(elapsed);$('lap').innerHTML=mode==='race'?`${String(Math.min(lap,3)).padStart(2,'0')}<span>/03</span>`:String(score);$('gate').innerHTML=`${String(nextGate===0?12:nextGate).padStart(2,'0')}<span>/12</span>`;$('boost').style.width=state.boost+'%';sky.position.copy(camera.position);drawMap();gates.forEach(g=>{g.group.visible=phase==='menu'||g.group.position.distanceTo(camera.position)>13;});renderer.render(scene,camera);}
 function resize(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}window.addEventListener('resize',resize);resize();requestAnimationFrame(animate);
 // Read-only diagnostics for smoke tests and performance inspection.
 window.__game={snapshot:()=>({phase,mode,elapsed,lap,nextGate,score,countdown,...state}),renderer};
