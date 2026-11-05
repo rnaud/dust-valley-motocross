@@ -1,7 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createState,stepBike,terrain,track,TAU} from '../src/world.js';
-test('throttle moves bike and braking stops it',()=>{const s=createState();for(let i=0;i<240;i++)stepBike(s,{gas:true},1/120);assert.ok(s.speed>15);assert.ok(s.z>15);for(let i=0;i<360;i++)stepBike(s,{brake:true},1/120);assert.equal(s.speed,0);});
-test('boost consumes charge and recovers when released',()=>{const s=createState();for(let i=0;i<120;i++)stepBike(s,{gas:true,boost:true},1/120);assert.ok(s.boost<70);for(let i=0;i<120;i++)stepBike(s,{},1/120);assert.ok(s.boost>75);});
-test('steering changes direction and physics remains finite',()=>{const s=createState();for(let i=0;i<10000;i++)stepBike(s,{gas:true,left:true,boost:true},1/120);for(const key of ['x','y','z','speed','yaw','pitch'])assert.ok(Number.isFinite(s[key]),key);assert.ok(s.yaw< -1);assert.ok(s.y>=terrain(s.x,s.z)+.79);});
-test('terrain supports closed circuit and airborne landings',()=>{assert.ok(Math.abs(track(0).x-track(TAU).x)<.001);const s=createState();s.air=true;s.y+=8;s.vy=4;let landing=0;for(let i=0;i<600;i++){const r=stepBike(s,{},1/120);landing=Math.max(landing,r.landed);}assert.ok(landing>1);assert.equal(s.air,false);});
+import {createState,stepBike,resetBike} from '../src/world.js';
+const flat=()=>createState({flat:true,height:()=>0});
+const run=(s,input,n)=>{for(let i=0;i<n;i++)stepBike(s,input,1/120);};
+test('suspension supports chassis at rest without ground snapping',()=>{const s=flat();run(s,{},240);assert.equal(s.contacts,2);assert.ok(s.y>.5&&s.y<.9);assert.ok(Math.abs(s.vy)<.01);assert.ok(s.compression.every(c=>c>0&&c<1));});
+test('rear-wheel drive accelerates forward and brakes dissipate momentum',()=>{const s=flat();run(s,{gas:true},600);assert.ok(s.z>25);assert.ok(s.speed>12);run(s,{brake:true},600);assert.ok(s.speed<.2);});
+test('analog steering turns left with half-stick and stays upright',()=>{const s=flat();run(s,{gas:true},360);run(s,{gas:true,steer:-.5},240);assert.ok(s.x< -3);assert.ok(s.yaw<-.3);assert.equal(s.crashed,false);assert.ok(Math.abs(s.roll)<.8);});
+test('airborne throttle cannot accelerate the chassis; gravity follows ballistic flight',()=>{const a=flat(),b=flat();for(const s of [a,b]){s.physics.chassis.position.y=30;s.physics.chassis.velocity.set(0,4,10);}run(a,{gas:true},60);run(b,{},60);assert.ok(Math.abs(a.z-b.z)<.01);assert.ok(Math.abs(a.vy-(4-9.81*.5))<.1);assert.equal(a.contacts,0);assert.ok(a.y>25);});
+test('a ramp launches both wheels and the bike lands through suspension contact',()=>{const s=createState({flat:true,height:(x,z)=>z<0?0:z<20?z*.4:8});s.physics.chassis.position.z=-20;s.physics.chassis.velocity.z=20;let maxAir=0,landed=0;for(let i=0;i<1000;i++){const r=stepBike(s,{gas:true},1/120);maxAir=Math.max(maxAir,s.airtime);landed=Math.max(landed,r.landed);}assert.ok(maxAir>.15);assert.ok(landed>.15);assert.ok(Number.isFinite(s.y));});
+test('rider lean rotates airborne chassis without redirecting momentum',()=>{const s=flat();s.physics.chassis.position.y=20;s.physics.chassis.velocity.set(0,0,10);run(s,{lean:1},60);assert.ok(s.pitch>.1);assert.ok(Math.abs(s.x)<.01);});
+test('crash recovery clears actual rigid-body velocities',()=>{const s=flat();s.physics.chassis.position.y=20;s.physics.chassis.velocity.set(4,-15,8);run(s,{},180);resetBike(s,0,0,0);assert.equal(s.crashed,false);assert.equal(s.physics.chassis.velocity.length(),0);assert.equal(s.physics.chassis.angularVelocity.length(),0);run(s,{},240);assert.equal(s.contacts,2);});
