@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import './style.css';
+import {terrainIndices,sampleGrid} from './height-grid.js';
+import {inJumpZone} from './jump-park.js';
 import {RidePose} from './ride-pose.js';
 import {batchMeshes} from './mesh-batch.js';
 import {GroundDetail} from './ground-detail.js';
@@ -24,16 +26,12 @@ applyTerrainTexture(materials.dirt,textures);
 materials.rock.map=textures.rock;materials.rock.color.set('#ffffff');materials.rock.bumpMap=textures.rock;materials.rock.bumpScale=.22;
 materials.green.map=textures.cactus;materials.green.color.set('#ffffff');materials.green.bumpMap=textures.cactus;materials.green.bumpScale=.06;
 materials.dark.map=textures.rubber;materials.dark.color.set('#ffffff');
-const groundGeo=new THREE.PlaneGeometry(900,900,300,300);groundGeo.rotateX(-Math.PI/2);const pos=groundGeo.attributes.position,colors=[];const c=new THREE.Color();for(let i=0;i<pos.count;i++){const x=pos.getX(i),z=pos.getZ(i);pos.setY(i,terrain(x,z));const t=Math.atan2(z/78,x/102),p=track(t);const d=Math.hypot(x-p.x,z-p.z);c.set(d<10?'#a66b42':d<12?'#be8a57':'#c49765');c.multiplyScalar(.94+.07*Math.sin(x*3+z*6));colors.push(c.r,c.g,c.b);}groundGeo.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));groundGeo.computeVertexNormals();const ground=new THREE.Mesh(groundGeo,materials.dirt);ground.receiveShadow=true;scene.add(ground);
+const groundGeo=new THREE.PlaneGeometry(900,900,300,300);groundGeo.rotateX(-Math.PI/2);groundGeo.setIndex(terrainIndices(300));const pos=groundGeo.attributes.position,colors=[];const c=new THREE.Color();for(let i=0;i<pos.count;i++){const x=pos.getX(i),z=pos.getZ(i);pos.setY(i,terrain(x,z));const t=Math.atan2(z/78,x/102),p=track(t);const d=Math.hypot(x-p.x,z-p.z);c.set(d<10?'#a66b42':d<12?'#be8a57':'#c49765');c.multiplyScalar(.94+.07*Math.sin(x*3+z*6));colors.push(c.r,c.g,c.b);}groundGeo.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));groundGeo.computeVertexNormals();const ground=new THREE.Mesh(groundGeo,materials.dirt);ground.receiveShadow=true;scene.add(ground);
 const groundDetail=new GroundDetail(scene,(x,z)=>surfaceHeight(x,z));
 const tireTracks=new TireTracks(scene,{capacity:mobile?3000:6000,texture:createTreadTexture()});
 // Sample the rendered triangles so tread decals sit on the visible ground.
-function surfaceHeight(x,z){
-  const gx=THREE.MathUtils.clamp((x+450)/3,0,299.9999),gz=THREE.MathUtils.clamp((z+450)/3,0,299.9999);
-  const ix=Math.floor(gx),iz=Math.floor(gz),u=gx-ix,v=gz-iz;
-  const a=pos.getY(iz*301+ix),b=pos.getY((iz+1)*301+ix),c=pos.getY((iz+1)*301+ix+1),d=pos.getY(iz*301+ix+1);
-  return u+v<=1?a+(d-a)*u+(b-a)*v:c+(b-c)*(1-u)+(d-c)*(1-v);
-}
+function surfaceHeight(x,z){return sampleGrid(i=>pos.getY(i),x,z);}
+
 function mesh(geo,mat,x,y,z,parent=scene){const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);parent.add(m);return m;}
 function box(w,h,d,mat,x,y,z,parent){return mesh(new THREE.BoxGeometry(w,h,d),mat,x,y,z,parent);}
 let seed=42;function rand(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;}
@@ -52,7 +50,7 @@ function groundMountain(m){
   m.userData.foundation=bottom;
 }
 for(let i=0;i<45;i++){
-  const a=rand()*TAU,r=180+rand()*200,x=Math.sin(a)*r,z=Math.cos(a)*r,h=15+rand()*45;
+  const a=rand()*TAU,r=270+rand()*120,x=Math.sin(a)*r,z=Math.cos(a)*r,h=15+rand()*45;
   const topRadius=8+rand()*16,radius=25+rand()*30;
   const geo=new THREE.CylinderGeometry(topRadius,radius,h,10,3),m=mesh(geo,materials.rock,x,0,z);
   m.rotation.y=rand()*TAU;m.scale.z=.6+rand();
@@ -141,7 +139,7 @@ function updateEnvironment(){
   pos.needsUpdate=true;groundGeo.computeVertexNormals();groundGeo.computeBoundingSphere();
   mountains.forEach(groundMountain);
   groundDetail.update(state.x,state.z,true);
-  decorations.forEach(o=>{o.position.y=terrain(o.position.x,o.position.z)+o.userData.groundOffset;o.visible=mode==='free'||!o.userData.onTrack;});
+  decorations.forEach(o=>{o.position.y=terrain(o.position.x,o.position.z)+o.userData.groundOffset;o.visible=mode==='free'?!inJumpZone(o.position.x,o.position.z):!o.userData.onTrack;});
   rebuildDecorationBatches();
   document.querySelector('.gate-stat').hidden=mode==='free';
 }

@@ -72,7 +72,7 @@ for(const speed of [15,22,30])test(`course-shaped jump at ${speed}m/s lands and 
 });
 
 for(const surface of ['flat','free'])test(`accelerate then alternate left/right on ${surface} without spin or braking`,()=>{
- const s=surface==='flat'?flat():createState({height:freeTerrain,spawn:{x:0,z:0,yaw:0}});
+ const s=surface==='flat'?flat():createState({height:freeTerrain,spawn:{x:80,z:-100,yaw:0}});
  run(s,{gas:true},240);
  for(const direction of [-1,1,-1,1]){
   const entrySpeed=s.speed;
