@@ -32,3 +32,5 @@ GitHub Actions builds and publishes `dist/` on every push to `main`. Vite uses r
 ## Procedural artwork
 
 `src/textures.js` generates seeded soil and scrub color maps, course-aligned worn lanes and ruts, world-space gravel detail, sandstone strata, cactus ribs, rubber grain, and a cloudy sky. No original Motocross Madness textures are used. The terrain color map is 1536² on desktop and 1024² on touch devices; smaller repeating detail maps provide close-up texture without large downloads.
+
+Handling tuning: joystick directions are tested in the chase camera's coordinate frame. Normal throttle reaches 60 km/h in approximately 1.9 seconds on the flat test surface (about 1.4 seconds with boost). Rider torque assists power delivery and landing recovery; airborne steering targets a bounded lean and yaw rather than continuously rolling the bike. These are arcade handling targets, not specifications for a real motorcycle.
