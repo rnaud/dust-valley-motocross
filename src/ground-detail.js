@@ -4,8 +4,8 @@ import * as THREE from 'three';
 export class GroundDetail {
   constructor(scene,height){
     this.height=height;this.cell='';this.dummy=new THREE.Object3D();
-    this.pebbles=new THREE.InstancedMesh(new THREE.DodecahedronGeometry(1,0),new THREE.MeshStandardMaterial({color:'#96795a',roughness:1}),17*17*3);
-    this.scrub=new THREE.InstancedMesh(new THREE.ConeGeometry(1,1,4),new THREE.MeshStandardMaterial({color:'#797744',roughness:1}),17*17);
+    this.pebbles=new THREE.InstancedMesh(new THREE.DodecahedronGeometry(1,0),new THREE.MeshStandardMaterial({color:'#a1815f',roughness:1}),17*17*3);
+    this.scrub=new THREE.InstancedMesh(new THREE.ConeGeometry(1,1,4),new THREE.MeshStandardMaterial({color:'#8a7d52',roughness:1}),17*17);
     for(const mesh of [this.pebbles,this.scrub]){mesh.frustumCulled=false;mesh.receiveShadow=true;scene.add(mesh);}
   }
   update(x,z,force=false){
@@ -21,7 +21,7 @@ export class GroundDetail {
         const size=(k<3?.08+random()*.15:.18+random()*.25)*edge;
         this.dummy.position.set(px,this.height(px,pz)+(k<3?size*.15:size*.5),pz);
         this.dummy.rotation.set(0,random()*Math.PI*2,k<3?random()*.3:0);
-        this.dummy.scale.set(size,k<3?size*.5:size,size*.8);this.dummy.updateMatrix();
+        this.dummy.scale.set(k<3?size:size*1.45,k<3?size*.5:size*.55,size*.8);this.dummy.updateMatrix();
         if(k<3)this.pebbles.setMatrixAt(rock++,this.dummy.matrix);else this.scrub.setMatrixAt(grass++,this.dummy.matrix);
       }
     }

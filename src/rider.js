@@ -14,7 +14,7 @@ export function limbJoint(start,end,a,b,hint){
 export function createRider(){
  const root=new T.Group();
  const jersey=new T.MeshStandardMaterial({color:'#c9e84d',roughness:.85});
- const pants=new T.MeshStandardMaterial({color:'#263d43',roughness:.9});
+ const pants=new T.MeshStandardMaterial({color:'#33484f',roughness:.9});
  const trim=new T.MeshStandardMaterial({color:'#f2ede2',roughness:.65});
  const rubber=new T.MeshStandardMaterial({color:'#172326',roughness:.8});
  const lens=new T.MeshStandardMaterial({color:'#264e58',metalness:.5,roughness:.16});
@@ -28,11 +28,16 @@ export function createRider(){
  const jacket=add(new T.LatheGeometry(profile,20),jersey,torso);jacket.scale.z=.6;
  const chest=oval(pants,[.22,.22,.045],torso);chest.position.set(0,.08,.17);
  const back=oval(trim,[.21,.24,.045],torso);back.position.set(0,.04,-.175);
- // A simple racing numeral constructed as curved jersey patches, no font asset.
- for(const x of [-.055,.055]){const stripe=oval(pants,[.025,.13,.012],torso);stripe.position.set(x,.04,-.215);}
+ if(typeof document!=='undefined'){
+  const cv=document.createElement('canvas');cv.width=cv.height=128;const g=cv.getContext('2d');
+  g.fillStyle='#f2ede2';g.fillRect(4,4,120,120);g.fillStyle='#203126';g.font='bold 68px Arial';g.textAlign='center';g.textBaseline='middle';g.fillText('07',64,68);
+  const tex=new T.CanvasTexture(cv);tex.colorSpace=T.SRGBColorSpace;
+  const plate=new T.Mesh(new T.PlaneGeometry(.31,.33),new T.MeshBasicMaterial({map:tex,transparent:true}));plate.position.set(0,.04,-.221);plate.rotation.y=Math.PI;torso.add(plate);
+ }
+ const brace=add(new T.TorusGeometry(.16,.035,6,18),rubber,torso);brace.position.y=.30;brace.rotation.x=Math.PI/2;
  const neck=oval(rubber,[.105,.13,.105],torso);neck.position.y=.35;
  const pelvis=oval(pants,[.25,.19,.19]);
- const helmet=new T.Group();root.add(helmet);
+ const helmet=new T.Group();helmet.scale.setScalar(.82);root.add(helmet);
  oval(trim,[.29,.31,.33],helmet);
  const opening=oval(rubber,[.255,.145,.075],helmet);opening.position.set(0,.025,.285);
  const goggles=oval(jersey,[.235,.105,.045],helmet);goggles.position.set(0,.05,.343);
@@ -41,6 +46,8 @@ export function createRider(){
  const vent=oval(rubber,[.12,.035,.025],helmet);vent.position.set(0,-.17,.445);
  const peak=oval(jersey,[.31,.032,.28],helmet);peak.position.set(0,.205,.27);peak.rotation.x=.12;
  for(const side of [-1,1]){const panel=oval(jersey,[.018,.15,.25],helmet);panel.position.set(side*.275,.04,-.015);}
+ const helmetStripe=add(new T.BoxGeometry(.055,.29,.025),jersey,helmet);helmetStripe.position.set(0,.03,-.315);helmetStripe.rotation.x=-.12;
+ const helmetVent=add(new T.BoxGeometry(.16,.035,.035),rubber,helmet);helmetVent.position.set(0,-.1,-.30);
  const limbs=[-1,1].map(side=>{
   const boot=oval(trim,[.125,.17,.23]);
   const shinGuard=oval(trim,[.12,.19,.085]);
@@ -63,7 +70,7 @@ export function createRider(){
    const elbow=limbJoint(shoulder,hand,.43,.44,v(side*.65,1.38,.18));
    placeSegment(l.upperArm,shoulder,elbow);placeSegment(l.forearm,elbow,hand);
    l.shoulder.position.copy(shoulder);l.elbow.position.copy(elbow);l.glove.position.copy(hand);l.glove.rotation.y=steer;
-   const thigh=hip.clone().add(v(side*.19,-.02,0)),ankle=v(side*.31,.43,.03);
+   const thigh=hip.clone().add(v(side*.24,-.02,0)),ankle=v(side*.31,.43,.03);
    const knee=limbJoint(thigh,ankle,.49,.48,v(side*.44,.78,.65));
    placeSegment(l.thigh,thigh,knee);placeSegment(l.shin,knee,ankle);l.knee.position.copy(knee);
    l.boot.position.copy(ankle).add(v(0,-.015,.07));
