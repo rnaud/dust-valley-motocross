@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import './style.css';
+import {RidePose} from './ride-pose.js';
+import {batchMeshes} from './mesh-batch.js';
 import {GroundDetail} from './ground-detail.js';
 import { TireTracks, createTreadTexture } from './tire-tracks.js';
 import { createTextures, applyTerrainTexture, createSkyTexture } from './textures.js';
@@ -72,6 +74,13 @@ for(let i=0;i<160;i++){
   root.userData.groundOffset=root.position.y-y;root.userData.onTrack=trackDistance(x,z)<17;
   root.visible=!root.userData.onTrack;decorations.push(root);
 }
+for(const root of decorations)root.removeFromParent();
+let decorationBatches=[];
+function rebuildDecorationBatches(){
+  for(const m of decorationBatches){scene.remove(m);m.geometry.dispose();}
+  decorationBatches=batchMeshes(decorations.filter(o=>o.visible),scene);
+}
+rebuildDecorationBatches();
 const trackObjects=new THREE.Group();scene.add(trackObjects);
 // Track boundary stakes and gate arches guide the route.
 for(let i=0;i<100;i++){const a=i/100*TAU,p=track(a),n=track(a+.01);const dx=n.x-p.x,dz=n.z-p.z,l=Math.hypot(dx,dz);for(const side of [-1,1]){const x=p.x+dz/l*11*side,z=p.z-dx/l*11*side;box(.16,1.2,.16,materials.white,x,terrain(x,z)+.6,z,trackObjects);}}
@@ -86,7 +95,12 @@ function makeBike(){
     const rim=mesh(new THREE.TorusGeometry(.43,.035,6,24),materials.steel,0,0,0,wheel);rim.rotation.y=Math.PI/2;
     for(let j=0;j<12;j++){const spoke=box(.03,.87,.025,materials.steel,0,0,0,wheel);spoke.rotation.x=j*Math.PI/6;}
     for(let j=0;j<24;j++){const a=j/24*TAU;const tread=box(.29,.08,.14,materials.dark,0,Math.cos(a)*.745,Math.sin(a)*.745,wheel);tread.rotation.x=a;}
-    wheel.traverse(o=>{if(o.isMesh)o.castShadow=true;});
+    // Wheels animate as assemblies; their tread and spokes need only two draws.
+    const parts=[...wheel.children];
+    const assemblies=batchMeshes(parts,wheel);
+    // The old art had a 0.79 m outer radius around a 0.61 m physics tire.
+    for(const assembly of assemblies)assembly.geometry.scale(.61/.79,.61/.79,.61/.79);
+    for(const part of parts){wheel.remove(part);part.geometry.dispose();}
   }
   const frame=box(.43,.42,1.35,materials.lime,0,.83,.05,body);frame.rotation.x=-.12;
   box(.45,.15,.88,materials.dark,0,1.12,-.36,body);box(.3,.52,.58,materials.steel,0,.4,-.05,body);
@@ -103,6 +117,7 @@ function makeBike(){
 const {bike,body,wheels,rider,handlebar,forks}=makeBike();
 const dustCount=100,dustGeo=new THREE.BufferGeometry(),dustPositions=new Float32Array(dustCount*3);dustGeo.setAttribute('position',new THREE.BufferAttribute(dustPositions,3));const dust=new THREE.Points(dustGeo,new THREE.PointsMaterial({color:'#dfbd8c',size:.6,transparent:true,opacity:.45,depthWrite:false}));scene.add(dust);const particles=Array.from({length:dustCount},()=>({life:0,x:0,y:-100,z:0}));let dustIndex=0;
 let state=createState(),phase='menu',elapsed=0,lap=1,nextGate=1,score=0,toastTime=0,cameraReady=false,countdown=0;
+const ridePose=new RidePose(state);let riderCrouch=0,riderBank=0;
 const input={gas:false,brake:false,left:false,right:false,boost:false,leanForward:false,leanBack:false,steer:undefined,lean:undefined};const keys={KeyW:'gas',ArrowUp:'gas',KeyS:'brake',ArrowDown:'brake',KeyA:'left',ArrowLeft:'left',KeyD:'right',ArrowRight:'right',Space:'boost',KeyI:'leanForward',KeyK:'leanBack'};
 let audio,osc,gain,sound=false;function initAudio(){if(audio)return;audio=new AudioContext();osc=audio.createOscillator();gain=audio.createGain();osc.type='sawtooth';const filter=audio.createBiquadFilter();filter.type='lowpass';filter.frequency.value=500;osc.connect(filter);filter.connect(gain);gain.connect(audio.destination);gain.gain.value=0;osc.start();} $('sound').onclick=()=>{initAudio();audio.resume();sound=!sound;$('sound').textContent=sound?'SOUND ON':'SOUND OFF';};
 function clearInput(){for(const k in input)input[k]=false;input.steer=undefined;input.lean=undefined;resetJoystick();document.querySelectorAll('.pressed').forEach(b=>b.classList.remove('pressed'));}
@@ -127,11 +142,12 @@ function updateEnvironment(){
   mountains.forEach(groundMountain);
   groundDetail.update(state.x,state.z,true);
   decorations.forEach(o=>{o.position.y=terrain(o.position.x,o.position.z)+o.userData.groundOffset;o.visible=mode==='free'||!o.userData.onTrack;});
+  rebuildDecorationBatches();
   document.querySelector('.gate-stat').hidden=mode==='free';
 }
-function start(){tireTracks.clear();state=createState(mode==='free'?{height:freeTerrain,spawn:{x:0,z:0,yaw:0}}:{});elapsed=0;lap=1;nextGate=1;score=0;countdown=3;phase='playing';cameraReady=false;accumulator=0;clearInput();document.body.classList.add('playing');for(const id of ['menu','location','footer','overlay'])$(id).hidden=true;for(const id of ['hud','pause'])$(id).hidden=false;$('touch').hidden=!mobile;$('lap-label').textContent=mode==='race'?'LAP':'STUNT SCORE';$('resume').hidden=false;highlight();}
+function start(){tireTracks.clear();state=createState(mode==='free'?{height:freeTerrain,spawn:{x:0,z:0,yaw:0}}:{});ridePose.reset(state);riderCrouch=0;riderBank=0;elapsed=0;lap=1;nextGate=1;score=0;countdown=3;phase='playing';cameraReady=false;accumulator=0;clearInput();document.body.classList.add('playing');for(const id of ['menu','location','footer','overlay'])$(id).hidden=true;for(const id of ['hud','pause'])$(id).hidden=false;$('touch').hidden=!mobile;$('lap-label').textContent=mode==='race'?'LAP':'STUNT SCORE';$('resume').hidden=false;highlight();}
 $('start').onclick=start;$('restart').onclick=start;$('reset').onclick=()=>{if(phase==='playing')recover();};
-function recover(){tireTracks.breakTrail();if(mode==='free'){const radius=Math.hypot(state.x,state.z),scale=radius>380?380/radius:1;resetBike(state,state.x*scale,state.z*scale,state.yaw);cameraReady=false;toast('BACK ON THE DIRT');return;}const a=(nextGate-1+12)%12/12*TAU,p=track(a),q=track(a+.03);resetBike(state,p.x,p.z,Math.atan2(q.x-p.x,q.z-p.z));cameraReady=false;toast('BACK ON THE DIRT');}
+function recover(){tireTracks.breakTrail();if(mode==='free'){const radius=Math.hypot(state.x,state.z),scale=radius>380?380/radius:1;resetBike(state,state.x*scale,state.z*scale,state.yaw);ridePose.reset(state);accumulator=0;cameraReady=false;toast('BACK ON THE DIRT');return;}const a=(nextGate-1+12)%12/12*TAU,p=track(a),q=track(a+.03);resetBike(state,p.x,p.z,Math.atan2(q.x-p.x,q.z-p.z));ridePose.reset(state);accumulator=0;cameraReady=false;toast('BACK ON THE DIRT');}
 function togglePause(){if(phase==='playing'){phase='paused';clearInput();$('overlay').hidden=false;$('overlay-label').textContent='TAKE A BREATHER';$('overlay-title').textContent='Ride paused.';$('overlay-copy').textContent='The desert isn’t going anywhere.';$('resume').hidden=false;}else if(phase==='paused'){phase='playing';$('overlay').hidden=true;}}$('pause').onclick=togglePause;$('resume').onclick=togglePause;
 $('home').onclick=()=>{phase='menu';clearInput();document.body.classList.remove('playing');for(const id of ['menu','location','footer'])$(id).hidden=false;for(const id of ['hud','pause','touch','overlay'])$(id).hidden=true;};
 function finish(){phase='finished';clearInput();let best;try{best=Number(localStorage.getItem('dust-valley-best'))||Infinity;if(elapsed<best)localStorage.setItem('dust-valley-best',String(elapsed));}catch{}$('overlay').hidden=false;$('overlay-label').textContent='THREE LAPS. ALL DUST.';$('overlay-title').textContent='Nicely ridden.';$('overlay-copy').textContent=`Your time: ${formatTime(elapsed)} · Stunt score: ${score}. ${elapsed<(best||Infinity)?'New personal best!':`Best: ${formatTime(best)}`}`;$('resume').hidden=true;}
@@ -153,34 +169,39 @@ const mapCtx=$('map').getContext('2d');function drawMap(){
 }
 const target=new THREE.Vector3(),look=new THREE.Vector3(),chaseAnchor=new THREE.Vector3();let chaseYaw=0;let prev=performance.now(),accumulator=0,total=0;
 function animate(now){requestAnimationFrame(animate);const dt=Math.min((now-prev)/1000,.06);prev=now;total+=dt;
-if(phase==='playing'){if(countdown>0){countdown-=dt;toast(countdown>0?String(Math.ceil(countdown)):'SEND IT',.8);}else{elapsed+=dt;accumulator+=dt;while(accumulator>=1/120){const result=stepBike(state,input,1/120);tireTracks.update(state.crashed?[]:state.wheelContacts,surfaceHeight);if(result.landed>.5){if(result.crashed){toast('WIPEOUT · R OR ↺ TO RECOVER',3);}else{const points=Math.round(result.landed*100);score+=points;toast(`AIR TIME +${points}`);}}accumulator-=1/120;}
+if(phase==='playing'){if(countdown>0){countdown-=dt;toast(countdown>0?String(Math.ceil(countdown)):'SEND IT',.8);}else{elapsed+=dt;accumulator+=dt;while(accumulator>=1/120){const result=stepBike(state,input,1/120);ridePose.push(state);tireTracks.update(state.crashed?[]:state.wheelContacts,surfaceHeight);if(result.landed>.5){if(result.crashed){toast('WIPEOUT · R OR ↺ TO RECOVER',3);}else{const points=Math.round(result.landed*100);score+=points;toast(`AIR TIME +${points}`);}}accumulator-=1/120;}
 if(Math.hypot(state.x,state.z)>400){recover();toast('BACK TO THE BASIN');}
 if(mode==='race'){const p=gates[nextGate].p;if(Math.hypot(state.x-p.x,state.z-p.z)<12){if(nextGate===0){lap++;if(lap>3)finish();else toast(`LAP ${lap} / 3`);}else toast(`GATE ${nextGate} / 12`,.8);nextGate=(nextGate+1)%12;highlight();}}
 }if(state.crashed)toast('WIPEOUT · R OR ↺ TO RECOVER',1);toastTime-=dt;if(toastTime<=0)$('toast').textContent='';}
+const visual=ridePose.sample(phase==='playing'?accumulator*120:1);
 if(phase==='menu'){const p=track(.12);state.x=p.x;state.z=p.z;state.y=terrain(p.x,p.z)+.8;state.yaw=-.15;state.pitch=0;camera.position.set(p.x+19+Math.sin(total*.07)*3,p.y||terrain(p.x,p.z)+8,p.z+18);camera.lookAt(p.x-9,2,p.z-10);}
 else{
-  if(!cameraReady){chaseAnchor.set(state.x,state.y,state.z);chaseYaw=state.yaw;cameraReady=true;}
-  look.set(state.x,state.y,state.z);chaseAnchor.lerp(look,1-Math.exp(-dt*10));
-  const headingDelta=Math.atan2(Math.sin(state.yaw-chaseYaw),Math.cos(state.yaw-chaseYaw));
+  if(!cameraReady){chaseAnchor.copy(visual.position);chaseYaw=visual.yaw;cameraReady=true;}
+  // Follow the interpolated bike horizontally. Only suspension height is filtered.
+  chaseAnchor.x=visual.position.x;chaseAnchor.z=visual.position.z;
+  chaseAnchor.y+=(visual.position.y-chaseAnchor.y)*(1-Math.exp(-dt*8));
+  const headingDelta=Math.atan2(Math.sin(visual.yaw-chaseYaw),Math.cos(visual.yaw-chaseYaw));
   chaseYaw+=headingDelta*(1-Math.exp(-dt*8));
   // Position and look-ahead share one filtered heading, avoiding camera whip on reversal.
-  target.set(chaseAnchor.x-Math.sin(chaseYaw)*6.2,chaseAnchor.y+2.7,chaseAnchor.z-Math.cos(chaseYaw)*6.2);
+  target.set(chaseAnchor.x-Math.sin(chaseYaw)*6.2,chaseAnchor.y+2.2,chaseAnchor.z-Math.cos(chaseYaw)*6.2);
   target.y=Math.max(target.y,surfaceHeight(target.x,target.z)+1.4);
-  look.set(chaseAnchor.x+Math.sin(chaseYaw)*6,chaseAnchor.y+1.2,chaseAnchor.z+Math.cos(chaseYaw)*6);
-  camera.position.copy(target);camera.lookAt(look);camera.fov+=(70+Math.min(14,state.speed*.42)-camera.fov)*(1-Math.exp(-dt*4));camera.updateProjectionMatrix();
+  look.set(chaseAnchor.x+Math.sin(chaseYaw)*6,chaseAnchor.y+.7,chaseAnchor.z+Math.cos(chaseYaw)*6);
+  camera.position.copy(target);camera.lookAt(look);camera.fov+=(70+Math.min(14,visual.speed*.42)-camera.fov)*(1-Math.exp(-dt*4));camera.updateProjectionMatrix();
 }
 if(phase==='menu'){
  bike.position.set(state.x,state.y+.5,state.z);bike.rotation.set(0,state.yaw,0);bike.updateMatrixWorld(true);
  wheels.forEach((w,i)=>{w.position.copy(bike.localToWorld(new THREE.Vector3(0,-.45,i?1.1:-1.05)));w.quaternion.copy(bike.quaternion);});
 }else{
- bike.position.set(state.x,state.y+.5,state.z);bike.quaternion.copy(state.quaternion);
- wheels.forEach((w,i)=>{const t=state.wheelTransforms[i];w.position.copy(t.position);w.quaternion.copy(t.quaternion);});
+ bike.position.copy(visual.position);bike.quaternion.copy(visual.quaternion);
+ wheels.forEach((w,i)=>{const t=visual.wheels[i];w.position.copy(t.position);w.quaternion.copy(t.quaternion);});
 }
-handlebar.rotation.y=state.steer;
-rider.position.x=Math.sin(state.roll)*.12;
-rider.rotation.z=-state.roll*.14;
-rider.rotation.x=-Math.abs(state.steer)*.15+(input.lean ?? ((input.leanBack?1:0)-(input.leanForward?1:0)))*-.18;
-rider.position.y=-Math.min(.12,Math.max(...state.compression)*.15);
+handlebar.rotation.y=visual.steer;
+const poseBlend=1-Math.exp(-dt*10);
+if(phase==='playing'){riderCrouch+=(Math.max(...visual.compression)-riderCrouch)*poseBlend;riderBank+=(visual.roll-riderBank)*poseBlend;}
+rider.position.x=Math.sin(riderBank)*.12;
+rider.rotation.z=-riderBank*.14;
+rider.rotation.x=-Math.abs(visual.steer)*.15+(input.lean ?? ((input.leanBack?1:0)-(input.leanForward?1:0)))*-.18;
+rider.position.y=-Math.min(.12,riderCrouch*.15);
 bike.updateMatrixWorld(true);
 forks.forEach((fork,i)=>{const front=i>=2,side=i%2?1:-1;const start=bike.localToWorld(new THREE.Vector3(side*.23,front?.68:.1,front?.7:-.05));const end=wheels[front?1:0].position.clone().add(new THREE.Vector3(side*.23,0,0).applyQuaternion(bike.quaternion));fork.position.copy(start).add(end).multiplyScalar(.5);fork.scale.y=start.distanceTo(end);fork.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),end.sub(start).normalize());});
 sun.position.set(state.x-60,state.y+100,state.z+50);sun.target.position.set(state.x,state.y,state.z);
