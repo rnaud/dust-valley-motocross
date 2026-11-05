@@ -28,3 +28,7 @@ The simulation uses Cannon ES at 120 Hz: a 150 kg rigid chassis, two independent
 The physics tests run with Node's test runner. `scripts/smoke.mjs` exercises desktop and mobile gameplay with Playwright and a local Chrome installation, against a development server on port 5189. Update the Chrome executable path for your platform.
 
 GitHub Actions builds and publishes `dist/` on every push to `main`. Vite uses relative asset paths for GitHub Pages project hosting. Google Fonts is optional; local system fonts are the fallback.
+
+## Procedural artwork
+
+`src/textures.js` generates seeded soil and scrub color maps, course-aligned worn lanes and ruts, world-space gravel detail, sandstone strata, cactus ribs, rubber grain, and a cloudy sky. No original Motocross Madness textures are used. The terrain color map is 1536² on desktop and 1024² on touch devices; smaller repeating detail maps provide close-up texture without large downloads.
