@@ -1,6 +1,10 @@
 import * as C from 'cannon-es';
 export const TAU = Math.PI * 2;
 export function track(t) { return { x: Math.cos(t) * (102 + 12 * Math.sin(t * 3)), z: Math.sin(t) * (78 + 9 * Math.sin(t * 2)) }; }
+export function freeTerrain(x,z) {
+  return 1.7*Math.sin(x*.023)+1.8*Math.cos(z*.031)+.7*Math.sin((x+z)*.045)
+    +Math.sin(x*.044)*Math.cos(z*.038)*6+Math.sin(z*.018+x*.014)*7;
+}
 export function terrain(x,z) {
   const t = Math.atan2(z / 78, x / 102), p = track(t);
   const d = Math.hypot(x-p.x,z-p.z);
@@ -25,12 +29,12 @@ export function createState(options={}) {
   const half=size*spacing/2;
   for(let i=0;i<=size;i++){const row=[];for(let j=0;j<=size;j++)row.push(height(i*spacing-half,half-j*spacing));data.push(row);}
   const ground=new C.Body({mass:0});ground.addShape(new C.Heightfield(data,{elementSize:spacing}));ground.quaternion.setFromEuler(-Math.PI/2,0,0);ground.position.set(-half,0,half);world.addBody(ground);
-  const p=options.flat?{x:0,z:0}:track(0);
+  const p=options.spawn ?? (options.flat?{x:0,z:0}:track(0));
   const chassis=new C.Body({mass:150,linearDamping:.015,angularDamping:.15});
   chassis.addShape(new C.Box(new C.Vec3(.28,.32,1.02)));
   // Rider mass sits above the small collision box; include it in rotational inertia.
   chassis.inertia.set(110,100,75);chassis.invInertia.set(1/110,1/100,1/75);chassis.updateInertiaWorld(true);
-  chassis.position.set(p.x,height(p.x,p.z)+1.15,p.z);chassis.quaternion.setFromEuler(0,options.flat?0:Math.atan2(36,78),0);
+  chassis.position.set(p.x,height(p.x,p.z)+1.15,p.z);chassis.quaternion.setFromEuler(0,options.spawn?.yaw ?? (options.flat?0:Math.atan2(36,78)),0);
   const vehicle=new C.RaycastVehicle({chassisBody:chassis,indexRightAxis:0,indexUpAxis:1,indexForwardAxis:2});
   for(const z of [-1.05,1.1])vehicle.addWheel({radius:.61,directionLocal:new C.Vec3(0,-1,0),axleLocal:new C.Vec3(-1,0,0),chassisConnectionPointLocal:new C.Vec3(0,-.12,z),suspensionRestLength:.55,maxSuspensionTravel:.3,suspensionStiffness:55,dampingRelaxation:4.5,dampingCompression:3.5,maxSuspensionForce:10000,frictionSlip:2.6,rollInfluence:.08,isFrontWheel:z>0});
   vehicle.addToWorld(world);

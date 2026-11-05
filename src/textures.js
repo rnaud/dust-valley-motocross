@@ -20,8 +20,10 @@ export function createTextures(renderer,mobile){
     const gravel=fine*22+hash(px,py)*13;
     return [151+patch*32-grass*46+gravel,115+patch*25-grass*12+gravel*.85,72+patch*15-grass*20+gravel*.6];
   });
+  const freeMacro=texture(terrainCanvas,aniso);
+  const raceCanvas=canvas(size);raceCanvas.getContext('2d').drawImage(terrainCanvas,0,0);
   // Paint the actual course, including continuous worn lanes and tire grooves.
-  const ctx=terrainCanvas.getContext('2d');const scale=size/900;
+  const ctx=raceCanvas.getContext('2d');const scale=size/900;
   const path=(offset,width,color)=>{ctx.beginPath();for(let i=0;i<=900;i++){const a=i/900*TAU,p=track(a),q=track(a+.001),l=Math.hypot(q.x-p.x,q.z-p.z);const x=p.x+(q.z-p.z)/l*offset,z=p.z-(q.x-p.x)/l*offset;const px=(x+450)*scale,py=(z+450)*scale;i?ctx.lineTo(px,py):ctx.moveTo(px,py);}ctx.closePath();ctx.strokeStyle=color;ctx.lineWidth=width*scale;ctx.lineJoin='round';ctx.stroke();};
   path(0,25,'rgba(133,104,65,.23)');path(0,21,'rgba(154,114,69,.65)');path(0,17,'#976a42');path(0,12,'#a87c4f');
   for(const lane of [-6,-3,0,3,6]){path(lane,1.2,'rgba(70,46,29,.27)');path(lane+.65,.35,'rgba(227,186,127,.4)');}
@@ -29,7 +31,7 @@ export function createTextures(renderer,mobile){
   const image=ctx.getImageData(0,0,size,size);
   for(let y=0;y<size;y++)for(let x=0;x<size;x++){const i=(y*size+x)*4;const shade=.81+noise(x*.11,y*.11)*.29+hash(x+50,y)*.12;for(let k=0;k<3;k++)image.data[i+k]*=shade;}
   ctx.putImageData(image,0,0);
-  const macro=texture(terrainCanvas,aniso);
+  const macro=texture(raceCanvas,aniso);
   const detailCanvas=pixels(256,(x,y)=>{const n=noise(x*.12,y*.12),grain=hash(x,y);const v=135+n*77+grain*42;return [v,v,v];});
   // Wrapped pebble marks retain visible detail at riding-camera distance.
   const detailCtx=detailCanvas.getContext('2d');for(let i=0;i<850;i++){const x=hash(i,3)*256,y=hash(i,7)*256,r=.4+hash(i,9)*1.5;detailCtx.fillStyle=i%4?'rgba(55,47,39,.25)':'rgba(255,245,218,.5)';detailCtx.beginPath();detailCtx.ellipse(x,y,r,r*.6,hash(i,2)*6.28,0,TAU);detailCtx.fill();}
@@ -44,7 +46,7 @@ export function createTextures(renderer,mobile){
   const rock=texture(rockCanvas,aniso,3);
   const cactus=texture(pixels(256,(x,y)=>{const rib=Math.pow((Math.cos(x/256*TAU*12)+1)/2,3),speck=hash(x,y);return [64+rib*39+speck*15,83+rib*42+speck*15,39+rib*25+speck*9];}),aniso,2);
   const rubber=texture(pixels(128,(x,y)=>{const g=hash(x,y)*18+noise(x*.15,y*.15)*10;return[24+g,26+g,23+g];}),aniso,3);
-  return {macro,detail,rock,cactus,rubber};
+  return {macro,freeMacro,detail,rock,cactus,rubber};
 }
 
 export function applyTerrainTexture(material,textures){
