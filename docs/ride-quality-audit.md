@@ -53,3 +53,11 @@ The replacement rider has a tapered jersey, armor/panels, helmet shell, goggles,
 - **Bike readability.** The frame is now dark, the rear fender smaller, and a rear-quarter camera offset shows more of the bike profile instead of a single-wheel silhouette.
 - **Terrain.** Added curvature-shaped outer berms, eight rollers/whoops, wind dunes outside the groomed line, 520 instanced boulders/hoodoos and 380 batched cacti/rocks. The measured frame remains around 100 draw calls and 350k triangles at 1440×900 in headless Chrome.
 - **Still open.** The front wheel is often occluded by the rider/body in a directly-behind chase view; a full first/third-person camera set and a coordinated real-world geometry rescale remain open. Contact patches mask a few millimetres of visual disagreement rather than replacing finite-width tire collision.
+
+## Follow-up: readability, physical props, daily/photo/settings — 2026-11-05
+
+- **Camera readability.** Near, far and helmet presets; the far preset is rear-quarter and high enough to expose both wheels. C cycles presets and settings persist.
+- **Physical props.** Six shared hero boulders have matching Cannon spheres and rendered meshes; tyre-stack barriers mark the start area; free-ride flags carry numbered boards.
+- **Drivetrain feel.** Six gear bands and RPM are derived from road speed and throttle, shown in the HUD and used by the synthesized engine. Wheel angular momentum and clutch/gear physics are still not simulated.
+- **Meta.** Three-step first-run tutorial, settings panel (camera, quality, light, touch sensitivity), daily one-lap sprint with a local top five and share/download card, photo mode with orbit/zoom and PNG export, branded loading screen and auto quality downgrade.
+- **Still open.** The bike is still dimensioned around the 2.15 m / 0.61 m collision model; a coordinated real-world rescale, clutch/gear/wheelspin dynamics, finite-width tire collision, physical berm meshes and full replay editing remain open.

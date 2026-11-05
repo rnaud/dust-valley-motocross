@@ -32,14 +32,14 @@ export class RideAudio {
  update(state,input,active=true){
   if(!this.ready)return;
   const now=this.ctx.currentTime,speed=state.speed||0,throttle=active?(input.gas?1:0):0;
-  const gear=Math.min(5,Math.floor(speed/8)),inGear=(speed-gear*8)/8;
-  const frequency=42+gear*7+inGear*72+(state.air?16:0)+throttle*9;
+  const rpm=Math.max(900,state.rpm||1200),gear=state.gear||1;
+  const frequency=38+(rpm/9000)*118+(state.air?14:0)+throttle*7;
   this.engineOsc1.frequency.setTargetAtTime(frequency,now,.05);
   this.engineOsc2.frequency.setTargetAtTime(frequency*.5,now,.05);
-  this.engineFilter.frequency.setTargetAtTime(240+throttle*1000+speed*13,now,.08);
-  // A brief gain dip on each upshift makes the five gears audible.
+  this.engineFilter.frequency.setTargetAtTime(220+throttle*1100+(rpm/9000)*700,now,.08);
+  // A brief gain dip on each upshift makes the six gears audible.
   if(gear!==this.lastGear){this.engineGain.gain.setTargetAtTime(.004,now,.015);this.lastGear=gear;}
-  else this.engineGain.gain.setTargetAtTime(active?.012+throttle*.03+(state.air?.008:0):0,now,.09);
+  else this.engineGain.gain.setTargetAtTime(active?.01+throttle*.03+(state.air?.008:0):0,now,.09);
   this.windGain.gain.setTargetAtTime(active?Math.min(.075,(speed/35)**2*.06):0,now,.2);
  }
  beep(frequency=620,duration=.09,volume=.045,type='square'){
