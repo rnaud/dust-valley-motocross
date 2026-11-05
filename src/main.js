@@ -148,14 +148,24 @@ const mapCtx=$('map').getContext('2d');function drawMap(){
   }
   ctx.fillStyle='#fff';ctx.beginPath();ctx.moveTo(0,6);ctx.lineTo(-4,-4);ctx.lineTo(4,-4);ctx.closePath();ctx.fill();ctx.restore();
 }
-const target=new THREE.Vector3(),look=new THREE.Vector3();let prev=performance.now(),accumulator=0,total=0;
+const target=new THREE.Vector3(),look=new THREE.Vector3(),chaseAnchor=new THREE.Vector3();let chaseYaw=0;let prev=performance.now(),accumulator=0,total=0;
 function animate(now){requestAnimationFrame(animate);const dt=Math.min((now-prev)/1000,.06);prev=now;total+=dt;
 if(phase==='playing'){if(countdown>0){countdown-=dt;toast(countdown>0?String(Math.ceil(countdown)):'SEND IT',.8);}else{elapsed+=dt;accumulator+=dt;while(accumulator>=1/120){const result=stepBike(state,input,1/120);tireTracks.update(state.crashed?[]:state.wheelContacts,surfaceHeight);if(result.landed>.5){if(result.crashed){toast('WIPEOUT · R OR ↺ TO RECOVER',3);}else{const points=Math.round(result.landed*100);score+=points;toast(`AIR TIME +${points}`);}}accumulator-=1/120;}
 if(Math.hypot(state.x,state.z)>400){recover();toast('BACK TO THE BASIN');}
 if(mode==='race'){const p=gates[nextGate].p;if(Math.hypot(state.x-p.x,state.z-p.z)<12){if(nextGate===0){lap++;if(lap>3)finish();else toast(`LAP ${lap} / 3`);}else toast(`GATE ${nextGate} / 12`,.8);nextGate=(nextGate+1)%12;highlight();}}
 }if(state.crashed)toast('WIPEOUT · R OR ↺ TO RECOVER',1);toastTime-=dt;if(toastTime<=0)$('toast').textContent='';}
 if(phase==='menu'){const p=track(.12);state.x=p.x;state.z=p.z;state.y=terrain(p.x,p.z)+.8;state.yaw=-.15;state.pitch=0;camera.position.set(p.x+19+Math.sin(total*.07)*3,p.y||terrain(p.x,p.z)+8,p.z+18);camera.lookAt(p.x-9,2,p.z-10);}
-else{target.set(state.x-Math.sin(state.yaw)*10,state.y+5.2,state.z-Math.cos(state.yaw)*10);target.y=Math.max(target.y,terrain(target.x,target.z)+2.5);look.set(state.x+Math.sin(state.yaw)*8,state.y+1.5,state.z+Math.cos(state.yaw)*8);if(!cameraReady){camera.position.copy(target);cameraReady=true;}else camera.position.lerp(target,1-Math.exp(-dt*6));camera.lookAt(look);camera.fov=58+state.speed*.2;camera.updateProjectionMatrix();}
+else{
+  if(!cameraReady){chaseAnchor.set(state.x,state.y,state.z);chaseYaw=state.yaw;cameraReady=true;}
+  look.set(state.x,state.y,state.z);chaseAnchor.lerp(look,1-Math.exp(-dt*10));
+  const headingDelta=Math.atan2(Math.sin(state.yaw-chaseYaw),Math.cos(state.yaw-chaseYaw));
+  chaseYaw+=headingDelta*(1-Math.exp(-dt*8));
+  // Position and look-ahead share one filtered heading, avoiding camera whip on reversal.
+  target.set(chaseAnchor.x-Math.sin(chaseYaw)*10,chaseAnchor.y+5.2,chaseAnchor.z-Math.cos(chaseYaw)*10);
+  target.y=Math.max(target.y,surfaceHeight(target.x,target.z)+2.5);
+  look.set(chaseAnchor.x+Math.sin(chaseYaw)*6,chaseAnchor.y+1.5,chaseAnchor.z+Math.cos(chaseYaw)*6);
+  camera.position.copy(target);camera.lookAt(look);camera.fov=58+state.speed*.2;camera.updateProjectionMatrix();
+}
 if(phase==='menu'){
  bike.position.set(state.x,state.y+.5,state.z);bike.rotation.set(0,state.yaw,0);bike.updateMatrixWorld(true);
  wheels.forEach((w,i)=>{w.position.copy(bike.localToWorld(new THREE.Vector3(0,-.45,i?1.1:-1.05)));w.quaternion.copy(bike.quaternion);});

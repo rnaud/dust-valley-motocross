@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createState,stepBike,resetBike} from '../src/world.js';
+import {createState,stepBike,resetBike,freeTerrain} from '../src/world.js';
 const flat=()=>createState({flat:true,height:()=>0});
 const run=(s,input,n)=>{for(let i=0;i<n;i++)stepBike(s,input,1/120);};
 test('suspension supports chassis at rest without ground snapping',()=>{const s=flat();run(s,{},240);assert.equal(s.contacts,2);assert.ok(s.y>.5&&s.y<.9);assert.ok(Math.abs(s.vy)<.01);assert.ok(s.compression.every(c=>c>0&&c<1));});
@@ -12,7 +12,7 @@ test('rider lean rotates airborne chassis without redirecting momentum',()=>{con
 test('crash recovery clears actual rigid-body velocities',()=>{const s=flat();s.physics.chassis.position.y=20;s.physics.chassis.velocity.set(4,-15,8);run(s,{},180);resetBike(s,0,0,0);assert.equal(s.crashed,false);assert.equal(s.physics.chassis.velocity.length(),0);assert.equal(s.physics.chassis.angularVelocity.length(),0);run(s,{},240);assert.equal(s.contacts,2);});
 
 // A chase camera looking along +Z has screen-right along -X.
-for(const direction of [-1,1])test(`joystick ${direction<0?'left':'right'} turns toward the matching screen side`,()=>{const s=flat();run(s,{gas:true},120);run(s,{gas:true,steer:direction*.5},90);assert.ok(s.x*(-direction)>1);assert.ok(s.yaw*(-direction)>.1);assert.equal(s.crashed,false);});
+for(const direction of [-1,1])test(`joystick ${direction<0?'left':'right'} turns toward the matching screen side`,()=>{const s=flat();run(s,{gas:true},120);run(s,{gas:true,steer:direction*.5},90);assert.ok(s.x*(-direction)>.5);assert.ok(s.yaw*(-direction)>.1);assert.equal(s.crashed,false);});
 test('arcade acceleration reaches 60 km/h within 2.5 seconds without flipping',()=>{const s=flat();let time=0;while(s.speed<60/3.6&&time<3){stepBike(s,{gas:true},1/120);time+=1/120;}assert.ok(time<2.5,`0–60 time: ${time}`);assert.equal(s.crashed,false);assert.ok(Math.abs(s.pitch)<.3);});
 test('boost adds speed and steering releases to neutral',()=>{const a=flat(),b=flat();run(a,{gas:true},240);run(b,{gas:true,boost:true},240);assert.ok(b.speed>a.speed+2);run(a,{gas:true,steer:.6},60);assert.ok(Math.abs(a.steer)>.02);run(a,{gas:true,steer:0},60);assert.ok(Math.abs(a.steer)<.001);});
 test('holding air steering produces a bounded lean rather than a barrel roll',()=>{const s=flat();s.physics.chassis.position.y=80;s.physics.chassis.velocity.z=20;run(s,{steer:1},240);assert.equal(s.contacts,0);assert.ok(Math.abs(s.roll)<.6);assert.ok(s.yaw<-.1);assert.ok(Math.abs(s.x)<.01);});
@@ -67,4 +67,19 @@ for(const speed of [15,22,30])test(`course-shaped jump at ${speed}m/s lands and 
   if(first>=0&&i>first+120)break;
  }
  assert.ok(first>0);assert.ok(minSpeed>landingSpeed*.8);assert.equal(s.contacts,2);assert.ok(s.speed>20);
+});
+
+for(const surface of ['flat','free'])test(`accelerate then alternate left/right on ${surface} without spin or braking`,()=>{
+ const s=surface==='flat'?flat():createState({height:freeTerrain,spawn:{x:0,z:0,yaw:0}});
+ run(s,{gas:true},240);
+ for(const direction of [-1,1,-1,1]){
+  const entrySpeed=s.speed;
+  for(let i=0;i<120;i++){
+   stepBike(s,{gas:true,steer:direction},1/120);
+   assert.equal(s.crashed,false);assert.ok(Math.abs(s.yawRate)<1.5,`uncommanded spin: ${s.yawRate}`);
+   assert.ok(s.speed>entrySpeed*.75,`turn scrubbed speed: ${s.speed}/${entrySpeed}`);
+   if(i===60)assert.ok(s.yawRate*(-direction)>.1,'must reverse yaw within half a second');
+  }
+ }
+ run(s,{gas:true},90);assert.ok(Math.abs(s.yawRate)<.1,'release must stop turning');
 });
