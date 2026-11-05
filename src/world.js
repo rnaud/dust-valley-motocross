@@ -151,7 +151,7 @@ export function stepBike(s,input,dt) {
   for(const wheel of v.wheelInfos)wheel.directionLocal.copy(suspensionDown);
   const previousAir=s.airtime,impact=-b.velocity.y;
   world.step(dt);
-  s.wheelContacts=v.wheelInfos.map(w=>w.isInContact?{x:w.raycastResult.hitPointWorld.x,y:w.raycastResult.hitPointWorld.y,z:w.raycastResult.hitPointWorld.z}:null);
+  s.wheelContacts=v.wheelInfos.map(w=>w.isInContact?{x:w.raycastResult.hitPointWorld.x,y:w.raycastResult.hitPointWorld.y,z:w.raycastResult.hitPointWorld.z,normal:{...w.raycastResult.hitNormalWorld}}:null);
   s.contacts=v.wheelInfos.filter(w=>w.isInContact).length;sync(s);
   s.air=s.contacts===0;
   let landed=0;
