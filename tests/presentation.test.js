@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {Quaternion,Vector3,Group,Mesh,BoxGeometry,MeshBasicMaterial} from 'three';
-import {RidePose} from '../src/ride-pose.js';
+import {RidePose,steeringRotation} from '../src/ride-pose.js';
 import {batchMeshes} from '../src/mesh-batch.js';
 const makeState=(x=0,yaw=0)=>({x,y:.5,z:0,quaternion:new Quaternion().setFromAxisAngle(new Vector3(0,1,0),yaw),yaw,roll:0,speed:30,steer:0,compression:[.2,.2],wheelTransforms:[-1,1].map(z=>({position:{x,y:.61,z},quaternion:new Quaternion()}))});
 
@@ -29,6 +29,27 @@ test('a banked visible tire stays on its contact plane',()=>{
  state.wheelTransforms[0].quaternion.setFromAxisAngle(new Vector3(0,0,1),.9);
  const visible=new RidePose(state).sample(1).wheels[0];
  assert.ok(Math.abs(visible.position.y-(.47*Math.cos(.9)+.14))<1e-8);
+});
+test('contact correction does not drag the wheel toward the previous step at speed',()=>{
+ const state=makeState(10);state.wheelContacts=[{x:9.8,y:0,z:-1.25,normal:{x:0,y:1,z:0}},null];
+ state.wheelTransforms[0].direction={x:0,y:-1,z:0};
+ state.wheelTransforms[0].quaternion.setFromAxisAngle(new Vector3(0,0,1),.9);
+ const shown=new RidePose(state).sample(1).wheels[0];
+ assert.equal(shown.position.x,10);assert.equal(shown.position.z,-1);
+ assert.ok(Math.abs(shown.position.y-(.47*Math.cos(.9)+.14))<1e-8);
+});
+test('steering assembly follows the axle through banking and is unaffected by wheel spin',()=>{
+ const chassis=new Quaternion().setFromAxisAngle(new Vector3(0,0,1),.8);
+ for(const steer of [-.6,0,.6]){
+  const turned=chassis.clone().multiply(new Quaternion().setFromAxisAngle(new Vector3(0,1,0),steer));
+  const expected=steeringRotation(chassis,turned);
+  for(const spin of [0,1,3,6]){
+   const wheel=turned.clone().multiply(new Quaternion().setFromAxisAngle(new Vector3(1,0,0),spin));
+   const assembly=steeringRotation(chassis,wheel);
+   assert.ok(1-Math.abs(expected.dot(assembly))<1e-10);
+   assert.ok(new Vector3(1,0,0).applyQuaternion(assembly).distanceTo(new Vector3(1,0,0).applyQuaternion(wheel))<1e-10);
+  }
+ }
 });
 test('static mesh batching preserves transforms and material boundaries',()=>{
  const a=new MeshBasicMaterial(),b=new MeshBasicMaterial(),source=new Group(),destination=new Group();

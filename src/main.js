@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import './style.css';
 import {terrainIndices,sampleGrid} from './height-grid.js';
 import {inJumpZone} from './jump-park.js';
-import {RidePose} from './ride-pose.js';
+import {createRider} from './rider.js';
+import {RidePose,steeringRotation} from './ride-pose.js';
 import {batchMeshes} from './mesh-batch.js';
 import {GroundDetail} from './ground-detail.js';
 import { TireTracks, createTreadTexture } from './tire-tracks.js';
@@ -102,17 +103,18 @@ function makeBike(){
   }
   const frame=box(.43,.42,1.35,materials.lime,0,.83,.05,body);frame.rotation.x=-.12;
   box(.45,.15,.88,materials.dark,0,1.12,-.36,body);box(.3,.52,.58,materials.steel,0,.4,-.05,body);
-  box(.5,.12,.85,materials.lime,0,.78,1.02,body);box(.48,.12,.55,materials.lime,0,1.04,-1,body);
-  const handlebar=box(1.08,.09,.09,materials.dark,0,1.34,.7,body);
-  const rider=new THREE.Group();body.add(rider);
-  for(const x of [-.29,.29]){box(.2,.2,.4,materials.white,x,.43,.12,rider);const leg=box(.22,.65,.25,materials.dark,x,.76,-.22,rider);leg.rotation.x=-.6;const arm=box(.16,.65,.18,materials.lime,x,1.46,.33,rider);arm.rotation.x=-.85;}
-  const torso=box(.62,.72,.36,materials.lime,0,1.49,-.18,rider);torso.rotation.x=.25;
-  mesh(new THREE.SphereGeometry(.34,16,12),materials.white,0,2.07,-.03,rider);box(.49,.19,.18,materials.dark,0,2.09,.26,rider);box(.53,.06,.42,materials.lime,0,2.29,.18,rider);
+  const frontFender=mesh(new THREE.SphereGeometry(1,16,8),materials.lime,0,0,0);frontFender.scale.set(.25,.065,.57);frontFender.castShadow=true;
+  box(.48,.12,.55,materials.lime,0,1.04,-1,body);
+  const handlebar=new THREE.Group();body.add(handlebar);handlebar.position.set(0,1.34,.7);
+  const bar=mesh(new THREE.CylinderGeometry(.035,.035,1.08,10),materials.steel,0,0,0,handlebar);bar.rotation.z=Math.PI/2;
+  for(const side of [-1,1]){const grip=mesh(new THREE.CylinderGeometry(.052,.052,.19,10),materials.dark,side*.49,0,0,handlebar);grip.rotation.z=Math.PI/2;}
+  const rider=createRider();body.add(rider.root);
   body.traverse(o=>{if(o.isMesh)o.castShadow=true;});scene.add(bike);
   const forks=[];for(let i=0;i<4;i++)forks.push(mesh(new THREE.CylinderGeometry(.055,.07,1,8),materials.steel,0,0,0));
-  return{bike,body,wheels,rider,handlebar,forks};
+  return{bike,body,wheels,rider,handlebar,forks,frontFender};
 }
-const {bike,body,wheels,rider,handlebar,forks}=makeBike();
+const {bike,body,wheels,rider,handlebar,forks,frontFender}=makeBike();
+const frontUp=new THREE.Vector3(),frontForward=new THREE.Vector3(),frontRotation=new THREE.Quaternion();
 const dustCount=100,dustGeo=new THREE.BufferGeometry(),dustPositions=new Float32Array(dustCount*3);dustGeo.setAttribute('position',new THREE.BufferAttribute(dustPositions,3));const dust=new THREE.Points(dustGeo,new THREE.PointsMaterial({color:'#dfbd8c',size:.6,transparent:true,opacity:.45,depthWrite:false}));scene.add(dust);const particles=Array.from({length:dustCount},()=>({life:0,x:0,y:-100,z:0}));let dustIndex=0;
 let state=createState(),phase='menu',elapsed=0,lap=1,nextGate=1,score=0,toastTime=0,cameraReady=false,countdown=0;
 const ridePose=new RidePose(state);let riderCrouch=0,riderBank=0;
@@ -193,15 +195,26 @@ if(phase==='menu'){
  bike.position.copy(visual.position);bike.quaternion.copy(visual.quaternion);
  wheels.forEach((w,i)=>{const t=visual.wheels[i];w.position.copy(t.position);w.quaternion.copy(t.quaternion);});
 }
-handlebar.rotation.y=visual.steer;
+// Wheel spin leaves its axle unchanged. Build the steering assembly from that
+// actual axle so fork feet, fender and bars all agree with the steered wheel.
+steeringRotation(bike.quaternion,wheels[1].quaternion,frontRotation);
+frontUp.set(0,1,0).applyQuaternion(frontRotation);
+frontForward.set(0,0,1).applyQuaternion(frontRotation);
+handlebar.quaternion.copy(bike.quaternion).invert().multiply(frontRotation);
+frontFender.quaternion.copy(frontRotation);
+frontFender.position.copy(wheels[1].position).addScaledVector(frontUp,.72).addScaledVector(frontForward,.12);
 const poseBlend=1-Math.exp(-dt*10);
 if(phase==='playing'){riderCrouch+=(Math.max(...visual.compression)-riderCrouch)*poseBlend;riderBank+=(visual.roll-riderBank)*poseBlend;}
-rider.position.x=Math.sin(riderBank)*.12;
-rider.rotation.z=-riderBank*.14;
-rider.rotation.x=-Math.abs(visual.steer)*.15+(input.lean ?? ((input.leanBack?1:0)-(input.leanForward?1:0)))*-.18;
-rider.position.y=-Math.min(.12,riderCrouch*.15);
+rider.update({compression:riderCrouch,bank:riderBank,steer:visual.steer,gripQuaternion:handlebar.quaternion,lean:input.lean ?? ((input.leanBack?1:0)-(input.leanForward?1:0)),speed:visual.speed});
 bike.updateMatrixWorld(true);
-forks.forEach((fork,i)=>{const front=i>=2,side=i%2?1:-1;const start=bike.localToWorld(new THREE.Vector3(side*.23,front?.68:.1,front?.7:-.05));const end=wheels[front?1:0].position.clone().add(new THREE.Vector3(side*.23,0,0).applyQuaternion(bike.quaternion));fork.position.copy(start).add(end).multiplyScalar(.5);fork.scale.y=start.distanceTo(end);fork.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),end.sub(start).normalize());});
+forks.forEach((fork,i)=>{
+  const front=i>=2,side=i%2?1:-1;
+  const axle=new THREE.Vector3(1,0,0).applyQuaternion(wheels[front?1:0].quaternion);
+  const start=bike.localToWorld(new THREE.Vector3(0,front?.68:.1,front?.7:-.05)).addScaledVector(axle,side*.23);
+  const end=wheels[front?1:0].position.clone().addScaledVector(axle,side*.23);
+  fork.position.copy(start).add(end).multiplyScalar(.5);fork.scale.y=start.distanceTo(end);
+  fork.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),end.sub(start).normalize());
+});
 sun.position.set(state.x-60,state.y+100,state.z+50);sun.target.position.set(state.x,state.y,state.z);
 if(phase==='playing'&&state.speed>5&&!state.air&&countdown<=0){for(let i=0;i<2;i++){const p=particles[dustIndex++%dustCount];Object.assign(p,{life:1,x:state.x+(Math.random()-.5),y:state.y-.5,z:state.z-Math.cos(state.yaw)});}}particles.forEach((p,i)=>{p.life-=dt*.7;if(p.life>0){p.y+=dt*.6;p.x+=dt*.5;}dustPositions[i*3]=p.x;dustPositions[i*3+1]=p.life>0?p.y:-100;dustPositions[i*3+2]=p.z;});dustGeo.attributes.position.needsUpdate=true;
 if(audio){osc.frequency.setTargetAtTime(45+state.speed*4+(input.gas?20:0),audio.currentTime,.08);gain.gain.setTargetAtTime(sound&&phase==='playing'?.025:0,audio.currentTime,.1);}
