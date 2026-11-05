@@ -82,7 +82,7 @@ function rebuildMountainBatches(){
   for(const batch of mountainBatches){batch.castShadow=true;batch.receiveShadow=true;}
 }
 rebuildMountainBatches();
-for(let i=0;i<160;i++){
+for(let i=0;i<380;i++){
   const x=(rand()-.5)*480,z=(rand()-.5)*480,y=terrain(x,z);let root;
   if(i%3===0){
     const g=new THREE.Group();g.position.set(x,y-.15,z);scene.add(g);const h=2+rand()*3;
@@ -103,6 +103,29 @@ function rebuildDecorationBatches(){
   decorationBatches=batchMeshes(decorations.filter(o=>o.visible),scene);
 }
 rebuildDecorationBatches();
+// Boulders, scree and occasional hoodoos: one instanced mesh, rebuilt per terrain mode.
+const boulderData=[];
+for(let i=0;i<520;i++){
+ let x=0,z=0,tries=0;
+ do{x=(rand()-.5)*700;z=(rand()-.5)*700;tries++;}while((trackDistance(x,z)<22||Math.hypot(x,z)<38||Math.hypot(x,z-170)<45)&&tries<40);
+ const size=.35+Math.pow(rand(),3)*2.8,spire=i%23===0;
+ boulderData.push({x,z,size,spire,rotx:rand()*.5,roty:rand()*TAU,rotz:rand()*.4,shade:.85+rand()*.3});
+}
+const boulderMesh=new THREE.InstancedMesh(new THREE.DodecahedronGeometry(1,0),materials.rock,boulderData.length);
+boulderMesh.castShadow=true;boulderMesh.receiveShadow=true;scene.add(boulderMesh);
+const boulderMatrix=new THREE.Matrix4(),boulderQuat=new THREE.Quaternion(),boulderEuler=new THREE.Euler(),boulderPos=new THREE.Vector3(),boulderScale=new THREE.Vector3();
+function placeBoulders(){
+ for(let i=0;i<boulderData.length;i++){
+  const b=boulderData[i],hidden=(mode==='free'&&inJumpZone(b.x,b.z))||(mode==='race'&&trackDistance(b.x,b.z)<18);
+  const s0=hidden?0:b.size;
+  boulderPos.set(b.x,terrain(b.x,b.z)-b.size*.22,b.z);
+  boulderQuat.setFromEuler(boulderEuler.set(b.rotx,b.roty,b.rotz));
+  boulderScale.set(s0,s0*(b.spire?3.2:1),s0*.8);
+  boulderMesh.setMatrixAt(i,boulderMatrix.compose(boulderPos,boulderQuat,boulderScale));
+ }
+ boulderMesh.instanceMatrix.needsUpdate=true;boulderMesh.computeBoundingSphere();
+}
+placeBoulders();
 const trackObjects=new THREE.Group();scene.add(trackObjects);
 // Track boundary stakes: one instanced draw for every marker instead of 320.
 const stakeGeo=new THREE.BoxGeometry(.16,1.2,.16),stakes=new THREE.InstancedMesh(stakeGeo,materials.white,320),stakeMatrix=new THREE.Matrix4();
@@ -152,10 +175,10 @@ function makeBike(){
     for(const assembly of assemblies)assembly.geometry.scale(.61/.79,.61/.79,.61/.79);
     for(const part of parts){wheel.remove(part);part.geometry.dispose();}
   }
-  const frame=box(.43,.42,1.35,materials.lime,0,.83,.05,body);frame.rotation.x=-.12;
+  const frame=box(.43,.42,1.35,materials.dark,0,.83,.05,body);frame.rotation.x=-.12;
   box(.45,.15,.88,materials.dark,0,1.12,-.36,body);box(.3,.52,.58,materials.steel,0,.4,-.05,body);
   const frontFender=mesh(new THREE.SphereGeometry(1,16,8),materials.lime,0,0,0);frontFender.scale.set(.25,.065,.57);frontFender.castShadow=true;
-  const rearFender=mesh(new THREE.SphereGeometry(1,16,8),materials.lime,0,0,0,body);rearFender.scale.set(.27,.06,.62);rearFender.position.set(0,1.04,-1);
+  const rearFender=mesh(new THREE.SphereGeometry(1,16,8),materials.dark,0,0,0,body);rearFender.scale.set(.2,.045,.5);rearFender.position.set(0,1.02,-.98);
   // Swingarm, side plates and exhaust give the rear of the bike a readable silhouette.
   for(const side of [-1,1]){box(.06,.08,1.02,materials.dark,side*.14,.12,-.55,body);box(.02,.3,.34,materials.white,side*.27,.72,-.58,body);}
   const exhaust=mesh(new THREE.CylinderGeometry(.045,.055,1.15,8),materials.steel,.22,.64,-.38,body);exhaust.rotation.x=Math.PI/2;
@@ -181,6 +204,9 @@ const ghostRider=new THREE.Mesh(new THREE.BoxGeometry(.45,.72,.36),ghostMat);gho
 const ghostHead=new THREE.Mesh(new THREE.SphereGeometry(.2,8,6),ghostMat);ghostHead.position.set(0,1.1,-.1);ghostBike.add(ghostHead);
 ghostBike.visible=false;scene.add(ghostBike);
 const frontUp=new THREE.Vector3(),frontForward=new THREE.Vector3(),frontRotation=new THREE.Quaternion();
+// Contact patches anchor the wheels visually even when suspension and terrain disagree by millimetres.
+const shadowMat=new THREE.MeshBasicMaterial({color:0x2e2015,transparent:true,opacity:.38,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2});
+const wheelShadows=[0,1].map(()=>{const m=new THREE.Mesh(new THREE.CircleGeometry(1,20),shadowMat);m.rotation.x=-Math.PI/2;m.renderOrder=2;m.visible=false;scene.add(m);return m;});
 const dustCount=180,dustGeo=new THREE.BufferGeometry(),dustPositions=new Float32Array(dustCount*3);dustGeo.setAttribute('position',new THREE.BufferAttribute(dustPositions,3));
 const dust=new THREE.Points(dustGeo,new THREE.PointsMaterial({map:createDustTexture(),color:'#f5dcb2',size:1.6,transparent:true,opacity:.46,depthWrite:false,sizeAttenuation:true}));dust.frustumCulled=false;scene.add(dust);
 const particles=Array.from({length:dustCount},()=>({life:0,x:0,y:-100,z:0,vx:0,vy:0,vz:0}));let dustIndex=0;
@@ -245,7 +271,7 @@ function updateEnvironment(){
   for(let i=0;i<pos.count;i++)pos.setY(i,terrain(pos.getX(i),pos.getZ(i)));
   pos.needsUpdate=true;groundGeo.computeVertexNormals();groundGeo.computeBoundingSphere();
   mountains.forEach(groundMountain);rebuildMountainBatches();
-  groundDetail.update(state.x,state.z,true);
+  placeBoulders();groundDetail.update(state.x,state.z,true);
   decorations.forEach(o=>{o.position.y=terrain(o.position.x,o.position.z)+o.userData.groundOffset;o.visible=mode==='free'?!inJumpZone(o.position.x,o.position.z):!o.userData.onTrack;});
   rebuildDecorationBatches();
   document.querySelector('.gate-stat').hidden=mode==='free';
@@ -349,6 +375,15 @@ if(mode==='race'&&phase==='playing'&&countdown<=0&&activeGhost){
  const gp=sampleGhost(elapsed-lapStart);
  if(gp){ghostBike.visible=true;ghostBike.position.set(gp.x,gp.y,gp.z);ghostBike.rotation.set(0,gp.yaw,0);}
 }
+for(let i=0;i<2;i++){
+ const c=state.wheelContacts&&state.wheelContacts[i],m=wheelShadows[i];
+ if(c&&!state.air&&phase==='playing'){
+  m.visible=true;const n=new THREE.Vector3(c.normal.x,c.normal.y,c.normal.z).normalize();
+  m.position.set(c.x+n.x*.012,c.y+n.y*.012,c.z+n.z*.012);
+  m.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),n);
+  m.scale.set(.4,.28,1);
+ }else m.visible=false;
+}
 if(phase==='menu'){const p=track(0);state.x=p.x;state.z=p.z;state.y=terrain(p.x,p.z)+.8;state.yaw=-.15;state.pitch=0;camera.position.set(p.x+19+Math.sin(total*.07)*3,p.y||terrain(p.x,p.z)+8,p.z+18);camera.lookAt(p.x-9,2,p.z-10);}
 else{
   if(!cameraReady){chaseAnchor.copy(visual.position);chaseYaw=visual.yaw;cameraReady=true;}
@@ -362,13 +397,16 @@ else{
   // look further down the trail so the rider does not fill the view.
   const portrait=Math.max(0,Math.min(1,(1.25-camera.aspect)/.8));
   const wantedDistance=6.2+portrait*2.3+Math.min(1.7,visual.speed*.05);
-  const wantedHeight=2.15+portrait*1.0+Math.min(.35,visual.speed*.006);
+  const wantedHeight=2.45+portrait*1.0+Math.min(.35,visual.speed*.006);
   chaseDistance+=(wantedDistance-chaseDistance)*(1-Math.exp(-dt*3));
   chaseHeight+=(wantedHeight-chaseHeight)*(1-Math.exp(-dt*3));
-  const ahead=6+portrait*2.2+Math.min(1.4,visual.speed*.045);
-  target.set(chaseAnchor.x-Math.sin(chaseYaw)*chaseDistance,chaseAnchor.y+chaseHeight,chaseAnchor.z-Math.cos(chaseYaw)*chaseDistance);
+  const ahead=7+portrait*2.2+Math.min(1.4,visual.speed*.045);
+  // A slight rear-quarter offset reveals both wheels and the rider's lean.
+  const side=(.95+Math.min(.6,visual.speed*.018))*(camera.aspect>.95?1:.8);
+  const rightX=Math.cos(chaseYaw),rightZ=-Math.sin(chaseYaw);
+  target.set(chaseAnchor.x-Math.sin(chaseYaw)*chaseDistance+rightX*side,chaseAnchor.y+chaseHeight,chaseAnchor.z-Math.cos(chaseYaw)*chaseDistance+rightZ*side);
   target.y=Math.max(target.y,surfaceHeight(target.x,target.z)+1.4);
-  look.set(chaseAnchor.x+Math.sin(chaseYaw)*ahead,chaseAnchor.y+.7+portrait*.25,chaseAnchor.z+Math.cos(chaseYaw)*ahead);
+  look.set(chaseAnchor.x+Math.sin(chaseYaw)*ahead+rightX*side*.35,chaseAnchor.y+.7+portrait*.25,chaseAnchor.z+Math.cos(chaseYaw)*ahead+rightZ*side*.35);
   camera.position.copy(target);
   if(shake>.001){camera.position.x+=(Math.random()-.5)*shake;camera.position.y+=(Math.random()-.5)*shake*.6;camera.position.z+=(Math.random()-.5)*shake;shake*=Math.exp(-dt*7);}
   camera.lookAt(look);camera.fov+=(70+Math.min(12,visual.speed*.4)-camera.fov)*(1-Math.exp(-dt*4));camera.updateProjectionMatrix();
@@ -378,7 +416,7 @@ if(phase==='menu'){
  wheels.forEach((w,i)=>{w.position.copy(bike.localToWorld(new THREE.Vector3(0,-.45,i?1.1:-1.05)));w.quaternion.copy(bike.quaternion);});
 }else{
  bike.position.copy(visual.position);bike.quaternion.copy(visual.quaternion);
- wheels.forEach((w,i)=>{const t=visual.wheels[i];w.position.copy(t.position);w.quaternion.copy(t.quaternion);});
+ wheels.forEach((w,i)=>{const t=visual.wheels[i];w.position.copy(t.position);w.quaternion.copy(t.quaternion);if(state.wheelContacts?.[i])w.position.y-=.06;});
 }
 // Wheel spin leaves its axle unchanged. Build the steering assembly from that
 // actual axle so fork feet, fender and bars all agree with the steered wheel.

@@ -2,7 +2,7 @@ import * as C from 'cannon-es';
 import {parkHeight} from './jump-park.js';
 import {BikeVehicle} from './bike-vehicle.js';
 import {tireForces} from './tires.js';
-import {TAU,track,trackLength,trackGrade,raceFeatures,nearestTrack} from './track.js';
+import {TAU,track,trackLength,trackGrade,trackCurvature,raceFeatures,nearestTrack} from './track.js';
 export {TAU,track,trackLength,nearestTrack};
 
 const smooth=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
@@ -10,7 +10,9 @@ const smooth=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
 export function freeTerrain(x,z) {
   const natural=1.7*Math.sin(x*.023)+1.8*Math.cos(z*.031)+.7*Math.sin((x+z)*.045)
     +Math.sin(x*.044)*Math.cos(z*.038)*6+Math.sin(z*.018+x*.014)*7;
-  return parkHeight(x,z,natural);
+  // Wind-shaped dunes build up beyond the practice basin, away from the starter line.
+  const dunes=(3.2*Math.sin(x*.017+z*.011)+2.4*Math.cos(z*.023-x*.014)+1.3*Math.sin((x-z)*.039))*smooth((Math.hypot(x,z)-150)/140);
+  return parkHeight(x,z,natural+dunes);
 }
 export function terrain(x,z) {
   const near=nearestTrack(x,z),d=near.distance;
@@ -25,9 +27,18 @@ export function terrain(x,z) {
     jumps+=f.height*profile*lateral;
   }
   const hills=(Math.sin(x*.044)*Math.cos(z*.038)*6+Math.sin(z*.018+x*.014)*7)*Math.min(1,Math.max(0,(d-12)/40));
+  // Dune ridges only appear once the rider leaves the groomed racing surface.
+  const dunes=(3.8*Math.sin(x*.016+z*.011)+2.9*Math.cos(z*.021-x*.013)+1.4*Math.sin((x+z)*.043)+1.1*Math.cos((x-z)*.031))*smooth((d-16)/55);
   // The grade only lifts the racing surface; the surrounding basin keeps its natural roll.
   const grade=trackGrade(near.s)*(1-smooth((d-9)/16));
-  return base+jumps+hills+grade;
+  // Raised outer berms make the corners read and give the tires something to lean on.
+  const curve=trackCurvature(near.s),bankSide=-Math.sign(curve)*near.side;
+  let berm=0;
+  if(bankSide>3.5&&bankSide<11){
+   const shape=smooth((bankSide-3.5)/2.2)*(1-smooth((bankSide-8)/3));
+   berm=shape*Math.min(1,Math.abs(curve)*55)*1.35;
+  }
+  return base+jumps+hills+grade+dunes+berm;
 }
 export function trackDistance(x,z) { return nearestTrack(x,z).distance; }
 

@@ -54,14 +54,17 @@ export function createRider(){
   return {side,upperArm:segment(jersey,.12,.105),forearm:segment(pants,.10,.075),elbow:oval(jersey,[.11,.11,.11]),shoulder:oval(jersey,[.14,.14,.14]),glove:oval(rubber,[.09,.09,.12]),thigh:segment(pants,.145,.12),shin:segment(pants,.11,.085),knee:oval(jersey,[.13,.14,.12]),boot,shinGuard};
  });
  function update({compression=0,bank=0,lean=0,steer=0,gripQuaternion}={}){
-  const crouch=Math.min(1,compression),shift=-Math.sin(bank)*.065;
-  const hip=v(shift,1.12-crouch*.10,-.36-lean*.035);
+  const corner=Math.max(-1,Math.min(1,bank));
+  const crouch=Math.min(1,compression),shift=-Math.sin(corner)*.06;
+  const hip=v(shift,1.12-crouch*.10-Math.abs(corner)*.005,-.36-lean*.035);
   pelvis.position.copy(hip);
-  torso.position.copy(hip).add(v(0,.35,.46-lean*.03));
-  torso.rotation.set(.40+crouch*.12-lean*.10,steer*.65,-bank*.10);
+  // The rider now rolls and twists into the corner instead of staying rigid
+  // on top of the bike; the head stays closer to level so the eyes lead.
+  torso.position.copy(hip).add(v(0,.35-Math.abs(corner)*.09,.46-lean*.03));
+  torso.rotation.set(.40+crouch*.12-lean*.10+Math.abs(corner)*.03,steer*.65,corner*.2);
   torso.updateMatrix();
   helmet.position.copy(v(0,.64,.09).applyMatrix4(torso.matrix));
-  helmet.rotation.set(-.05-lean*.08,-steer*.25,-bank*.06);
+  helmet.rotation.set(-.05-lean*.08,-steer*.45-corner*.06,-corner*.14);
   for(const l of limbs){const side=l.side;
    const shoulder=v(side*.285,.19,0).applyMatrix4(torso.matrix);
    const hand=v(side*.49,0,0);

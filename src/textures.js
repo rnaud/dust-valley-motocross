@@ -16,13 +16,15 @@ export function createTextures(renderer,mobile){
   const terrainCanvas=pixels(size,(px,py)=>{
     const x=px/size*900-450,z=py/size*900-450;
     const broad=noise(x*.017+70,z*.017+90),patch=noise(x*.085+10,z*.085+40),fine=noise(x*.42,z*.42);
-    const iron=noise(x*.011+31,z*.014+77);
+    const iron=noise(x*.011+31,z*.014+77),region=noise(x*.006+300,z*.008+120);
+    const wash=clamp((noise(x*.019+210,z*.006+60)-.55)*3.2,0,1);
     // Sage scrub is sparse in the basin; sun-baked sand and iron-rich clay dominate.
     const scrub=clamp((broad*.5+patch*.5-.56)*4,0,1)*.34;
     const red=clamp((iron-.48)*2.4,0,1)*.4;
-    let r=190+patch*32+fine*14+red*24;
-    let g=146+patch*26+fine*11-red*9;
-    let b=98+patch*19+fine*8-red*11;
+    let r=190+patch*32+fine*14+red*24+(region-.5)*26;
+    let g=146+patch*26+fine*11-red*9+(region-.5)*11;
+    let b=98+patch*19+fine*8-red*11+(region-.5)*5;
+    r-=wash*28;g-=wash*20;b-=wash*11;
     r=r+(120-r)*scrub;g=g+(115-g)*scrub;b=b+(80-b)*scrub;
     const gravel=fine*12+hash(px,py)*11;
     return [r+gravel,g+gravel*.9,b+gravel*.7];
