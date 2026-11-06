@@ -96,3 +96,10 @@ The replacement rider has a tapered jersey, armor/panels, helmet shell, goggles,
 - **Terrain.** Race features increased to seventeen, including four sharp kickers and larger tabletops; the free-ride park has fourteen features. A high-frequency hardpack/erosion layer was added to the open basin and off-piste race terrain, without disturbing the groomed racing line. A 20-second free-ride run measured 8.2 s of airtime across five landings, with a 2.4 s longest jump.
 - **Tests.** 66 tests pass, including new controller helpers, Pacejka grip, full-lock 20-second recoverability and the updated starter-line airtime check.
 - **Still open.** Wheel inertia/engine-torque/clutch coupling, physical rider feet, unsprung mass and full real-world geometry.
+
+## Follow-up: mechanical detail and physical RPM — 2026-11-06
+
+- Added chain runs, rear shock/spring and sprocket to the bike, completing the Bike Lab-style mechanical silhouette.
+- The HUD gear/RPM now follows wheel speed through six gear ratios instead of a pure speed lookup. A full engine-torque/clutch drivetrain was prototyped but reverted: the reduced tire/steer model became unstable in the 20-second full-lock course tests. The flat drive-force curve remains the stable baseline.
+- Terrain remains at seventeen race features and fourteen free-ride jumps, with the off-piste hardpack layer.
+- **Still open:** wheel inertia/clutch coupling, physical rider feet, unsprung mass and full real-world geometry.

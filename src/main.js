@@ -268,6 +268,12 @@ function makeBike(){
   // Swingarm, side plates and exhaust give the rear of the bike a readable silhouette.
   for(const side of [-1,1]){box(.06,.08,1.02,materials.dark,side*.14,.12,-.55,body);box(.02,.3,.34,materials.white,side*.27,.72,-.58,body);}
   const exhaust=mesh(new THREE.CylinderGeometry(.045,.055,1.15,8),materials.steel,.22,.64,-.38,body);exhaust.rotation.x=Math.PI/2;
+  // Chain run and rear shock complete the Bike Lab-style mechanical silhouette.
+  box(.035,.05,.92,materials.dark,.16,.32,-.42,body);
+  box(.035,.05,.92,materials.dark,-.16,.32,-.42,body);
+  const shock=mesh(new THREE.CylinderGeometry(.045,.045,.48,8),materials.steel,0,.55,-.12,body);shock.rotation.x=-.25;
+  for(const side of [-1,1]){const spring=mesh(new THREE.TorusGeometry(.075,.018,5,10),materials.lime,side*.1,.48,-.15,body);spring.rotation.y=Math.PI/2;}
+  const chainRing=mesh(new THREE.TorusGeometry(.17,.025,6,16),materials.steel,.18,.38,-.98,body);chainRing.rotation.y=Math.PI/2;
   const handlebar=new THREE.Group();body.add(handlebar);handlebar.position.set(0,1.34,.7);
  box(.3,.085,.09,materials.lime,0,.02,0,handlebar);
  box(.3,.26,.035,materials.white,0,1.02,.98,body);
