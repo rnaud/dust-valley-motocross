@@ -17,6 +17,7 @@ The handling pass was informed by these open-source Unity projects and reference
 - **Lean target centralisation:** the desired roll is computed once and shared by the roll controller; this removed duplicated state and makes later balance-steer work possible.
 - **Pacejka lateral curve:** replaced the linear-with-clamp lateral force with a peak-and-fall magic-formula curve (game-tuned B/C/D/E). Peak lateral grip is 1.72× load; the combined grip ellipse is unchanged.
 - **Wheel angular speed:** rear/front wheel omega and slip ratio are now carried in state; rear visual spin is driven from slip rather than raw throttle. The values do not yet feed a full wheel-inertia drivetrain.
+- **Mechanical parts:** chain run, rear shock/spring, sprocket, fork and swingarm are present; the HUD gear/RPM follows the rear-wheel ratio instead of a speed lookup.
 - **Visual lean/IK:** the rider crouches, shifts hips and leads with the head; the bike’s visual wheels are proportioned smaller than the collision radius while the contact patch stays on the ground.
 
 ## What was tested and rejected
