@@ -76,3 +76,9 @@ The replacement rider has a tapered jersey, armor/panels, helmet shell, goggles,
 - **Landmarks and dressing.** A 26 m stone arch on the far side of the basin, checkered start-gantry banners, a checkered start/finish paint band, denser grass and warm dust motes.
 - **Measured.** About 93 draw calls and 366k triangles at 1440×900 in headless Chrome, still 60 fps in the test session.
 - **Still open.** Physical wheelbase/seat/travel rescale, full tire/contact deformation, collision for all scatter and track furniture, and a multi-line circuit.
+
+## Follow-up: AI art and bike-controller research — 2026-11-06
+
+- **Art.** OpenAI-generated 1990s menu hero, sandstone albedo, monochrome ground detail and metal/checker UI panel. The menu is now a poster-led 90s layout with metal panels; procedural track paint and ruts are retained.
+- **Controller.** Reviewed Bike Lab, Kright/MotorcyclePhysics, TLabVehiclePhysics and Randomation. Adopted low-speed foot support, speed-scaled roll-rate damping and centralised lean targeting. A countersteer experiment was rejected after it scrubbed speed and failed the turn-radius test.
+- **Still open.** Pacejka/LUT tires, a full balance-steer controller, unsprung wheel mass, swingarm/steering-stem dynamics, real clutch/gearbox and coordinated world-scale geometry. See `docs/bike-controller-research.md`.

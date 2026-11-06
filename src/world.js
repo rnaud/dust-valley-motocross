@@ -93,6 +93,8 @@ export function stepBike(s,input,dt) {
   const normal=new C.Vec3(0,1,0);
   if(s.contacts){normal.setZero();for(const w of v.wheelInfos)if(w.raycastResult.hasHit)normal.vadd(w.raycastResult.hitNormalWorld,normal);normal.normalize();}
   const slopeRoll=-Math.asin(Math.max(-1,Math.min(1,normal.dot(new C.Vec3(Math.cos(s.yaw),0,-Math.sin(s.yaw))))));
+  const requestedLean=intent*maxLean*Math.min(1,s.speed/9);
+  const desiredRoll=Math.max(-1.05,Math.min(1.05,slopeRoll+requestedLean));
   const fwd=b.quaternion.vmult(new C.Vec3(0,0,1));
   const rollRate=b.angularVelocity.dot(fwd);
   const leanForSteering=Math.max(-maxLean,Math.min(maxLean,s.roll-slopeRoll+rollRate*.28));
@@ -161,15 +163,22 @@ export function stepBike(s,input,dt) {
       b.torque.vadd(side.scale(Math.max(-2200,Math.min(2200,antiFlip))-b.angularVelocity.dot(side)*450),b.torque);
       // Only both-wheel support gets strong ground balance; one-wheel touchdown
       // must not receive a violent roll correction.
-      // Player intent moves the rider/bike bank; tire grip still determines
-      // the path. Keep lean modest at walking speed so a tight turn stays balanced.
-      const requestedLean=intent*maxLean*Math.min(1,s.speed/9);
-      const desiredRoll=Math.max(-1.05,Math.min(1.05,slopeRoll+requestedLean));
       const balance=contacts===2||Math.abs(s.roll)>1?1:.6;
       s.balanceRoll+=Math.max(-4.5*dt,Math.min(4.5*dt,(desiredRoll-s.balanceRoll)*(1-Math.exp(-dt*18))));
       const torqueLimit=Math.abs(s.roll)>1?6000:2200;
       const torque=Math.max(-torqueLimit,Math.min(torqueLimit,(s.balanceRoll-s.roll)*11000-b.angularVelocity.dot(f)*1700));
       b.torque.vadd(f.scale(torque*balance),b.torque);
+      // Wheel gyroscopics resist fast roll changes more at speed. This is a
+      // reduced-model term, not a full spinning-wheel inertia tensor.
+      const gyro=Math.min(1,s.speed/28);
+      b.torque.vadd(f.scale(-b.angularVelocity.dot(f)*gyro*320),b.torque);
+      // Low-speed feet: a small rider support torque catches the bike before a
+      // walking-pace tip becomes a fall. It fades out by 5 m/s.
+      const relRoll=s.roll-slopeRoll;
+      if(s.speed<5&&Math.abs(relRoll)>.28&&contacts===2){
+       const support=Math.min(1,(Math.abs(relRoll)-.28)/.3)*(1-s.speed/5);
+       b.torque.vadd(f.scale(-relRoll*support*1600),b.torque);
+      }
 
     }else{
       // Rider weight shift and wheel reaction torque rotate the bike, not its velocity.
