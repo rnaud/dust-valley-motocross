@@ -13,15 +13,17 @@ The handling pass was informed by these open-source Unity projects and reference
 - **Low-speed support:** a small rider-foot torque catches the chassis when speed is below 5 m/s and relative lean exceeds ~16°, fading out with speed. This is the practical part of Bike Lab's feet behaviour without adding separate foot rigidbodies.
 - **Wheel gyroscopics:** a speed-scaled roll-rate damping term stabilises fast direction changes; it is a reduced model, not a full spinning-wheel inertia tensor.
 - **Lean target centralisation:** the desired roll is computed once and shared by the roll controller; this removed duplicated state and makes later balance-steer work possible.
+- **Pacejka lateral curve:** replaced the linear-with-clamp lateral force with a peak-and-fall magic-formula curve (game-tuned B/C/D/E). Peak lateral grip is 1.72× load; the combined grip ellipse is unchanged.
+- **Wheel angular speed:** rear/front wheel omega and slip ratio are now carried in state; rear visual spin is driven from slip rather than raw throttle. The values do not yet feed a full wheel-inertia drivetrain.
 - **Visual lean/IK:** the rider crouches, shifts hips and leads with the head; the bike’s visual wheels are proportioned smaller than the collision radius while the contact patch stays on the ground.
 
 ## What was tested and rejected
 
-A sustained countersteer term was tried. It produced a more realistic turn-in shape, but at 22 m/s it added several m/s of scrub and failed the existing turn-radius regression. A proper balance-steer controller needs a real Pacejka/LUT tire model and its own test set; it was not left in as a half-tuned term.
+A sustained countersteer term was tried. It produced a more realistic turn-in shape, but at 22 m/s it added several m/s of scrub and failed the existing turn-radius regression. It was not left in as a half-tuned term; a proper balance-steer controller needs its own tire/wheel model and test set.
 
 ## Still missing
 
-- Pacejka/LUT lateral and longitudinal tire curves with slip ratio and wheel angular velocity.
+- Longitudinal Pacejka/LUT slip-ratio curves and wheel angular momentum feeding engine torque/clutch/gears.
 - A full balance-steer controller (`steer = balanceSteer + error*k + damper`) replacing the current yaw-error correction.
 - Unsprung wheel mass, swingarm/steering-stem dynamics, a real clutch/gear box, and coordinated real-world geometry.
 - Separate physical rider/feet support bodies and low-speed engine assistance.

@@ -72,7 +72,7 @@ export function createState(options={}) {
   const vehicle=new BikeVehicle({chassisBody:chassis,indexRightAxis:0,indexUpAxis:1,indexForwardAxis:2});
   for(const z of [-1.05,1.1])vehicle.addWheel({radius:.61,directionLocal:new C.Vec3(0,-1,0),axleLocal:new C.Vec3(-1,0,0),chassisConnectionPointLocal:new C.Vec3(0,-.12,z),suspensionRestLength:.55,maxSuspensionTravel:.3,suspensionStiffness:55,dampingRelaxation:4.5,dampingCompression:3.5,maxSuspensionForce:10000,frictionSlip:0,rollInfluence:.08,isFrontWheel:z>0});
   vehicle.addToWorld(world);
-  const s={x:p.x,z:p.z,y:chassis.position.y-.5,yaw:0,speed:0,vy:0,pitch:0,roll:0,air:false,airtime:0,boost:100,steer:0,throttle:0,contacts:0,crashed:false,crashTime:0,slip:0,compression:[0,0],gear:1,rpm:1200,quaternion:{x:0,y:0,z:0,w:1},wheelTransforms:[],landingRecovery:0,wheelContacts:[],balanceRoll:0,tireLoads:[0,0]};
+  const s={x:p.x,z:p.z,y:chassis.position.y-.5,yaw:0,speed:0,vy:0,pitch:0,roll:0,air:false,airtime:0,boost:100,steer:0,throttle:0,contacts:0,crashed:false,crashTime:0,slip:0,compression:[0,0],gear:1,rpm:1200,quaternion:{x:0,y:0,z:0,w:1},wheelTransforms:[],landingRecovery:0,wheelContacts:[],balanceRoll:0,tireLoads:[0,0],wheelOmega:[0,0],slipRatio:[0,0]};
   Object.defineProperty(s,'physics',{value:{world,chassis,vehicle,height},enumerable:false});
   sync(s);return s;
 }
@@ -147,6 +147,10 @@ export function stepBike(s,input,dt) {
         const load=s.tireLoads[i];
         const forces=tireForces({longSpeed:velocity.dot(wheelForward),sideSpeed:velocity.dot(wheelSide),load,
           drive:i===0?driveForce:0,brake:brake?(i===1?1200:700):gas?0:35,camber:s.roll-slopeRoll,front:i===1,dt});
+        const groundSpeed=velocity.dot(wheelForward),rolling=groundSpeed/.61;
+        const driven=i===0?s.throttle*(1-Math.min(1,Math.abs(groundSpeed)/18))*16:0;
+        s.wheelOmega[i]=rolling+driven;
+        s.slipRatio[i]=Math.max(-1,Math.min(1,(s.wheelOmega[i]*.61-groundSpeed)/Math.max(2,Math.abs(groundSpeed))));
         const force=wheelForward.scale(forces.longitudinal).vadd(wheelSide.scale(forces.lateral));
         // With one wheel touching, taper yaw leverage during touchdown; a full
         // one-wheel cornering impulse would pivot the bike around that ray.

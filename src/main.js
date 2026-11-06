@@ -645,7 +645,7 @@ if(phase==='menu'){
 }else{
  bike.position.copy(visual.position);bike.quaternion.copy(visual.quaternion);
  wheels.forEach((w,i)=>{const t=visual.wheels[i];w.position.copy(t.position);w.quaternion.copy(t.quaternion);if(state.wheelContacts?.[i])w.position.y-=.08;});
- if(state.throttle>0&&state.contacts&&!state.air){const slip=state.throttle*(1-Math.min(1,state.speed/18));if(slip>.02)wheels[0].quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1,0,0),slip*1.9));}
+ if(state.throttle>0&&state.contacts&&!state.air){const slip=Math.max(0,Math.min(.8,state.slipRatio?.[0]||0));if(slip>.02)wheels[0].quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1,0,0),slip*dt*45));}
  const flaring=input.gas&&input.boost&&state.boost>0&&!state.crashed;
  boostFlame.visible=flaring;boostGlow.visible=flaring;if(flaring){boostFlame.material.opacity=.55+Math.random()*.3;boostFlame.scale.setScalar(.8+Math.random()*.5);boostGlow.material.opacity=.18+Math.random()*.16;boostGlow.scale.setScalar(.45+Math.random()*.25);}
 }

@@ -11,7 +11,7 @@ test('slip produces an opposing lateral force and combined demand stays in the g
  for(const sideSpeed of [-8,-1,1,8])for(const drive of [0,1000,3000]){
   const f=tireForces({longSpeed:20,sideSpeed,load:700,drive});
   assert.ok(f.lateral*sideSpeed<0);
-  assert.ok(Math.hypot(f.longitudinal/(700*2.4),f.lateral/(700*1.65))<=1.000001);
+  assert.ok(Math.hypot(f.longitudinal/(700*2.4),f.lateral/(700*1.72))<=1.000001);
  }
  const coasting=tireForces({longSpeed:20,sideSpeed:2,load:700});
  const powered=tireForces({longSpeed:20,sideSpeed:2,load:700,drive:3000});

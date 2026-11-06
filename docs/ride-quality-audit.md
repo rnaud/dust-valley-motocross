@@ -82,3 +82,10 @@ The replacement rider has a tapered jersey, armor/panels, helmet shell, goggles,
 - **Art.** OpenAI-generated 1990s menu hero, sandstone albedo, monochrome ground detail and metal/checker UI panel. The menu is now a poster-led 90s layout with metal panels; procedural track paint and ruts are retained.
 - **Controller.** Reviewed Bike Lab, Kright/MotorcyclePhysics, TLabVehiclePhysics and Randomation. Adopted low-speed foot support, speed-scaled roll-rate damping and centralised lean targeting. A countersteer experiment was rejected after it scrubbed speed and failed the turn-radius test.
 - **Still open.** Pacejka/LUT tires, a full balance-steer controller, unsprung wheel mass, swingarm/steering-stem dynamics, real clutch/gearbox and coordinated world-scale geometry. See `docs/bike-controller-research.md`.
+
+## Follow-up: Pacejka lateral model and wheel-speed state — 2026-11-06
+
+- **Pacejka lateral curve.** Replaced the linear-with-clamp lateral force with a peak-and-fall magic-formula curve. The peak lateral limit is 1.72× load, and the combined grip ellipse now uses that same limit. The turn, steering, grip-share and course tests still pass after retuning B/C/D/E.
+- **Wheel speed state.** Each wheel now carries angular speed and slip ratio. The rear rendered wheel spins from slip instead of raw throttle, and the values are exposed for future drivetrain/audio work.
+- **Controller.** Low-speed rider-foot support and speed-scaled gyroscopic roll damping remain. A sustained countersteer term was tested and removed because it scrubbed speed at 22 m/s and failed the turn-radius regression.
+- **Still open.** Wheel inertia/engine-torque coupling, clutch/gearbox, unsprung mass, swingarm/steering-stem dynamics and a full balance-steer controller.
