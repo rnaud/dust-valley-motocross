@@ -61,3 +61,10 @@ The replacement rider has a tapered jersey, armor/panels, helmet shell, goggles,
 - **Drivetrain feel.** Six gear bands and RPM are derived from road speed and throttle, shown in the HUD and used by the synthesized engine. Wheel angular momentum and clutch/gear physics are still not simulated.
 - **Meta.** Three-step first-run tutorial, settings panel (camera, quality, light, touch sensitivity), daily one-lap sprint with a local top five and share/download card, photo mode with orbit/zoom and PNG export, branded loading screen and auto quality downgrade.
 - **Still open.** The bike is still dimensioned around the 2.15 m / 0.61 m collision model; a coordinated real-world rescale, clutch/gear/wheelspin dynamics, finite-width tire collision, physical berm meshes and full replay editing remain open.
+
+## Follow-up: speed, impact and ground detail — 2026-11-05
+
+- **Feel.** Speed-scaled screen streaks, boost FOV, low-speed rear-wheel spin, camera rumble and lean roll, and an edge flash on hard landings/crashes.
+- **Graphics.** Checkered start/finish paint, denser crossed-plane grass (1,500 instances), numbered free-ride flags, tyre-stack barriers, and visible hero boulders with matching colliders.
+- **Measured.** ~90 draw calls and ~366k triangles at 1440×900 in headless Chrome; 60 fps in the test session. These are draw-count observations, not physical-device promises.
+- **Still open.** The coordinate vehicle rescale, wheel/contact deformation, brake/gear physics, and a multi-line track design remain the largest structural items.

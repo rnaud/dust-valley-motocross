@@ -36,6 +36,18 @@ export function createTextures(renderer,mobile){
   const path=(offset,width,color)=>{ctx.beginPath();for(let i=0;i<=900;i++){const a=i/900*TAU,p=track(a),q=track(a+.001),l=Math.hypot(q.x-p.x,q.z-p.z);const x=p.x+(q.z-p.z)/l*offset,z=p.z-(q.x-p.x)/l*offset;const px=(x+450)*scale,py=(z+450)*scale;i?ctx.lineTo(px,py):ctx.moveTo(px,py);}ctx.closePath();ctx.strokeStyle=color;ctx.lineWidth=width*scale;ctx.lineJoin='round';ctx.stroke();};
   path(0,25,'rgba(147,105,66,.28)');path(0,21,'rgba(170,124,80,.62)');path(0,17,'#a97448');path(0,12,'#b98653');
   for(const lane of [-6,-3,0,3,6]){path(lane,1.2,'rgba(70,45,28,.31)');path(lane+.65,.35,'rgba(238,201,151,.4)');}
+  // A checkered start/finish band across the full twelve-metre road.
+  {
+   const p0=track(0),q0=track(.001),l=Math.hypot(q0.x-p0.x,q0.z-p0.z),tx=(q0.x-p0.x)/l,tz=(q0.z-p0.z)/l,nx=tz,nz=-tx,cell=1.2;
+   for(let row=0;row<2;row++)for(let col=-5;col<5;col++){
+    ctx.fillStyle=(row+col+20)%2?'#e9e2cc':'#26372d';ctx.beginPath();
+    for(const [u,v] of [[0,0],[1,0],[1,1],[0,1]]){
+     const across=(col+u)*cell,along=(row+v)*cell,x=p0.x+nx*across+tx*along,z=p0.z+nz*across+tz*along;
+     const px=(x+450)*scale,py=(z+450)*scale;u===0&&v===0?ctx.moveTo(px,py):ctx.lineTo(px,py);
+    }
+    ctx.closePath();ctx.fill();
+   }
+  }
   // Break up painted areas with translucent coarse soil, avoiding a flat ribbon.
   const image=ctx.getImageData(0,0,size,size);
   for(let y=0;y<size;y++)for(let x=0;x<size;x++){const i=(y*size+x)*4;const shade=.82+noise(x*.11,y*.11)*.26+hash(x+50,y)*.1;for(let k=0;k<3;k++)image.data[i+k]*=shade;}
