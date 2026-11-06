@@ -6,6 +6,7 @@ import {heroRocks} from './props.js';
 import {createRider} from './rider.js';
 import {RidePose,steeringRotation} from './ride-pose.js';
 import {batchMeshes} from './mesh-batch.js';
+import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {GroundDetail} from './ground-detail.js';
 import { TireTracks, createTreadTexture } from './tire-tracks.js';
 import { createTextures, applyTerrainTexture, createSkyTexture, createDustTexture } from './textures.js';
@@ -14,6 +15,7 @@ import {track,terrain as raceTerrain,freeTerrain,trackDistance,nearestTrack,crea
 let mode='race';
 const terrain=(x,z)=>mode==='free'?freeTerrain(x,z):raceTerrain(x,z);
 const $=id=>document.getElementById(id);
+const speedCanvas=$('speedlines'),speedCtx=speedCanvas?speedCanvas.getContext('2d'):null;
 const mobile=matchMedia('(pointer: coarse)').matches||navigator.maxTouchPoints>0;
 const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const readSetting=(key,fallback)=>{try{return localStorage.getItem(key)??fallback;}catch{return fallback;}};
@@ -49,6 +51,7 @@ function applyQuality(value=settings.quality){
  if(sun.shadow.mapSize.x!==shadow){sun.shadow.mapSize.set(shadow,shadow);if(sun.shadow.map){sun.shadow.map.dispose();sun.shadow.map=null;}}
  scene.fog.far=low?400:540;
  if(typeof boulderMesh!=='undefined')boulderMesh.count=low?220:520;
+ if(typeof grassMesh!=='undefined')grassMesh.count=low?Math.min(420,grassData.length):grassData.length;
  if(typeof dust!=='undefined')dust.visible=!low;
 }
 const materials={dirt:new THREE.MeshStandardMaterial({vertexColors:true,roughness:1,flatShading:true}),sand:new THREE.MeshStandardMaterial({color:'#b5794c',roughness:1}),rock:new THREE.MeshStandardMaterial({color:'#ac6846',roughness:1,flatShading:true}),dark:new THREE.MeshStandardMaterial({color:'#202b28',roughness:.8}),lime:new THREE.MeshStandardMaterial({color:'#d5f461',roughness:.5}),steel:new THREE.MeshStandardMaterial({color:'#b5c1ba',metalness:.7,roughness:.35}),white:new THREE.MeshStandardMaterial({color:'#eee9d4'}),green:new THREE.MeshStandardMaterial({color:'#727849',roughness:1})};
@@ -160,6 +163,31 @@ const heroMeshes=heroRocks.map(rock=>{
 scene.add(heroGroup);
 function placeHeroRocks(){heroMeshes.forEach((m,i)=>{const rock=heroRocks[i],p=track(rock.s*TAU),x=p.x+p.tz*rock.side,z=p.z-p.tx*rock.side;m.position.set(x,terrain(x,z)+rock.r*.35,z);});}
 placeHeroRocks();
+// Dry grass tufts break up the sand at riding distance; one instanced plane draw.
+function makeGrassTexture(){
+ const c=document.createElement('canvas');c.width=c.height=64;const g=c.getContext('2d');g.clearRect(0,0,64,64);
+ for(let i=0;i<11;i++){const x=8+Math.random()*48,b=22+Math.random()*30;g.strokeStyle=i%3===0?'#8a8a52':'#b09b61';g.lineWidth=1.2;g.beginPath();g.moveTo(x,64);g.quadraticCurveTo(x+(Math.random()-.5)*10,42,x+(Math.random()-.5)*18,64-b);g.stroke();}
+ const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t;
+}
+const grassData=[];
+for(let i=0;i<1500;i++){
+ const x=(rand()-.5)*720,z=(rand()-.5)*720;
+ if(trackDistance(x,z)<9.5)continue;
+ grassData.push({x,z,size:.55+rand()*1.35,rot:rand()*TAU});
+}
+const bladeA=new THREE.PlaneGeometry(1,1),bladeB=bladeA.clone().rotateY(Math.PI/2);
+const grassMesh=new THREE.InstancedMesh(mergeGeometries([bladeA,bladeB]),new THREE.MeshStandardMaterial({map:makeGrassTexture(),alphaTest:.3,side:THREE.DoubleSide,roughness:1}),grassData.length);
+grassMesh.count=settings.quality==='low'?Math.min(420,grassData.length):grassData.length;grassMesh.frustumCulled=false;scene.add(grassMesh);
+const grassMatrix=new THREE.Matrix4(),grassQuat=new THREE.Quaternion(),grassEuler=new THREE.Euler(),grassPos=new THREE.Vector3(),grassScale=new THREE.Vector3();
+function placeGrass(){
+ for(let i=0;i<grassData.length;i++){
+  const b=grassData[i],hidden=(mode==='free'&&inJumpZone(b.x,b.z));
+  const s=b.size;grassPos.set(b.x,terrain(b.x,b.z)+s*.42,b.z);grassQuat.setFromEuler(grassEuler.set((Math.random()-.5)*.16,b.rot,(Math.random()-.5)*.12));
+  grassScale.set(s,s,1);grassMesh.setMatrixAt(i,grassMatrix.compose(grassPos,grassQuat,grassScale));
+ }
+ grassMesh.instanceMatrix.needsUpdate=true;grassMesh.computeBoundingSphere();
+}
+placeGrass();
 const trackObjects=new THREE.Group();scene.add(trackObjects);
 // Track boundary stakes: one instanced draw for every marker instead of 320.
 const stakeGeo=new THREE.BoxGeometry(.16,1.2,.16),stakes=new THREE.InstancedMesh(stakeGeo,materials.white,320),stakeMatrix=new THREE.Matrix4();
@@ -268,7 +296,7 @@ function puff(x,y,z,count=1,spread=.5,power=1){
 function readGhost(){try{const g=JSON.parse(localStorage.getItem('dust-valley-ghost'));return Array.isArray(g)&&g.length>2?g:null;}catch{return null;}}
 let ghostBest=readGhost(),activeGhost=ghostBest,ghostRecord=[],ghostClock=0;
 let state=createState(),phase='menu',elapsed=0,lap=1,nextGate=1,score=0,toastTime=0,cameraReady=false,countdown=0,lapStart=0,combo=0,comboTimer=0,wrongTime=0,shake=0;let bestLap=Infinity;try{bestLap=Number(localStorage.getItem('dust-valley-best-lap'))||Infinity;}catch{}
-let laps=3,perfTime=0,perfFrames=0,autoDowngraded=false;
+let laps=3,perfTime=0,perfFrames=0,autoDowngraded=false,impactFlash=0;
 function sampleGhost(t){
  const g=activeGhost;if(!g||g.length<2||t<g[0][0]||t>g[g.length-1][0])return null;
  let lo=0,hi=g.length-1;while(lo+1<hi){const mid=(lo+hi)>>1;if(g[mid][0]<=t)lo=mid;else hi=mid;}
@@ -365,7 +393,7 @@ function updateEnvironment(){
   for(let i=0;i<pos.count;i++)pos.setY(i,terrain(pos.getX(i),pos.getZ(i)));
   pos.needsUpdate=true;groundGeo.computeVertexNormals();groundGeo.computeBoundingSphere();
   mountains.forEach(groundMountain);rebuildMountainBatches();
-  placeBoulders();placeHeroRocks();groundDetail.update(state.x,state.z,true);
+  placeBoulders();placeHeroRocks();placeGrass();groundDetail.update(state.x,state.z,true);
   decorations.forEach(o=>{o.position.y=terrain(o.position.x,o.position.z)+o.userData.groundOffset;o.visible=mode==='free'?!inJumpZone(o.position.x,o.position.z):!o.userData.onTrack;});
   rebuildDecorationBatches();
   document.querySelector('.gate-stat').hidden=mode==='free';
@@ -453,12 +481,28 @@ const mapCtx=$('map').getContext('2d');function drawMap(){
   }
   ctx.fillStyle='#fff';ctx.beginPath();ctx.moveTo(0,6);ctx.lineTo(-4,-4);ctx.lineTo(4,-4);ctx.closePath();ctx.fill();ctx.restore();
 }
+function drawSpeedLines(){
+ if(!speedCtx)return;const w=speedCanvas.width,h=speedCanvas.height;speedCtx.clearRect(0,0,w,h);
+ if(phase!=='playing'||countdown>0)return;
+ const kmh=state.speed*3.6,boosting=input.boost&&state.boost>0&&input.gas;
+ const k=Math.max(0,Math.min(1,(kmh-58)/90))*.5+(boosting?.18:0);
+ if(k<.02)return;
+ speedCtx.save();speedCtx.globalCompositeOperation='screen';
+ for(let i=0;i<24;i++){
+  const a=Math.random()*TAU,r0=Math.max(w,h)*(.2+Math.random()*.24),len=Math.max(w,h)*(.05+Math.random()*.16)*(.7+k);
+  const x=w*.5+Math.cos(a)*r0,y=h*.47+Math.sin(a)*r0;
+  speedCtx.strokeStyle=i%5===0?'rgba(231,251,122,.8)':'rgba(255,243,214,.5)';
+  speedCtx.lineWidth=.6+Math.random()*1.2;speedCtx.beginPath();speedCtx.moveTo(x,y);speedCtx.lineTo(x+Math.cos(a)*len,y+Math.sin(a)*len);speedCtx.stroke();
+ }
+ speedCtx.restore();
+}
 const target=new THREE.Vector3(),look=new THREE.Vector3(),chaseAnchor=new THREE.Vector3();let chaseYaw=0,chaseDistance=6.2,chaseHeight=2.2;let prev=performance.now(),accumulator=0,total=0;
 function animate(now){requestAnimationFrame(animate);const dt=Math.min((now-prev)/1000,.06);prev=now;total+=dt;pollGamepad();
 if(settings.quality==='auto'&&!autoDowngraded&&phase==='playing'&&countdown<=0){
  perfTime+=dt;perfFrames++;
  if(perfTime>6){if(perfFrames/perfTime<48){autoDowngraded=true;applyQuality('low');toast('QUALITY · ADAPTED TO THIS DEVICE',2.4);}perfTime=0;perfFrames=0;}
 }
+impactFlash=Math.max(0,impactFlash-dt*2.8);if($('impact'))$('impact').style.opacity=(impactFlash*.62).toFixed(2);drawSpeedLines();
 const helmetView=settings.camera==='helmet'&&(phase==='playing'||phase==='paused');
 const showBike=!helmetView&&(phase!=='menu'||camera.aspect>0.95);bike.visible=showBike;wheels.forEach(w=>w.visible=showBike);forks.forEach(f=>f.visible=showBike);frontFender.visible=showBike;
 if(phase==='playing'){
@@ -472,6 +516,7 @@ if(phase==='playing'){
   while(accumulator>=1/120){
    const result=stepBike(state,input,1/120);ridePose.push(state);tireTracks.update(state.crashed?[]:state.wheelContacts,surfaceHeight);
    if(result.landed>.5){
+    impactFlash=Math.max(impactFlash,result.crashed?1:.28);
     puff(state.x,state.y-.3,state.z,result.crashed?18:12,1.05,1.2);shake=reduceMotion?0:Math.max(shake,Math.min(.3,result.landed*.035));rideAudio.land(Math.min(1,result.landed));if(reduceMotion)shake=0;
     if(result.crashed){combo=0;comboTimer=0;toast('WIPEOUT · R OR ↺ TO RECOVER',3);}
     else{
@@ -570,8 +615,10 @@ else{
   target.y=Math.max(target.y,surfaceHeight(target.x,target.z)+1.4);
   look.set(chaseAnchor.x+Math.sin(chaseYaw)*ahead+rightX*side*.35,chaseAnchor.y+.7+portrait*.25,chaseAnchor.z+Math.cos(chaseYaw)*ahead+rightZ*side*.35);
   camera.position.copy(target);
+  const rumble=reduceMotion?0:Math.min(.016,Math.pow(visual.speed/36,2)*.016);
+  if(rumble&&!state.air){camera.position.x+=Math.sin(total*41)*rumble;camera.position.y+=Math.cos(total*59)*rumble*.7;}
   if(shake>.001){camera.position.x+=(Math.random()-.5)*shake;camera.position.y+=(Math.random()-.5)*shake*.6;camera.position.z+=(Math.random()-.5)*shake;shake*=Math.exp(-dt*7);}
-  camera.lookAt(look);camera.fov+=(70+Math.min(12,visual.speed*.4)-camera.fov)*(1-Math.exp(-dt*4));camera.updateProjectionMatrix();
+  camera.lookAt(look);if(!reduceMotion)camera.rotateZ(-visual.roll*.04);const fovTarget=70+Math.min(12,visual.speed*.4)+((input.boost&&state.boost>0&&input.gas)?5:0);camera.fov+=(fovTarget-camera.fov)*(1-Math.exp(-dt*4));camera.updateProjectionMatrix();
 }
 if(phase==='menu'){
  bike.position.set(state.x,state.y+.5,state.z);bike.rotation.set(0,state.yaw,0);bike.updateMatrixWorld(true);
@@ -579,6 +626,7 @@ if(phase==='menu'){
 }else{
  bike.position.copy(visual.position);bike.quaternion.copy(visual.quaternion);
  wheels.forEach((w,i)=>{const t=visual.wheels[i];w.position.copy(t.position);w.quaternion.copy(t.quaternion);if(state.wheelContacts?.[i])w.position.y-=.06;});
+ if(state.throttle>0&&state.contacts&&!state.air){const slip=state.throttle*(1-Math.min(1,state.speed/18));if(slip>.02)wheels[0].quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1,0,0),slip*1.9));}
 }
 // Wheel spin leaves its axle unchanged. Build the steering assembly from that
 // actual axle so fork feet, fender and bars all agree with the steered wheel.
@@ -608,7 +656,7 @@ if(phase==='playing'&&state.speed>4&&!state.air&&countdown<=0){
 particles.forEach((p,i)=>{p.life-=dt*.62;if(p.life>0){p.x+=p.vx*dt;p.y+=p.vy*dt;p.z+=p.vz*dt;p.vx*=1-dt*1.4;p.vz*=1-dt*1.4;p.vy+=.12*dt;}dustPositions[i*3]=p.x;dustPositions[i*3+1]=p.life>0?p.y:-100;dustPositions[i*3+2]=p.z;});dustGeo.attributes.position.needsUpdate=true;
 rideAudio.update(state,input,phase==='playing'&&countdown<=0);
 $('speed').textContent=Math.round(state.speed*3.6);$('time').textContent=formatTime(elapsed);$('lap').innerHTML=mode==='free'?String(score):`${String(Math.min(lap,laps)).padStart(2,'0')}<span>/${String(laps).padStart(2,'0')}</span>`;$('gate').innerHTML=`${String(nextGate===0?12:nextGate).padStart(2,'0')}<span>/12</span>`;$('boost').style.width=state.boost+'%';$('gear').textContent=state.gear||1;$('rpm').style.width=Math.min(100,(state.rpm||1200)/9000*100)+'%';groundDetail.update(state.x,state.z);sky.position.copy(camera.position);sunGlow.position.copy(camera.position).addScaledVector(sunDir,560);sunCore.position.copy(sunGlow.position);drawMap();gates.forEach(g=>{g.group.visible=phase==='menu'?camera.aspect>0.95:g.group.position.distanceTo(camera.position)>13;});renderer.render(scene,camera);if(!$('loading').hidden)$('loading').hidden=true;}
-function resize(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}window.addEventListener('resize',resize);resize();updateDailyButton();
+function resize(){renderer.setSize(innerWidth,innerHeight);if(speedCanvas){speedCanvas.width=innerWidth;speedCanvas.height=innerHeight;}camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}window.addEventListener('resize',resize);resize();updateDailyButton();
 requestAnimationFrame(animate);
 // Read-only diagnostics for smoke tests and performance inspection.
 window.__game={environment:()=>({trackVisible:trackObjects.visible,trackTexture:materials.dirt.map===textures.macro,height:state.physics.height(state.x,state.z),visualHeight:terrain(state.x,state.z),mountains:mountains.map(m=>({x:m.position.x,z:m.position.z,radius:m.userData.radius*Math.max(m.scale.x,m.scale.z),foundation:m.userData.foundation}))}),snapshot:()=>({phase,mode,elapsed,lap,nextGate,score,countdown,tireTrackSegments:tireTracks.count,...state}),renderer};
