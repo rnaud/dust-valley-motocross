@@ -2,6 +2,7 @@ import * as C from 'cannon-es';
 import {parkHeight} from './jump-park.js';
 import {BikeVehicle} from './bike-vehicle.js';
 import {tireForces} from './tires.js';
+import {getBalanceSteer,getSafeBrakeFactor} from './controller.js';
 import {TAU,trackAt,track,trackLength,trackGrade,trackCurvature,raceFeatures,nearestTrack} from './track.js';
 import {heroRocks} from './props.js';
 export {TAU,track,trackLength,nearestTrack};
@@ -13,7 +14,9 @@ export function freeTerrain(x,z) {
     +Math.sin(x*.044)*Math.cos(z*.038)*6+Math.sin(z*.018+x*.014)*7;
   // Wind-shaped dunes build up beyond the practice basin, away from the starter line.
   const dunes=(3.2*Math.sin(x*.017+z*.011)+2.4*Math.cos(z*.023-x*.014)+1.3*Math.sin((x-z)*.039))*smooth((Math.hypot(x,z)-150)/140);
-  return parkHeight(x,z,natural+dunes);
+  // High-frequency hardpack and erosion ruts make the open basin launchy.
+  const rough=(1.25*Math.sin(x*.24+z*.17)+.95*Math.cos(x*.15-z*.23)+.6*Math.sin((x+z)*.37))*smooth((Math.hypot(x,z)-20)/55);
+  return parkHeight(x,z,natural+dunes+rough);
 }
 export function terrain(x,z) {
   const near=nearestTrack(x,z),d=near.distance;
@@ -32,6 +35,9 @@ export function terrain(x,z) {
   const dunes=(3.8*Math.sin(x*.016+z*.011)+2.9*Math.cos(z*.021-x*.013)+1.4*Math.sin((x+z)*.043)+1.1*Math.cos((x-z)*.031))*smooth((d-16)/55);
   // The grade only lifts the racing surface; the surrounding basin keeps its natural roll.
   const grade=trackGrade(near.s)*(1-smooth((d-9)/16));
+  // Off-piste hardpack: sharp little kickers and erosion whoops without
+  // disturbing the groomed racing line.
+  const rough=(1.15*Math.sin(x*.22+z*.16)+.9*Math.cos(x*.14-z*.21)+.5*Math.sin((x+z)*.34))*smooth((d-18)/30);
   // Raised outer berms make the corners read and give the tires something to lean on.
   const curve=trackCurvature(near.s),bankSide=-Math.sign(curve)*near.side;
   let berm=0;
@@ -39,7 +45,7 @@ export function terrain(x,z) {
    const shape=smooth((bankSide-3.5)/2.2)*(1-smooth((bankSide-8)/3));
    berm=shape*Math.min(1,Math.abs(curve)*55)*1.35;
   }
-  return base+jumps+hills+grade+dunes+berm;
+  return base+jumps+hills+grade+dunes+berm+rough;
 }
 export function trackDistance(x,z) { return nearestTrack(x,z).distance; }
 
@@ -97,20 +103,26 @@ export function stepBike(s,input,dt) {
   const desiredRoll=Math.max(-1.05,Math.min(1.05,slopeRoll+requestedLean));
   const fwd=b.quaternion.vmult(new C.Vec3(0,0,1));
   const rollRate=b.angularVelocity.dot(fwd);
-  const leanForSteering=Math.max(-maxLean,Math.min(maxLean,s.roll-slopeRoll+rollRate*.28));
-  const leanYaw=-9.81*Math.tan(leanForSteering)/Math.max(4,s.speed);
+  const leanForSteering=Math.max(-maxLean,Math.min(maxLean,s.roll-slopeRoll));
   const lowSpeedYaw=Math.tan(-intent*.62)*s.speed/2.15;
   const leanBlend=Math.max(0,Math.min(1,(s.speed-3)/7));
+  const leanYaw=-9.81*Math.tan(leanForSteering)/Math.max(4,s.speed);
   const targetYaw=lowSpeedYaw*(1-leanBlend)+leanYaw*leanBlend;
-  const geometricSteer=Math.atan(2.15*targetYaw/Math.max(2,s.speed));
-  // The virtual rider turns the bars to support the current bank. Banking and
-  // changing heading now describe the same corner, including through reversals.
-  const correction=Math.max(-.18,Math.min(.18,(targetYaw-s.yawRate)*.18))*Math.min(1,s.speed/5);
-  const steerTarget=Math.max(-.65,Math.min(.65,geometricSteer+correction));
+  const yawCorrection=Math.max(-.18,Math.min(.18,(targetYaw-s.yawRate)*.18))*Math.min(1,s.speed/5);
+  // Bike Lab's balance-steer law. b is the steer angle that balances the
+  // current lean; t is the balance steer for the requested lean. Steering
+  // slightly off balance (b-t) tips the bike toward the request, and the
+  // damper works on the steering angle rather than directly on the chassis.
+  const balance=getBalanceSteer(s.speed,leanForSteering);
+  const targetBalance=getBalanceSteer(s.speed,Math.max(-1.2,Math.min(1.2,desiredRoll-slopeRoll)));
+  const steerGain=1.7/(1+Math.max(0,s.speed-15)/30);
+  const steerTarget=Math.max(-.65,Math.min(.65,lowSpeedYaw*.2*(1-leanBlend)+(balance*steerGain+(balance-targetBalance)*.18-rollRate*.05)*leanBlend+yawCorrection));
   s.steer+=(steerTarget-s.steer)*(1-Math.exp(-dt*18));
   v.setSteeringValue(s.crashed?0:s.steer,1);
   // Torque falls with road speed; drag, not a velocity clamp, sets top speed.
   const driveForce=s.throttle*(boosting?2300:1700)/(1+s.speed/40);
+  // Safe-brake clamp: don't ask a fully banked tire for a straight-line stop.
+  const safeBrake=getSafeBrakeFactor(s.roll);
   // RaycastVehicle supplies suspension and wheel rotation only. Its car tire
   // impulses fight roll balance on two inline wheels during steering reversals.
   v.applyEngineForce(0,0);v.setBrake(0,0);v.setBrake(0,1);
@@ -130,7 +142,7 @@ export function stepBike(s,input,dt) {
       // Equilibrium load transfer for the reduced planar tire model. Raw per-ray
       // loads also include the artificial balance torque and must not feed back
       // into front/rear grip as though the rider were accelerating longitudinally.
-      const rearShare=Math.max(.3,Math.min(.7,.5+(driveForce*(1-Math.abs(intent)*.85)-(brake?1900:0))*.45/(b.mass*9.81*2.15)));
+      const rearShare=Math.max(.3,Math.min(.7,.5+(driveForce*(1-Math.abs(intent)*.85)-(brake?1900*safeBrake:0))*.45/(b.mass*9.81*2.15)));
       s.tires=[];
       for(let i=0;i<2;i++){
         const wheel=v.wheelInfos[i];
@@ -146,7 +158,7 @@ export function stepBike(s,input,dt) {
         s.tireLoads[i]+=(rawLoad-s.tireLoads[i])*(1-Math.exp(-dt*20));
         const load=s.tireLoads[i];
         const forces=tireForces({longSpeed:velocity.dot(wheelForward),sideSpeed:velocity.dot(wheelSide),load,
-          drive:i===0?driveForce:0,brake:brake?(i===1?1200:700):gas?0:35,camber:s.roll-slopeRoll,front:i===1,dt});
+          drive:i===0?driveForce:0,brake:brake?(i===1?1200*safeBrake:700*safeBrake):gas?0:35,camber:s.roll-slopeRoll,front:i===1,dt});
         const groundSpeed=velocity.dot(wheelForward),rolling=groundSpeed/.61;
         const driven=i===0?s.throttle*(1-Math.min(1,Math.abs(groundSpeed)/18))*16:0;
         s.wheelOmega[i]=rolling+driven;

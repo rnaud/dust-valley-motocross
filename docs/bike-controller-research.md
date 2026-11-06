@@ -10,6 +10,8 @@ The handling pass was informed by these open-source Unity projects and reference
 
 ## What was adopted here
 
+- **Balance steer:** implemented the Bike Lab law `s = b + (b - t)k + d` in `src/controller.js` and the physics step, with a speed-dependent assist gain for the reduced tire model, a roll-rate steering damper and a small yaw-rate correction. `b` is the balance steer for current lean; `t` is the balance steer for the requested lean.
+- **Safe brake:** braking force is clamped by bank angle so a fully leaned tire is not asked for a straight-line stop.
 - **Low-speed support:** a small rider-foot torque catches the chassis when speed is below 5 m/s and relative lean exceeds ~16°, fading out with speed. This is the practical part of Bike Lab's feet behaviour without adding separate foot rigidbodies.
 - **Wheel gyroscopics:** a speed-scaled roll-rate damping term stabilises fast direction changes; it is a reduced model, not a full spinning-wheel inertia tensor.
 - **Lean target centralisation:** the desired roll is computed once and shared by the roll controller; this removed duplicated state and makes later balance-steer work possible.
@@ -19,11 +21,10 @@ The handling pass was informed by these open-source Unity projects and reference
 
 ## What was tested and rejected
 
-A sustained countersteer term was tried. It produced a more realistic turn-in shape, but at 22 m/s it added several m/s of scrub and failed the existing turn-radius regression. It was not left in as a half-tuned term; a proper balance-steer controller needs its own tire/wheel model and test set.
+An extra sustained countersteer term was tried before the balance-steer law. It produced a more realistic turn-in shape, but at 22 m/s it added several m/s of scrub and failed the existing turn-radius regression. The explicit balance-steer law plus steering damper replaced it.
 
 ## Still missing
 
 - Longitudinal Pacejka/LUT slip-ratio curves and wheel angular momentum feeding engine torque/clutch/gears.
-- A full balance-steer controller (`steer = balanceSteer + error*k + damper`) replacing the current yaw-error correction.
 - Unsprung wheel mass, swingarm/steering-stem dynamics, a real clutch/gear box, and coordinated real-world geometry.
 - Separate physical rider/feet support bodies and low-speed engine assistance.

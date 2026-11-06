@@ -89,3 +89,10 @@ The replacement rider has a tapered jersey, armor/panels, helmet shell, goggles,
 - **Wheel speed state.** Each wheel now carries angular speed and slip ratio. The rear rendered wheel spins from slip instead of raw throttle, and the values are exposed for future drivetrain/audio work.
 - **Controller.** Low-speed rider-foot support and speed-scaled gyroscopic roll damping remain. A sustained countersteer term was tested and removed because it scrubbed speed at 22 m/s and failed the turn-radius regression.
 - **Still open.** Wheel inertia/engine-torque coupling, clutch/gearbox, unsprung mass, swingarm/steering-stem dynamics and a full balance-steer controller.
+
+## Follow-up: balance steer and chaotic airtime — 2026-11-06
+
+- **Controller.** The Bike Lab law `s = b + (b - t)k + d` is now explicit in `src/controller.js` and the physics step. A speed-dependent assist gain compensates the reduced tire/steer geometry, the damper acts on steering, and a small yaw-rate correction keeps full-lock alternating inputs recoverable. Safe braking now falls off with bank.
+- **Terrain.** Race features increased to seventeen, including four sharp kickers and larger tabletops; the free-ride park has fourteen features. A high-frequency hardpack/erosion layer was added to the open basin and off-piste race terrain, without disturbing the groomed racing line. A 20-second free-ride run measured 8.2 s of airtime across five landings, with a 2.4 s longest jump.
+- **Tests.** 66 tests pass, including new controller helpers, Pacejka grip, full-lock 20-second recoverability and the updated starter-line airtime check.
+- **Still open.** Wheel inertia/engine-torque/clutch coupling, physical rider feet, unsprung mass and full real-world geometry.

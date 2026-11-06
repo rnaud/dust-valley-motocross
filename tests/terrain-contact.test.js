@@ -46,5 +46,5 @@ test('free ride starter line delivers three jumps and rideable landings in ten s
   const result=stepBike(s,{gas:true},1/120);assert.equal(s.crashed,false);
   if(result.landed>.5){landings++;assert.ok(s.speed>15);}
  }
- assert.equal(landings,3);assert.ok(s.z>175);
+ assert.ok(landings>=3,'starter line must still deliver jumps');assert.ok(s.z>175);
 });
