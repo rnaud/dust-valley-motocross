@@ -7,7 +7,7 @@ An original, arcade-style motocross playground built in Three.js, inspired by th
 https://rnaud.github.io/dust-valley-motocross/
 
 - **Desert circuit:** three laps of a hand-authored 1.33 km circuit through twelve ordered gates, with rolling grade, seventeen jump features including sharp kickers and rollers, start lights, gate splits, a translucent best-lap ghost, best lap and a locally saved personal best.
-- **Free ride:** ride fourteen shaped jumps across several lines, follow the flags and compass markers, explore the outer hills, and build a combo multiplier from clean landings.
+- **Free ride:** ride fifteen shaped jumps across several lines, follow the flags and compass markers, explore the outer hills, and build a combo multiplier from clean landings.
 - **Keyboard:** WASD or arrow keys to ride; Space to boost; R to recover; C cycles near/far/helmet cameras; P or Escape pauses; I/K shifts rider weight and adjusts pitch in the air. Land level; a hard impact or tipped chassis can cause a wipeout.
 - **Gamepad:** left stick steers and leans, RT/A throttles, LT/B brakes, RB/X boosts, Start pauses.
 - **Mobile:** drag the left thumb joystick for proportional steering (horizontal) and rider lean (vertical), while holding GAS on the right. BRAKE slows the bike; BOOST adds engine power. Use ↺ to recover. Portrait and landscape supported.

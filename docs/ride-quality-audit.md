@@ -93,13 +93,14 @@ The replacement rider has a tapered jersey, armor/panels, helmet shell, goggles,
 ## Follow-up: balance steer and chaotic airtime — 2026-11-06
 
 - **Controller.** The Bike Lab law `s = b + (b - t)k + d` is now explicit in `src/controller.js` and the physics step. A speed-dependent assist gain compensates the reduced tire/steer geometry, the damper acts on steering, and a small yaw-rate correction keeps full-lock alternating inputs recoverable. Safe braking now falls off with bank.
-- **Terrain.** Race features increased to seventeen, including four sharp kickers and larger tabletops; the free-ride park has fourteen features. A high-frequency hardpack/erosion layer was added to the open basin and off-piste race terrain, without disturbing the groomed racing line. A 20-second free-ride run measured 8.2 s of airtime across five landings, with a 2.4 s longest jump.
+- **Terrain.** Race features increased to seventeen, including four sharp kickers and larger tabletops; the free-ride park has fifteen features, including a 3.2 m big-air jump at the end of the starter line. A high-frequency hardpack/erosion layer was added to the open basin and off-piste race terrain, without disturbing the groomed racing line. A 30-second free-ride run measured 10.3 s of airtime across eight landings, with a 2.4 s longest jump.
 - **Tests.** 66 tests pass, including new controller helpers, Pacejka grip, full-lock 20-second recoverability and the updated starter-line airtime check.
 - **Still open.** Wheel inertia/engine-torque/clutch coupling, physical rider feet, unsprung mass and full real-world geometry.
 
 ## Follow-up: mechanical detail and physical RPM — 2026-11-06
 
 - Added chain runs, rear shock/spring and sprocket to the bike, completing the Bike Lab-style mechanical silhouette.
+- Rear wheel angular velocity remains derived from ground speed plus commanded wheelspin; an inertia-integrated version overspun the rendered wheel and was reverted.
 - The HUD gear/RPM now follows wheel speed through six gear ratios instead of a pure speed lookup. A full engine-torque/clutch drivetrain was prototyped but reverted: the reduced tire/steer model became unstable in the 20-second full-lock course tests. The flat drive-force curve remains the stable baseline.
 - Terrain remains at seventeen race features and fourteen free-ride jumps, with the off-piste hardpack layer.
 - **Still open:** wheel inertia/clutch coupling, physical rider feet, unsprung mass and full real-world geometry.

@@ -15,6 +15,7 @@ export const jumps=[
  {x:0,z:252,yaw:0,height:2.5,up:7,top:4,down:16,width:16},
  {x:38,z:86,yaw:.2,height:1.45,up:6,top:2,down:10,width:11},
  {x:-42,z:120,yaw:-.35,height:1.7,up:7,top:2,down:12,width:12},
+ {x:0,z:300,yaw:0,height:3.2,up:10,top:4,down:20,width:18},
 ];
 function coordinates(j,x,z){const dx=x-j.x,dz=z-j.z;return {along:dx*Math.sin(j.yaw)+dz*Math.cos(j.yaw),across:dx*Math.cos(j.yaw)-dz*Math.sin(j.yaw)};}
 export function parkHeight(x,z,natural){
