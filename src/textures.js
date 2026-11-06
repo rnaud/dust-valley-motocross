@@ -67,7 +67,14 @@ export function createTextures(renderer,mobile){
   const rock=texture(rockCanvas,aniso,3);
   const cactus=texture(pixels(256,(x,y)=>{const rib=Math.pow((Math.cos(x/256*TAU*12)+1)/2,3),speck=hash(x,y);return [64+rib*39+speck*15,83+rib*42+speck*15,39+rib*25+speck*9];}),aniso,2);
   const rubber=texture(pixels(128,(x,y)=>{const g=hash(x,y)*18+noise(x*.15,y*.15)*10;return[24+g,26+g,23+g];}),aniso,3);
-  return {macro,freeMacro,detail,rock,cactus,rubber};
+  // AI-authored albedo/detail maps. Loaded asynchronously; the procedural
+  // textures stay as the immediate fallback while the image decodes.
+  const loader=new THREE.TextureLoader();
+  const aiRock=loader.load(new URL('./assets/rock.webp',import.meta.url).href);
+  aiRock.colorSpace=THREE.SRGBColorSpace;aiRock.wrapS=aiRock.wrapT=THREE.RepeatWrapping;aiRock.repeat.set(2,2);aiRock.anisotropy=aniso;
+  const aiDetail=loader.load(new URL('./assets/ground-detail.webp',import.meta.url).href);
+  aiDetail.colorSpace=THREE.SRGBColorSpace;aiDetail.wrapS=aiDetail.wrapT=THREE.RepeatWrapping;aiDetail.anisotropy=aniso;
+  return {macro,freeMacro,detail:aiDetail,rock:aiRock,cactus,rubber};
 }
 
 export function applyTerrainTexture(material,textures){
