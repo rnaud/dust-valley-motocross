@@ -94,16 +94,20 @@ export function nearestTrack(x,z){
 export function trackGrade(s){return 2.1*Math.sin(TAU*2*s+.4)+1.0*Math.sin(TAU*3*s+2.1);}
 export const raceFeatures=[
  {s:.04,height:.45,up:4,top:3,down:5,width:9},
- {s:.13,height:1.7,up:9,top:6,down:12,width:11},
+ {s:.09,height:1.15,up:5,top:1,down:7,width:7},
+ {s:.13,height:2.05,up:9,top:6,down:12,width:11},
  {s:.21,height:.55,up:4,top:4,down:6,width:9},
  {s:.29,height:.7,up:5,top:3,down:6,width:10},
- {s:.34,height:1.15,up:7,top:5,down:10,width:10},
+ {s:.25,height:1.35,up:5,top:1,down:8,width:8},
+ {s:.34,height:1.4,up:7,top:5,down:10,width:10},
  {s:.46,height:.5,up:4,top:3,down:5,width:9},
- {s:.53,height:2.1,up:10,top:4,down:14,width:12},
- {s:.61,height:.6,up:4,top:4,down:6,width:9},
+ {s:.53,height:2.55,up:10,top:4,down:14,width:12},
+ {s:.57,height:1.45,up:5,top:1,down:9,width:8},
+ {s:.61,height:.7,up:4,top:4,down:6,width:9},
  {s:.69,height:.5,up:4,top:3,down:5,width:9},
- {s:.72,height:1.5,up:8,top:6,down:12,width:11},
- {s:.79,height:.6,up:4,top:4,down:6,width:9},
- {s:.88,height:1.9,up:9,top:5,down:13,width:12},
+ {s:.72,height:1.85,up:8,top:6,down:12,width:11},
+ {s:.79,height:.75,up:4,top:4,down:6,width:9},
+ {s:.84,height:1.65,up:5,top:1,down:10,width:8},
+ {s:.88,height:2.35,up:9,top:5,down:13,width:12},
  {s:.95,height:.45,up:4,top:3,down:5,width:9}
 ];
