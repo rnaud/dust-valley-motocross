@@ -68,3 +68,11 @@ The replacement rider has a tapered jersey, armor/panels, helmet shell, goggles,
 - **Graphics.** Checkered start/finish paint, denser crossed-plane grass (1,500 instances), numbered free-ride flags, tyre-stack barriers, and visible hero boulders with matching colliders.
 - **Measured.** ~90 draw calls and ~366k triangles at 1440×900 in headless Chrome; 60 fps in the test session. These are draw-count observations, not physical-device promises.
 - **Still open.** The coordinate vehicle rescale, wheel/contact deformation, brake/gear physics, and a multi-line track design remain the largest structural items.
+
+## Follow-up: proportion, landmarks and air feel — 2026-11-05
+
+- **Visual proportion.** The rendered tire radius is reduced to 0.53 m against the unchanged 0.61 m collision radius, the wheel centers are lowered to keep the tread in contact, the body is lowered 4 cm and the front fender follows the smaller wheel. This improves silhouette without invalidating handling tests; a coordinated physical rescale is still open.
+- **Motion.** Jump camera pullback, visible rear-wheel throttle spin, boost flame/glow, speed streaks and lean roll.
+- **Landmarks and dressing.** A 26 m stone arch on the far side of the basin, checkered start-gantry banners, a checkered start/finish paint band, denser grass and warm dust motes.
+- **Measured.** About 93 draw calls and 366k triangles at 1440×900 in headless Chrome, still 60 fps in the test session.
+- **Still open.** Physical wheelbase/seat/travel rescale, full tire/contact deformation, collision for all scatter and track furniture, and a multi-line circuit.

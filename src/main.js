@@ -163,6 +163,10 @@ const heroMeshes=heroRocks.map(rock=>{
 scene.add(heroGroup);
 function placeHeroRocks(){heroMeshes.forEach((m,i)=>{const rock=heroRocks[i],p=track(rock.s*TAU),x=p.x+p.tz*rock.side,z=p.z-p.tx*rock.side;m.position.set(x,terrain(x,z)+rock.r*.35,z);});}
 placeHeroRocks();
+// A single large stone arch acts as a landmark on the far side of the basin.
+const archP=track(.44*TAU),archX=archP.x+archP.tz*-72,archZ=archP.z-archP.tx*-72;
+const arch=new THREE.Mesh(new THREE.TorusGeometry(13,2.3,8,28,Math.PI),materials.rock);
+arch.position.set(archX,terrain(archX,archZ),archZ);arch.rotation.y=Math.atan2(archP.tx,archP.tz)+.35;arch.castShadow=true;arch.receiveShadow=true;scene.add(arch);
 // Dry grass tufts break up the sand at riding distance; one instanced plane draw.
 function makeGrassTexture(){
  const c=document.createElement('canvas');c.width=c.height=64;const g=c.getContext('2d');g.clearRect(0,0,64,64);
@@ -226,6 +230,13 @@ const gates=[];for(let i=0;i<12;i++){const a=i/12*TAU,p=track(a),g=new THREE.Gro
   // Back-to-back panels so the banner reads correctly from either approach.
   for(const facing of [0,1]){const sign=mesh(new THREE.PlaneGeometry(6,1.5),signMat,0,6.5,facing?.012:-.012,g);sign.rotation.y=facing?Math.PI:0;}
   gates.push({group:g,mat,p,yaw:g.rotation.y});}
+// Checkered start-gantry banners make the finish gate read from a distance.
+{
+ const cc=document.createElement('canvas');cc.width=cc.height=64;const cg=cc.getContext('2d');
+ for(let y=0;y<8;y++)for(let x=0;x<8;x++){cg.fillStyle=(x+y)%2?'#e9e2cc':'#1f3028';cg.fillRect(x*8,y*8,8,8);}
+ const ct=new THREE.CanvasTexture(cc);ct.colorSpace=THREE.SRGBColorSpace;const cm=new THREE.MeshBasicMaterial({map:ct,side:THREE.DoubleSide,toneMapped:false});
+ for(const side of [-1,1]){const banner=new THREE.Mesh(new THREE.PlaneGeometry(.8,3.1),cm);banner.position.set(side*9,4.1,.03);gates[0].group.add(banner);}
+}
 // Tyre-stack barriers and a start-area prop break up the edge of the course.
 const tyreStacks=new THREE.Group(),tyreParts=[];
 for(const [a,side] of [[0,-15],[0,15],[.28,-15],[.28,15]]){
@@ -234,7 +245,7 @@ for(const [a,side] of [[0,-15],[0,15],[.28,-15],[.28,15]]){
 }
 tyreStacks.add(...batchMeshes(tyreParts,tyreStacks));scene.add(tyreStacks);
 function makeBike(){
-  const bike=new THREE.Group(),body=new THREE.Group();bike.add(body);body.position.y=-.5;
+  const bike=new THREE.Group(),body=new THREE.Group();bike.add(body);body.position.y=-.54;
   const wheels=[];
   for(const z of [-1.05,1.1]){
     const wheel=new THREE.Group();scene.add(wheel);wheels.push(wheel);
@@ -247,12 +258,12 @@ function makeBike(){
     const parts=[...wheel.children];
     const assemblies=batchMeshes(parts,wheel);
     // The old art had a 0.79 m outer radius around a 0.61 m physics tire.
-    for(const assembly of assemblies)assembly.geometry.scale(.61/.79,.61/.79,.61/.79);
+    for(const assembly of assemblies)assembly.geometry.scale(.53/.79,.53/.79,.53/.79);
     for(const part of parts){wheel.remove(part);part.geometry.dispose();}
   }
   const frame=box(.43,.42,1.35,materials.dark,0,.83,.05,body);frame.rotation.x=-.12;
   box(.45,.15,.88,materials.dark,0,1.12,-.36,body);box(.3,.52,.58,materials.steel,0,.4,-.05,body);
-  const frontFender=mesh(new THREE.SphereGeometry(1,16,8),materials.lime,0,0,0);frontFender.scale.set(.25,.065,.57);frontFender.castShadow=true;
+  const frontFender=mesh(new THREE.SphereGeometry(1,16,8),materials.lime,0,0,0);frontFender.scale.set(.22,.055,.5);frontFender.castShadow=true;
   const rearFender=mesh(new THREE.SphereGeometry(1,16,8),materials.dark,0,0,0,body);rearFender.scale.set(.2,.045,.5);rearFender.position.set(0,1.02,-.98);
   // Swingarm, side plates and exhaust give the rear of the bike a readable silhouette.
   for(const side of [-1,1]){box(.06,.08,1.02,materials.dark,side*.14,.12,-.55,body);box(.02,.3,.34,materials.white,side*.27,.72,-.58,body);}
@@ -264,12 +275,15 @@ function makeBike(){
  for(const side of [-1,1])box(.07,.3,.12,materials.lime,side*.22,.52,.95,body);
   const bar=mesh(new THREE.CylinderGeometry(.035,.035,1.08,10),materials.steel,0,0,0,handlebar);bar.rotation.z=Math.PI/2;
   for(const side of [-1,1]){const grip=mesh(new THREE.CylinderGeometry(.052,.052,.19,10),materials.dark,side*.49,0,0,handlebar);grip.rotation.z=Math.PI/2;}
+  const flameMat=new THREE.MeshBasicMaterial({color:'#ffb35c',transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false});
+  const boostFlame=mesh(new THREE.ConeGeometry(.11,.7,8),flameMat,.3,1.02,-1.18,body);boostFlame.rotation.x=Math.PI/2;boostFlame.visible=false;boostFlame.castShadow=false;
+  const boostGlow=new THREE.Sprite(new THREE.SpriteMaterial({map:createDustTexture(),color:'#ffb15c',transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false}));boostGlow.scale.set(.6,.6,1);boostGlow.position.set(.3,1.02,-1.18);boostGlow.renderOrder=3;boostGlow.visible=false;body.add(boostGlow);
   const rider=createRider();body.add(rider.root);
   body.traverse(o=>{if(o.isMesh)o.castShadow=true;});scene.add(bike);
   const forks=[];for(let i=0;i<4;i++)forks.push(mesh(new THREE.CylinderGeometry(.055,.07,1,8),i<2?materials.dark:materials.steel,0,0,0));
-  return{bike,body,wheels,rider,handlebar,forks,frontFender};
+  return{bike,body,wheels,rider,handlebar,forks,frontFender,boostFlame,boostGlow};
 }
-const {bike,body,wheels,rider,handlebar,forks,frontFender}=makeBike();
+const {bike,body,wheels,rider,handlebar,forks,frontFender,boostFlame,boostGlow}=makeBike();
 // A translucent best-lap ghost: wheel rings, frame and rider block, no shadows.
 const ghostMat=new THREE.MeshBasicMaterial({color:'#d8ff74',transparent:true,opacity:.22,depthWrite:false,side:THREE.DoubleSide});
 const ghostBike=new THREE.Group();
@@ -285,6 +299,11 @@ const wheelShadows=[0,1].map(()=>{const m=new THREE.Mesh(new THREE.CircleGeometr
 const dustCount=180,dustGeo=new THREE.BufferGeometry(),dustPositions=new Float32Array(dustCount*3);dustGeo.setAttribute('position',new THREE.BufferAttribute(dustPositions,3));
 const dust=new THREE.Points(dustGeo,new THREE.PointsMaterial({map:createDustTexture(),color:'#f5dcb2',size:1.6,transparent:true,opacity:.46,depthWrite:false,sizeAttenuation:true}));dust.frustumCulled=false;scene.add(dust);
 applyQuality();
+// Warm dust motes drifting around the camera add close-range atmosphere.
+const moteCount=110,moteGeo=new THREE.BufferGeometry(),motePos=new Float32Array(moteCount*3),moteBase=Array.from({length:moteCount},()=>({x:(Math.random()-.5)*36,y:Math.random()*9,z:(Math.random()-.5)*36,phase:Math.random()*6.28}));
+moteGeo.setAttribute('position',new THREE.BufferAttribute(motePos,3));
+const motes=new THREE.Points(moteGeo,new THREE.PointsMaterial({map:createDustTexture(),color:'#f4dfc2',size:.11,transparent:true,opacity:.22,depthWrite:false,sizeAttenuation:true}));motes.frustumCulled=false;scene.add(motes);
+
 const particles=Array.from({length:dustCount},()=>({life:0,x:0,y:-100,z:0,vx:0,vy:0,vz:0}));let dustIndex=0;
 // Soft plumes read against the sand and sell rear-wheel roost at speed.
 function puff(x,y,z,count=1,spread=.5,power=1){
@@ -393,7 +412,7 @@ function updateEnvironment(){
   for(let i=0;i<pos.count;i++)pos.setY(i,terrain(pos.getX(i),pos.getZ(i)));
   pos.needsUpdate=true;groundGeo.computeVertexNormals();groundGeo.computeBoundingSphere();
   mountains.forEach(groundMountain);rebuildMountainBatches();
-  placeBoulders();placeHeroRocks();placeGrass();groundDetail.update(state.x,state.z,true);
+  placeBoulders();placeHeroRocks();placeGrass();arch.position.y=terrain(arch.position.x,arch.position.z);groundDetail.update(state.x,state.z,true);
   decorations.forEach(o=>{o.position.y=terrain(o.position.x,o.position.z)+o.userData.groundOffset;o.visible=mode==='free'?!inJumpZone(o.position.x,o.position.z):!o.userData.onTrack;});
   rebuildDecorationBatches();
   document.querySelector('.gate-stat').hidden=mode==='free';
@@ -603,11 +622,11 @@ else{
   // Portrait screens crop the horizon hard; pull the chase camera back and
   // look further down the trail so the rider does not fill the view.
   const portrait=Math.max(0,Math.min(1,(1.25-camera.aspect)/.8));
-  const far=settings.camera==='far';const wantedDistance=6.2+portrait*2.3+(far?3.2:0)+Math.min(1.7,visual.speed*.05);
-  const wantedHeight=2.45+portrait*1.0+(far?.9:0)+Math.min(.35,visual.speed*.006);
+  const far=settings.camera==='far',airLift=state.air?Math.min(1,state.airtime*1.4):0;const wantedDistance=6.2+portrait*2.3+(far?3.2:0)+Math.min(1.7,visual.speed*.05)+airLift*.9;
+  const wantedHeight=2.45+portrait*1.0+(far?.9:0)+Math.min(.35,visual.speed*.006)+airLift*.3;
   chaseDistance+=(wantedDistance-chaseDistance)*(1-Math.exp(-dt*3));
   chaseHeight+=(wantedHeight-chaseHeight)*(1-Math.exp(-dt*3));
-  const ahead=7+portrait*2.2+(far?2:0)+Math.min(1.4,visual.speed*.045);
+  const ahead=7+portrait*2.2+(far?2:0)+Math.min(1.4,visual.speed*.045)+airLift*1.3;
   // A slight rear-quarter offset reveals both wheels and the rider's lean.
   const side=(.95+(far?.9:0)+Math.min(.6,visual.speed*.018))*(camera.aspect>.95?1:.8);
   const rightX=Math.cos(chaseYaw),rightZ=-Math.sin(chaseYaw);
@@ -625,8 +644,10 @@ if(phase==='menu'){
  wheels.forEach((w,i)=>{w.position.copy(bike.localToWorld(new THREE.Vector3(0,-.45,i?1.1:-1.05)));w.quaternion.copy(bike.quaternion);});
 }else{
  bike.position.copy(visual.position);bike.quaternion.copy(visual.quaternion);
- wheels.forEach((w,i)=>{const t=visual.wheels[i];w.position.copy(t.position);w.quaternion.copy(t.quaternion);if(state.wheelContacts?.[i])w.position.y-=.06;});
+ wheels.forEach((w,i)=>{const t=visual.wheels[i];w.position.copy(t.position);w.quaternion.copy(t.quaternion);if(state.wheelContacts?.[i])w.position.y-=.08;});
  if(state.throttle>0&&state.contacts&&!state.air){const slip=state.throttle*(1-Math.min(1,state.speed/18));if(slip>.02)wheels[0].quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1,0,0),slip*1.9));}
+ const flaring=input.gas&&input.boost&&state.boost>0&&!state.crashed;
+ boostFlame.visible=flaring;boostGlow.visible=flaring;if(flaring){boostFlame.material.opacity=.55+Math.random()*.3;boostFlame.scale.setScalar(.8+Math.random()*.5);boostGlow.material.opacity=.18+Math.random()*.16;boostGlow.scale.setScalar(.45+Math.random()*.25);}
 }
 // Wheel spin leaves its axle unchanged. Build the steering assembly from that
 // actual axle so fork feet, fender and bars all agree with the steered wheel.
@@ -635,7 +656,7 @@ frontUp.set(0,1,0).applyQuaternion(frontRotation);
 frontForward.set(0,0,1).applyQuaternion(frontRotation);
 handlebar.quaternion.copy(bike.quaternion).invert().multiply(frontRotation);
 frontFender.quaternion.copy(frontRotation);
-frontFender.position.copy(wheels[1].position).addScaledVector(frontUp,.72).addScaledVector(frontForward,.12);
+frontFender.position.copy(wheels[1].position).addScaledVector(frontUp,.62).addScaledVector(frontForward,.1);
 const poseBlend=1-Math.exp(-dt*10);
 if(phase==='playing'){riderCrouch+=(Math.max(...visual.compression)-riderCrouch)*poseBlend;riderBank+=(visual.roll-riderBank)*poseBlend;}
 rider.update({compression:riderCrouch,bank:riderBank,steer:visual.steer,gripQuaternion:handlebar.quaternion,lean:input.lean ?? ((input.leanBack?1:0)-(input.leanForward?1:0)),speed:visual.speed});
@@ -653,6 +674,7 @@ if(phase==='playing'&&state.speed>4&&!state.air&&countdown<=0){
   const back=1.05;
   puff(state.x-Math.sin(state.yaw)*back,state.y-.55,state.z-Math.cos(state.yaw)*back,input.boost?3:2,.3,.7);
 }
+for(let i=0;i<moteCount;i++){const m=moteBase[i];motePos[i*3]=camera.position.x+m.x+Math.sin(total*.13+m.phase)*1.2;motePos[i*3+1]=camera.position.y-1+m.y+Math.cos(total*.09+m.phase)*.35;motePos[i*3+2]=camera.position.z+m.z+Math.cos(total*.11+m.phase)*1.2;}moteGeo.attributes.position.needsUpdate=true;
 particles.forEach((p,i)=>{p.life-=dt*.62;if(p.life>0){p.x+=p.vx*dt;p.y+=p.vy*dt;p.z+=p.vz*dt;p.vx*=1-dt*1.4;p.vz*=1-dt*1.4;p.vy+=.12*dt;}dustPositions[i*3]=p.x;dustPositions[i*3+1]=p.life>0?p.y:-100;dustPositions[i*3+2]=p.z;});dustGeo.attributes.position.needsUpdate=true;
 rideAudio.update(state,input,phase==='playing'&&countdown<=0);
 $('speed').textContent=Math.round(state.speed*3.6);$('time').textContent=formatTime(elapsed);$('lap').innerHTML=mode==='free'?String(score):`${String(Math.min(lap,laps)).padStart(2,'0')}<span>/${String(laps).padStart(2,'0')}</span>`;$('gate').innerHTML=`${String(nextGate===0?12:nextGate).padStart(2,'0')}<span>/12</span>`;$('boost').style.width=state.boost+'%';$('gear').textContent=state.gear||1;$('rpm').style.width=Math.min(100,(state.rpm||1200)/9000*100)+'%';groundDetail.update(state.x,state.z);sky.position.copy(camera.position);sunGlow.position.copy(camera.position).addScaledVector(sunDir,560);sunCore.position.copy(sunGlow.position);drawMap();gates.forEach(g=>{g.group.visible=phase==='menu'?camera.aspect>0.95:g.group.position.distanceTo(camera.position)>13;});renderer.render(scene,camera);if(!$('loading').hidden)$('loading').hidden=true;}
