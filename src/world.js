@@ -194,6 +194,11 @@ export function stepBike(s,input,dt) {
       if(s.speed<5&&Math.abs(relRoll)>.28&&contacts===2){
        const support=Math.min(1,(Math.abs(relRoll)-.28)/.3)*(1-s.speed/5);
        b.torque.vadd(f.scale(-relRoll*support*1600),b.torque);
+       // Physical foot support: push the chassis up at a low foot point on the
+       // falling side. This adds a real contact force instead of only torque.
+       const footPoint=b.position.vadd(side.scale(Math.sign(relRoll)*.42)).vadd(new C.Vec3(0,-.5,0));
+       const gap=footPoint.y-s.physics.height(footPoint.x,footPoint.z);
+       if(gap<.4)b.applyForce(new C.Vec3(0,Math.max(0,.4-gap)*support*900,0),footPoint);
       }
 
     }else{

@@ -7,7 +7,7 @@
 | Steering damper | Roll-rate term on the steering target |
 | Max steer / max lean | `s.steer` clamp and `desiredRoll` clamp |
 | Acceleration / front / rear / safe brake | Throttle force, separate front/rear brake values, bank-sensitive safe-brake factor |
-| Feet support near the fall limit | Low-speed rider-foot restoring torque below 5 m/s |
+| Feet support near the fall limit | Low-speed rider-foot restoring torque plus an upward force at a low foot contact point below 5 m/s |
 | Balance / lean helpers | Explicit balance and target-balance functions and tests |
 | Wheel interpolation | `RidePose` / visual interpolation between fixed physics steps |
 | Slip effects | Tire tracks, dust, wheelspin and speed feedback |
