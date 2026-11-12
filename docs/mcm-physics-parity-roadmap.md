@@ -381,3 +381,15 @@ supplied, upstream branch selection is assumed, and the transform is isolated.
 The engine drive-force call immediately following this block (`0x4a7c46`) and the
 subsequent force/moment sequence are not included. These response comparisons do
 not yet establish connected wheel-contact or whole-bike trajectory parity.
+
+The paired suspension-force caller `0x4a9bbf..0x4a9d5c` now matches 36,000
+original executions, including both original `0x4b11e0` calls. All four response
+activation combinations have 9,000 cases each; all 12 force/damping output words
+match. See `mcm-suspension-forces-validation.json` and retained fixtures.
+The caller passes response **travel** (`stack+0x23c` / `+0x238`) as the helper's
+compression argument, supplies distinct coefficients and mass shares, and adds
+extra stiffness only to the second response. Inactive responses clear force but
+preserve the damping scratch vector. These details now have an explicit adapter
+in `suspension-forces.js` rather than relying on matching property names.
+The oracle supplies response outputs; intervening upstream sequencing and the
+subsequent force/torque accumulation remain outside this validation.
