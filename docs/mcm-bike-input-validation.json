@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "7b8a5321ba6d7685483e57f0fab79d75b9a3fbff9a311ec775a7c3376894c5d2",
+  "loaderSourceSha256": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe",
+  "casesSha256": "15a1793e4413f5ebf72d0ebba7278adac02348ae9ea267416bdd88a9a3d73933",
+  "resultsSha256": "342a9c512363f591767d12a71e8d4e47985de91db59b68c4fa9a10d9c93df2fb",
+  "cases": 48000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "outcomes": {
+    "result=0,polls=0": 5861,
+    "result=1,polls=1": 21022,
+    "result=0,polls=3": 1674,
+    "result=1,polls=4": 926,
+    "result=1,polls=2": 9690,
+    "result=1,polls=3": 3415,
+    "result=0,polls=2": 2510,
+    "result=0,polls=1": 2019,
+    "result=0,polls=4": 573,
+    "result=1,polls=5": 161,
+    "result=0,polls=5": 128,
+    "result=1,polls=6": 15,
+    "result=0,polls=6": 6
+  },
+  "scope": "Connected original bike query 0x4a4ab0, POV lookup 0x453fe0 and input aggregator 0x454f70. AI/secondary gates, active POV suppression for actions 4/5, both inactive sentinels and signed-zero engine/brake values, device availability and short-circuit poll order. Device-level responses are supplied at 0x452670 / 0x453cd0 / 0x454760 with query arguments checked. Device mapping/state acquisition and full rider update excluded."
+}
