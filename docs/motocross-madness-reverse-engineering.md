@@ -2,6 +2,8 @@
 
 Analysis date: 2026-11-12. Target: the user's two local Windows copies.
 
+For the full remaining recovery work, dependencies and acceptance criteria, see the [physics parity roadmap](mcm-physics-parity-roadmap.md).
+
 ## Implementation status
 
 The recovered handling changes now run by default in Dust Valley. `src/mcm-handling.js` owns SI spring constants, front/rear damping thresholds, 183.7 kg mass and the 40° requested bank with bounded transitions. `BikeVehicle.updateSuspension` replaces Cannon's linear suspension force calculation. The landing-only damping boost is removed; continuous damping and a constant 30 kN per-wheel safeguard handle impacts. Chassis inertia scales with the mass change while preserving our existing proportions.
