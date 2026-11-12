@@ -370,3 +370,15 @@ test('rotating response matches original gating, limiting, matrix and height cor
   }
   assert.ok(active>0&&skipped>0&&limited>0);
 });
+
+test('paired suspension forces match original response wiring and inactive scratch preservation',async()=>{
+  const {calculateMcmSuspensionForces}=await import('../src/physics/mcm/suspension-forces.js');
+  const {floatBits}=await import('../src/physics/mcm/math.js');
+  const flags=new Set();
+  for(const {input,outputBits} of fixture('suspension-forces-wine11.json').fixtures){
+    const r=calculateMcmSuspensionForces(input);
+    assert.deepEqual([...r.first.force,...r.first.dampingForce,...r.second.force,...r.second.dampingForce].map(floatBits),outputBits);
+    flags.add(input.first.active+2*input.second.active);
+  }
+  assert.equal(flags.size,4);
+});

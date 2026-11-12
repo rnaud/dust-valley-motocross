@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "c0cef97d61e7c6152950dd8f1a2b9d7e20c257fe16fc6ce8d058015206caebbc",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "84a2ead0a8d3b32e44a2a491d1b926f0bcc099f0de0134ac6f540cd95280e9c4",
+  "resultsSha256": "936dfb7a4492adb5bd8ece2f92cef78635f7b1e695ba4bdd56a4618ef185d4ae",
+  "cases": 36000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original 0x4a9bbf..0x4a9d5c paired suspension force caller, including original helper calls, active gates, per-component coefficients, extra stiffness on second response only, and preserved inactive damping outputs. All four active-flag combinations have 9000 cases each. Inputs are supplied response outputs; upstream response sequencing and downstream force/torque accumulation excluded."
+}
