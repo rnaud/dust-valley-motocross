@@ -544,3 +544,18 @@ Fixtures span all four mask values, threshold-adjacent angles, both signs, cache
 preservation and zero secondary axes. These are supplied-state root-transform
 cases. This branch and the preceding active path still need the common
 `0x4a4b60` contact/event helper, then full sequencing and trajectory comparison.
+
+The common event **decision** function `0x4a4d70..0x4a52b9` now matches
+48,000 original executions across 14 return/state/call-count words
+(`mcm-event-decision-validation.json`). The recovered function preserves branch
+priority, launch velocities, input-triggered events, suppression and other-bike
+pointer clearing, animation-dependent flag changes, counter/angle/contact gates,
+collision direction classification, and speed-change checks. All ten emitted
+reason codes appear in the original results. Threshold-adjacent values and negative
+zero are included; fixture input bit patterns preserve negative zero through JSON.
+The input query and two random draws are supplied at their call boundaries, with
+call counts and query arguments checked. This validates finite supplied state and
+positive collision speeds; it does not validate the input subsystem or RNG here.
+The caller `0x4a4b60` still needs its event setup, transform reparenting and rider
+controller calls recovered before this decision joins the complete update. This
+is not a whole-bike trajectory or playable-mode parity claim.
