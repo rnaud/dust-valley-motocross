@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "1b571d51f34e639cfb27d03d5c0a39116fdac699208c3385fd1388e53e123516",
+  "loaderSourceSha256": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe",
+  "casesSha256": "e93d20e69f9af1839686ca769c28897ff931cbf25f5f42760c16a8d0baac0b61",
+  "resultsSha256": "75e440e3d80ee133a432cfd0560f8289b91a60131843a6f1ba2fd0ada2173b92",
+  "cases": 40000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original pointer/scalar relative-position entries 0x4b7860 / 0x4b77a0 with real world resolution and point transforms 0x4b8660 / 0x4b8810. Null, self, parent and external reference; finite matrices including nonorthogonal rotations; source/parent cache combinations. Relative conversion cases have a target parent as required by the original. Full child callback orientation and event integration excluded."
+}

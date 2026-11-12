@@ -597,3 +597,18 @@ test('connected bike event wrapper matches original decisions, orientation, boun
  assert.deepEqual([...reasons].sort((a,b)=>a-b),[1,2,4,5,6,7,8,9,10,12]);
  assert.ok(oriented>0&&skipped>0&&clamped>0);
 });
+
+test('child position transforms match both original entry points and reference/cache paths',async()=>{
+ const {setMcmPositionRelativeTo}=await import('../src/physics/mcm/position-transform.js');
+ const {floatBits}=await import('../src/physics/mcm/math.js');
+ const paths=new Set(),cachePaths=new Set();
+ for(const {input:c,outputBits} of fixture('position-transform-wine11.json').fixtures){
+  const nodes=c.nodes.map(n=>({...n,local:[...n.local],world:[...n.world]}));
+  if(c.parented){nodes[0].parent=nodes[1];nodes[1].firstChild=nodes[0];}
+  if(c.externalParent){nodes[2].parent=nodes[1];if(c.parented)nodes[0].nextSibling=nodes[2];else nodes[1].firstChild=nodes[2];}
+  setMcmPositionRelativeTo(nodes[0],c.reference?nodes[c.reference-1]:null,c.position);
+  assert.deepEqual(nodes.flatMap(n=>[...[...n.local,...n.world].map(floatBits),n.cacheValid]),outputBits);
+  paths.add(`${c.reference}:${c.entry}`);cachePaths.add(c.nodes.map(n=>n.cacheValid).join(':'));
+ }
+ assert.equal(paths.size,8);assert.equal(cachePaths.size,8);
+});
