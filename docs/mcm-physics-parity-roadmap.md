@@ -734,3 +734,14 @@ and all downstream orientation/child/animation mutations. Tests exercise all
 16 trick indices and no-selection preservation with inputs around magnitude 0.5
 and across direction sectors. The earlier input/button gates and nearby-bike
 interaction branch remain outside this evidence, as do full-step trajectories.
+
+The bike button-query path `0x4a4ab0`, real POV lookup `0x453fe0` and real input
+aggregator `0x454f70` now match 48,000 original executions, including result,
+number of polls and ordered device identities (`mcm-bike-input-validation.json`).
+The port preserves AI/secondary-control gates, suppression of action 4/5 queries
+when an active POV is present and engine/brake state is signed zero, both inactive
+POV sentinels, and short-circuit polling across all six device slots. Device-level
+responses at `0x452670`, `0x453cd0` and `0x454760` are supplied, with action/option
+arguments checked by the oracle. Fixtures include every observed result/poll-count
+combination. Device mapping and acquisition remain external; connection into the
+complete rider update and full-step trajectory evidence are still required.

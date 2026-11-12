@@ -743,3 +743,17 @@ test('directional trick selection and startup match original dead zone and both 
  }
  assert.equal(selected.size,16);assert.ok(skipped>0);
 });
+
+test('bike input gates and aggregation match original results and ordered device polls',async()=>{
+ const {queryMcmBikeInput}=await import('../src/physics/mcm/bike-input.js');
+ const {bitsFloat}=await import('../src/physics/mcm/math.js');
+ const outcomes=new Set(),devices=new Set();let negativeZero=0;
+ for(const {input:c,engineBits,brakeBits,outputBits} of fixture('bike-input-wine11.json').fixtures){
+  c.engineLevel=bitsFloat(engineBits);c.brake=bitsFloat(brakeBits);
+  const r=queryMcmBikeInput(c);
+  assert.deepEqual([r.value,r.polled.length,...r.polled.map(x=>x+1),...Array(6-r.polled.length).fill(0)],outputBits);
+  outcomes.add(`${r.value}:${r.polled.length}`);for(const device of r.polled)devices.add(device);
+  if(Object.is(c.engineLevel,-0)||Object.is(c.brake,-0))negativeZero++;
+ }
+ assert.equal(outcomes.size,13);assert.equal(devices.size,6);assert.ok(negativeZero>0);
+});
