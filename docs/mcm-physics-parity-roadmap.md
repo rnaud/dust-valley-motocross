@@ -334,3 +334,22 @@ Every supplied course uses world-to-grid `float32(1/3)` and height scale
 0.01171875. Dunes has 12,594 nodes starting at file byte 5,353,326. Course sample
 banks can now feed the isolated recovered terrain query, but the connected bike
 update and original-versus-port whole-bike trajectories remain outstanding.
+
+A connected contact-probe sequence is now recovered: original block
+`0x4a6a25..0x4a6c01`, point transform `0x4b8660`, and continuous terrain queries.
+Across all 35 courses, 420,000 executions match all 23 output words (transformed
+points, sampled points, normals, depths and three contact selectors), with zero
+differences. Another 12,000 synthetic flat-course cases match; retained original
+outputs provide asset-free regression fixtures. See
+`mcm-contact-probes-validation.json` and `contact-probes-wine11.json`.
+
+The block first tests bike-local `+0x630` through the transform referenced by
+component `+0x8ec`, then tests `+0x63c` only if the first is above the surface.
+It always tests `+0x648` through bike transform `+0x434`. The first pair uses a
+zero depth threshold, the third uses float32(-0.3) feet. A no-hit pair preserves
+the incoming selector; the upstream caller must supply its actual initial state.
+The oracle executes this entire instruction range intact and captures its stack
+outputs. Inputs use varied affine transforms and synthetic local points over
+actual terrain; these are not captured whole-bike configurations. Upstream gates,
+subsequent response, suspension sequencing and complete bike-step parity remain
+unimplemented/unvalidated by this milestone.

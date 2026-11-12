@@ -391,3 +391,18 @@ recovered parser supplies the root offset, scale and decoded sample banks; this 
 not a full game-loader or complete bike-step comparison. Raw original course data
 and oracle binaries stay in the local output directory; commit reports and
 synthetic fixtures only.
+
+### Connected contact probes
+
+```sh
+node scripts/mcm-reference/compare-contact-probes-oracle.mjs /path/to/mcm.exe /tmp/new-probe-run /path/to/course.trn
+node scripts/mcm-reference/create-synthetic-probe-course.mjs /tmp/new-flat-course.trn
+node scripts/mcm-reference/compare-contact-probes-oracle.mjs /path/to/mcm.exe /tmp/new-flat-probe-run /tmp/new-flat-course.trn
+```
+
+This executes original `0x4a6a25..0x4a6c01`, including original point transforms
+and terrain queries, using varied affine transforms and local probe points.
+It compares all resulting geometry and selector bits. The synthetic course's
+recognized hash enables fixture output without copying original assets. The
+instruction block's upstream conditions and downstream response are outside
+this comparison; it is not a complete bike update.
