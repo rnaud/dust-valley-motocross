@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "4aae982a9c0d3faf90f419e9e25f1f61384309df3cc39fa72c1b2b6e41459eab",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "2a5a1cc9611c2e83dd009f01770aa836ce05bec1ce678675ad4cd6d1f3768036",
+  "resultsSha256": "a56fe7e5527b026948720a34cbb71332c3b52c0a181b96318175741c87d24495",
+  "cases": 40000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original continuous terrain height query 0x411340 with face normal output: alternating triangles, grid ties, negative coordinate clamping, two hierarchy levels, missing tiles and null root; finite synthetic coordinates and tiles. Varied terrain heights and scales; live terrain integration is not covered."
+}
