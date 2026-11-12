@@ -317,3 +317,15 @@ test('continuous smooth terrain normals preserve original corner selection and r
     assert.deepEqual([...queryMcmTerrainHeight({...c,root}),...queryMcmTerrainNormal({...c,root,normal:[1,2,3]})].map(floatBits),outputBits);
   }
 });
+
+test('continuous face terrain normals preserve original normalization and orientation', async () => {
+  const {queryMcmTerrainHeight} = await import('../src/physics/mcm/terrain-height.js');
+  const {queryMcmTerrainFaceNormal} = await import('../src/physics/mcm/terrain-face-normal.js');
+  const {floatBits} = await import('../src/physics/mcm/math.js');
+  for (const {input:c,outputBits} of fixture('terrain-face-normal-wine11.json').fixtures) {
+    const leaf={level:0,bias:c.bias,scale:c.scale,heights:Array.from({length:289},(_,j)=>(c.base+j*137)&65535),normals:Array.from({length:289},(_,j)=>c.normals[(j%17%2)+2*(Math.floor(j/17)%2)])};
+    const child={level:1,children:Array(256).fill(leaf)},parent={level:2,children:Array(256).fill(child)};
+    const root=[leaf,child,parent,{level:1},{level:1,children:Array(256).fill(null)},null][c.mode];
+    assert.deepEqual([...queryMcmTerrainHeight({...c,root}),...queryMcmTerrainFaceNormal({...c,root,normal:[1,2,3]})].map(floatBits),outputBits);
+  }
+});

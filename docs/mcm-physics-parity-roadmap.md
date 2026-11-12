@@ -283,3 +283,12 @@ stores across branches and the even-cell branch that weights corner n01 while
 the corresponding height plane uses h11. Synthetic corner normals have positive
 Y components; degenerate/cancelling normals are not covered by this claim.
 Face-normal mode, course-data recovery, and whole-bike integration remain open.
+
+Geometric face normals (`0x411340`, normalMode 1) now match all six point/normal
+output words in 40,000 original-executable cases. The oracle invokes the original
+up-vector initializer `0x412910`; omitting it leaves a zero vector in the isolated
+loader and incorrectly suppresses normal orientation. The translation preserves
+`0x401820`'s rounded length followed by reciprocal normalization, triangle order,
+and signed zero after orientation. See `mcm-terrain-face-normal-validation.json`.
+These remain synthetic tile tests; actual course data and complete bike-step
+comparisons are still required.
