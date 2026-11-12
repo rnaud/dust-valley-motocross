@@ -394,3 +394,19 @@ test('paired force torque caller matches original clipping and ordered counter m
   }
   assert.ok(counters.has(0)&&counters.has(1)&&counters.size>2);
 });
+
+test('connected force assembly and angular update match original contact corrections',async()=>{
+  const {updateMcmForceAngular}=await import('../src/physics/mcm/force-angular-step.js');
+  const {floatBits}=await import('../src/physics/mcm/math.js');
+  let changed=0;
+  const modes=new Set();
+  for(const {input,outputBits} of fixture('force-angular-wine11.json').fixtures){
+    const r=updateMcmForceAngular(input);
+    const values=[...r.totalForce,...r.totalTorque,...r.velocity,...r.acceleration,...r.opposing,...r.opposingLocal];
+    assert.deepEqual([...values.map(floatBits),r.counter,...r.previousPivot.map(floatBits),...r.matrix.map(floatBits),floatBits(r.field6ac),r.mask],outputBits);
+    if(r.matrix.some((v,i)=>floatBits(v)!==floatBits(input.matrix[i])))changed++;
+    modes.add(input.state844+2*input.contact);
+  }
+  assert.equal(modes.size,4);
+  assert.ok(changed>0);
+});

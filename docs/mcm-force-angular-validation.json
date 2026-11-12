@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "d2e0d59160f4418628f9fd70c58f5b9f7acde57b69f1d937aa2e42707fa071ed",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "fa22e4433516bd7cba007481b8aed58b77af407c0deb0ebfa648d75befce771a",
+  "resultsSha256": "9b014bbc23ac6a2fefc249250594cf3370697ecb1e72aa5b1866291c0018f921",
+  "cases": 36000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original connected 0x4aa77d..0x4aaf02: paired force accumulation, pitch clips and counter, third contact torque and its angular velocity mutation, force/torque sums, pivot copy, inertia, opposing acceleration and angular integration. Contact correction and its transform mutation included with a root transform; supplied force, geometry and flags. Upstream force construction and full bike update excluded."
+}
