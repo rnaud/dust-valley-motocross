@@ -1,3 +1,4 @@
+import {updateMcmStateOrientation} from './state-orientation.js';
 import {updateMcmControllerHandoff} from './controller-handoff.js';
 import {updateMcmMotionTransform} from './motion-transform.js';
 import {updateMcmForceAngular} from './force-angular-step.js';
@@ -28,4 +29,13 @@ export function updateMcmMotionController(c){
   const controller=updateMcmControllerHandoff({...c,linearVelocity:result.linear.velocity,
     angularVelocity:result.angular.velocity});
   return {...result,controller};
+}
+
+// Adds only the nonzero-state orientation branch. State-zero orientation is
+// still excluded, rather than approximated by this branch.
+export function updateMcmMotionStateOrientation(c){
+  const result=updateMcmMotionController(c);
+  const orientation=updateMcmStateOrientation({...c,matrix:result.transform.matrix,
+    scratch540:result.transform.axis});
+  return {...result,orientation};
 }

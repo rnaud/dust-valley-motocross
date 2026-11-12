@@ -479,3 +479,16 @@ velocity handoff at `0x4ab99f`. State-zero exits at `0x4abb30` before its separa
 orientation branch. Compares 104 final words, including controller linear/angular
 vectors. Optional other-bike velocity is supplied; collision detection and the
 subsequent orientation/rider/crash branches remain excluded.
+
+### Nonzero-state orientation after motion
+
+```sh
+node scripts/mcm-reference/compare-state-orientation-oracle.mjs /path/to/mcm.exe /tmp/new-state-orientation-run
+```
+
+Extends the connected force/motion/controller oracle through the nonzero-state
+orientation branch to `0x4ac6cd`; state-zero exits at `0x4abb30` before its separate
+logic. Compares 107 final words, including the corrected matrix, normalized world
+scratch and local axis at bike `+0x624`. Positive-Y normals avoid degenerate sums;
+threshold gates and preservation branches are covered. Root transforms and
+supplied upstream geometry/forces remain limitations.

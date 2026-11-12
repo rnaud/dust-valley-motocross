@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "d2dede2a951b7b40e36955bffb4454583fa89bd0db3de681f95f80112ac1adfd",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "9eab52b3a6b3feade79e3f06d50b9ab1647009fe0d61309a27fb7f11050deb32",
+  "resultsSha256": "0dcd796fb56de0f7b17bf7252ac273f0faa005a0e0231a1f7bca1a9f1c30d1bb",
+  "cases": 36000,
+  "controlWord": 639,
+  "coverage": {
+    "bodyRotated": 31949,
+    "bodySkipped": 4051,
+    "freeEngineSpin": 1402,
+    "stateDamping": 6000,
+    "fieldDamping": 7713,
+    "wheelPreserved": 6601,
+    "handoffSkipped": 18005,
+    "handoffOther": 3602,
+    "handoffBounce": 7198,
+    "handoffDamped": 7195,
+    "orientationSkipped": 29399,
+    "orientationBoth": 3599,
+    "orientationFront": 3002
+  },
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Connected force-to-motion and controller handoff followed by original nonzero-state orientation correction through 0x4ac6cd. State-zero exits at 0x4abb30 before its separate orientation branch. Positive-Y contact normals, isolated root transforms; upstream force generation, state-zero correction, later rider/crash logic and whole-bike trajectories excluded."
+}
