@@ -420,3 +420,16 @@ All four state/contact combinations and changed-transform cases are retained in
 fixtures. This uses supplied assembled forces, geometry and flags with a root
 transform. Upstream force construction, parented correction, linear integration,
 and complete bike trajectories are not established by this milestone.
+
+The following force-to-linear-motion block `0x4aaf02..0x4ab49e` now matches
+40,000 original executions across 20 output words
+(`mcm-force-linear-validation.json`). It stores acceleration from force and
+inverse mass, then stores delta velocity before integration. Between those
+operations it computes a cross-product/asin steering fallback, updates or decays
+`+0x6d8/+0x6dc/+0x6e0`, and chooses the rotation used downstream. The port preserves
+signed bit comparisons, float stores, nearest-even counter conversion, sign
+crossing resets, and the freeze gate. Fixtures exercise generated correction,
+decay, nonzero fallback, and frozen motion. The field meanings remain partly
+unresolved; tests supply finite geometry and positive `+0x8cc` values. This block
+is not yet joined to the force/angular adapter, and downstream rotation, earlier
+force construction, and complete original-versus-port trajectories remain open.
