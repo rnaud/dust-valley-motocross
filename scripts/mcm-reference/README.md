@@ -417,3 +417,15 @@ Executes original `0x4aa77d..0x4aa959` and its cross-product/inverse-rotation
 helpers with supplied forces, arms, and a valid cached world matrix. Compares
 force and torque sums, both bike scratch vectors, and the shared clip counter.
 This is a bounded caller-block comparison, not a complete bike update.
+
+### Connected force assembly and angular integration
+
+```sh
+node scripts/mcm-reference/compare-force-angular-oracle.mjs /path/to/mcm.exe /tmp/new-force-angular-run
+```
+
+Executes original `0x4aa77d..0x4aaf02`, including contact correction, with a root
+transform and supplied assembled forces and geometry. The 40 output words cover
+force/torque sums, angular velocity/acceleration, opposing torque, clip counter,
+pivot history, transform, correction angle and mask. It exercises both inertia
+states and contact gates. Upstream forces and full bike integration are excluded.

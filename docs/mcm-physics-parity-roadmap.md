@@ -406,3 +406,17 @@ Fixtures include zero forces, boundary controls, and counter overflow.
 This oracle supplies assembled forces and valid cached world matrices; earlier
 force construction, cache resolution, the following third force contribution,
 and complete bike integration remain outside this milestone.
+
+The connected force assembly through angular integration sequence
+`0x4aa77d..0x4aaf02` now matches 36,000 original executions across 40 output
+words (`mcm-force-angular-validation.json`). This extends the paired-force
+milestone through the third force/torque contribution, pivot-history copy,
+contact transform correction, inertia selection, opposing acceleration, and
+angular velocity integration. The third contact-torque helper can reset angular
+velocity X before damping. Its flag is the same front-contact flag subsequently
+read by contact correction, rather than an independent input. Opposing torque
+uses the corrected transform, while force moments use the preceding transform.
+All four state/contact combinations and changed-transform cases are retained in
+fixtures. This uses supplied assembled forces, geometry and flags with a root
+transform. Upstream force construction, parented correction, linear integration,
+and complete bike trajectories are not established by this milestone.
