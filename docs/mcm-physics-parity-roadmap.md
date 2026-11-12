@@ -636,3 +636,16 @@ indices 0–7 and nonorthogonal, nondegenerate axes. The zero `record+4` callbac
 branch and dispatch over the complete bounds-child list still need recovery and
 connection to the event wrapper; this milestone does not remove that wrapper's
 child-list guard.
+
+The zero `record+4` branch of `0x44fa70` now also matches 40,000 original
+executions across 105 output words
+(`mcm-relative-child-transform-validation.json`). This executes relative
+orientation `0x4b7270` and scalar relative position `0x4b77a0` together, including
+component lookup and mutations of the record's axes. The port includes the
+separate pointer-argument matrix product `0x4b9bb0` and preserves its x87 sum
+orders, rotation-only transposes, binary32 normalization and restoration of the
+local translation. Coverage uses the same 32 parent/cache combinations and eight
+component indices as the first branch. Both callback branches now have isolated
+original-execution evidence; ordered child-list dispatch and their connection
+inside the event wrapper remain outstanding. Null/self orientation-reference
+paths are implemented but are not covered by this callback-specific report.

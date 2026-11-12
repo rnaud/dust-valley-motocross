@@ -628,3 +628,19 @@ test('local child callback matches original orientation, relative position and r
  }
  assert.equal(paths.size,32);assert.equal(components.size,8);
 });
+
+test('relative child callback matches original orientation, relative position and record mutations',async()=>{
+ const {applyMcmRelativeChildTransform}=await import('../src/physics/mcm/relative-child-transform.js');
+ const {floatBits}=await import('../src/physics/mcm/math.js');
+ const paths=new Set(),components=new Set();
+ for(const {input:c,outputBits} of fixture('relative-child-transform-wine11.json').fixtures){
+  const nodes=c.nodes.map(n=>({...n,local:[...n.local],world:[...n.world]}));
+  nodes[0].parent=nodes[c.targetParent];nodes[c.targetParent].firstChild=nodes[0];
+  if(c.bodyParent){nodes[1].parent=nodes[2];nodes[1].nextSibling=nodes[2].firstChild;nodes[2].firstChild=nodes[1];}
+  const record={forward:[...c.forward],up:[...c.up],position:[...c.position]};
+  applyMcmRelativeChildTransform(nodes[1],nodes[0],record);
+  assert.deepEqual([...nodes.flatMap(n=>[...[...n.local,...n.world].map(floatBits),n.cacheValid]),...[...record.forward,...record.up].map(floatBits)],outputBits);
+  paths.add(`${c.targetParent}:${c.bodyParent}:${c.nodes.map(n=>n.cacheValid).join(':')}`);components.add(c.componentIndex);
+ }
+ assert.equal(paths.size,32);assert.equal(components.size,8);
+});
