@@ -504,3 +504,14 @@ at `0x4ac64a` and `0x4ac1f7`. Compares 16 output words: control vector, both scr
 vectors, linear velocity/speed and angular velocity. Uses positive speed with
 axial/oblique directions. Later timer/orientation code and whole-bike sequencing
 are excluded.
+
+### State-zero timer and control rotation
+
+```sh
+node scripts/mcm-reference/compare-state-zero-rotation-oracle.mjs /path/to/mcm.exe /tmp/new-zero-rotation-run
+```
+
+Runs original `0x4abb30..0x4ac17b` with limited/activation gate exits intercepted.
+Compares control/velocity state, root matrix, timer/sign/phase/accumulator, angle
+and cache flag (38 words). Uses the full `0xcc8` bike allocation. The following
+contact/event helper and alternate state-zero path remain excluded.

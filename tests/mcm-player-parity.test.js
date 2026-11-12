@@ -500,3 +500,19 @@ test('state-zero control matches original deflection, damping and preserved gate
  }
  assert.ok(skipped>0&&deflected>0&&damped>0);
 });
+
+test('state-zero control and rotation match original timer phases and pivot update',async()=>{
+ const {updateMcmStateZeroControlRotation}=await import('../src/physics/mcm/state-zero-rotation.js');
+ const {floatBits}=await import('../src/physics/mcm/math.js');
+ let rotated=0,zero=0,transition=0;const phases=new Set();
+ for(const {input,outputBits} of fixture('state-zero-rotation-wine11.json').fixtures){
+  const r=updateMcmStateZeroControlRotation(input);
+  const values=[...r.controlVector,...r.scratch540,...r.scratch54c,...r.velocity,r.speed,...r.angularVelocity,...r.matrix,r.timer,r.previousSign,r.accumulator];
+  assert.deepEqual([...values.map(floatBits),r.phase>>>0,floatBits(r.angle),r.cacheValid],outputBits);
+  if(!r.cacheValid)rotated++;
+  if(!input.limitedFirst&&!input.limitedSecond&&input.field4bc&&r.angle===0)zero++;
+  if(r.phase!==input.phase)transition++;
+  phases.add(input.phase);
+ }
+ assert.ok(rotated>0&&zero>0&&transition>0);assert.equal(phases.size,5);
+});
