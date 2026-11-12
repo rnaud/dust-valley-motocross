@@ -607,3 +607,18 @@ without child callbacks. The captured player's vtable is `0x4d9a94`; its slot
 be recovered and connected. The port rejects nonempty bounds-child records when
 the orientation branch runs. No whole-bike trajectory or full playable parity
 claim follows from these supplied-state event tests.
+
+The child callback's position operations `0x4b7860` (pointer arguments) and
+`0x4b77a0` (scalar arguments) now match 40,000 original executions across 99
+matrix/cache words (`mcm-position-transform-validation.json`). Both original
+entry points execute their real world-transform and point-conversion callees.
+The port preserves null-reference assignment, self-reference addition, conversion
+from another reference through world space into the target parent's space, and
+cache invalidation. The inverse helper stores inverse translation as binary32
+before adding it to the transformed point; replacing this with a single inverse
+matrix operation would lose the original rounding. Cases cover all four reference
+kinds, both entry points, every cache combination, shared parents and finite
+nonorthogonal matrices. The original uses a transposed rotation even for those
+matrices; no general inverse is substituted. Non-self relative conversions require
+a parent, matching the original dereference. Child orientation and complete
+callback integration remain outstanding.
