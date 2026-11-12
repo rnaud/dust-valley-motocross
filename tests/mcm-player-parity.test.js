@@ -701,3 +701,19 @@ test('rider blend matches original peak gates, envelope interpolation and inacti
  }
  assert.ok(reset>0&&preserved>0&&changed>0&&negativeZero>0&&positive>0&&negative>0);
 });
+
+test('connected rider pose and blend match original indices, weights and preserved state',async()=>{
+ const {updateMcmRiderPose}=await import('../src/physics/mcm/rider-pose.js');
+ const {floatBits,bitsFloat}=await import('../src/physics/mcm/math.js');
+ const modes=new Set();let height=0,lowSpeed=0,highSpeed=0,secondaryPreserved=0;
+ for(const {input:c,controlBits,outputBits} of fixture('rider-pose-wine11.json').fixtures){
+  c.control=bitsFloat(controlBits);
+  const r=updateMcmRiderPose(c);
+  assert.deepEqual([...[r.blend,r.positivePeak,r.negativePeak,...r.envelope].map(floatBits),r.pose>>>0,floatBits(r.weight),r.nextPose>>>0,floatBits(r.secondaryWeight)],outputBits);
+  modes.add(c.enabled);
+  if(!c.field4bc&&c.height>c.lowerHeight)height++;
+  else if(c.poseSpeed<=14)lowSpeed++;else highSpeed++;
+  if(r.secondaryWeight===c.secondaryWeight)secondaryPreserved++;
+ }
+ assert.equal(modes.size,2);assert.ok(height>0&&lowSpeed>0&&highSpeed>0&&secondaryPreserved>0);
+});

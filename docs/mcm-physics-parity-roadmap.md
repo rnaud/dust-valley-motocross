@@ -698,3 +698,15 @@ the envelope duration. Inputs are finite with positive durations and component
 limits. Earlier pose/trick selection, its helper calls and connection to the
 complete rider routine remain outstanding; this does not establish whole-bike
 trajectory parity.
+
+Connected rider pose selection and blending `0x4aefcd..0x4af6f6` now match
+48,000 original executions across 11 output words
+(`mcm-rider-pose-validation.json`). The port includes lower/upper height selection,
+the speed-14 branch, nearest-even pose-index conversion, the special speed-32
+weight path, and the secondary-weight update/preservation rules, then executes
+the recovered blend tail. Both the unrounded and binary32-stored pose-coordinate
+values are needed at different points. Coverage includes threshold-adjacent
+heights and speeds, both mode flags, steering samples and signed-zero blend
+control. Earlier input/trick handling and the orientation reset before this
+section still need to be connected; full-update and trajectory parity remain
+unproven.
