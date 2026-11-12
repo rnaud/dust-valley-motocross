@@ -710,3 +710,16 @@ heights and speeds, both mode flags, steering samples and signed-zero blend
 control. Earlier input/trick handling and the orientation reset before this
 section still need to be connected; full-update and trajectory parity remain
 unproven.
+
+The trick-start helper `0x4a1970` now matches 48,000 original executions across
+209 checked state words (`mcm-trick-start-validation.json`). It runs the real
+orientation/bounds-child callbacks and both animation selectors `0x430a20`, with
+all 16 trick indices and both orientation-reset paths. The port resets the
+envelope and trick counters/flags, optionally resets orientation and dispatches
+child records, and selects the rider and bike animation records. Pointer outputs
+are compared as indices into supplied animation tables. Event and trick paths
+now share the recovered graph/reset adapter; existing event fixtures continue to
+check its behavior. Graph scope remains a root bike with the tested component
+hierarchies and nondegenerate axes. Live animation tables, selection of a trick
+from rider input, the nearby-bike interaction helper `0x4a16d0`, and full-step
+trajectory validation remain outstanding.
