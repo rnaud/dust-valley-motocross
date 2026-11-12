@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "f1e68685a9eadbec98e5435a8b5db25aa4bae065d10d5c458a7d98a497da5bb0",
+  "loaderSourceSha256": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe",
+  "casesSha256": "09a321639167c19fb66a23966ed5e6536ba05c4ab7a265847d246e295d00f57a",
+  "resultsSha256": "27790f2581a36afecf8633f1a95c17b5a619ce23e59c5cf22ab0fa36a103dfbd",
+  "cases": 40000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Connected state-zero control through timer, sign/phase accumulator and pivot rotation, 0x4abb30..0x4ac17b with original limited/activation exits. Positive speed, isolated root transform; later contact/event helper and alternate state-zero branch excluded."
+}

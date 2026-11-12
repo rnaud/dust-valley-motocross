@@ -515,3 +515,20 @@ isolated; its later timer/orientation code and its connection to the preceding
 motion sequence still need recovery. Field labels retain unresolved semantics;
 this result does not establish whole-bike trajectories or update the playable
 preview's chassis behavior.
+
+The active state-zero path now extends through `0x4ac17b`, including its
+`+0xc6c/+0xc70/+0xc74/+0xc78` timer, sign, accumulator and phase state, normalized
+control-vector rotation and pivot at `+0x66c`. All 38 output words match across
+40,000 original executions (`mcm-state-zero-rotation-validation.json`). Fixtures
+include inactive gates, phase/sign transitions, zero vectors and applied rotations.
+Later `0x4a4b60` contact/event handling and the alternate state-zero path are not
+included; this remains a supplied-state comparison rather than a whole-bike replay.
+
+The shared oracle's bike buffer was expanded from `0x900` to the original `0xcc8`
+allocation after compiler bounds diagnostics exposed access to the late fields.
+The preceding state-zero-control oracle was rerun with the corrected buffer: all
+40,000 cases still match, with the exact same result-file hash as before. Its
+report and fixtures now record the corrected loader hash. New timer evidence uses
+only the corrected allocation. A stack-relative operand error in the first
+rotation translation was caught by the differential run and corrected before
+retaining these passing fixtures.

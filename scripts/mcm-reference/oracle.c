@@ -9,7 +9,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-uint8_t bike[0x900];
+/* Original bike allocation includes late control fields through +0xc78. */
+uint8_t bike[0xcc8];
 uint32_t delta_bits, iterations, dt_bits;
 double inverse_dt;
 void scheduler(void);
