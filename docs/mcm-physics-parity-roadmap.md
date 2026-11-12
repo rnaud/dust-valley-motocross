@@ -264,3 +264,13 @@ Validation: 114 tests pass and the production build succeeds. The recovered core
 is not yet integrated into the playable simulation; continuous terrain queries,
 full update sequencing, and whole-bike original-versus-port trajectories remain
 required before claiming complete physics parity.
+
+The continuous terrain **height-only** query (`0x411340`, null normal output)
+now has an independent translation and original-execution harness. All 40,000
+synthetic cases match point output bits under x87 control word `0x027f`; see
+`mcm-terrain-height-validation.json`. This covers alternating triangles,
+round-to-nearest-even cell selection, negative coordinate clamping, hierarchical
+samples, missing tiles and null roots. Retained original fixtures provide a
+regression check. Continuous normal interpolation, actual course data and the
+connection to whole-bike contact updates remain outstanding. This result is
+scoped helper evidence, not a complete physics equivalence claim.

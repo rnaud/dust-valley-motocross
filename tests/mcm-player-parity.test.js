@@ -294,3 +294,14 @@ test('terrain hierarchy lookup matches original height precision and normal scal
     assert.deepEqual(Array.from({length:7},(_,j)=>bytes.readUInt32LE(j*4)),outputBits);
   }
 });
+
+test('continuous terrain height matches original triangle selection and grid rounding', async () => {
+  const {queryMcmTerrainHeight} = await import('../src/physics/mcm/terrain-height.js');
+  const {floatBits} = await import('../src/physics/mcm/math.js');
+  for (const {input:c,outputBits} of fixture('terrain-height-wine11.json').fixtures) {
+    const leaf={level:0,bias:c.bias,scale:c.scale,heights:Array.from({length:289},(_,j)=>(c.base+j*137)&65535),normals:Array.from({length:289},()=>[0,1,0])};
+    const child={level:1,children:Array(256).fill(leaf)},parent={level:2,children:Array(256).fill(child)};
+    const root=[leaf,child,parent,{level:1},{level:1,children:Array(256).fill(null)},null][c.mode];
+    assert.deepEqual(queryMcmTerrainHeight({...c,root}).map(floatBits),outputBits);
+  }
+});
