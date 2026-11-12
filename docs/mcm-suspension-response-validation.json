@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "420d7344b61d6777e6f98bec1009a33168f5b9b9818266df24bbb2aaace4bd2a",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "5b849f9ad6ed6d138cba00656f0f6fbdf367ed958d3e37a45934eaaa6eacba9c",
+  "resultsSha256": "f2332391852753f152678d2c2f0838098cb4dea791a1335052acc03690181712",
+  "cases": 36000,
+  "controlWord": 639,
+  "coverage": {
+    "active": 20572,
+    "skipped": 15428,
+    "limitedActive": 3722
+  },
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original caller block 0x4a72b5..0x4a73e2, including suspension geometry, component update, gating, height/point corrections and skipped-path history resets. Supplied contact direction/normal and scratch state; finite nondegenerate active inputs, isolated transform; upstream gates, terrain sampling and later force application excluded"
+}
