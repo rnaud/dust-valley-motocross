@@ -453,3 +453,17 @@ Runs original `0x4aa77d..0x4ab49e` continuously, comparing 60 output words with
 assembly, contact correction, angular integration, steering decay and linear
 integration. Uses supplied forces/geometry and a root transform; earlier force
 construction and later rotation application are excluded.
+
+### Force-to-transform sequence
+
+```sh
+node scripts/mcm-reference/compare-motion-transform-oracle.mjs /path/to/mcm.exe /tmp/new-motion-transform-run
+```
+
+Runs continuous original `0x4aa77d..0x4ab7fd`, including wheel component helpers,
+translation assignment and body rotation around the saved pivot. Compares 98
+final words, including both wheel matrices and their cache flags. The matrix and
+scratch-axis slots report final post-rotation values; the separately returned
+linear position fields retain their integration results. Uses isolated root
+transforms and supplied upstream forces/geometry. Later rider/crash logic and
+parent/child transform hierarchies are not part of this oracle.

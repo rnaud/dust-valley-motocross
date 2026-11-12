@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "d3e3d5fdf561b143eea2eb7c49789734611bbe441375b984f598b2ec6f941ef1",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "567d45ae27b7bdc4d3bd3add97f09716d209f0fb3b8aaffc55443e2c6a58d7f8",
+  "resultsSha256": "c315bc362ac27b36e06751990a90db465b68b3a420305b3b3ad34fc0c810fc21",
+  "cases": 36000,
+  "controlWord": 639,
+  "coverage": {
+    "bodyRotated": 31926,
+    "bodySkipped": 4074,
+    "freeEngineSpin": 1402,
+    "stateDamping": 6000,
+    "fieldDamping": 7713,
+    "wheelPreserved": 6601
+  },
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Connected original 0x4aa77d..0x4ab7fd: assembled forces through angular and linear integration, wheel increments and transforms, position assignment and pivoted body rotation. Includes original wheel helpers and transform cache mutations. Root isolated transforms and supplied forces/geometry; upstream force generation, subsequent rider/crash branches and whole-bike trajectories excluded."
+}
