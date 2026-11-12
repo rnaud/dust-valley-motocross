@@ -723,3 +723,14 @@ check its behavior. Graph scope remains a root bike with the tested component
 hierarchies and nondegenerate axes. Live animation tables, selection of a trick
 from rider input, the nearby-bike interaction helper `0x4a16d0`, and full-step
 trajectory validation remain outstanding.
+
+Directional trick selection `0x4aee32` connected to the real trick-start helper
+now matches 48,000 original executions across 210 checked words
+(`mcm-trick-selection-validation.json`). The oracle exits at `0x4aed96` for the
+dead zone or `0x4af6f6` after trick startup. The recovered path preserves the
+unrounded squared-input dead-zone comparison, original coarse square root,
+different stored/unrounded direction thresholds, both button-selected banks,
+and all downstream orientation/child/animation mutations. Tests exercise all
+16 trick indices and no-selection preservation with inputs around magnitude 0.5
+and across direction sectors. The earlier input/button gates and nearby-bike
+interaction branch remain outside this evidence, as do full-step trajectories.
