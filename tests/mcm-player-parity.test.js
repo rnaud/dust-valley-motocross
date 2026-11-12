@@ -357,3 +357,16 @@ test('suspension response matches original gating, limiting, corrections and his
   }
   assert.ok(active>0&&skipped>0&&limited>0);
 });
+
+test('rotating response matches original gating, limiting, matrix and height corrections',async()=>{
+  const {updateMcmRotatingResponse}=await import('../src/physics/mcm/rotating-response.js');
+  const {floatBits}=await import('../src/physics/mcm/math.js');
+  let active=0,skipped=0,limited=0;
+  for(const {input,outputBits} of fixture('rotating-response-wine11.json').fixtures){
+    const r=updateMcmRotatingResponse(input);
+    const values=[...r.displacement,...r.velocity,r.compression,r.travel,...r.matrix,r.previousTravel];
+    assert.deepEqual([...values.map(floatBits),r.limited,r.contactLimited,r.cacheValid,...[r.height,...r.point].map(floatBits),r.active],outputBits);
+    if(r.active){active++;if(r.limited)limited++;}else skipped++;
+  }
+  assert.ok(active>0&&skipped>0&&limited>0);
+});

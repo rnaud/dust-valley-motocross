@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "df2faf580c20e71b3438a2399ece9ef969fdf248b013f84c24d92a474a18ed9d",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "44d95c82b65981ce16985025cac866d29ad516f17fc96364773de4452379e99f",
+  "resultsSha256": "df7869058fb048c4d9b7af153914f70d1424d13c9824b0303b091e18eb791780",
+  "cases": 36000,
+  "controlWord": 639,
+  "coverage": {
+    "active": 21818,
+    "skipped": 14182,
+    "limitedActive": 5146,
+    "zeroCrossActive": 3116
+  },
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original caller block 0x4a7b33..0x4a7c46 with rotating contact geometry, component update, gating, history reset and height/point corrections. Supplied geometry includes zero cross-product branch and both signs of height; isolated transform. Upstream branch selection, terrain sampling and downstream force application excluded"
+}
