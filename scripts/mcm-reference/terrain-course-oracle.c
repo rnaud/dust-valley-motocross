@@ -19,6 +19,8 @@ static void* construct(FILE*file,void*parent){
  ((void* (__attribute__((thiscall)) *)(void*,FILE*,void*,void*))0x2008a2f0)(n,file,(void*)1,parent);
  *(uint32_t*)(n+0x1b8)=index;return n;
 }
+
+#ifndef MCM_COURSE_NO_MAIN
 static uint32_t node_offset(void*p){if(!p)return 0;uint32_t i=*(uint32_t*)((unsigned char*)p+0x1b8);if(i<node_count&&nodes[i]==p)return offsets[i];fail("unknown child");return 0;}
 int main(int argc,char**argv){
  if(argc!=5)return 2;
@@ -50,3 +52,5 @@ int main(int argc,char**argv){
  if(fclose(out))fail("close");
  return 0;
 }
+
+#endif

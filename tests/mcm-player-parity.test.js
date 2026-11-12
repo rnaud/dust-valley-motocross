@@ -329,3 +329,18 @@ test('continuous face terrain normals preserve original normalization and orient
     assert.deepEqual([...queryMcmTerrainHeight({...c,root}),...queryMcmTerrainFaceNormal({...c,root,normal:[1,2,3]})].map(floatBits),outputBits);
   }
 });
+
+test('connected contact probes match original transforms, terrain results and selectors',async()=>{
+  const {sampleMcmContactProbes}=await import('../src/physics/mcm/contact-probes.js');
+  const {floatBits}=await import('../src/physics/mcm/math.js');
+  const leaf={level:0,bias:0,scale:1,heights:Array(289).fill(100),normals:Array.from({length:289},()=>[0,1,0])};
+  const terrain={root:{level:1,children:Array(256).fill(leaf)},heightScale:.01171875,worldToGrid:Math.fround(1/3)};
+  const seen=new Set();
+  for(const {input:q,outputBits} of fixture('contact-probes-wine11.json').fixtures){
+    const r=sampleMcmContactProbes({terrain,...q,componentNode:{local:q.componentMatrix,cacheValid:0},bikeNode:{local:q.bikeMatrix,cacheValid:0}});
+    const pack=p=>[...p.world,...p.surface,...p.normal,p.depth].map(floatBits);
+    assert.deepEqual([...pack(r.primary),...pack(r.third),r.selector,r.thirdContact,r.anyContact],outputBits);
+    seen.add(r.selector);
+  }
+  assert.deepEqual([...seen].sort(),[0,1,2]);
+});
