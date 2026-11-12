@@ -474,3 +474,16 @@ around its saved pivot. Final matrix translation can therefore differ from the
 bike position fields; both are compared independently. Tests use isolated root
 transforms and supplied upstream forces/geometry. Later rider/crash branches,
 parent/child cache propagation and whole-bike trajectories remain outstanding.
+
+The following controller velocity handoff `0x4ab7fd..0x4ab99f` now has a
+connected 36,000-case comparison (`mcm-motion-controller-validation.json`), with
+zero differences across 104 final words. The state-zero path exits at `0x4abb30`
+before its separate orientation logic. Active controller flags trigger copies to
+controller `+0x70/+0x7c`. Transition kind 2 optionally copies another bike's linear
+velocity; kinds 4 and 7 add `min(abs(bikeVelocityY),35)` to copied vertical velocity
+and retain full angular velocity. Other kinds scale angular velocity by 0.75.
+Inactive gates preserve both controller vectors. Coverage includes 18,005 skipped,
+3,602 other-bike, 7,198 vertical-increment and 7,195 damped handoffs. The broader
+meaning of transition kinds and controller flags remains unresolved. This is not
+validation of collisions with another rider: that velocity is supplied. Following
+orientation correction and rider/crash behavior remain outside the comparison.

@@ -1,3 +1,4 @@
+import {updateMcmControllerHandoff} from './controller-handoff.js';
 import {updateMcmMotionTransform} from './motion-transform.js';
 import {updateMcmForceAngular} from './force-angular-step.js';
 import {updateMcmForceLinear} from './force-linear-step.js';
@@ -18,4 +19,13 @@ export function updateMcmForceMotionTransform(c) {
     position:linear.position,angularVelocity:angular.velocity,
     previousPivot:angular.previousPivot,scratch540:linear.scratch540});
   return {angular,linear,transform};
+}
+
+// Controller handoff follows body rotation; the zero-state branch is a no-op
+// here, and its subsequent orientation handling remains a separate stage.
+export function updateMcmMotionController(c){
+  const result=updateMcmForceMotionTransform(c);
+  const controller=updateMcmControllerHandoff({...c,linearVelocity:result.linear.velocity,
+    angularVelocity:result.angular.velocity});
+  return {...result,controller};
 }

@@ -467,3 +467,15 @@ scratch-axis slots report final post-rotation values; the separately returned
 linear position fields retain their integration results. Uses isolated root
 transforms and supplied upstream forces/geometry. Later rider/crash logic and
 parent/child transform hierarchies are not part of this oracle.
+
+### Motion-to-controller handoff
+
+```sh
+node scripts/mcm-reference/compare-motion-controller-oracle.mjs /path/to/mcm.exe /tmp/new-motion-controller-run
+```
+
+Extends continuous original force-to-transform execution through controller
+velocity handoff at `0x4ab99f`. State-zero exits at `0x4abb30` before its separate
+orientation branch. Compares 104 final words, including controller linear/angular
+vectors. Optional other-bike velocity is supplied; collision detection and the
+subsequent orientation/rider/crash branches remain excluded.
