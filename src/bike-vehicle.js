@@ -1,4 +1,5 @@
 import {RaycastVehicle,Vec3} from 'cannon-es';
+import {mcmPreviewSuspension} from './mcm-preview.js';
 import {suspensionForce} from './mcm-handling.js';
 
 // Cannon's standard ray stops at spring rest length, despite exposing additional
@@ -7,7 +8,7 @@ import {suspensionForce} from './mcm-handling.js';
 export class BikeVehicle extends RaycastVehicle {
   updateSuspension(){
     for(const wheel of this.wheelInfos){
-      wheel.suspensionForce=wheel.isInContact?suspensionForce({
+      wheel.suspensionForce=wheel.isInContact?(this.recoveredPreview?mcmPreviewSuspension:suspensionForce)({
         compression:wheel.suspensionRestLength-wheel.suspensionLength,
         velocity:wheel.suspensionRelativeVelocity,mass:this.chassisBody.mass,
         front:wheel.isFrontWheel,contactFactor:wheel.clippedInvContactDotSuspension,

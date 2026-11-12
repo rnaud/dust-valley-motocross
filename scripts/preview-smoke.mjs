@@ -1,0 +1,35 @@
+import {chromium} from '@playwright/test';
+import assert from 'node:assert/strict';
+const browser=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true,args:['--enable-webgl','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+const errors=[];
+try{
+ const page=await browser.newPage({viewport:{width:1440,height:1000}});
+ page.on('pageerror',e=>{errors.push(e.message);console.error(e.message);});
+ await page.addInitScript(()=>{localStorage.setItem('dust-valley-tutorial','1');localStorage.setItem('dust-valley-quality','low');});
+ page.setDefaultTimeout(60000);
+ await page.goto(process.env.GAME_URL||'http://127.0.0.1:5190',{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>window.__game);
+ await page.selectOption('#physics-mode','mcm-preview');await page.click('[data-mode=free]');
+ await page.screenshot({path:'/tmp/mcm-preview-menu.png'});
+ await page.click('#start');await page.waitForFunction(()=>window.__game.snapshot().countdown<=0);
+ assert.equal(await page.evaluate(()=>window.__game.snapshot().physicsMode),'mcm-preview');
+ assert.equal(await page.locator('#lights').isVisible(),false);assert.ok(await page.evaluate(()=>window.__game.snapshot().countdown<0));
+ await page.keyboard.down('KeyW');await page.waitForFunction(()=>window.__game.snapshot().speed>8).catch(async e=>{console.error(await page.evaluate(()=>window.__game.snapshot()));throw e;});
+ await page.keyboard.down('KeyD');await page.waitForFunction(()=>Math.abs(window.__game.snapshot().steer)>.03);await page.keyboard.up('KeyD');
+ await page.screenshot({path:'/tmp/mcm-preview-riding.png'});
+ await page.keyboard.up('KeyW');await page.waitForFunction(()=>window.__game.snapshot().engine.recovered.released===1);
+ assert.equal(await page.evaluate(()=>window.__game.snapshot().engine.force),0);
+ await page.keyboard.press('Escape');assert.equal(await page.evaluate(()=>window.__game.snapshot().phase),'paused');
+ await page.click('#photo');await page.mouse.move(800,450);await page.mouse.down();await page.mouse.move(1040,450,{steps:12});await page.mouse.up();await page.mouse.wheel(0,-280);await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));await page.screenshot({path:'/tmp/mcm-preview-bike.png'});
+ await page.keyboard.press('Escape');await page.click('#resume');await page.keyboard.press('KeyR');
+ assert.equal(await page.evaluate(()=>window.__game.snapshot().engine.recovered.randomState),12345);
+ await page.keyboard.press('Escape');await page.click('#home');await page.selectOption('#physics-mode','classic');await page.click('#start');
+ assert.equal(await page.evaluate(()=>window.__game.snapshot().physicsMode),'classic');
+ assert.equal(await page.locator('#preview-badge').isVisible(),false);
+ await page.close();
+ const phone=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});phone.on('pageerror',e=>errors.push(e.message));
+ await phone.goto(process.env.GAME_URL||'http://127.0.0.1:5190',{waitUntil:'domcontentloaded'});await phone.waitForFunction(()=>window.__game);await phone.selectOption('#physics-mode','mcm-preview');
+ await phone.screenshot({path:'/tmp/mcm-preview-mobile.png'});
+ assert.equal(await phone.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+ await phone.locator('#start').scrollIntoViewIfNeeded();assert.ok(await phone.locator('#start').isVisible());
+ assert.deepEqual(errors,[]);console.log('Preview browser checks passed: selection, acceleration, steering, throttle release, pause/photo/reset, classic fallback, mobile layout.');
+}finally{await browser.close();}
