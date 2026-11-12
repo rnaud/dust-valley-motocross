@@ -502,3 +502,16 @@ oracle have positive Y so their sum is nonzero, transforms are isolated roots,
 and upstream forces/geometry are supplied. Degenerate normal sums, state-zero
 orientation, subsequent rider/crash handling and whole-bike trajectories remain
 outside this evidence. The playable preview has not adopted this partial core.
+
+The initial state-zero control path `0x4abb30..0x4abef9` now matches 40,000
+original executions across 16 output words
+(`mcm-state-zero-control-validation.json`). This preserves limited/activation
+gates, control-vector construction, scalar modifiers, conditional velocity
+normalization and lateral deflection, speed recomputation, and 0.9 angular
+velocity damping. Both axial and oblique velocities are tested around the
+alignment thresholds, with both signs of the deflection multiplier. Inputs use
+positive speed and a supplied component forward axis. This block is currently
+isolated; its later timer/orientation code and its connection to the preceding
+motion sequence still need recovery. Field labels retain unresolved semantics;
+this result does not establish whole-bike trajectories or update the playable
+preview's chassis behavior.
