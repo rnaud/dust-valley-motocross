@@ -684,3 +684,20 @@ test('common post-event state matches original vectors, award timing and suspens
  }
  assert.equal(caches.size,8);assert.ok(awarded>0&&counted>0&&zeroTimer>0&&stoppedYaw>0);
 });
+
+test('rider blend matches original peak gates, envelope interpolation and inactive reset',async()=>{
+ const {updateMcmRiderBlend}=await import('../src/physics/mcm/rider-blend.js');
+ const {floatBits,bitsFloat}=await import('../src/physics/mcm/math.js');
+ let reset=0,preserved=0,changed=0,negativeZero=0,positive=0,negative=0;
+ for(const {input:c,controlBits,outputBits} of fixture('rider-blend-wine11.json').fixtures){
+  c.control=bitsFloat(controlBits);
+  const r=updateMcmRiderBlend(c);
+  assert.deepEqual([r.blend,r.positivePeak,r.negativePeak,...r.envelope].map(floatBits),outputBits);
+  if(!c.enabled)reset++;
+  else if(floatBits(r.blend)===floatBits(c.blend))preserved++;else changed++;
+  if(Object.is(c.control,-0))negativeZero++;
+  if(c.positivePeak!==r.positivePeak)positive++;
+  if(c.negativePeak!==r.negativePeak)negative++;
+ }
+ assert.ok(reset>0&&preserved>0&&changed>0&&negativeZero>0&&positive>0&&negative>0);
+});

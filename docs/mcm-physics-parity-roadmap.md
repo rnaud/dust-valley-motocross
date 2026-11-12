@@ -686,3 +686,15 @@ the remaining update count to one. A no-event result calls `0x4aecb0` only on th
 last scheduled update, before this common section. That rider/animation routine,
 the object/collision callbacks starting at `0x4ac7c4`, and the subsequent scheduler
 remainder handling are still required for a complete update and trajectory test.
+
+The no-event rider routine's blend tail `0x4af185..0x4af6f6` now matches 48,000
+original executions across seven output words (`mcm-rider-blend-validation.json`).
+It includes directional peak tracking, conditional preservation, clamped envelope
+movement, and inactive envelope reset plus component-angle-to-blend conversion.
+The original stores the new envelope as binary32 but retains its extended value
+to derive the blend; the port preserves that distinction. Fixtures cover positive
+and negative control, signed zero, blend/angle/limit boundaries and dt above/below
+the envelope duration. Inputs are finite with positive durations and component
+limits. Earlier pose/trick selection, its helper calls and connection to the
+complete rider routine remain outstanding; this does not establish whole-bike
+trajectory parity.
