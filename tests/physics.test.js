@@ -68,7 +68,9 @@ for(const speed of [15,22,30])test(`course-shaped jump at ${speed}m/s lands and 
   assert.equal(s.crashed,false);
   if(first>=0&&i>first+120)break;
  }
- assert.ok(first>0);assert.ok(minSpeed>landingSpeed*.8);assert.equal(s.contacts,2);assert.ok(s.speed>20);
+ assert.ok(first>0);assert.ok(minSpeed>landingSpeed*.8);assert.equal(s.contacts,2);
+ // A real powerband need not hit the old constant-force speed after one second.
+ assert.ok(s.speed>landingSpeed+1,'must accelerate away from the landing');
 });
 
 for(const surface of ['flat','free'])test(`accelerate then alternate left/right on ${surface} without spin or braking`,()=>{

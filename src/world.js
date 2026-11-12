@@ -1,6 +1,8 @@
 import * as C from 'cannon-es';
 import {parkHeight} from './jump-park.js';
 import {BikeVehicle} from './bike-vehicle.js';
+import {MCM_HANDLING,advanceLean} from './mcm-handling.js';
+import {createDrivetrain,stepDrivetrain} from './drivetrain.js';
 import {tireForces} from './tires.js';
 import {getBalanceSteer,getSafeBrakeFactor} from './controller.js';
 import {TAU,trackAt,track,trackLength,trackGrade,trackCurvature,raceFeatures,nearestTrack} from './track.js';
@@ -49,7 +51,7 @@ export function terrain(x,z) {
 }
 export function trackDistance(x,z) { return nearestTrack(x,z).distance; }
 
-// SI units: 150 kg bike+rider, 9.81 m/s² gravity, forces in newtons.
+// SI units: 183.7 kg bike+rider, 9.81 m/s² gravity, forces in newtons.
 // Two independent suspension rays transfer ground impulses to a six-DOF chassis.
 // A bounded rider balance torque keeps the bike rideable; pitch is never snapped
 // to the terrain and airborne steering cannot change the flight trajectory.
@@ -65,25 +67,26 @@ export function createState(options={}) {
   const start=options.flat?{x:0,z:0,tx:0,tz:1}:track(0);
   const p=options.spawn ?? start;
   const yaw=options.spawn?.yaw ?? (options.flat?0:Math.atan2(start.tx,start.tz));
-  const chassis=new C.Body({mass:150,linearDamping:.015,angularDamping:.15});
+  const chassis=new C.Body({mass:MCM_HANDLING.mass,linearDamping:.015,angularDamping:.15});
   chassis.addShape(new C.Box(new C.Vec3(.28,.32,.72)));
   // Rider mass sits above the small collision box; include it in rotational inertia.
-  chassis.inertia.set(110,100,75);chassis.invInertia.set(1/110,1/100,1/75);chassis.updateInertiaWorld(true);
+  const inertiaScale=MCM_HANDLING.mass/150;
+  chassis.inertia.set(110*inertiaScale,100*inertiaScale,75*inertiaScale);chassis.invInertia.set(1/(110*inertiaScale),1/(100*inertiaScale),1/(75*inertiaScale));chassis.updateInertiaWorld(true);
   chassis.position.set(p.x,height(p.x,p.z)+1.15,p.z);chassis.quaternion.setFromEuler(0,yaw,0);
   // A handful of large boulders are real colliders; the rest of the scatter is scenery.
-  for(const rock of heroRocks){
+  for(const rock of options.flat?[]:heroRocks){
    const q=trackAt(rock.s),x=q.x+q.tz*rock.side,z=q.z-q.tx*rock.side,b=new C.Body({mass:0});
    b.addShape(new C.Sphere(rock.r*.78));b.position.set(x,height(x,z)+rock.r*.55,z);world.addBody(b);
   }
   const vehicle=new BikeVehicle({chassisBody:chassis,indexRightAxis:0,indexUpAxis:1,indexForwardAxis:2});
-  for(const z of [-1.05,1.1])vehicle.addWheel({radius:.61,directionLocal:new C.Vec3(0,-1,0),axleLocal:new C.Vec3(-1,0,0),chassisConnectionPointLocal:new C.Vec3(0,-.12,z),suspensionRestLength:.55,maxSuspensionTravel:.3,suspensionStiffness:55,dampingRelaxation:4.5,dampingCompression:3.5,maxSuspensionForce:10000,frictionSlip:0,rollInfluence:.08,isFrontWheel:z>0});
+  for(const z of [-1.05,1.1])vehicle.addWheel({radius:.61,directionLocal:new C.Vec3(0,-1,0),axleLocal:new C.Vec3(-1,0,0),chassisConnectionPointLocal:new C.Vec3(0,-.12,z),suspensionRestLength:.55,maxSuspensionTravel:.3,maxSuspensionForce:30000,frictionSlip:0,rollInfluence:.08,isFrontWheel:z>0});
   vehicle.addToWorld(world);
-  const s={x:p.x,z:p.z,y:chassis.position.y-.5,yaw:0,speed:0,vy:0,pitch:0,roll:0,air:false,airtime:0,boost:100,steer:0,throttle:0,contacts:0,crashed:false,crashTime:0,slip:0,compression:[0,0],gear:1,rpm:1200,quaternion:{x:0,y:0,z:0,w:1},wheelTransforms:[],landingRecovery:0,wheelContacts:[],balanceRoll:0,tireLoads:[0,0],wheelOmega:[0,0],slipRatio:[0,0]};
+  const s={x:p.x,z:p.z,y:chassis.position.y-.5,yaw:0,speed:0,vy:0,pitch:0,roll:0,air:false,airtime:0,boost:100,steer:0,throttle:0,contacts:0,crashed:false,crashTime:0,slip:0,compression:[0,0],gear:1,rpm:1200,quaternion:{x:0,y:0,z:0,w:1},wheelTransforms:[],landingRecovery:0,wheelContacts:[],balanceRoll:0,tireLoads:[0,0],wheelOmega:[0,0],slipRatio:[0,0],engine:createDrivetrain(),requestedLean:0};
   Object.defineProperty(s,'physics',{value:{world,chassis,vehicle,height},enumerable:false});
   sync(s);return s;
 }
-function sync(s){const {chassis:b,vehicle:v}=s.physics;const f=b.quaternion.vmult(new C.Vec3(0,0,1)),up=b.quaternion.vmult(new C.Vec3(0,1,0));s.x=b.position.x;s.y=b.position.y-.5;s.z=b.position.z;s.yaw=Math.atan2(f.x,f.z);s.pitch=Math.asin(Math.max(-1,Math.min(1,f.y)));s.roll=Math.atan2(-up.x*Math.cos(s.yaw)+up.z*Math.sin(s.yaw),up.y);s.speed=Math.hypot(b.velocity.x,b.velocity.z);s.vy=b.velocity.y;s.yawRate=b.angularVelocity.y;s.gear=Math.max(1,Math.min(6,1+Math.floor(s.speed/6.5)));const gearRatios=[3.8,2.9,2.3,1.9,1.6,1.4],ratio=gearRatios[s.gear-1]*3.1;s.rpm=Math.round(Math.max(1200,Math.min(9500,Math.abs(s.speed)/.61*ratio*60/TAU+(s.throttle||0)*450)));s.quaternion={...b.quaternion};s.wheelTransforms=v.wheelInfos.map((w,i)=>{v.updateWheelTransform(i);return {position:{...w.worldTransform.position},quaternion:{...w.worldTransform.quaternion},direction:{...w.directionWorld}};});s.compression=v.wheelInfos.map(w=>Math.max(0,1-w.suspensionLength/.55));}
-export function resetBike(s,x,z,yaw){const {chassis:b,height}=s.physics;b.position.set(x,height(x,z)+1.2,z);b.quaternion.setFromEuler(0,yaw,0);b.velocity.setZero();b.angularVelocity.setZero();b.force.setZero();b.torque.setZero();s.crashed=false;s.crashTime=0;s.airtime=0;s.landingRecovery=0;s.wheelContacts=[];s.throttle=0;s.steer=0;s.balanceRoll=0;s.tireLoads=[0,0];b.wakeUp();sync(s);}
+function sync(s){const {chassis:b,vehicle:v}=s.physics;const f=b.quaternion.vmult(new C.Vec3(0,0,1)),up=b.quaternion.vmult(new C.Vec3(0,1,0));s.x=b.position.x;s.y=b.position.y-.5;s.z=b.position.z;s.yaw=Math.atan2(f.x,f.z);s.pitch=Math.asin(Math.max(-1,Math.min(1,f.y)));s.roll=Math.atan2(-up.x*Math.cos(s.yaw)+up.z*Math.sin(s.yaw),up.y);s.speed=Math.hypot(b.velocity.x,b.velocity.z);s.vy=b.velocity.y;s.yawRate=b.angularVelocity.y;s.gear=s.engine.gear;s.rpm=Math.round(s.engine.rpm);s.quaternion={...b.quaternion};s.wheelTransforms=v.wheelInfos.map((w,i)=>{v.updateWheelTransform(i);return {position:{...w.worldTransform.position},quaternion:{...w.worldTransform.quaternion},direction:{...w.directionWorld}};});s.compression=v.wheelInfos.map(w=>Math.max(0,1-w.suspensionLength/.55));}
+export function resetBike(s,x,z,yaw){const {chassis:b,height}=s.physics;b.position.set(x,height(x,z)+1.2,z);b.quaternion.setFromEuler(0,yaw,0);b.velocity.setZero();b.angularVelocity.setZero();b.force.setZero();b.torque.setZero();s.crashed=false;s.crashTime=0;s.airtime=0;s.landingRecovery=0;s.wheelContacts=[];s.throttle=0;s.steer=0;s.balanceRoll=0;s.tireLoads=[0,0];s.engine=createDrivetrain();s.requestedLean=0;s.wheelOmega=[0,0];s.slipRatio=[0,0];s.contacts=0;s.air=false;for(const w of s.physics.vehicle.wheelInfos){w.isInContact=false;w.raycastResult.reset();w.suspensionForce=0;}b.wakeUp();sync(s);}
 export function stepBike(s,input,dt) {
   const {world,chassis:b,vehicle:v}=s.physics;
   const gas=input.gas&&!s.crashed?1:0,brake=input.brake?1:0;
@@ -95,11 +98,12 @@ export function stepBike(s,input,dt) {
   // Stick requests corner lean; bars steer more at walking speed and less at speed.
   // atan(v² / gR) couples the requested lean to turn curvature.
   const intent=Math.sign(steerInput)*Math.pow(Math.min(1,Math.abs(steerInput)),.8);
-  const maxLean=1.0;
+  const maxLean=MCM_HANDLING.maxLean;
   const normal=new C.Vec3(0,1,0);
   if(s.contacts){normal.setZero();for(const w of v.wheelInfos)if(w.raycastResult.hasHit)normal.vadd(w.raycastResult.hitNormalWorld,normal);normal.normalize();}
   const slopeRoll=-Math.asin(Math.max(-1,Math.min(1,normal.dot(new C.Vec3(Math.cos(s.yaw),0,-Math.sin(s.yaw))))));
-  const requestedLean=intent*maxLean*Math.min(1,s.speed/9);
+  s.requestedLean=advanceLean(s.requestedLean,intent*maxLean*Math.min(1,s.speed/9),dt);
+  const requestedLean=s.requestedLean;
   const desiredRoll=Math.max(-1.05,Math.min(1.05,slopeRoll+requestedLean));
   const fwd=b.quaternion.vmult(new C.Vec3(0,0,1));
   const rollRate=b.angularVelocity.dot(fwd);
@@ -119,8 +123,9 @@ export function stepBike(s,input,dt) {
   const steerTarget=Math.max(-.65,Math.min(.65,lowSpeedYaw*.2*(1-leanBlend)+(balance*steerGain+(balance-targetBalance)*.18-rollRate*.05)*leanBlend+yawCorrection));
   s.steer+=(steerTarget-s.steer)*(1-Math.exp(-dt*18));
   v.setSteeringValue(s.crashed?0:s.steer,1);
-  // Torque falls with road speed; drag, not a velocity clamp, sets top speed.
-  const driveForce=s.throttle*(boosting?2300:1700)/(1+s.speed/40);
+  // Actual engine state powers the rear tire and also feeds the HUD and audio.
+  stepDrivetrain(s.engine,{speed:b.velocity.dot(fwd),throttle:s.throttle,brake:!!brake,grounded:v.wheelInfos[0].raycastResult.hasHit,boost:boosting},dt);
+  const driveForce=s.engine.force*MCM_HANDLING.traction;
   // Safe-brake clamp: don't ask a fully banked tire for a straight-line stop.
   const safeBrake=getSafeBrakeFactor(s.roll);
   // RaycastVehicle supplies suspension and wheel rotation only. Its car tire
@@ -158,7 +163,7 @@ export function stepBike(s,input,dt) {
         s.tireLoads[i]+=(rawLoad-s.tireLoads[i])*(1-Math.exp(-dt*20));
         const load=s.tireLoads[i];
         const forces=tireForces({longSpeed:velocity.dot(wheelForward),sideSpeed:velocity.dot(wheelSide),load,
-          drive:i===0?driveForce:0,brake:brake?(i===1?1200*safeBrake:700*safeBrake):gas?0:35,camber:s.roll-slopeRoll,front:i===1,dt});
+          drive:i===0?driveForce:0,brake:brake?(i===1?1200*safeBrake:700*safeBrake):i===0?s.engine.engineBrake:0,camber:s.roll-slopeRoll,front:i===1,dt});
         const groundSpeed=velocity.dot(wheelForward),rolling=groundSpeed/.61;
         const driven=i===0?s.throttle*(1-Math.min(1,Math.abs(groundSpeed)/18))*16:0;
         s.wheelOmega[i]=rolling+driven;
@@ -180,7 +185,7 @@ export function stepBike(s,input,dt) {
       // Only both-wheel support gets strong ground balance; one-wheel touchdown
       // must not receive a violent roll correction.
       const balance=contacts===2||Math.abs(s.roll)>1?1:.6;
-      s.balanceRoll+=Math.max(-4.5*dt,Math.min(4.5*dt,(desiredRoll-s.balanceRoll)*(1-Math.exp(-dt*18))));
+      s.balanceRoll=desiredRoll;
       const torqueLimit=Math.abs(s.roll)>1?6000:2200;
       const torque=Math.max(-torqueLimit,Math.min(torqueLimit,(s.balanceRoll-s.roll)*11000-b.angularVelocity.dot(f)*1700));
       b.torque.vadd(f.scale(torque*balance),b.torque);
@@ -212,9 +217,7 @@ export function stepBike(s,input,dt) {
     }
   }
   s.landingRecovery=Math.max(0,s.landingRecovery-dt);
-  // Reserve high compression damping for landings; normal riding retains its travel.
-  const landingShock=s.airtime>.12||s.landingRecovery>0;
-  for(const wheel of v.wheelInfos){wheel.dampingCompression=landingShock?12:3.5;wheel.dampingRelaxation=landingShock?6:4.5;wheel.maxSuspensionForce=landingShock?30000:10000;}
+  // Progressive springs and digressive damping handle landings continuously.
   // Remove bank from support-ray direction (finite tire contact approximation),
   // but retain pitch so forks still follow ramp takeoffs and landings.
   const suspensionWorld=new C.Vec3(Math.sin(s.yaw)*Math.sin(s.pitch),-Math.cos(s.pitch),Math.cos(s.yaw)*Math.sin(s.pitch));

@@ -1,0 +1,175 @@
+{
+  "executables": [
+    {
+      "path": "/Users/anf/Downloads/mcm/mcm.exe",
+      "sha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+      "bytes": 1036800
+    },
+    {
+      "path": "/Users/anf/Downloads/Motocross_Madness/mcm.exe",
+      "sha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+      "bytes": 1036800
+    }
+  ],
+  "same_executable": true,
+  "same_config": true,
+  "verified_initializers": {
+    "step_seconds": {
+      "instruction": "0x4a2104",
+      "field_offset": "0x8cc",
+      "value": 0.019999999552965164
+    },
+    "max_iterations": {
+      "instruction": "0x4a2114",
+      "field_offset": "0x8d4",
+      "value": 10
+    },
+    "max_speed_ft_s": {
+      "instruction": "0x4a211e",
+      "field_offset": "0x5ec",
+      "value": 160.0
+    },
+    "traction_speed_ft_s": {
+      "instruction": "0x4a2159",
+      "field_offset": "0x6d4",
+      "value": 45.0
+    },
+    "bike_weight_lb": {
+      "instruction": "0x4a2163",
+      "field_offset": "0x684",
+      "value": 240.0
+    },
+    "rider_weight_lb": {
+      "instruction": "0x4a216d",
+      "field_offset": "0x688",
+      "value": 165.0
+    },
+    "total_weight_lb": {
+      "instruction": "0x4a2177",
+      "field_offset": "0x68c",
+      "value": 405.0
+    },
+    "mass_slugs": {
+      "instruction": "0x4a21d2",
+      "field_offset": "0x558",
+      "value": 12.57763957977295
+    },
+    "front_spring_default": {
+      "instruction": "0x4a222f",
+      "field_offset": "0x5b8",
+      "value": 1000.0
+    },
+    "front_cubic_default": {
+      "instruction": "0x4a2239",
+      "field_offset": "0x5bc",
+      "value": 100.0
+    },
+    "rear_spring_default": {
+      "instruction": "0x4a2243",
+      "field_offset": "0x5c8",
+      "value": 600.0
+    },
+    "rear_cubic_default": {
+      "instruction": "0x4a224d",
+      "field_offset": "0x5cc",
+      "value": 60.0
+    },
+    "front_damping_limit_ft_s": {
+      "instruction": "0x4a22d6",
+      "field_offset": "0x5c4",
+      "value": 20.600000381469727
+    },
+    "rear_damping_limit_ft_s": {
+      "instruction": "0x4a22e0",
+      "field_offset": "0x5d4",
+      "value": 1.600000023841858
+    },
+    "max_lean_rad": {
+      "instruction": "0x4a2344",
+      "field_offset": "0x83c",
+      "value": 0.6981316208839417
+    },
+    "max_lean_rate_rad_s": {
+      "instruction": "0x4a234e",
+      "field_offset": "0x840",
+      "value": 2.0943946838378906
+    },
+    "wreck_lean_rad": {
+      "instruction": "0x4a2363",
+      "field_offset": "0x858",
+      "value": 1.221730351448059
+    },
+    "shift_seconds": {
+      "instruction": "0x49eff8",
+      "field_offset": "0x80",
+      "value": 0.05000000074505806
+    },
+    "indoor_outdoor_factor": {
+      "instruction": "0x49f002",
+      "field_offset": "0x1ec",
+      "value": 0.833299994468689
+    },
+    "redline_rpm": {
+      "instruction": "0x49f129",
+      "field_offset": "0x140",
+      "value": 10000.0
+    }
+  },
+  "compiled_power_curve_1_rpm_hp": [
+    [
+      0,
+      0
+    ],
+    [
+      3000.0,
+      10.0
+    ],
+    [
+      3250.0,
+      11.5
+    ],
+    [
+      3750.0,
+      15.0
+    ],
+    [
+      4750.0,
+      20.5
+    ],
+    [
+      5250.0,
+      24.0
+    ],
+    [
+      5750.0,
+      26.0
+    ],
+    [
+      6750.0,
+      39.0
+    ],
+    [
+      7250.0,
+      43.0
+    ],
+    [
+      8250.0,
+      40.5
+    ],
+    [
+      8750.0,
+      37.0
+    ],
+    [
+      9250.0,
+      28.5
+    ],
+    [
+      10250.0,
+      25.0
+    ]
+  ],
+  "torque_conversion_constant": 5252.0,
+  "peak_torque_rpm_curve_1": 7250.0,
+  "scope": "Static analysis; no original-game runtime measurements. Initializers are not proof of every downstream use."
+}
