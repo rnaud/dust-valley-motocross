@@ -31,8 +31,10 @@ function turn(speed,steer){
 }
 test('one second of full input gives a useful corner at 54 and 79 km/h, without a spin',()=>{
  const medium=turn(15,-1),fast=turn(22,-1);
- assert.ok(medium.heading>.70&&medium.heading<1.3);
- assert.ok(fast.heading>.5&&fast.heading<1);
+ // A 40° bank and bounded lean transition intentionally turn wider than the
+ // old 57° profile. Preserve useful response, speed dependence and symmetry.
+ assert.ok(medium.heading>.35&&medium.heading<.65);
+ assert.ok(fast.heading>.25&&fast.heading<.5);
  assert.ok(fast.heading<medium.heading,'speed must increase turn radius');
  assert.ok(medium.speed>15&&fast.speed>22,'normal cornering must preserve momentum');
  assert.ok(medium.peakSlip<4&&fast.peakSlip<4);

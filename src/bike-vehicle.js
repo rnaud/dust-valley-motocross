@@ -1,9 +1,19 @@
 import {RaycastVehicle,Vec3} from 'cannon-es';
+import {suspensionForce} from './mcm-handling.js';
 
 // Cannon's standard ray stops at spring rest length, despite exposing additional
 // suspension travel. Probe the whole stroke so the wheels can follow a falling
-// surface and extend when airborne. Spring/damper forces remain Cannon's.
+// surface and extend when airborne. Forces use the recovered spring/damper law.
 export class BikeVehicle extends RaycastVehicle {
+  updateSuspension(){
+    for(const wheel of this.wheelInfos){
+      wheel.suspensionForce=wheel.isInContact?suspensionForce({
+        compression:wheel.suspensionRestLength-wheel.suspensionLength,
+        velocity:wheel.suspensionRelativeVelocity,mass:this.chassisBody.mass,
+        front:wheel.isFrontWheel,contactFactor:wheel.clippedInvContactDotSuspension,
+      }):0;
+    }
+  }
   castRay(wheel){
     this.updateWheelTransformWorld(wheel);
     const min=wheel.suspensionRestLength-wheel.maxSuspensionTravel;

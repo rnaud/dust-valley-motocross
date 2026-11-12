@@ -1,0 +1,33 @@
+{
+  "scope": "Dust Valley simulation only; original-game telemetry unavailable",
+  "timestep": 0.008333333333333333,
+  "accelerationSeconds": {
+    "30": 0.967,
+    "60": 2.192,
+    "90": 4.475
+  },
+  "boostAccelerationSeconds": {
+    "30": 0.733,
+    "60": 1.625,
+    "90": 3.158
+  },
+  "coastFrom60KmhAfter3s": 44.956,
+  "brakingFrom60Kmh": {
+    "seconds": 1.533,
+    "meters": 12.656
+  },
+  "oneSecondTurns": [
+    {
+      "initialKmh": 54,
+      "headingDegrees": 24.619,
+      "bankDegrees": 40.745,
+      "exitKmh": 69.862
+    },
+    {
+      "initialKmh": 79.2,
+      "headingDegrees": 19.852,
+      "bankDegrees": 40.652,
+      "exitKmh": 89.862
+    }
+  ]
+}
