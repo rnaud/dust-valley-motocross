@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {bikeLinkagePoints,fitBikeLink} from './bike-linkage.js';
 import './style.css';
 import {terrainIndices,sampleGrid} from './height-grid.js';
 import {inJumpZone,jumps} from './jump-park.js';
@@ -13,8 +14,11 @@ import { createTextures, applyTerrainTexture, createSkyTexture, createDustTextur
 import {RideAudio} from './audio.js';
 import {track,terrain as raceTerrain,freeTerrain,trackDistance,nearestTrack,createState,resetBike,stepBike,TAU} from './world.js';
 let mode='race';
+let physicsMode='classic';
+const simulationStep=()=>physicsMode==='mcm-preview'?.02:1/120;
 const terrain=(x,z)=>mode==='free'?freeTerrain(x,z):raceTerrain(x,z);
 const $=id=>document.getElementById(id);
+$('physics-mode').onchange=()=>{physicsMode=$('physics-mode').value;$('physics-note').textContent=physicsMode==='mcm-preview'?'Recovered engine + suspension. Chassis, grip and steering remain experimental adaptations. Boost disabled.':'Original Dust Valley handling.';};
 const speedCanvas=$('speedlines'),speedCtx=speedCanvas?speedCanvas.getContext('2d'):null;
 const mobile=matchMedia('(pointer: coarse)').matches||navigator.maxTouchPoints>0;
 const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -258,27 +262,38 @@ function makeBike(){
     const parts=[...wheel.children];
     const assemblies=batchMeshes(parts,wheel);
     // The old art had a 0.79 m outer radius around a 0.61 m physics tire.
-    for(const assembly of assemblies)assembly.geometry.scale(.53/.79,.53/.79,.53/.79);
+    for(const assembly of assemblies)assembly.geometry.scale(.61/.79,.61/.79,.61/.79);
     for(const part of parts){wheel.remove(part);part.geometry.dispose();}
   }
-  const frame=box(.43,.42,1.35,materials.dark,0,.83,.05,body);frame.rotation.x=-.12;
-  box(.45,.15,.88,materials.dark,0,1.12,-.36,body);box(.3,.52,.58,materials.steel,0,.4,-.05,body);
+  // A twin-cradle frame surrounds the engine and joins both suspension mounts.
+  const tube=(a,b,r=.035,mat=materials.steel)=>{
+    const part=mesh(new THREE.CylinderGeometry(r,r,1,8),mat,0,0,0,body);
+    fitBikeLink(part,new THREE.Vector3(...a),new THREE.Vector3(...b));return part;
+  };
+  for(const side of [-1,1]){
+    const x=side*.19;
+    tube([x,1.18,.65],[x,.26,.35]);tube([x,.26,.35],[x,.25,-.28]);
+    tube([x,.25,-.28],[x,.96,-.5]);tube([x,.96,-.5],[x,1.18,.65]);
+    tube([x,.96,-.5],[x,1.02,-1.05],.025);tube([x,.42,-.1],[x,1.02,-1.05],.025);
+  }
+  const tank=box(.48,.32,.62,materials.lime,0,1.02,.3,body);tank.rotation.x=-.14;
+  const seat=box(.39,.13,1.12,materials.dark,0,1.14,-.36,body);seat.rotation.x=.035;
+  const engine=box(.38,.4,.48,materials.steel,0,.53,.02,body);engine.rotation.x=.13;
+  for(let i=0;i<5;i++)box(.43,.023,.32,materials.dark,0,.55+i*.055,.12,body);
+  const caseCover=mesh(new THREE.CylinderGeometry(.18,.18,.44,16),materials.steel,0,.38,-.12,body);caseCover.rotation.z=Math.PI/2;
+  for(const side of [-1,1]){
+    const panel=box(.025,.34,.58,materials.white,side*.25,.85,-.48,body);panel.rotation.x=-.12;
+    box(.18,.05,.18,materials.steel,side*.32,.32,-.16,body);
+  }
   const frontFender=mesh(new THREE.SphereGeometry(1,16,8),materials.lime,0,0,0);frontFender.scale.set(.22,.055,.5);frontFender.castShadow=true;
   const rearFender=mesh(new THREE.SphereGeometry(1,16,8),materials.dark,0,0,0,body);rearFender.scale.set(.2,.045,.5);rearFender.position.set(0,1.02,-.98);
-  // Swingarm, side plates and exhaust give the rear of the bike a readable silhouette.
-  for(const side of [-1,1]){box(.06,.08,1.02,materials.dark,side*.14,.12,-.55,body);box(.02,.3,.34,materials.white,side*.27,.72,-.58,body);}
-  const exhaust=mesh(new THREE.CylinderGeometry(.045,.055,1.15,8),materials.steel,.22,.64,-.38,body);exhaust.rotation.x=Math.PI/2;
-  // Chain run and rear shock complete the Bike Lab-style mechanical silhouette.
-  box(.035,.05,.92,materials.dark,.16,.32,-.42,body);
-  box(.035,.05,.92,materials.dark,-.16,.32,-.42,body);
-  const shock=mesh(new THREE.CylinderGeometry(.045,.045,.48,8),materials.steel,0,.55,-.12,body);shock.rotation.x=-.25;
-  for(const side of [-1,1]){const spring=mesh(new THREE.TorusGeometry(.075,.018,5,10),materials.lime,side*.1,.48,-.15,body);spring.rotation.y=Math.PI/2;}
-  const chainRing=mesh(new THREE.TorusGeometry(.17,.025,6,16),materials.steel,.18,.38,-.98,body);chainRing.rotation.y=Math.PI/2;
+  const exhaust=mesh(new THREE.CylinderGeometry(.065,.085,.64,10),materials.steel,.29,.88,-.72,body);exhaust.rotation.x=Math.PI/2+.12;
+  tube([.23,.51,.25],[.3,.65,-.35],.045);
   const handlebar=new THREE.Group();body.add(handlebar);handlebar.position.set(0,1.34,.7);
  box(.3,.085,.09,materials.lime,0,.02,0,handlebar);
  box(.3,.26,.035,materials.white,0,1.02,.98,body);
- box(.04,.07,1.0,materials.dark,-.24,.24,-.55,body);
- for(const side of [-1,1])box(.07,.3,.12,materials.lime,side*.22,.52,.95,body);
+
+
   const bar=mesh(new THREE.CylinderGeometry(.035,.035,1.08,10),materials.steel,0,0,0,handlebar);bar.rotation.z=Math.PI/2;
   for(const side of [-1,1]){const grip=mesh(new THREE.CylinderGeometry(.052,.052,.19,10),materials.dark,side*.49,0,0,handlebar);grip.rotation.z=Math.PI/2;}
   const flameMat=new THREE.MeshBasicMaterial({color:'#ffb35c',transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false});
@@ -286,7 +301,9 @@ function makeBike(){
   const boostGlow=new THREE.Sprite(new THREE.SpriteMaterial({map:createDustTexture(),color:'#ffb15c',transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false}));boostGlow.scale.set(.6,.6,1);boostGlow.position.set(.3,1.02,-1.18);boostGlow.renderOrder=3;boostGlow.visible=false;body.add(boostGlow);
   const rider=createRider();body.add(rider.root);
   body.traverse(o=>{if(o.isMesh)o.castShadow=true;});scene.add(bike);
-  const forks=[];for(let i=0;i<4;i++)forks.push(mesh(new THREE.CylinderGeometry(.055,.07,1,8),i<2?materials.dark:materials.steel,0,0,0));
+  const forkStyles={forkUpper:[.08,materials.lime],forkLower:[.05,materials.steel],swingarm:[.075,materials.steel],brace:[.035,materials.steel],shock:[.075,materials.dark],axle:[.055,materials.steel]};
+  const kinds=['forkUpper','forkLower','swingarm','brace','forkUpper','forkLower','swingarm','brace','shock','axle','axle'];
+  const forks=kinds.map(kind=>{const [radius,mat]=forkStyles[kind];const part=mesh(kind==='swingarm'?new THREE.BoxGeometry(.11,1,.15):new THREE.CylinderGeometry(radius,radius,1,10),mat,0,0,0);part.castShadow=true;return part;});
   return{bike,body,wheels,rider,handlebar,forks,frontFender,boostFlame,boostGlow};
 }
 const {bike,body,wheels,rider,handlebar,forks,frontFender,boostFlame,boostGlow}=makeBike();
@@ -399,7 +416,7 @@ renderer.domElement.addEventListener('pointermove',e=>{
 });
 for(const ev of ['pointerup','pointercancel','lostpointercapture'])renderer.domElement.addEventListener(ev,()=>{photoDrag=false;});
 renderer.domElement.addEventListener('wheel',e=>{if(phase!=='photo')return;e.preventDefault();photoDistance=Math.max(3,Math.min(22,photoDistance+e.deltaY*.01));},{passive:false});
-$('daily').onclick=()=>{mode='daily';updateEnvironment();document.querySelectorAll('[data-mode]').forEach(v=>{v.classList.remove('selected');v.setAttribute('aria-pressed','false');});laps=1;start();};
+$('daily').onclick=()=>{physicsMode='classic';$('physics-mode').value='classic';$('physics-mode').onchange();mode='daily';updateEnvironment();document.querySelectorAll('[data-mode]').forEach(v=>{v.classList.remove('selected');v.setAttribute('aria-pressed','false');});laps=1;start();};
 function toast(text,duration=2){$('toast').textContent=text;toastTime=duration;}
 function formatTime(t){return `${String(Math.floor(t/60)).padStart(2,'0')}:${(t%60).toFixed(2).padStart(5,'0')}`;}
 function refreshMenuBest(){
@@ -426,21 +443,24 @@ function updateEnvironment(){
 function start(){
  tireTracks.clear();
  laps=mode==='daily'?1:3;
- state=createState(mode==='free'?{height:freeTerrain,spawn:{x:0,z:0,yaw:0}}:{});
+ state=createState({physicsMode,...(mode==='free'?{height:freeTerrain,spawn:{x:0,z:0,yaw:0}}:{})});
+ $('preview-badge').hidden=physicsMode!=='mcm-preview';
+ document.body.classList.toggle('mcm-preview',physicsMode==='mcm-preview');
+ document.querySelector('.ride-hint').textContent=physicsMode==='mcm-preview'?'WASD ride · I / K rider lean · R recover':'WASD ride · SPACE boost · I / K rider lean · R recover';
  ridePose.reset(state);riderCrouch=0;riderBank=0;elapsed=0;lap=1;nextGate=1;score=0;lapStart=0;combo=0;comboTimer=0;wrongTime=0;shake=0;
- ghostRecord=[];ghostClock=0;activeGhost=ghostBest;ghostBike.visible=false;countdown=3;lastCountdownBeep=4;cameraReady=false;accumulator=0;clearInput();
+ ghostRecord=[];ghostClock=0;activeGhost=physicsMode==='classic'?ghostBest:null;ghostBike.visible=false;countdown=mode==='free'?-.75:3;lastCountdownBeep=4;cameraReady=false;accumulator=0;clearInput();
  document.body.classList.add('playing');for(const id of ['menu','location','footer','overlay','tutorial'])$(id).hidden=true;for(const id of ['hud','pause'])$(id).hidden=false;$('touch').hidden=!mobile;
  $('lap-label').textContent=mode==='free'?'STUNT SCORE':'LAP';$('resume').hidden=false;$('wrong').hidden=true;$('combo').hidden=true;$('share').hidden=true;$('leaderboard').hidden=true;
  highlight();
  if(!readSetting('dust-valley-tutorial','')){
-  phase='tutorial';$('tutorial').hidden=false;$('lights').hidden=true;countdown=3;
- }else{phase='playing';$('lights').hidden=false;setLights(3,false);if(mode==='daily')beginDaily();}
+  phase='tutorial';$('tutorial').hidden=false;$('lights').hidden=true;
+ }else{phase='playing';$('lights').hidden=mode==='free';setLights(3,false);if(mode==='daily')beginDaily();}
 }
-$('tutorial-start').onclick=()=>{writeSetting('dust-valley-tutorial','1');$('tutorial').hidden=true;phase='playing';countdown=3;lastCountdownBeep=4;$('lights').hidden=false;setLights(3,false);cameraReady=false;if(mode==='daily')beginDaily();};
+$('tutorial-start').onclick=()=>{writeSetting('dust-valley-tutorial','1');$('tutorial').hidden=true;phase='playing';countdown=mode==='free'?-.75:3;lastCountdownBeep=4;$('lights').hidden=mode==='free';setLights(3,false);cameraReady=false;if(mode==='daily')beginDaily();};
 $('start').onclick=start;$('restart').onclick=start;$('reset').onclick=()=>{if(phase==='playing')recover();};
 function recover(){tireTracks.breakTrail();combo=0;comboTimer=0;wrongTime=0;$('combo').hidden=true;if(mode==='free'){const radius=Math.hypot(state.x,state.z),scale=radius>380?380/radius:1;resetBike(state,state.x*scale,state.z*scale,state.yaw);ridePose.reset(state);accumulator=0;cameraReady=false;toast('BACK ON THE DIRT');return;}const g=gates[(nextGate+11)%12];resetBike(state,g.p.x,g.p.z,g.yaw);ridePose.reset(state);accumulator=0;cameraReady=false;toast('BACK ON THE DIRT');}
 function togglePause(){if(phase==='playing'){phase='paused';clearInput();$('overlay').hidden=false;$('overlay-label').textContent='TAKE A BREATHER';$('overlay-title').textContent='Ride paused.';$('overlay-copy').textContent='The desert isn’t going anywhere.';$('resume').hidden=false;$('photo').hidden=false;}else if(phase==='paused'){phase='playing';$('overlay').hidden=true;}}$('pause').onclick=togglePause;$('resume').onclick=togglePause;
-$('home').onclick=()=>{phase='menu';clearInput();document.body.classList.remove('playing');if(mode==='daily'){mode='race';updateEnvironment();}for(const id of ['menu','location','footer'])$(id).hidden=false;for(const id of ['hud','pause','touch','overlay','lights'])$(id).hidden=true;ghostBike.visible=false;refreshMenuBest();updateDailyButton();};
+$('home').onclick=()=>{$('preview-badge').hidden=true;document.body.classList.remove('mcm-preview');phase='menu';clearInput();document.body.classList.remove('playing');if(mode==='daily'){mode='race';updateEnvironment();}for(const id of ['menu','location','footer'])$(id).hidden=false;for(const id of ['hud','pause','touch','overlay','lights'])$(id).hidden=true;ghostBike.visible=false;refreshMenuBest();updateDailyButton();};
 const todayKey=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
 function readTimes(key){try{const v=JSON.parse(localStorage.getItem(key));return Array.isArray(v)?v.filter(Number.isFinite):[];}catch{return [];}}
 function addTime(key,time){const list=[...readTimes(key),time].sort((a,b)=>a-b).slice(0,5);try{localStorage.setItem(key,JSON.stringify(list));}catch{}return list;}
@@ -470,10 +490,16 @@ function shareResult(isDaily){
  },'image/png');
 }
 function finish(){
+ if(physicsMode==='mcm-preview'){
+  phase='finished';clearInput();$('overlay').hidden=false;$('overlay-label').textContent='MCM PREVIEW';$('overlay-title').textContent='Preview complete.';
+  $('overlay-copy').textContent=`Time ${formatTime(elapsed)}. Experimental handling — results are separate from the circuit leaderboard.`;
+  $('resume').hidden=true;$('leaderboard').hidden=true;$('share').hidden=true;return;
+ }
+
  phase='finished';clearInput();
  const isDaily=mode==='daily';
  const lapTime=elapsed-lapStart;
- if(lapTime<bestLap){
+ if(physicsMode==='classic'&&lapTime<bestLap){
   bestLap=lapTime;try{localStorage.setItem('dust-valley-best-lap',String(bestLap));}catch{}
   if(ghostRecord.length>10){ghostRecord.push([lapTime,state.x,state.y+.5,state.z,state.yaw]);activeGhost=ghostRecord;ghostBest=ghostRecord;try{localStorage.setItem('dust-valley-ghost',JSON.stringify(ghostRecord));}catch{}}
  }
@@ -538,8 +564,8 @@ if(phase==='playing'){
  }else{
   if(countdown>-0.75){countdown-=dt;if(countdown<=-0.75)$('lights').hidden=true;}
   elapsed+=dt;accumulator+=dt;
-  while(accumulator>=1/120){
-   const result=stepBike(state,input,1/120);ridePose.push(state);tireTracks.update(state.crashed?[]:state.wheelContacts,surfaceHeight);
+  while(accumulator>=simulationStep()){
+   const result=stepBike(state,input,simulationStep());ridePose.push(state);tireTracks.update(state.crashed?[]:state.wheelContacts,surfaceHeight);
    if(result.landed>.5){
     impactFlash=Math.max(impactFlash,result.crashed?1:.28);
     puff(state.x,state.y-.3,state.z,result.crashed?18:12,1.05,1.2);shake=reduceMotion?0:Math.max(shake,Math.min(.3,result.landed*.035));rideAudio.land(Math.min(1,result.landed));if(reduceMotion)shake=0;
@@ -550,9 +576,9 @@ if(phase==='playing'){
      toast(combo>1?`AIR +${points} · ×${combo}`:`AIR TIME +${points}`);
     }
    }
-   accumulator-=1/120;
+   accumulator-=simulationStep();
   }
-  if(mode!=='free'){
+  if(mode!=='free'&&physicsMode==='classic'){
    ghostClock+=dt;
    if(ghostClock>=.1){ghostClock=0;ghostRecord.push([elapsed-lapStart,state.x,state.y+.5,state.z,state.yaw]);if(ghostRecord.length>6000)ghostRecord.shift();}
   }
@@ -569,7 +595,7 @@ if(phase==='playing'){
    if(Math.hypot(state.x-p.x,state.z-p.z)<12){
     const lapTime=elapsed-lapStart;
     if(nextGate===0){
-     if(lapTime<bestLap){
+     if(physicsMode==='classic'&&lapTime<bestLap){
       bestLap=lapTime;try{localStorage.setItem('dust-valley-best-lap',String(bestLap));}catch{}
       if(ghostRecord.length>10){ghostRecord.push([lapTime,state.x,state.y+.5,state.z,state.yaw]);activeGhost=ghostRecord;ghostBest=ghostRecord;try{localStorage.setItem('dust-valley-ghost',JSON.stringify(ghostRecord));}catch{}}
      }
@@ -585,7 +611,7 @@ if(phase==='playing'){
  if(state.crashed)toast('WIPEOUT · R OR ↺ TO RECOVER',1);
  toastTime-=dt;if(toastTime<=0)$('toast').textContent='';
 }
-const visual=ridePose.sample(phase==='playing'?accumulator*120:1);
+const visual=ridePose.sample(phase==='playing'?accumulator/simulationStep():1);
 if(phase==='photo'){
  const target=new THREE.Vector3(visual.position.x,visual.position.y+.85,visual.position.z);
  const cp=Math.cos(photoPitch);
@@ -650,9 +676,9 @@ if(phase==='menu'){
  wheels.forEach((w,i)=>{w.position.copy(bike.localToWorld(new THREE.Vector3(0,-.45,i?1.1:-1.05)));w.quaternion.copy(bike.quaternion);});
 }else{
  bike.position.copy(visual.position);bike.quaternion.copy(visual.quaternion);
- wheels.forEach((w,i)=>{const t=visual.wheels[i];w.position.copy(t.position);w.quaternion.copy(t.quaternion);if(state.wheelContacts?.[i])w.position.y-=.08;});
+ wheels.forEach((w,i)=>{const t=visual.wheels[i];w.position.copy(t.position);w.quaternion.copy(t.quaternion);});
  if(state.throttle>0&&state.contacts&&!state.air){const slip=Math.max(0,Math.min(.8,state.slipRatio?.[0]||0));if(slip>.02)wheels[0].quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1,0,0),slip*dt*45));}
- const flaring=input.gas&&input.boost&&state.boost>0&&!state.crashed;
+ const flaring=physicsMode!=='mcm-preview'&&input.gas&&input.boost&&state.boost>0&&!state.crashed;
  boostFlame.visible=flaring;boostGlow.visible=flaring;if(flaring){boostFlame.material.opacity=.55+Math.random()*.3;boostFlame.scale.setScalar(.8+Math.random()*.5);boostGlow.material.opacity=.18+Math.random()*.16;boostGlow.scale.setScalar(.45+Math.random()*.25);}
 }
 // Wheel spin leaves its axle unchanged. Build the steering assembly from that
@@ -667,14 +693,9 @@ const poseBlend=1-Math.exp(-dt*10);
 if(phase==='playing'){riderCrouch+=(Math.max(...visual.compression)-riderCrouch)*poseBlend;riderBank+=(visual.roll-riderBank)*poseBlend;}
 rider.update({compression:riderCrouch,bank:riderBank,steer:visual.steer,gripQuaternion:handlebar.quaternion,lean:input.lean ?? ((input.leanBack?1:0)-(input.leanForward?1:0)),speed:visual.speed});
 bike.updateMatrixWorld(true);
-forks.forEach((fork,i)=>{
-  const front=i>=2,side=i%2?1:-1;
-  const axle=new THREE.Vector3(1,0,0).applyQuaternion(wheels[front?1:0].quaternion);
-  const start=bike.localToWorld(new THREE.Vector3(0,front?.68:.1,front?.7:-.05)).addScaledVector(axle,side*.23);
-  const end=wheels[front?1:0].position.clone().addScaledVector(axle,side*.23);
-  fork.position.copy(start).add(end).multiplyScalar(.5);fork.scale.y=start.distanceTo(end);
-  fork.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),end.sub(start).normalize());
-});
+const linkage=bikeLinkagePoints(bike.position,bike.quaternion,wheels[0],wheels[1]);
+forks.forEach((part,i)=>fitBikeLink(part,linkage[i].start,linkage[i].end));
+
 sun.position.set(state.x-110,state.y+62,state.z+48);sun.target.position.set(state.x,state.y,state.z);
 if(phase==='playing'&&state.speed>4&&!state.air&&countdown<=0){
   const back=1.05;

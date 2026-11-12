@@ -1,4 +1,5 @@
 import * as C from 'cannon-es';
+import {createMcmPreviewEngine,stepMcmPreviewEngine} from './mcm-preview.js';
 import {parkHeight} from './jump-park.js';
 import {BikeVehicle} from './bike-vehicle.js';
 import {MCM_HANDLING,advanceLean} from './mcm-handling.js';
@@ -80,18 +81,19 @@ export function createState(options={}) {
   }
   const vehicle=new BikeVehicle({chassisBody:chassis,indexRightAxis:0,indexUpAxis:1,indexForwardAxis:2});
   for(const z of [-1.05,1.1])vehicle.addWheel({radius:.61,directionLocal:new C.Vec3(0,-1,0),axleLocal:new C.Vec3(-1,0,0),chassisConnectionPointLocal:new C.Vec3(0,-.12,z),suspensionRestLength:.55,maxSuspensionTravel:.3,maxSuspensionForce:30000,frictionSlip:0,rollInfluence:.08,isFrontWheel:z>0});
+  vehicle.recoveredPreview=options.physicsMode==='mcm-preview';
   vehicle.addToWorld(world);
-  const s={x:p.x,z:p.z,y:chassis.position.y-.5,yaw:0,speed:0,vy:0,pitch:0,roll:0,air:false,airtime:0,boost:100,steer:0,throttle:0,contacts:0,crashed:false,crashTime:0,slip:0,compression:[0,0],gear:1,rpm:1200,quaternion:{x:0,y:0,z:0,w:1},wheelTransforms:[],landingRecovery:0,wheelContacts:[],balanceRoll:0,tireLoads:[0,0],wheelOmega:[0,0],slipRatio:[0,0],engine:createDrivetrain(),requestedLean:0};
+  const s={x:p.x,z:p.z,y:chassis.position.y-.5,yaw:0,speed:0,vy:0,pitch:0,roll:0,air:false,airtime:0,boost:100,steer:0,throttle:0,contacts:0,crashed:false,crashTime:0,slip:0,compression:[0,0],gear:1,rpm:1200,quaternion:{x:0,y:0,z:0,w:1},wheelTransforms:[],landingRecovery:0,wheelContacts:[],balanceRoll:0,tireLoads:[0,0],wheelOmega:[0,0],slipRatio:[0,0],engine:options.physicsMode==='mcm-preview'?createMcmPreviewEngine():createDrivetrain(),physicsMode:options.physicsMode==='mcm-preview'?'mcm-preview':'classic',requestedLean:0};
   Object.defineProperty(s,'physics',{value:{world,chassis,vehicle,height},enumerable:false});
   sync(s);return s;
 }
 function sync(s){const {chassis:b,vehicle:v}=s.physics;const f=b.quaternion.vmult(new C.Vec3(0,0,1)),up=b.quaternion.vmult(new C.Vec3(0,1,0));s.x=b.position.x;s.y=b.position.y-.5;s.z=b.position.z;s.yaw=Math.atan2(f.x,f.z);s.pitch=Math.asin(Math.max(-1,Math.min(1,f.y)));s.roll=Math.atan2(-up.x*Math.cos(s.yaw)+up.z*Math.sin(s.yaw),up.y);s.speed=Math.hypot(b.velocity.x,b.velocity.z);s.vy=b.velocity.y;s.yawRate=b.angularVelocity.y;s.gear=s.engine.gear;s.rpm=Math.round(s.engine.rpm);s.quaternion={...b.quaternion};s.wheelTransforms=v.wheelInfos.map((w,i)=>{v.updateWheelTransform(i);return {position:{...w.worldTransform.position},quaternion:{...w.worldTransform.quaternion},direction:{...w.directionWorld}};});s.compression=v.wheelInfos.map(w=>Math.max(0,1-w.suspensionLength/.55));}
-export function resetBike(s,x,z,yaw){const {chassis:b,height}=s.physics;b.position.set(x,height(x,z)+1.2,z);b.quaternion.setFromEuler(0,yaw,0);b.velocity.setZero();b.angularVelocity.setZero();b.force.setZero();b.torque.setZero();s.crashed=false;s.crashTime=0;s.airtime=0;s.landingRecovery=0;s.wheelContacts=[];s.throttle=0;s.steer=0;s.balanceRoll=0;s.tireLoads=[0,0];s.engine=createDrivetrain();s.requestedLean=0;s.wheelOmega=[0,0];s.slipRatio=[0,0];s.contacts=0;s.air=false;for(const w of s.physics.vehicle.wheelInfos){w.isInContact=false;w.raycastResult.reset();w.suspensionForce=0;}b.wakeUp();sync(s);}
+export function resetBike(s,x,z,yaw){const {chassis:b,height}=s.physics;b.position.set(x,height(x,z)+1.2,z);b.quaternion.setFromEuler(0,yaw,0);b.velocity.setZero();b.angularVelocity.setZero();b.force.setZero();b.torque.setZero();s.crashed=false;s.crashTime=0;s.airtime=0;s.landingRecovery=0;s.wheelContacts=[];s.throttle=0;s.steer=0;s.balanceRoll=0;s.tireLoads=[0,0];s.engine=s.physicsMode==='mcm-preview'?createMcmPreviewEngine():createDrivetrain();s.requestedLean=0;s.wheelOmega=[0,0];s.slipRatio=[0,0];s.contacts=0;s.air=false;for(const w of s.physics.vehicle.wheelInfos){w.isInContact=false;w.raycastResult.reset();w.suspensionForce=0;}b.wakeUp();sync(s);}
 export function stepBike(s,input,dt) {
   const {world,chassis:b,vehicle:v}=s.physics;
   const gas=input.gas&&!s.crashed?1:0,brake=input.brake?1:0;
-  s.throttle+=(gas-s.throttle)*Math.min(1,dt*18);
-  const boosting=input.boost&&s.boost>0&&gas;
+  if(s.physicsMode!=='mcm-preview')s.throttle+=(gas-s.throttle)*Math.min(1,dt*18);
+  const boosting=s.physicsMode!=='mcm-preview'&&input.boost&&s.boost>0&&gas;
   s.boost=Math.max(0,Math.min(100,s.boost+(boosting?-28:10)*dt));
   // Forward is +Z, so rider-right is local -X (also screen-right in the chase camera).
   const steerInput=input.steer ?? ((input.right?1:0)-(input.left?1:0));
@@ -124,7 +126,9 @@ export function stepBike(s,input,dt) {
   s.steer+=(steerTarget-s.steer)*(1-Math.exp(-dt*18));
   v.setSteeringValue(s.crashed?0:s.steer,1);
   // Actual engine state powers the rear tire and also feeds the HUD and audio.
-  stepDrivetrain(s.engine,{speed:b.velocity.dot(fwd),throttle:s.throttle,brake:!!brake,grounded:v.wheelInfos[0].raycastResult.hasHit,boost:boosting},dt);
+  if(s.physicsMode==='mcm-preview'){
+    stepMcmPreviewEngine(s.engine,{speed:b.velocity.dot(fwd),pressed:!!gas,grounded:v.wheelInfos[0].raycastResult.hasHit},dt);s.throttle=s.engine.recovered.state;
+  }else stepDrivetrain(s.engine,{speed:b.velocity.dot(fwd),throttle:s.throttle,brake:!!brake,grounded:v.wheelInfos[0].raycastResult.hasHit,boost:boosting},dt);
   const driveForce=s.engine.force*MCM_HANDLING.traction;
   // Safe-brake clamp: don't ask a fully banked tire for a straight-line stop.
   const safeBrake=getSafeBrakeFactor(s.roll);

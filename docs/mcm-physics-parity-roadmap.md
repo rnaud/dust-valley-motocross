@@ -433,3 +433,17 @@ decay, nonzero fallback, and frozen motion. The field meanings remain partly
 unresolved; tests supply finite geometry and positive `+0x8cc` values. This block
 is not yet joined to the force/angular adapter, and downstream rotation, earlier
 force construction, and complete original-versus-port trajectories remain open.
+
+A selectable **MCM preview** handling profile now exposes the recovered digital
+throttle, automatic gear helper, captured player engine tables, drive-force helper,
+and suspension-force helper in the browser. Select it under Handling, then start
+Free ride or Desert circuit. It runs at 20 ms and disables boost; its circuit
+results do not update classic leaderboards or ghosts. Reset restores the engine
+and deterministic random seed. Free ride starts immediately without race lights.
+
+This is explicitly a hybrid preview, not whole-bike parity: the engine timer/call
+sequencing and chassis-speed coupling are browser adapters, and Cannon still
+supplies chassis integration, contacts, grip, rider balance, brakes and crashes.
+The independently recovered angular/linear caller blocks are not substituted
+into Cannon's integration. They still need a complete original-state adapter.
+The preview lets the recovered parts be played without misrepresenting that gap.
