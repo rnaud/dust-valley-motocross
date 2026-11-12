@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "69f87ca2a24fbfb769b4a2e37052a829c080e21338422c581d64f5bf5bfd459a",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "8cf8a326decaba8f87ca026379e94b817b5712611b05b48af6da9bb07d43ea0a",
+  "resultsSha256": "4f5028b00f060a902cf3a119dd19f8088ba5dd24c615ab4053d3466f86507f49",
+  "cases": 36000,
+  "controlWord": 639,
+  "coverage": {
+    "bodyRotated": 31901,
+    "bodySkipped": 4099,
+    "freeEngineSpin": 1402,
+    "stateDamping": 6000,
+    "fieldDamping": 7713,
+    "wheelPreserved": 6601,
+    "handoffSkipped": 18005,
+    "handoffOther": 3602,
+    "handoffBounce": 7198,
+    "handoffDamped": 7195
+  },
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Connected original force-to-transform sequence followed by controller velocity handoff through 0x4ab99f; state-zero exits at 0x4abb30 before its separate orientation branch. Includes transition-kind velocity copying, other-bike velocity and capped vertical increment. Subsequent orientation/rider/crash branches, upstream forces, transform hierarchies and whole-bike trajectories excluded."
+}

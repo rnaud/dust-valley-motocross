@@ -458,3 +458,17 @@ test('force-to-transform update matches original wheel and pivoted body rotation
   }
   assert.ok(applied>0&&skipped>0&&preserved>0&&freeSpin>0);
 });
+
+test('motion controller handoff matches original state gates and velocity branches',async()=>{
+  const {updateMcmMotionController}=await import('../src/physics/mcm/force-motion-step.js');
+  const {floatBits}=await import('../src/physics/mcm/math.js');
+  const branches=new Set();
+  for(const {input,outputBits} of fixture('motion-controller-wine11.json').fixtures){
+    const {angular:r,linear:l,transform:t,controller:h}=updateMcmMotionController(input);
+    const angular=[...r.totalForce,...r.totalTorque,...r.velocity,...r.acceleration,...r.opposing,...r.opposingLocal];
+    const linear=[...l.position,...l.velocity,l.speed,...l.acceleration,...l.deltaVelocity,...t.axis,l.field6d8,l.field6dc];
+    assert.deepEqual([...angular.map(floatBits),r.counter,...r.previousPivot.map(floatBits),...t.matrix.map(floatBits),floatBits(r.field6ac),r.mask,...linear.map(floatBits),l.field6e0>>>0,floatBits(l.rotation),...t.wheels.flatMap(w=>w.matrix).map(floatBits),...t.wheels.map(w=>floatBits(w.angle)),floatBits(t.angle),t.cacheValid,...t.wheels.map(w=>w.cacheValid),...h.velocity.map(floatBits),...h.angularVelocity.map(floatBits)],outputBits);
+    branches.add(!input.state844||(!input.controller13c&&!input.controller140)?'skip':input.field8b4===2&&input.otherVelocity?'other':input.field8b4===4||input.field8b4===7?'vertical':'damped');
+  }
+  assert.equal(branches.size,4);
+});
