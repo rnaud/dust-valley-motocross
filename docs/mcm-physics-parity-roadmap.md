@@ -587,3 +587,23 @@ it explicitly rejects a parented target. The subsequent `0x4309d0` operation
 copies object bounds and dispatches virtual child callbacks. That dispatch and
 the full event wrapper still need connected validation before whole-bike parity
 can be claimed.
+
+The connected event wrapper `0x4a4b60` now matches 48,000 original executions
+across 104 output words (`mcm-event-transition-validation.json`). The harness
+executes its real decision, orientation, bounds-copy and rider-selection callees;
+only input-query results and CRT draws are supplied at external boundaries.
+Validation includes no-event preservation, all emitted reasons, launch velocity,
+orientation/cache changes, envelope setup, copied bounds, pitch-rate minimum,
+rider velocity/selection/flags, resource selection and random-call consumption.
+The first connected run exposed an integration error: the wrapper exchanges
+arguments 10 and 11 before calling `0x4a4d70`. The corrected port and passing
+fixtures preserve that exchange, with independently varied argument values.
+
+This connected milestone is limited to root bike targets and bounds records
+without child callbacks. The captured player's vtable is `0x4d9a94`; its slot
+`+0x1c` resolves to `0x44fa70`. That callback selects a component transform via
+`bike+0x234`, applies orientation and changes position through `0x4b7000` /
+`0x4b7270` and `0x4b7860` / `0x4b77a0`. Those child-transform paths remain to
+be recovered and connected. The port rejects nonempty bounds-child records when
+the orientation branch runs. No whole-bike trajectory or full playable parity
+claim follows from these supplied-state event tests.
