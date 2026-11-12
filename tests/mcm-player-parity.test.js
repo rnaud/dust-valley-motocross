@@ -665,3 +665,22 @@ test('event wrapper with ordered child callbacks matches original bike, rider an
  assert.deepEqual([...reasons].sort((a,b)=>a-b),[1,2,4,5,6,7,8,9,10,12]);
  assert.ok(oriented>0&&skipped>0&&clamped>0);assert.equal(childModes.size,2);assert.equal(layouts.size,2);
 });
+
+test('common post-event state matches original vectors, award timing and suspension outputs',async()=>{
+ const {updateMcmPostEventState}=await import('../src/physics/mcm/post-event-state.js');
+ const {floatBits,bitsFloat}=await import('../src/physics/mcm/math.js');
+ const caches=new Set();let awarded=0,counted=0,zeroTimer=0,stoppedYaw=0;
+ for(const {input:c,timerBits,outputBits} of fixture('post-event-state-wine11.json').fixtures){
+  c.timer=bitsFloat(timerBits);
+  const parent={local:[...c.parentLocal],world:[...c.parentWorld],cacheValid:c.parentCache};
+  const node={local:[...c.local],world:[...c.world],cacheValid:c.cache,parent:c.parented?parent:null};
+  const r=updateMcmPostEventState({...c,node});
+  assert.deepEqual([...[...r.position,...r.angularVelocity,...r.worldAngularVelocity].map(floatBits),r.field714,r.field870,...[r.timer,r.score,r.frontHeight,r.rearHeight,r.lastDt,...node.world,...parent.world].map(floatBits),node.cacheValid,parent.cacheValid],outputBits);
+  caches.add(`${c.parented}:${c.cache}:${c.parentCache}`);
+  if(c.field714&&!r.field714)awarded++;
+  if(r.timer!==c.timer&&r.field714)counted++;
+  if(Object.is(c.timer,-0))zeroTimer++;
+  if(c.angularVelocity[1]!==r.angularVelocity[1])stoppedYaw++;
+ }
+ assert.equal(caches.size,8);assert.ok(awarded>0&&counted>0&&zeroTimer>0&&stoppedYaw>0);
+});
