@@ -530,3 +530,21 @@ test('alternate state-zero alignment matches original masks, correction limits a
  }
  assert.equal(masks.size,4);assert.ok(rotated>0&&preserved>0);
 });
+
+test('bike event decisions match original return values, mutations and external call counts',async()=>{
+ const {decideMcmBikeEvent}=await import('../src/physics/mcm/event-decision.js');
+ const {floatBits,bitsFloat}=await import('../src/physics/mcm/math.js');
+ const reasons=new Set();let suppressed=0,advanced=0,queried=0,randomized=0,negativeZero=0;
+ for(const {input,angularVelocityBits,outputBits} of fixture('event-decision-wine11.json').fixtures){
+  input.angularVelocity=angularVelocityBits.map(bitsFloat);
+  const r=decideMcmBikeEvent(input);
+  assert.deepEqual([r.triggered,r.eventKind,r.reason,r.otherPresent,r.field710,r.field714,...[...r.velocity,...r.angularVelocity].map(floatBits),r.randomCalls,r.inputCalls],outputBits);
+  if(r.triggered)reasons.add(r.reason);
+  if(input.otherPresent&&!r.otherPresent)suppressed++;
+  if(input.field710&&!r.field710)advanced++;
+  queried+=r.inputCalls;randomized+=r.randomCalls;
+  if(Object.is(input.angularVelocity[2],-0))negativeZero++;
+ }
+ assert.deepEqual([...reasons].sort((a,b)=>a-b),[1,2,4,5,6,7,8,9,10,12]);
+ assert.ok(suppressed>0&&advanced>0&&queried>0&&randomized>0&&negativeZero>0);
+});
