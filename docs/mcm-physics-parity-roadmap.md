@@ -622,3 +622,17 @@ nonorthogonal matrices. The original uses a transposed rotation even for those
 matrices; no general inverse is substituted. Non-self relative conversions require
 a parent, matching the original dereference. Child orientation and complete
 callback integration remain outstanding.
+
+The nonzero `record+4` branch of the real child callback `0x44fa70` now matches
+40,000 original executions across 105 output words
+(`mcm-local-child-transform-validation.json`). The harness executes the component
+index lookup, local orientation `0x4b7000` and relative position `0x4b7860` together.
+It checks three nodes' local/world matrices and cache flags plus the callback's
+in-place forward/up mutations. Unlike `0x4b7270`, this local orientation entry
+retains the binary64 inverse-square-root intermediate while multiplying each axis
+component, and sums squared components in a different order. The port preserves
+both differences. Coverage includes all 32 parent/cache combinations, component
+indices 0–7 and nonorthogonal, nondegenerate axes. The zero `record+4` callback
+branch and dispatch over the complete bounds-child list still need recovery and
+connection to the event wrapper; this milestone does not remove that wrapper's
+child-list guard.

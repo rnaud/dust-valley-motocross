@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "1db06074b361d5555317e7466f1ffe5f64666f85d49beab30e65e0090825513e",
+  "loaderSourceSha256": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe",
+  "casesSha256": "e2640f52cc3797489fc3b3f242ed851ca4c086694a69436d3a812d4091f082f2",
+  "resultsSha256": "6a71ea46969ab85a0229c34c02fd6a228cbc83756ae18041d93d075d0b803633",
+  "cases": 40000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original child callback 0x44fa70, nonzero record+4 branch, including component-index lookup and real 0x4b7000 orientation / 0x4b7860 position callees. Child parent is body or external node; body may itself have a parent; all cache combinations and finite nondegenerate axes. Zero record+4 branch, full callback list and event integration excluded."
+}
