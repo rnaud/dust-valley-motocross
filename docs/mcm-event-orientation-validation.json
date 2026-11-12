@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "35f2ad02ebf29adafc65221f19bf84544d7938d7dcf08640b1083ecba4de6731",
+  "loaderSourceSha256": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe",
+  "casesSha256": "d73e026f0c2f8b5e010254ed5eab7977a0f371e7ec9cd199adb96ad396656fcc",
+  "resultsSha256": "c5a2fbcce662c584fe6d1bf02299c9758f7e407a23760459cdb162520babface",
+  "cases": 32000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original event transform call pair 0x4b7640 and 0x4b7270, null reference and orthogonalization enabled. Root target; source root or child of target; all source/target cache combinations, nondegenerate finite axes. Compare local/world matrices, scratch axes and cache flags. Parented targets, arbitrary descendant hierarchies and rest of event wrapper excluded."
+}
