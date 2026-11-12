@@ -406,3 +406,14 @@ It compares all resulting geometry and selector bits. The synthetic course's
 recognized hash enables fixture output without copying original assets. The
 instruction block's upstream conditions and downstream response are outside
 this comparison; it is not a complete bike update.
+
+### Paired force and torque assembly
+
+```sh
+node scripts/mcm-reference/compare-paired-force-torque-oracle.mjs /path/to/mcm.exe /tmp/new-paired-torque-run
+```
+
+Executes original `0x4aa77d..0x4aa959` and its cross-product/inverse-rotation
+helpers with supplied forces, arms, and a valid cached world matrix. Compares
+force and torque sums, both bike scratch vectors, and the shared clip counter.
+This is a bounded caller-block comparison, not a complete bike update.

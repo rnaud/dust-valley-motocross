@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "1ffe2d5b738e9390470a017aa8cf7dec1c6de2a2458b6cd1069801c41bca64d8",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "b1e48648c404a9ef0ac9407a7a61c6daf6d433940cc9a8741f6945e35439303c",
+  "resultsSha256": "48a0467790c86334e5db199d84cedd305b39fe9d4a7288bf9f1904debbb5bc30",
+  "cases": 36000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original 0x4aa77d..0x4aa959, ordered force sums, cross products, original inverse rotations with valid world cache, pitch clips, shared counter mutations, and bike scratch vectors. Supplied assembled forces and matrices; upstream force generation and downstream integration excluded."
+}
