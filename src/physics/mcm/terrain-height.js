@@ -13,15 +13,11 @@ function nearestEven(value) {
 export function queryMcmTerrainHeight({root,point,heightScale,worldToGrid}) {
   const result=[...point];
   if(!root)return result;
-  const x=Math.max(0,f(point[0]*worldToGrid)),z=Math.max(0,f(point[2]*worldToGrid));
-  const ix=nearestEven(f(x-.5)),iz=nearestEven(f(z-.5));
-  if(!Number.isFinite(ix)||!Number.isFinite(iz)||ix<0||iz<0||ix>0x7fffffff||iz>0x7fffffff)return result;
+  const cell=resolveMcmTerrainCell(point,worldToGrid);
+  if(!cell)return result;
+  const {x,z,ix,iz,d00,d10,d01,d11}=cell;
   const h=(dx,dz)=>f(sampleMcmTerrain(root,ix+dx,iz+dz).height*heightScale);
   const h00=h(0,0),h10=h(1,0),h01=h(0,1),h11=h(1,1);
-  const tx=f(x-f(ix)),tz=f(z-f(iz)),x2=tx*tx,z2=f((z-f(iz))*tz);
-  const sx=(1-tx)*f(1-tx),sz=(1-tz)*f(1-tz),minimum=f(.001);
-  const d00=f(Math.max(minimum,x2+z2)),d10=f(Math.max(minimum,sx+z2));
-  const d01=f(Math.max(minimum,sz+f(x2))),d11=f(Math.max(minimum,f(sz)+f(sx)));
   const dx=x-ix,dz=z-iz;
   if((ix^iz)&1)result[1]=d11>d00
     ?f(((h10-h00)*dx+h00)+(h01-h00)*dz)
@@ -30,4 +26,16 @@ export function queryMcmTerrainHeight({root,point,heightScale,worldToGrid}) {
     ?f(((h10-h00)*dx+h00)+(h11-h10)*dz)
     :f(((h11-h01)*dx+h01)+(h00-h01)*(1-dz));
   return result;
+}
+
+// Shared cell selection and distance stores for the height and normal paths.
+export function resolveMcmTerrainCell(point,worldToGrid) {
+  const x=Math.max(0,f(point[0]*worldToGrid)),z=Math.max(0,f(point[2]*worldToGrid));
+  const ix=nearestEven(f(x-.5)),iz=nearestEven(f(z-.5));
+  if(!Number.isFinite(ix)||!Number.isFinite(iz)||ix<0||iz<0||ix>0x7fffffff||iz>0x7fffffff)return null;
+  const tx=f(x-f(ix)),tz=f(z-f(iz)),x2=tx*tx,z2=f((z-f(iz))*tz);
+  const sx=(1-tx)*f(1-tx),sz=(1-tz)*f(1-tz),minimum=f(.001);
+  const d00=f(Math.max(minimum,x2+z2)),d10=f(Math.max(minimum,sx+z2));
+  const d01=f(Math.max(minimum,sz+f(x2))),d11=f(Math.max(minimum,f(sz)+f(sx)));
+  return {x,z,ix,iz,d00,d10,d01,d11};
 }
