@@ -516,3 +516,17 @@ test('state-zero control and rotation match original timer phases and pivot upda
  }
  assert.ok(rotated>0&&zero>0&&transition>0);assert.equal(phases.size,5);
 });
+
+test('alternate state-zero alignment matches original masks, correction limits and rotations',async()=>{
+ const {updateMcmStateZeroAlignment}=await import('../src/physics/mcm/state-zero-alignment.js');
+ const {floatBits}=await import('../src/physics/mcm/math.js');
+ const masks=new Set();let rotated=0,preserved=0;
+ for(const {input,outputBits} of fixture('state-zero-alignment-wine11.json').fixtures){
+  const r=updateMcmStateZeroAlignment(input);
+  const values=[...r.matrix,...r.angularVelocity,...r.scratch540,...r.axis624,...r.local420,r.field6b0,r.field6a8,r.field6ac];
+  assert.deepEqual([...values.map(floatBits),r.cacheValid],outputBits);
+  masks.add(input.mask);
+  if(r.matrix.some((v,i)=>floatBits(v)!==floatBits(input.matrix[i])))rotated++;else preserved++;
+ }
+ assert.equal(masks.size,4);assert.ok(rotated>0&&preserved>0);
+});

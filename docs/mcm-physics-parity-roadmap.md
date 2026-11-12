@@ -532,3 +532,15 @@ report and fixtures now record the corrected loader hash. New timer evidence use
 only the corrected allocation. A stack-relative operand error in the first
 rotation translation was caught by the differential run and corrected before
 retaining these passing fixtures.
+
+The alternate state-zero alignment path `0x4ac1f7..0x4ac5c5` now matches 40,000
+original executions across 32 output words
+(`mcm-state-zero-alignment-validation.json`). It includes mask gates, optional
+normal-axis pivot rotation and angular damping, construction of the correction
+target, its minimum/maximum adjustments, directional rate limiting and the second
+contact-axis pivot rotation. The maximum limit compares the magnitude saved
+**before** the minimum correction is applied; the port preserves this ordering.
+Fixtures span all four mask values, threshold-adjacent angles, both signs, cache
+preservation and zero secondary axes. These are supplied-state root-transform
+cases. This branch and the preceding active path still need the common
+`0x4a4b60` contact/event helper, then full sequencing and trajectory comparison.

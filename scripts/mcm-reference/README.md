@@ -515,3 +515,15 @@ Runs original `0x4abb30..0x4ac17b` with limited/activation gate exits intercepte
 Compares control/velocity state, root matrix, timer/sign/phase/accumulator, angle
 and cache flag (38 words). Uses the full `0xcc8` bike allocation. The following
 contact/event helper and alternate state-zero path remain excluded.
+
+### Alternate state-zero alignment
+
+```sh
+node scripts/mcm-reference/compare-state-zero-alignment-oracle.mjs /path/to/mcm.exe /tmp/new-zero-alignment-run
+```
+
+Executes original `0x4ac1f7..0x4ac5c5`, stopping before common contact/event
+handling. Compares 32 words including root matrix/cache, angular velocity, axis
+scratch and correction state. Covers mask gates, target floor/clamp order, rate
+limits and both pivot rotations. Geometry/state are supplied; whole-bike
+sequencing and the following helper remain excluded.

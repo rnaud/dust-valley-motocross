@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "bfc8fff158a21c8a3e9b821ceb77f31d7b56f0eb7e4413ab71d81aa5c6488e98",
+  "loaderSourceSha256": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe",
+  "casesSha256": "15019b5e82765e4c35135740b4596c481ff67e6039bc4063d01da1029c834696",
+  "resultsSha256": "157e975d1a75b53f64d71ea8f709e2df3a28f91f1ab9f53b86b9cb2535433933",
+  "cases": 40000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original alternate state-zero alignment 0x4ac1f7..0x4ac5c5: mask gates, contact-axis rotation, angular damping, target correction floor/clamp, rate limit and second pivot rotation. Root transforms, supplied axes and state; following contact/event helper and whole-bike update excluded."
+}
