@@ -15,5 +15,5 @@ export function updateMcmForceAngular(c) {
   const totalForce=paired.totalForce.map((v,i)=>f(v+c.force354[i]));
   const angular=updateMcmAngularWithContact({...c,state:c.state844,inertia:[...c.inertia,...c.inertiaAlternate],torque:totalTorque,
     velocity:[third.angularVelocityX,...c.velocity.slice(1)]});
-  return {totalForce,totalTorque,...angular,counter:paired.counter,previousPivot:[...c.pivot]};
+  return {totalForce,totalTorque,scratch540:local,...angular,counter:paired.counter,previousPivot:[...c.pivot]};
 }

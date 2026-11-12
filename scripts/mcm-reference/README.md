@@ -441,3 +441,15 @@ between force conversion and linear integration. Compares 20 words covering
 position, velocity, speed, acceleration, delta velocity, scratch cross product,
 steering state/counter and selected rotation. Supplies upstream forces and finite
 geometry, including positive `bike+0x8cc`; downstream rotation is excluded.
+
+### Connected force-to-motion sequence
+
+```sh
+node scripts/mcm-reference/compare-force-motion-oracle.mjs /path/to/mcm.exe /tmp/new-force-motion-run
+```
+
+Runs original `0x4aa77d..0x4ab49e` continuously, comparing 60 output words with
+`updateMcmForceMotion`. Shared flags, inertia and scratch state connect force
+assembly, contact correction, angular integration, steering decay and linear
+integration. Uses supplied forces/geometry and a root transform; earlier force
+construction and later rotation application are excluded.
