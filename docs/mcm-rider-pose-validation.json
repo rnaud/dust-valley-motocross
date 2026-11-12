@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "748caf04861401db314067baf5d558990f25ae4eaee6432e7c746f1088a8b4cc",
+  "loaderSourceSha256": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe",
+  "casesSha256": "d8eb9bbee074bc1b02e2a3813e32d0d04a5af59e29b8627671a2c5633cdbb35f",
+  "resultsSha256": "ece17064dea55f9dea044fdd22bd98bf0054c8bebd2f2f13b275533bfac6c787",
+  "cases": 48000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Connected original rider pose selection and blend 0x4aefcd..0x4af6f6. Height thresholds, speed branches, nearest-even pose indices, pose weights, directional peak/envelope blend and inactive reset. Finite supplied inputs, positive durations/component limits, ordered height thresholds. Earlier rider/trick input and orientation-reset branches and whole-bike sequencing excluded."
+}
