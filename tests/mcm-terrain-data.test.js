@@ -25,3 +25,24 @@ test('terrain decoder rejects truncated streams and output overflow',()=>{
   const {fixtures}=JSON.parse(fs.readFileSync(new URL('./fixtures/mcm/terrain-compression-wine11.json',import.meta.url)));
   assert.throws(()=>decompressMcmBlock(Buffer.from(fixtures[0].inputHex,'hex'),1),/Invalid LZW/);
 });
+
+test('terrain hierarchy connects file offsets, sample banks and world-coordinate queries',async()=>{
+  const {readMcmTerrain}=await import('../scripts/mcm-reference/terrain-data.mjs');
+  const {queryMcmTerrainHeight}=await import('../src/physics/mcm/terrain-height.js');
+  const word=n=>{const b=Buffer.alloc(4);b.writeUInt32LE(n);return b;};
+  const scale=Buffer.alloc(4);scale.writeFloatLE(.125);
+  const samples=Buffer.alloc(4624);
+  for(let i=0;i<289;i++){samples.writeUInt16LE(i,i*16+2);samples.writeFloatLE(1,i*16+8);}
+  const prefix=Buffer.concat([Buffer.from('TRN\0'),word(2),word(0),word(3),scale,word(1),word(0),
+    ...[Buffer.alloc(512),Buffer.alloc(580),samples].flatMap(b=>[word(b.length),word(b.length),b]),word(0),word(0)]);
+  const rootAt=prefix.length,tableAt=rootAt+60,leafAt=tableAt+1024;
+  const root=Buffer.alloc(60),leaf=Buffer.alloc(60),table=Buffer.alloc(1024);
+  root.writeFloatLE(1,4);root.writeUInt32LE(1,20);root.writeUInt32LE(12,24);root.writeUInt32LE(tableAt,56);
+  leaf.writeFloatLE(1,4);leaf.writeUInt32LE(8,24);table.writeUInt32LE(leafAt);
+  const data=Buffer.concat([prefix,root,table,leaf]),r=readMcmTerrain(data);
+  assert.equal(r.nodes.size,2);assert.equal(r.root.children[0].offset,leafAt);assert.equal(r.root.children[1],null);
+  assert.equal(r.worldToGrid,.03125);
+  assert.deepEqual(queryMcmTerrainHeight({...r,point:[16,0,16]}),[16,1.125,16]);
+  data.writeUInt32LE(rootAt,tableAt);
+  assert.throws(()=>readMcmTerrain(data),/cycle/);
+});

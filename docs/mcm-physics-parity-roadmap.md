@@ -313,3 +313,24 @@ to the correct banks. This is not yet a full course loader or whole-bike parity.
 Runtime recheck: the existing original process was alive but a read-only scan
 found zero objects with the previously validated bike vtable. macOS remained
 locked. No live course-state or new whole-bike capture is claimed from this check.
+
+Actual course hierarchies and world-coordinate terrain queries are now recovered.
+Across all 35 installed courses, the original `0x48a2f0` deserializer agrees on
+169,376 node records (bias, scale, level, shift, bank reference and all 256 child
+links), followed by 140,000 matching point/normal queries through original
+`0x411340`. Queries alternate smooth and face modes and include outside-course
+coordinates. See `mcm-terrain-course-validation.json` for individual source hashes,
+node/query counts and raw input/output hashes. All comparisons have zero differences.
+
+The hierarchy oracle replaces stdio, allocation, child construction and renderer
+initialization with host services. It supplies the root offset, decoded banks and
+scales from the recovered prefix parser; those prefix calculations are not an
+independent full-game-loader comparison. The original node deserialization,
+absolute child-offset seeks, recursive traversal and terrain-query machine code
+execute intact. A synthetic hierarchy regression checks offset resolution,
+world-coordinate scaling and cycle rejection without committing original assets.
+
+Every supplied course uses world-to-grid `float32(1/3)` and height scale
+0.01171875. Dunes has 12,594 nodes starting at file byte 5,353,326. Course sample
+banks can now feed the isolated recovered terrain query, but the connected bike
+update and original-versus-port whole-bike trajectories remain outstanding.
