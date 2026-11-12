@@ -487,3 +487,18 @@ Inactive gates preserve both controller vectors. Coverage includes 18,005 skippe
 meaning of transition kinds and controller flags remains unresolved. This is not
 validation of collisions with another rider: that velocity is supplied. Following
 orientation correction and rider/crash behavior remain outside the comparison.
+
+The nonzero-state orientation branch following controller handoff is now joined
+through `0x4ac6cd`. Its connected 36,000-case oracle matches all 107 final words
+(`mcm-state-orientation-validation.json`), including 3,599 both-contact corrections,
+3,002 front-only corrections and 29,399 skipped corrections. The both-contact path
+adds normals with float stores, uses the original inverse-square-root helper,
+stores its reciprocal estimate to float, and inverse-rotates the normalized sum
+before rotating around the saved pivot. The front-only path rotates around the
+initialized Y axis using a negated angle. Cases straddle the original `0.001f`
+threshold and verify preserved scratch/axis fields when skipped.
+State-zero still exits before its distinct branch at `0x4abb30`. Normals in this
+oracle have positive Y so their sum is nonzero, transforms are isolated roots,
+and upstream forces/geometry are supplied. Degenerate normal sums, state-zero
+orientation, subsequent rider/crash handling and whole-bike trajectories remain
+outside this evidence. The playable preview has not adopted this partial core.
