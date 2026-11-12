@@ -729,3 +729,17 @@ test('trick start matches original flags, child callbacks and both animation sel
  }
  assert.equal(paths.size,32);
 });
+
+test('directional trick selection and startup match original dead zone and both trick banks',async()=>{
+ const {startMcmDirectionalTrick}=await import('../src/physics/mcm/trick-selection.js');
+ const {createMcmEventGraph}=await import('../src/physics/mcm/event-graph.js');
+ const {floatBits,bitsFloat}=await import('../src/physics/mcm/math.js');
+ const selected=new Set();let skipped=0;
+ for(const {input:c,angularVelocityBits,outputBits} of fixture('trick-selection-wine11.json').fixtures){
+  c.angularVelocity=angularVelocityBits.map(bitsFloat);
+ const s=c.setup,started=startMcmDirectionalTrick(c),t=started||{...createMcmEventGraph(s),field820:c.field820,field710:c.field710,animation:c.animation,awardBase:c.awardBase,fieldb4c:c.fieldb4c,envelope:s.envelope,boundsMin:s.liveBoundsMin,boundsMax:s.liveBoundsMax,scratch540:s.scratch540,scratch54c:s.scratch54c,bikeAnimation:c.bikeAnimation,riderAnimation:c.riderAnimation},r={...t,triggered:c.state,eventKind:c.eventKind,reason:c.reason,otherPresent:c.otherPresent,field714:c.field714,velocity:c.velocity,angularVelocity:c.angularVelocity,randomCalls:0,inputCalls:0,state:c.state,direction:s.direction,inverted:s.inverted,field890:s.field890,resource:s.resource,rider:s.rider},expected=[r.triggered,r.eventKind,r.reason,r.otherPresent,r.field710,r.field714,...[...r.velocity,...r.angularVelocity].map(floatBits),r.randomCalls,r.inputCalls,r.state,r.field820,r.animation,...[...r.envelope,...r.direction].map(floatBits),r.inverted,floatBits(r.field890),r.resource,...[...r.boundsMin,...r.boundsMax,...r.scratch540,...r.scratch54c,...r.target.local,...r.target.world,...r.source.world].map(floatBits),r.source.cacheValid,r.target.cacheValid,...[...r.rider.velocity,...r.rider.angularVelocity,...r.rider.previousVelocity].map(floatBits),...r.rider.selected,r.rider.active13c,r.rider.active16c,r.rider.kind,...r.components.flatMap(n=>[...[...n.local,...n.world].map(floatBits),n.cacheValid]),...r.boundsChildren.flatMap(n=>[...n.forward,...n.up,...n.position].map(floatBits)),floatBits(t.awardBase),t.fieldb4c,...t.bikeAnimation,...t.riderAnimation,+!!started];
+  assert.deepEqual(expected,outputBits);
+  if(started)selected.add(started.animation);else skipped++;
+ }
+ assert.equal(selected.size,16);assert.ok(skipped>0);
+});
