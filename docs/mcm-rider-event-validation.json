@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "b466d72ec11b4ccf831014c5dc886dc2faabcf747071bcde243416cc525e4bf8",
+  "loaderSourceSha256": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe",
+  "casesSha256": "4500e3c3f48207889f22005c15460b7788f1a60c091fd3e0ac68fc464dda8211",
+  "resultsSha256": "4d772a3afacc4521cbb4ca3bd8394616ecb69c278ee53ac3ef9677426c52546e",
+  "cases": 32000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "outcomes": {
+    "kind=0,draws=2": 668,
+    "kind=1,draws=3": 3334,
+    "kind=2,draws=3": 3335,
+    "kind=3,draws=3": 3334,
+    "kind=4,draws=3": 3332,
+    "kind=5,draws=3": 3333,
+    "kind=6,draws=2": 668,
+    "kind=7,draws=3": 3334,
+    "kind=0,draws=3": 3332,
+    "kind=5,draws=2": 666,
+    "kind=6,draws=3": 3332,
+    "kind=4,draws=2": 667,
+    "kind=3,draws=2": 667,
+    "kind=2,draws=2": 666,
+    "kind=1,draws=2": 666,
+    "kind=7,draws=2": 666
+  },
+  "scope": "Original rider-controller event selection 0x40fa10..0x40fbac: default event, three table selections, flags and previous velocity. Supplied valid event records (kinds 0..7, first group 0..5 entries, other groups 1..5 entries) and CRT draws; RNG implementation and subsequent rider motion excluded."
+}

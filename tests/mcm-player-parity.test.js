@@ -548,3 +548,18 @@ test('bike event decisions match original return values, mutations and external 
  assert.deepEqual([...reasons].sort((a,b)=>a-b),[1,2,4,5,6,7,8,9,10,12]);
  assert.ok(suppressed>0&&advanced>0&&queried>0&&randomized>0&&negativeZero>0);
 });
+
+test('rider event selection matches original tables, rounding, flags and random consumption',async()=>{
+ const {startMcmRiderEvent}=await import('../src/physics/mcm/rider-event.js');
+ const {floatBits}=await import('../src/physics/mcm/math.js');
+ const paths=new Set(),lengths=new Set();let defaults=0,zeroDraws=0;
+ for(const {input,outputBits} of fixture('rider-event-wine11.json').fixtures){
+  const r=startMcmRiderEvent(input);
+  assert.deepEqual([r.kind,...r.selected,r.active13c,r.active16c,...r.previousVelocity.map(floatBits),r.randomCalls],outputBits);
+  paths.add(`${r.kind}:${r.randomCalls}`);
+  for(const group of input.records[r.kind])lengths.add(group.length);
+  if(input.kind===-1)defaults++;
+  if(input.randomValues.includes(0))zeroDraws++;
+ }
+ assert.equal(paths.size,16);assert.equal(lengths.size,6);assert.ok(defaults>0&&zeroDraws>0);
+});

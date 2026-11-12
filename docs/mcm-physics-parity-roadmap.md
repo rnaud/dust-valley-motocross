@@ -559,3 +559,16 @@ positive collision speeds; it does not validate the input subsystem or RNG here.
 The caller `0x4a4b60` still needs its event setup, transform reparenting and rider
 controller calls recovered before this decision joins the complete update. This
 is not a whole-bike trajectory or playable-mode parity claim.
+
+The rider-controller event entry `0x40fa10..0x40fbac`, called by the common
+bike event setup, now matches 32,000 original executions across ten output words
+(`mcm-rider-event-validation.json`). It selects an explicit/default event, chooses
+three table entries, sets the two activation flags and copies linear velocity to
+the previous-velocity field. Selection uses a binary32 store followed by x87
+nearest-even integer conversion. An empty first group skips its random draw and
+selects zero; the second and third groups always draw. Tests cover every event
+kind 0–7 with both draw counts, group sizes up to five, zero/max random values,
+and rounding boundaries. Event records and random draws are supplied inputs;
+this does not yet recover live controller data or subsequent rider motion. The
+remaining event wrapper includes transform extraction/reparenting and bike-field
+setup, which must be connected before whole-update validation.
