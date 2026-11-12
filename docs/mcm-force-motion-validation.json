@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "64c54431c7459048cc79190ffab696f7f85ffe7fdc3913d06ce82f62ad9cc8bd",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "b6a5c62c6fcd480a4fa903f5e59240ca250ca4c34c6b5b358d4fcb429f6d21f9",
+  "resultsSha256": "c6e969cbe3a1174633baef03c2df6392537904eee97f713c9530a644c994a12e",
+  "cases": 36000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Connected original 0x4aa77d..0x4ab49e: force and torque assembly through angular/contact correction and linear integration, including shared scratch, inertia, flags and steering decay state. Root transform, supplied assembled forces and geometry; upstream force construction and downstream rotation application excluded."
+}

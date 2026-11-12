@@ -447,3 +447,16 @@ supplies chassis integration, contacts, grip, rider balance, brakes and crashes.
 The independently recovered angular/linear caller blocks are not substituted
 into Cannon's integration. They still need a complete original-state adapter.
 The preview lets the recovered parts be played without misrepresenting that gap.
+
+The force/angular and force/linear blocks are now joined in
+`updateMcmForceMotion`, validated against continuous original execution from
+`0x4aa77d` through `0x4ab49e`. All 60 output words match in 36,000 cases
+(`mcm-force-motion-validation.json`). Shared timestep, contact flags and inertia
+have one input source, accumulated forces feed linear acceleration, and the third
+local torque scratch vector is preserved into the steering-fallback branch.
+Fixtures cover all eight state/contact/both combinations, nonzero fallback and
+frozen motion. This closes the adapter gap between those two previously isolated
+blocks. Inputs still supply the assembled forces and geometry, and the root
+transform limitation remains. Downstream rotation application and complete bike
+trajectories remain unverified; the playable preview still uses Cannon chassis
+integration until the complete original-state adapter is recovered.

@@ -426,3 +426,19 @@ test('force-to-linear integration preserves original steering fallback and decay
   }
   assert.ok(fallback>0&&generated>0&&decayed>0&&frozen>0);
 });
+
+test('connected force-to-motion sequence matches original shared state and both integrations',async()=>{
+  const {updateMcmForceMotion}=await import('../src/physics/mcm/force-motion-step.js');
+  const {floatBits}=await import('../src/physics/mcm/math.js');
+  const modes=new Set();let fallback=0,frozen=0;
+  for(const {input,outputBits} of fixture('force-motion-wine11.json').fixtures){
+    const {angular:r,linear:l}=updateMcmForceMotion(input);
+    const angular=[...r.totalForce,...r.totalTorque,...r.velocity,...r.acceleration,...r.opposing,...r.opposingLocal];
+    const linear=[...l.position,...l.velocity,l.speed,...l.acceleration,...l.deltaVelocity,...l.scratch540,l.field6d8,l.field6dc];
+    assert.deepEqual([...angular.map(floatBits),r.counter,...r.previousPivot.map(floatBits),...r.matrix.map(floatBits),floatBits(r.field6ac),r.mask,...linear.map(floatBits),l.field6e0>>>0,floatBits(l.rotation)],outputBits);
+    modes.add(input.state844+2*input.contact+4*input.both);
+    if(l.field6d8===0&&l.rotation!==0)fallback++;
+    if(input.frozen)frozen++;
+  }
+  assert.equal(modes.size,8);assert.ok(fallback>0&&frozen>0);
+});
