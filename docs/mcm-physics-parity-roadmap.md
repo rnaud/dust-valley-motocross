@@ -353,3 +353,18 @@ outputs. Inputs use varied affine transforms and synthetic local points over
 actual terrain; these are not captured whole-bike configurations. Upstream gates,
 subsequent response, suspension sequencing and complete bike-step parity remain
 unimplemented/unvalidated by this milestone.
+
+The suspension response caller block `0x4a72b5..0x4a73e2` now matches 36,000
+original executions across both signs of supplied contact height: 20,572 active
+updates, 15,428 skipped updates, and 3,722 active travel-limit cases. All 23 output
+words match exactly. This connects the previously recovered contact geometry and
+component travel update to the caller's gates, height reduction, contact-point
+translation, response flag and skipped-path history resets. Unassigned scratch
+outputs are preserved on the skipped path, as in the original. See
+`mcm-suspension-response-validation.json` and retained original fixtures.
+
+The comparison enters after the caller has selected this suspension branch.
+Direction, surface normal and contact height are supplied inputs, and the
+component transform has no parent. Upstream geometry construction, other response
+branches, subsequent force application and full bike integration remain outside
+this result. It does not establish end-to-end suspension or whole-bike parity.

@@ -344,3 +344,16 @@ test('connected contact probes match original transforms, terrain results and se
   }
   assert.deepEqual([...seen].sort(),[0,1,2]);
 });
+
+test('suspension response matches original gating, limiting, corrections and history resets',async()=>{
+  const {updateMcmSuspensionResponse}=await import('../src/physics/mcm/suspension-response.js');
+  const {floatBits}=await import('../src/physics/mcm/math.js');
+  let active=0,skipped=0,limited=0;
+  for(const {input,outputBits} of fixture('suspension-response-wine11.json').fixtures){
+    const r=updateMcmSuspensionResponse(input);
+    const values=[...r.displacement,...r.velocity,r.compression,r.travel,...r.translation,...r.previousDisplacement,r.previousTravel];
+    assert.deepEqual([...values.map(floatBits),r.limited,r.contactLimited,r.cacheValid,...[r.height,...r.point].map(floatBits),r.active],outputBits);
+    if(r.active){active++;if(r.limited)limited++;}else skipped++;
+  }
+  assert.ok(active>0&&skipped>0&&limited>0);
+});
