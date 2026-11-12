@@ -393,3 +393,16 @@ preserve the damping scratch vector. These details now have an explicit adapter
 in `suspension-forces.js` rather than relying on matching property names.
 The oracle supplies response outputs; intervening upstream sequencing and the
 subsequent force/torque accumulation remain outside this validation.
+
+The force/torque assembly block `0x4aa77d..0x4aa959` now matches 36,000
+original executions across all 13 output words. See
+`mcm-paired-force-torque-validation.json`. It adds the two supplied forces in
+original float-store order, crosses each with its arm, inverse-rotates the
+moments, clips opposite local pitch signs, and preserves the resulting bike
+scratch vectors at `+0x540` and `+0x54c`. Both clips mutate the same `+0x8bc`
+counter sequentially: the second can reset an increment from the first.
+Control comparisons preserve the original signed/unsigned bit tests at ±0.9.
+Fixtures include zero forces, boundary controls, and counter overflow.
+This oracle supplies assembled forces and valid cached world matrices; earlier
+force construction, cache resolution, the following third force contribution,
+and complete bike integration remain outside this milestone.

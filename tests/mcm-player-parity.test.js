@@ -382,3 +382,15 @@ test('paired suspension forces match original response wiring and inactive scrat
   }
   assert.equal(flags.size,4);
 });
+
+test('paired force torque caller matches original clipping and ordered counter mutations',async()=>{
+  const {accumulateMcmPairedForceTorque}=await import('../src/physics/mcm/paired-force-torque.js');
+  const {floatBits}=await import('../src/physics/mcm/math.js');
+  const counters=new Set();
+  for(const {input,outputBits} of fixture('paired-force-torque-wine11.json').fixtures){
+    const r=accumulateMcmPairedForceTorque(input);
+    assert.deepEqual([... [...r.totalForce,...r.totalTorque,...r.scratch540,...r.scratch54c].map(floatBits),r.counter],outputBits);
+    counters.add(r.counter);
+  }
+  assert.ok(counters.has(0)&&counters.has(1)&&counters.size>2);
+});
