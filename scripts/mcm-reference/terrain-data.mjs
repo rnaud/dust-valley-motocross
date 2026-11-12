@@ -55,3 +55,51 @@ export function decompressMcmBlock(bytes,size) {
   if(used!==size&&used!==size+1)throw new Error(`LZW output size ${used}, expected ${size}`);
   return output.subarray(0,used);
 }
+
+// Physical terrain hierarchy from 0x48a2f0. Texture payloads are skipped using
+// their serialized dimensions; only the physics-relevant node fields are kept.
+export function readMcmTerrain(bytes) {
+  const prefix=readMcmTerrainBanks(bytes);
+  let offset=prefix.nextOffset;
+  const u32=()=>{if(offset+4>bytes.length)throw new Error('Truncated terrain resources');const n=bytes.readUInt32LE(offset);offset+=4;return n;};
+  const textureCount=u32(),hasSharedTexture=u32();
+  const skipTextures=count=>{
+    const width=u32(),height=u32(),format=u32();
+    const pixelBytes=[0,3,2,2,1,3,1,2,2,3,2,2,4,2,2,4][format];
+    if(!pixelBytes||width%2||height%2)throw new Error('Unsupported terrain texture format/dimensions');
+    offset+=count*width*height*pixelBytes*5/4;
+    if(!Number.isSafeInteger(offset)||offset>bytes.length)throw new Error('Truncated terrain textures');
+  };
+  if(hasSharedTexture)skipTextures(1);
+  if(textureCount)skipTextures(textureCount);
+  const rootOffset=offset,nodes=new Map(),pending=new Set(),bankCache=new Map();
+  const bank=index=>{
+    if(bankCache.has(index))return bankCache.get(index);
+    const block=prefix.banks[index]?.[2];if(!block)throw new Error('Invalid terrain bank reference');
+    const raw=block.compressed?decompressMcmBlock(block.data,block.size):block.data;
+    const samples={heights:[],normals:[]};
+    for(let i=0;i<289;i++){
+      samples.heights.push(raw.readUInt16LE(i*16+2));
+      samples.normals.push([4,8,12].map(j=>raw.readFloatLE(i*16+j)));
+    }
+    bankCache.set(index,samples);return samples;
+  };
+  const readNode=(at,depth=0)=>{
+    if(pending.has(at)||depth>3)throw new Error('Invalid terrain hierarchy cycle/depth');
+    if(nodes.has(at))return nodes.get(at);
+    if(at<rootOffset||at+60>bytes.length)throw new Error('Invalid terrain node offset');
+    const level=bytes.readUInt32LE(at+20),shift=bytes.readUInt32LE(at+24),bankIndex=bytes.readUInt32LE(at+40),table=bytes.readUInt32LE(at+56);
+    if(level>2||shift>30)throw new Error('Unsupported terrain node level/shift');
+    const node={offset:at,level,shift,bankIndex,bias:bytes.readFloatLE(at),scale:bytes.readFloatLE(at+4),...bank(bankIndex)};
+    nodes.set(at,node);pending.add(at);
+    if(table){
+      if(table<rootOffset||table+1024>bytes.length)throw new Error('Invalid terrain child table');
+      node.children=Array.from({length:256},(_,i)=>{const child=bytes.readUInt32LE(table+i*4);return child?readNode(child,depth+1):null;});
+    }
+    pending.delete(at);return node;
+  };
+  const root=readNode(rootOffset),exponent=root.shift-4*root.level;
+  if(exponent<0||exponent>30)throw new Error('Invalid terrain grid scale');
+  const worldToGrid=Math.fround(1/((2**exponent)*prefix.heightScale));
+  return {...prefix,rootOffset,root,nodes,worldToGrid,textureCount,hasSharedTexture};
+}

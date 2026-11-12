@@ -371,3 +371,23 @@ Each synthetic case executes both original height and height/normal helpers,
 including leaf and nested tile lookup, missing children, and positive edge
 clamping. Height is compared as binary64 and normals as binary32. Continuous
 position interpolation and loading actual terrain assets are not covered.
+
+### Actual course terrain validation
+
+`terrain-data.mjs` reads the physics-relevant TRN v2 sample banks and tile
+hierarchy. It skips rendering payloads and does not redistribute game assets.
+The decoder retains the original stream's extra output byte; bank readers consume
+only the nominal prefix.
+
+```sh
+node scripts/mcm-reference/compare-terrain-data-oracle.mjs /path/to/mcm.exe /tmp/new-block-run /path/to/game
+node scripts/mcm-reference/compare-terrain-course-oracle.mjs /path/to/mcm.exe /tmp/new-course-run /path/to/game/teraform/quarries/dunes.trn
+```
+
+Each output directory must be new. The course oracle compares original node
+parsing and child traversal, then 4,000 height/normal queries against the recovered
+code. It uses host stdio/allocation and omits rendering initialization. The
+recovered parser supplies the root offset, scale and decoded sample banks; this is
+not a full game-loader or complete bike-step comparison. Raw original course data
+and oracle binaries stay in the local output directory; commit reports and
+synthetic fixtures only.
