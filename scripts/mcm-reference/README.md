@@ -492,3 +492,15 @@ logic. Compares 107 final words, including the corrected matrix, normalized worl
 scratch and local axis at bike `+0x624`. Positive-Y normals avoid degenerate sums;
 threshold gates and preservation branches are covered. Root transforms and
 supplied upstream geometry/forces remain limitations.
+
+### State-zero control and velocity deflection
+
+```sh
+node scripts/mcm-reference/compare-state-zero-control-oracle.mjs /path/to/mcm.exe /tmp/new-zero-control-run
+```
+
+Runs original `0x4abb30..0x4abef9`, intercepting the limited/activation gate exits
+at `0x4ac64a` and `0x4ac1f7`. Compares 16 output words: control vector, both scratch
+vectors, linear velocity/speed and angular velocity. Uses positive speed with
+axial/oblique directions. Later timer/orientation code and whole-bike sequencing
+are excluded.

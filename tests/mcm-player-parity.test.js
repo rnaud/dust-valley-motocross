@@ -486,3 +486,17 @@ test('nonzero-state orientation matches original contact gates and pivot transfo
   }
   assert.equal(branches.size,3);
 });
+
+test('state-zero control matches original deflection, damping and preserved gates',async()=>{
+ const {updateMcmStateZeroControl}=await import('../src/physics/mcm/state-zero-control.js');
+ const {floatBits}=await import('../src/physics/mcm/math.js');
+ let skipped=0,deflected=0,damped=0;
+ for(const {input,outputBits} of fixture('state-zero-control-wine11.json').fixtures){
+  const r=updateMcmStateZeroControl(input);
+  assert.deepEqual([...r.controlVector,...r.scratch540,...r.scratch54c,...r.velocity,r.speed,...r.angularVelocity].map(floatBits),outputBits);
+  if(input.limitedFirst||input.limitedSecond||!input.field4bc)skipped++;
+  if(r.velocity.some((v,i)=>v!==input.velocity[i]))deflected++;
+  if(r.angularVelocity.some((v,i)=>v!==input.angularVelocity[i]))damped++;
+ }
+ assert.ok(skipped>0&&deflected>0&&damped>0);
+});
