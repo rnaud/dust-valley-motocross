@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "wineVersion": "wine-11.0",
+  "oracleSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "95cb2256a441569253a0ab249ecc63c1c9a3bf3d41fd4441769acd9d7e88411d",
+  "resultsSha256": "ec80cc4ca8a6f97d96d18605c8b28810dfe05a366fb1be92fbe87fd634a4f9a8",
+  "controlWords": [
+    639,
+    895
+  ],
+  "counts": {
+    "sqrt": 130052,
+    "schedule": 4190
+  },
+  "comparisons": "Exact binary32 bits, integer counts, and inverse dt rounded to binary64",
+  "scope": "Original instructions under Wine/Rosetta with synthetic inputs; not a gameplay trace or proof of native Windows equivalence.",
+  "differenceCount": 0,
+  "firstDifferences": []
+}

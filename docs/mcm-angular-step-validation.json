@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "8977f4d91a9b03f60439fc7819b0db2a7eaf67990d300f8729f2c4e82850470c",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "591ff24db254ba92924cbbb0737ddcf1c1d68da55a0c58815889c09bc679ba04",
+  "resultsSha256": "bbb79b360d6a54dc64ed6a29cf18d15c75a8c5455447c5220a1e3542cd2f9d42",
+  "cases": 30000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original angular inertia, inverse rotation, opposing acceleration and integration block; contact correction flag clear; supplied local torque and world opposing torque"
+}

@@ -1,0 +1,1115 @@
+{
+  "schemaVersion": 1,
+  "provenance": "docs/mcm-helper-validation.json",
+  "scope": "Synthetic helper execution under Wine 11 / Rosetta; not gameplay telemetry",
+  "cases": [
+    {
+      "kind": "sqrt",
+      "controlWord": 639,
+      "inputBits": 0,
+      "outputBits": 0
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 639,
+      "inputBits": 2147483648,
+      "outputBits": 0
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 639,
+      "inputBits": 8388608,
+      "outputBits": 536870912
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 639,
+      "inputBits": 8454143,
+      "outputBits": 536870912
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 639,
+      "inputBits": 12451840,
+      "outputBits": 538640384
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 639,
+      "inputBits": 12517375,
+      "outputBits": 538640384
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 639,
+      "inputBits": 12517376,
+      "outputBits": 538705920
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 639,
+      "inputBits": 12582911,
+      "outputBits": 538705920
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 639,
+      "inputBits": 1073676288,
+      "outputBits": 1068761088
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 639,
+      "inputBits": 1073741823,
+      "outputBits": 1068761088
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 639,
+      "inputBits": 1073741824,
+      "outputBits": 1068826624
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 639,
+      "inputBits": 1073807359,
+      "outputBits": 1068826624
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 639,
+      "inputBits": 2139029504,
+      "outputBits": 1602158592
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 639,
+      "inputBits": 2139095039,
+      "outputBits": 1602158592
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 0,
+      "carryBits": 0,
+      "iterations": 1,
+      "dtBits": 1017370378,
+      "remainderBits": 0,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 2147483648,
+      "carryBits": 0,
+      "iterations": 1,
+      "dtBits": 1017370378,
+      "remainderBits": 0,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1000593162,
+      "carryBits": 1008981770,
+      "iterations": 1,
+      "dtBits": 1014350479,
+      "remainderBits": 0,
+      "inverseDt": 66.66666815678282
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 0,
+      "carryBits": 1008981770,
+      "iterations": 1,
+      "dtBits": 1017370378,
+      "remainderBits": 0,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1022739087,
+      "carryBits": 0,
+      "iterations": 1,
+      "dtBits": 1017370378,
+      "remainderBits": 1008981770,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1048576000,
+      "carryBits": 0,
+      "iterations": 10,
+      "dtBits": 1017370378,
+      "remainderBits": 1008981776,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1065353216,
+      "carryBits": 0,
+      "iterations": 10,
+      "dtBits": 1017370378,
+      "remainderBits": 851443712,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1036831948,
+      "carryBits": 830472192,
+      "iterations": 5,
+      "dtBits": 1017370378,
+      "remainderBits": 2977955840,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1008981770,
+      "carryBits": 2977955840,
+      "iterations": 1,
+      "dtBits": 1008981766,
+      "remainderBits": 0,
+      "inverseDt": 100.00003948809275
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1022739087,
+      "carryBits": 1008981769,
+      "iterations": 1,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370378,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 0,
+      "carryBits": 1017370378,
+      "iterations": 1,
+      "dtBits": 1017370378,
+      "remainderBits": 0,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1017370377,
+      "carryBits": 0,
+      "iterations": 1,
+      "dtBits": 1017370377,
+      "remainderBits": 0,
+      "inverseDt": 50.00000577420063
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1017370378,
+      "carryBits": 0,
+      "iterations": 1,
+      "dtBits": 1017370378,
+      "remainderBits": 0,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1017370379,
+      "carryBits": 0,
+      "iterations": 1,
+      "dtBits": 1017370378,
+      "remainderBits": 822083584,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1025758985,
+      "carryBits": 0,
+      "iterations": 1,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370376,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1025758986,
+      "carryBits": 0,
+      "iterations": 2,
+      "dtBits": 1017370378,
+      "remainderBits": 0,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1025758987,
+      "carryBits": 0,
+      "iterations": 2,
+      "dtBits": 1017370378,
+      "remainderBits": 830472192,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1031127694,
+      "carryBits": 0,
+      "iterations": 2,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370376,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1031127695,
+      "carryBits": 0,
+      "iterations": 3,
+      "dtBits": 1017370378,
+      "remainderBits": 0,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1031127696,
+      "carryBits": 0,
+      "iterations": 3,
+      "dtBits": 1017370378,
+      "remainderBits": 830472192,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1034147593,
+      "carryBits": 0,
+      "iterations": 3,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370374,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1034147594,
+      "carryBits": 0,
+      "iterations": 4,
+      "dtBits": 1017370378,
+      "remainderBits": 0,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1034147595,
+      "carryBits": 0,
+      "iterations": 4,
+      "dtBits": 1017370378,
+      "remainderBits": 838860800,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1036831947,
+      "carryBits": 0,
+      "iterations": 4,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370372,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1036831948,
+      "carryBits": 0,
+      "iterations": 4,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370376,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1036831949,
+      "carryBits": 0,
+      "iterations": 5,
+      "dtBits": 1017370378,
+      "remainderBits": 830472192,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1039516302,
+      "carryBits": 0,
+      "iterations": 5,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370374,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1039516303,
+      "carryBits": 0,
+      "iterations": 6,
+      "dtBits": 1017370378,
+      "remainderBits": 0,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1039516304,
+      "carryBits": 0,
+      "iterations": 6,
+      "dtBits": 1017370378,
+      "remainderBits": 838860800,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1041194024,
+      "carryBits": 0,
+      "iterations": 6,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370372,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1041194025,
+      "carryBits": 0,
+      "iterations": 7,
+      "dtBits": 1017370378,
+      "remainderBits": 830472192,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1041194026,
+      "carryBits": 0,
+      "iterations": 7,
+      "dtBits": 1017370378,
+      "remainderBits": 849346560,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1042536201,
+      "carryBits": 0,
+      "iterations": 7,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370370,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1042536202,
+      "carryBits": 0,
+      "iterations": 8,
+      "dtBits": 1017370378,
+      "remainderBits": 0,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1042536203,
+      "carryBits": 0,
+      "iterations": 8,
+      "dtBits": 1017370378,
+      "remainderBits": 847249408,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1043878378,
+      "carryBits": 0,
+      "iterations": 8,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370368,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1043878379,
+      "carryBits": 0,
+      "iterations": 8,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370376,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1043878380,
+      "carryBits": 0,
+      "iterations": 9,
+      "dtBits": 1017370378,
+      "remainderBits": 843055104,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1045220555,
+      "carryBits": 0,
+      "iterations": 9,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370366,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1045220556,
+      "carryBits": 0,
+      "iterations": 9,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370374,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1045220557,
+      "carryBits": 0,
+      "iterations": 10,
+      "dtBits": 1017370378,
+      "remainderBits": 838860800,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1046562733,
+      "carryBits": 0,
+      "iterations": 10,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370372,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1046562734,
+      "carryBits": 0,
+      "iterations": 10,
+      "dtBits": 1017370378,
+      "remainderBits": 830472192,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1046562735,
+      "carryBits": 0,
+      "iterations": 10,
+      "dtBits": 1017370378,
+      "remainderBits": 849346560,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1047904910,
+      "carryBits": 0,
+      "iterations": 10,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370370,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1047904911,
+      "carryBits": 0,
+      "iterations": 10,
+      "dtBits": 1017370378,
+      "remainderBits": 0,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 639,
+      "deltaBits": 1047904912,
+      "carryBits": 0,
+      "iterations": 10,
+      "dtBits": 1017370378,
+      "remainderBits": 847249408,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 895,
+      "inputBits": 0,
+      "outputBits": 0
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 895,
+      "inputBits": 2147483648,
+      "outputBits": 0
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 895,
+      "inputBits": 8388608,
+      "outputBits": 536870912
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 895,
+      "inputBits": 8454143,
+      "outputBits": 536870912
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 895,
+      "inputBits": 12451840,
+      "outputBits": 538640384
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 895,
+      "inputBits": 12517375,
+      "outputBits": 538640384
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 895,
+      "inputBits": 12517376,
+      "outputBits": 538705920
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 895,
+      "inputBits": 12582911,
+      "outputBits": 538705920
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 895,
+      "inputBits": 1073676288,
+      "outputBits": 1068761088
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 895,
+      "inputBits": 1073741823,
+      "outputBits": 1068761088
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 895,
+      "inputBits": 1073741824,
+      "outputBits": 1068826624
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 895,
+      "inputBits": 1073807359,
+      "outputBits": 1068826624
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 895,
+      "inputBits": 2139029504,
+      "outputBits": 1602158592
+    },
+    {
+      "kind": "sqrt",
+      "controlWord": 895,
+      "inputBits": 2139095039,
+      "outputBits": 1602158592
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 0,
+      "carryBits": 0,
+      "iterations": 1,
+      "dtBits": 1017370378,
+      "remainderBits": 0,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 2147483648,
+      "carryBits": 0,
+      "iterations": 1,
+      "dtBits": 1017370378,
+      "remainderBits": 0,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1000593162,
+      "carryBits": 1008981770,
+      "iterations": 1,
+      "dtBits": 1014350479,
+      "remainderBits": 0,
+      "inverseDt": 66.66666815678282
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 0,
+      "carryBits": 1008981770,
+      "iterations": 1,
+      "dtBits": 1017370378,
+      "remainderBits": 0,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1022739087,
+      "carryBits": 0,
+      "iterations": 1,
+      "dtBits": 1017370378,
+      "remainderBits": 1008981770,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1048576000,
+      "carryBits": 0,
+      "iterations": 10,
+      "dtBits": 1017370378,
+      "remainderBits": 1008981776,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1065353216,
+      "carryBits": 0,
+      "iterations": 10,
+      "dtBits": 1017370378,
+      "remainderBits": 851443712,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1036831948,
+      "carryBits": 830472192,
+      "iterations": 5,
+      "dtBits": 1017370378,
+      "remainderBits": 2977955840,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1008981770,
+      "carryBits": 2977955840,
+      "iterations": 1,
+      "dtBits": 1008981766,
+      "remainderBits": 0,
+      "inverseDt": 100.00003948809275
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1022739087,
+      "carryBits": 1008981769,
+      "iterations": 1,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370378,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 0,
+      "carryBits": 1017370378,
+      "iterations": 1,
+      "dtBits": 1017370378,
+      "remainderBits": 0,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1017370377,
+      "carryBits": 0,
+      "iterations": 1,
+      "dtBits": 1017370377,
+      "remainderBits": 0,
+      "inverseDt": 50.00000577420063
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1017370378,
+      "carryBits": 0,
+      "iterations": 1,
+      "dtBits": 1017370378,
+      "remainderBits": 0,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1017370379,
+      "carryBits": 0,
+      "iterations": 1,
+      "dtBits": 1017370378,
+      "remainderBits": 822083584,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1025758985,
+      "carryBits": 0,
+      "iterations": 1,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370376,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1025758986,
+      "carryBits": 0,
+      "iterations": 2,
+      "dtBits": 1017370378,
+      "remainderBits": 0,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1025758987,
+      "carryBits": 0,
+      "iterations": 2,
+      "dtBits": 1017370378,
+      "remainderBits": 830472192,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1031127694,
+      "carryBits": 0,
+      "iterations": 2,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370376,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1031127695,
+      "carryBits": 0,
+      "iterations": 3,
+      "dtBits": 1017370378,
+      "remainderBits": 0,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1031127696,
+      "carryBits": 0,
+      "iterations": 3,
+      "dtBits": 1017370378,
+      "remainderBits": 830472192,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1034147593,
+      "carryBits": 0,
+      "iterations": 3,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370374,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1034147594,
+      "carryBits": 0,
+      "iterations": 4,
+      "dtBits": 1017370378,
+      "remainderBits": 0,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1034147595,
+      "carryBits": 0,
+      "iterations": 4,
+      "dtBits": 1017370378,
+      "remainderBits": 838860800,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1036831947,
+      "carryBits": 0,
+      "iterations": 4,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370372,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1036831948,
+      "carryBits": 0,
+      "iterations": 4,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370376,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1036831949,
+      "carryBits": 0,
+      "iterations": 5,
+      "dtBits": 1017370378,
+      "remainderBits": 830472192,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1039516302,
+      "carryBits": 0,
+      "iterations": 5,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370374,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1039516303,
+      "carryBits": 0,
+      "iterations": 6,
+      "dtBits": 1017370378,
+      "remainderBits": 0,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1039516304,
+      "carryBits": 0,
+      "iterations": 6,
+      "dtBits": 1017370378,
+      "remainderBits": 838860800,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1041194024,
+      "carryBits": 0,
+      "iterations": 6,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370372,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1041194025,
+      "carryBits": 0,
+      "iterations": 7,
+      "dtBits": 1017370378,
+      "remainderBits": 830472192,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1041194026,
+      "carryBits": 0,
+      "iterations": 7,
+      "dtBits": 1017370378,
+      "remainderBits": 849346560,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1042536201,
+      "carryBits": 0,
+      "iterations": 7,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370370,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1042536202,
+      "carryBits": 0,
+      "iterations": 8,
+      "dtBits": 1017370378,
+      "remainderBits": 0,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1042536203,
+      "carryBits": 0,
+      "iterations": 8,
+      "dtBits": 1017370378,
+      "remainderBits": 847249408,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1043878378,
+      "carryBits": 0,
+      "iterations": 8,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370368,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1043878379,
+      "carryBits": 0,
+      "iterations": 8,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370376,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1043878380,
+      "carryBits": 0,
+      "iterations": 9,
+      "dtBits": 1017370378,
+      "remainderBits": 843055104,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1045220555,
+      "carryBits": 0,
+      "iterations": 9,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370366,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1045220556,
+      "carryBits": 0,
+      "iterations": 9,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370374,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1045220557,
+      "carryBits": 0,
+      "iterations": 10,
+      "dtBits": 1017370378,
+      "remainderBits": 838860800,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1046562733,
+      "carryBits": 0,
+      "iterations": 10,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370372,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1046562734,
+      "carryBits": 0,
+      "iterations": 10,
+      "dtBits": 1017370378,
+      "remainderBits": 830472192,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1046562735,
+      "carryBits": 0,
+      "iterations": 10,
+      "dtBits": 1017370378,
+      "remainderBits": 849346560,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1047904910,
+      "carryBits": 0,
+      "iterations": 10,
+      "dtBits": 1017370378,
+      "remainderBits": 1017370370,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1047904911,
+      "carryBits": 0,
+      "iterations": 10,
+      "dtBits": 1017370378,
+      "remainderBits": 0,
+      "inverseDt": 50.00000111758712
+    },
+    {
+      "kind": "schedule",
+      "controlWord": 895,
+      "deltaBits": 1047904912,
+      "carryBits": 0,
+      "iterations": 10,
+      "dtBits": 1017370378,
+      "remainderBits": 847249408,
+      "inverseDt": 50.00000111758712
+    }
+  ]
+}

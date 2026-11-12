@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "32b25fe9d1cbe967cb3cdd7fe32e17ddc3967ea69fb63c8f1d9350af4c804711",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "dc3475548cfe07f16a88e0268aaa8fcce0af654ed96675ff7cd036f4d0604897",
+  "resultsSha256": "c8ac74d6cf8d0ab6df46850d231c8b1bc85087da7bf203e837c166766ed10392",
+  "cases": 16000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original pivot rotation of an isolated transform node, including translation; no child tree",
+  "matrixWordDifferences": 0,
+  "cacheFlagDifferences": 0
+}

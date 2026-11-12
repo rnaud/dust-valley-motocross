@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "919d6ab39d25c6f781f6f611496ee2061e5db388014a5373d363c42fc6e4b780",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "6ce96740448b9042f033e172145c535bd017b755451724abce5f6d2030cf55ec",
+  "resultsSha256": "5d53c281b1d52f682fd4beb4bfb81dafe0d4cae3ddada835742cc6a9f23fa8b9",
+  "cases": 30000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original linear integration slice with supplied accumulated delta velocity; no upstream force/contact parity claim"
+}

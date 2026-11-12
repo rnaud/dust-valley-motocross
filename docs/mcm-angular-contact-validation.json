@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "de9d3bd4ccd4fad4db22310be180499635457cfdfcd3eda744197b749d206d01",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "bd8da4acb583769535f1a1d04554aaa57baef49779fb409997222a3814f4c872",
+  "resultsSha256": "def167514df39b5e2362cd28ab329d814716540846eb7a21f754d7094627ca03",
+  "cases": 32000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Connected original contact correction, inertia, damping and angular integration; supplied torque, flags and geometric scalars, root transform; contact detection excluded"
+}

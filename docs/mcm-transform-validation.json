@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "000496314eb50939d90572635cb7b534a69cd57de79075bd22020d730ff2bb44",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "f1f9006d530219bb544e9204eebb69b52b79ee8bd061441b782072bfccd8cb7e",
+  "resultsSha256": "69fae3bb5dfc5dc898b7edf701aab39043990ef66836cc915c50dcda2ef0e52c",
+  "cases": 12000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "matrixDifferences": 0,
+  "rotationDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original general matrix multiplication and local axis-angle rotation of an isolated transform node; no child tree or pivot translation"
+}

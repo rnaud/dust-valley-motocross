@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "145b6062e65242316fc49466fd7d8a9898fd1fd0a24343eb410724b530f7472b",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "2fd00351a050ed611f31c486afd681ac3efabc4e856c715a013a8995bbabfaa0",
+  "resultsSha256": "766ff991057612b839409704ccb8fe6b5fc4d9fe92d26aceb6f99d89a9b5fba1",
+  "cases": 20000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original suspension force helper with front/rear default coefficients, supplied vectors/compression; contact geometry and caller sequencing excluded"
+}

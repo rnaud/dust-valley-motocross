@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "96299cf10bd806a44950ac729c6835170e7f63e6aeaf64e2fe92a39237d94d6b",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "d64948d77f12902b51c1b4bfba85621bd061ec320a6b26e0da872174f0bb85f7",
+  "resultsSha256": "51c23f7151971c95944da60260f5a80388133d67445469a4589e1d0948991442",
+  "cases": 32000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original contact accumulation helper: zero, one and two enabled contacts, force limiting, budget mutation, and total force/torque; supplied moment arms and force"
+}

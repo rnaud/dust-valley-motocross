@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "2aae13fa7d2ce461b35dd23fe954f0bbe87f29c7019653ccbcb14dde64729c81",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "6f72bce2c2445d0bafea08cef5bb832799bab8acd77aae158c39f79999292d14",
+  "resultsSha256": "7e8c757d34a17c3e6ba76bce6ae66d5c52b29204fe7f7dbd7c3d7fd64a3758b7",
+  "cases": 58768,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original inverse-square-root table initialization and helper; positive normal float32 inputs, binary64 returned intermediate"
+}

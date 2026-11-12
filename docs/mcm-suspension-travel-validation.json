@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "7f7091b87bfb6e3eaca17359f1277b40f4195f72809f0f50e88c8e557adfc5f8",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "0344cf219ed6cbd30bf77e768547e0674690bfa017e4798c90e0d6f6cff66682",
+  "resultsSha256": "bc63bc3b97fcf3de93ed03f6b41b1538eaaeec93f9a7220e620e33796a3aef30",
+  "cases": 24000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original suspension component travel update: limit, displacement-derived velocity, previous-state mutations and isolated transform translation/cache; finite nondegenerate inputs"
+}

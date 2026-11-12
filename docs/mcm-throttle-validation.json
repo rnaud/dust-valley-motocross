@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "captureSha256": "37ac565103ddad927438eb6d8c6311b7335f605482820e344fb4adff68bda80f",
+  "captureSourceSha256": "9c43bc265a56d8bff2cd57a8f7b5af817fc2e0b193dd4e57433ce2e2ff751ae9",
+  "entry": "0x4ad5ad",
+  "exit": "0x4ad712",
+  "scope": "Original digital branch; analog filtering excluded",
+  "pairs": 2495,
+  "pressedCases": 2301,
+  "releasedCases": 194,
+  "shiftCases": 31,
+  "failures": []
+}
