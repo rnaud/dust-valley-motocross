@@ -563,3 +563,20 @@ test('rider event selection matches original tables, rounding, flags and random 
  }
  assert.equal(paths.size,16);assert.equal(lengths.size,6);assert.ok(defaults>0&&zeroDraws>0);
 });
+
+test('event orientation matches original axis extraction, orthogonalization and cache changes',async()=>{
+ const {alignMcmEventRootOrientation}=await import('../src/physics/mcm/event-orientation.js');
+ const {floatBits}=await import('../src/physics/mcm/math.js');
+ const paths=new Set();let sourceInvalidated=0,sourcePreserved=0;
+ for(const {input:c,outputBits} of fixture('event-orientation-wine11.json').fixtures){
+  const target={local:[...c.targetLocal],world:[...c.targetWorld],cacheValid:c.targetCache};
+  const source={local:[...c.sourceLocal],world:[...c.sourceWorld],cacheValid:c.sourceCache};
+  if(c.parented){source.parent=target;target.firstChild=source;}
+  const r=alignMcmEventRootOrientation(source,target);
+  assert.deepEqual([...[...target.local,...target.world,...source.world,...r.forward,...r.up].map(floatBits),source.cacheValid,target.cacheValid],outputBits);
+  assert.deepEqual(target.local.slice(12,15),c.targetLocal.slice(12,15));
+  paths.add(`${c.parented}:${c.sourceCache}:${c.targetCache}`);
+  if(source.cacheValid)sourcePreserved++;else sourceInvalidated++;
+ }
+ assert.equal(paths.size,8);assert.ok(sourceInvalidated>0&&sourcePreserved>0);
+});

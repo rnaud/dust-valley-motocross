@@ -572,3 +572,18 @@ and rounding boundaries. Event records and random draws are supplied inputs;
 this does not yet recover live controller data or subsequent rider motion. The
 remaining event wrapper includes transform extraction/reparenting and bike-field
 setup, which must be connected before whole-update validation.
+
+The event orientation call pair `0x4b7640` then `0x4b7270` now matches 32,000
+original executions across 56 output words
+(`mcm-event-orientation-validation.json`). This corrects the earlier provisional
+“reparenting” description: these calls extract world forward/up axes and set
+orientation; they do not change parent pointers. The port preserves the original
+cross-product ordering, binary32 inverse-square-root stores, local translation,
+and cache invalidation. Cases exercise root sources and sources parented to the
+root target, all eight parent/cache combinations, and nonorthogonal finite axes.
+Local matrices, both world caches, scratch axes and final valid flags are checked.
+Parented targets and degenerate axes remain outside this recovered entry's scope;
+it explicitly rejects a parented target. The subsequent `0x4309d0` operation
+copies object bounds and dispatches virtual child callbacks. That dispatch and
+the full event wrapper still need connected validation before whole-bike parity
+can be claimed.
