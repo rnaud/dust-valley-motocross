@@ -292,3 +292,24 @@ loader and incorrectly suppresses normal orientation. The translation preserves
 and signed zero after orientation. See `mcm-terrain-face-normal-validation.json`.
 These remain synthetic tile tests; actual course data and complete bike-step
 comparisons are still required.
+
+Actual TRN v2 sample-bank data is now accessible through the recovered prefix
+reader and LZW decoder (`scripts/mcm-reference/terrain-data.mjs`). Across all 35
+installed `.trn` files, 28,415 compressed blocks (including five synthetic cases)
+match original `0x427a90` output bytes and 32 trailing guard bytes with zero
+differences. Original course streams emit one extra byte beyond the nominal
+output size; the decoder retains it for validation, and data consumers must use
+the nominal prefix. The report records each source file's hash and bank count;
+no course assets are committed. Synthetic original-execution fixtures cover
+literal, dictionary, width-change and reset behavior.
+
+The loader evidence is `0x410260` (TRN header/prefix), `0x404230` (optional palette)
+and `0x44ea00` (sample banks: 512, 580 and 4,624 nominal bytes). Each final bank
+block holds 289 16-byte height/normal records. Dunes has 882 banks, height scale
+0.01171875 and the following resource section starts at byte 4,042,586. Parsing
+those resources and the tile hierarchy remains necessary to map world coordinates
+to the correct banks. This is not yet a full course loader or whole-bike parity.
+
+Runtime recheck: the existing original process was alive but a read-only scan
+found zero objects with the previously validated bike vtable. macOS remained
+locked. No live course-state or new whole-bike capture is claimed from this check.
