@@ -442,3 +442,19 @@ test('connected force-to-motion sequence matches original shared state and both 
   }
   assert.equal(modes.size,8);assert.ok(fallback>0&&frozen>0);
 });
+
+test('force-to-transform update matches original wheel and pivoted body rotations',async()=>{
+  const {updateMcmForceMotionTransform}=await import('../src/physics/mcm/force-motion-step.js');
+  const {floatBits}=await import('../src/physics/mcm/math.js');
+  let applied=0,skipped=0,preserved=0,freeSpin=0;
+  for(const {input,outputBits} of fixture('motion-transform-wine11.json').fixtures){
+    const {angular:r,linear:l,transform:t}=updateMcmForceMotionTransform(input);
+    const angular=[...r.totalForce,...r.totalTorque,...r.velocity,...r.acceleration,...r.opposing,...r.opposingLocal];
+    const linear=[...l.position,...l.velocity,l.speed,...l.acceleration,...l.deltaVelocity,...t.axis,l.field6d8,l.field6dc];
+    assert.deepEqual([...angular.map(floatBits),r.counter,...r.previousPivot.map(floatBits),...t.matrix.map(floatBits),floatBits(r.field6ac),r.mask,...linear.map(floatBits),l.field6e0>>>0,floatBits(l.rotation),...t.wheels.flatMap(w=>w.matrix).map(floatBits),...t.wheels.map(w=>floatBits(w.angle)),floatBits(t.angle),t.cacheValid,...t.wheels.map(w=>w.cacheValid)],outputBits);
+    if(t.apply)applied++;else skipped++;
+    preserved+=t.wheels.filter(w=>w.cacheValid).length;
+    if(!input.contact&&input.state844!==2&&input.field5e4===0&&input.engineLevel>0&&input.engineLevel<1)freeSpin++;
+  }
+  assert.ok(applied>0&&skipped>0&&preserved>0&&freeSpin>0);
+});

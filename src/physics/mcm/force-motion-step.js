@@ -1,3 +1,4 @@
+import {updateMcmMotionTransform} from './motion-transform.js';
 import {updateMcmForceAngular} from './force-angular-step.js';
 import {updateMcmForceLinear} from './force-linear-step.js';
 
@@ -8,4 +9,13 @@ export function updateMcmForceMotion(c) {
   const linear=updateMcmForceLinear({...c,totalForce:angular.totalForce,
     velocity:c.linearVelocity,inertiaY:c.inertia[1],scratch540:angular.scratch540});
   return {angular,linear};
+}
+
+// Extends the same sequence through wheel rotation, translation and body rotation.
+export function updateMcmForceMotionTransform(c) {
+  const {angular,linear}=updateMcmForceMotion(c);
+  const transform=updateMcmMotionTransform({...c,matrix:angular.matrix,
+    position:linear.position,angularVelocity:angular.velocity,
+    previousPivot:angular.previousPivot,scratch540:linear.scratch540});
+  return {angular,linear,transform};
 }

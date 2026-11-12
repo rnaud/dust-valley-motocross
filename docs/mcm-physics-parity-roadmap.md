@@ -460,3 +460,17 @@ blocks. Inputs still supply the assembled forces and geometry, and the root
 transform limitation remains. Downstream rotation application and complete bike
 trajectories remain unverified; the playable preview still uses Cannon chassis
 integration until the complete original-state adapter is recovered.
+
+The connected sequence now extends through wheel updates, translation assignment
+and pivoted body rotation, ending at `0x4ab7fd`. All 98 final output words match
+in 36,000 original executions (`mcm-motion-transform-validation.json`): 31,926
+applied body rotations, 4,074 skipped rotations, 1,402 free-engine-spin cases,
+6,000 state-2 wheel-damping cases, 7,713 field-driven damping cases and 6,601
+preserved wheel transforms. Wheel increments, local matrices and cache flags are
+included. Original `0x49e7b0/0x49e7f0` wheel calls remain in the oracle.
+The two wheel components retain their original array order (`+0x8dc`, `+0x8e0`).
+The body translation is replaced with the integrated position before rotating
+around its saved pivot. Final matrix translation can therefore differ from the
+bike position fields; both are compared independently. Tests use isolated root
+transforms and supplied upstream forces/geometry. Later rider/crash branches,
+parent/child cache propagation and whole-bike trajectories remain outstanding.
