@@ -368,3 +368,16 @@ Direction, surface normal and contact height are supplied inputs, and the
 component transform has no parent. Upstream geometry construction, other response
 branches, subsequent force application and full bike integration remain outside
 this result. It does not establish end-to-end suspension or whole-bike parity.
+
+The rotating suspension response caller `0x4a7b33..0x4a7c46` now matches all 33
+output words in 36,000 original executions: 21,818 active, 14,182 skipped,
+5,146 active travel-limit and 3,116 active zero-cross-product cases. This preserves
+the original contact geometry, component matrix updates, caller gates, remaining
+height and point corrections, and skipped-path travel-history reset. See
+`mcm-rotating-response-validation.json` and retained original fixtures.
+
+As with the preceding response branch, geometry and initial scratch outputs are
+supplied, upstream branch selection is assumed, and the transform is isolated.
+The engine drive-force call immediately following this block (`0x4a7c46`) and the
+subsequent force/moment sequence are not included. These response comparisons do
+not yet establish connected wheel-contact or whole-bike trajectory parity.
