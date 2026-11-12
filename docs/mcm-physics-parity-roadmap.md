@@ -274,3 +274,12 @@ samples, missing tiles and null roots. Retained original fixtures provide a
 regression check. Continuous normal interpolation, actual course data and the
 connection to whole-bike contact updates remain outstanding. This result is
 scoped helper evidence, not a complete physics equivalence claim.
+
+Smooth continuous terrain normals (`0x411340`, normalMode 0) now match all output
+bits in 40,000 synthetic original-executable comparisons, repeated with identical
+input/output hashes. See `mcm-terrain-normal-validation.json` and the retained
+regression fixtures. The implementation preserves the differing intermediate
+stores across branches and the even-cell branch that weights corner n01 while
+the corresponding height plane uses h11. Synthetic corner normals have positive
+Y components; degenerate/cancelling normals are not covered by this claim.
+Face-normal mode, course-data recovery, and whole-bike integration remain open.
