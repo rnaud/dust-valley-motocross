@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "9e90231656f75799103cb19f415791f9b47eaf96b60a564e04b9f71e5870390b",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "ac7ff559908d465206e41e2b531fb81e9e66ccc52310fa060607cd90f63d172e",
+  "resultsSha256": "ef074a57b564983178aee6d58ab253426469c56e66c3d8c1d483ecc7d585b9f3",
+  "cases": 30000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original terrain height and normal lookup: leaf, two hierarchy levels, missing children, positive edge clamping, and height-scale normal adjustment; nonnegative coordinates, synthetic tiles"
+}

@@ -6,7 +6,7 @@ Written November 12, 2026, against the current Dust Valley implementation.
 
 Reproduce the supplied Motocross Madness build's simulation: the same initial state, terrain, settings, input sequence and elapsed-time sequence should produce matching motion and gameplay events.
 
-**We currently have an adaptation, not a recovered physics engine.** We recovered several constants and parts of a few routines, then implemented them inside our existing Cannon-based simulation. The 74 passing tests establish that our game behaves acceptably under those tests. They do not establish agreement with Motocross Madness. We have no original-game telemetry yet, and no defensible percentage-complete estimate.
+**We currently have an adaptation, not a recovered physics engine.** We recovered several constants and parts of a few routines, then implemented them inside our existing Cannon-based simulation. The 74 passing tests establish that our game behaves acceptably under those tests. They do not establish agreement with Motocross Madness. The original now runs under Wine; 300 live scheduler comparisons pass, and raw bike-object snapshots are captured. Complete input/contact/integration traces and repeatability remain outstanding, so there is no defensible percentage-complete estimate.
 
 Our target executable is SHA-256 `e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b`. Both local copies have that hash. Select one complete installation as the reference and record its data files and settings too: matching executable hashes alone do not establish matching runtime conditions.
 
@@ -15,8 +15,16 @@ Supporting material:
 - [Recovered binary evidence and implementation notes](motocross-madness-reverse-engineering.md)
 - [Machine-readable initializer evidence](mcm-binary-evidence.json)
 - [Current adaptation measurements](mcm-handling-measurements.json)
+- [Isolated scheduler and square-root recovery](mcm-core-recovery.md) — 134,242 synthetic original-instruction comparisons pass under Wine/Rosetta; 300 live scheduler comparisons also pass; full physics parity outstanding
+- [Reference runtime status](mcm-runtime-status.md) — playable practice event; signed video-memory overflow resolved
 - Inspection tool: `scripts/inspect-mcm.py`
 - Current benchmark: `scripts/handling-benchmark.mjs`
+
+Current milestone: [player identification and controlled replay](mcm-player-telemetry.md)
+now supplies repeatable acceleration/release observations. Two 400-frame runs match
+in motion and captured engine state, with four unexplained inherited words still
+reported. The digital throttle translation matches 2,495 live helper calls. The
+original-versus-port whole-bike comparator remains outstanding.
 
 ## What “100%” must mean
 
@@ -240,3 +248,19 @@ Suggested project structure: an independent `src/physics/mcm/` core; a reference
 5. Use that result to prioritize the first translated subsystem. Expand state capture before guessing at hidden state.
 
 Do not start by further tuning our arbitrary gear ratios or steering gains. The most valuable next deliverable is **the original-game trace/replay harness**. Until that exists, we can improve the adaptation, but we cannot measure how close it is to exact parity. Estimate implementation time after the reference runtime, instrumentation and first function-level comparisons are working; those are the largest current uncertainties.
+
+### Milestone delivery
+
+Publish each validated milestone to `origin/main` (user instruction, 2026-11-12).
+Before publishing, run the repository tests and production build, inspect the
+staged changes, and preserve the original-execution reports and regression
+fixtures relevant to that milestone. Use normal fast-forward pushes and reconcile
+new upstream commits if necessary. A shipped milestone does not imply full parity.
+
+The first recovery milestone includes player identification and repeatable
+original acceleration/release telemetry, isolated recovered physics modules,
+original-execution comparison harnesses, and terrain sample hierarchy recovery.
+Validation: 114 tests pass and the production build succeeds. The recovered core
+is not yet integrated into the playable simulation; continuous terrain queries,
+full update sequencing, and whole-bike original-versus-port trajectories remain
+required before claiming complete physics parity.

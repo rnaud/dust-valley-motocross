@@ -18,7 +18,7 @@ Reproduce measurements with `node scripts/handling-benchmark.mjs`; results are i
 
 ## What was actually recovered
 
-This is **partial manual decompilation from x86 disassembly**, not recovered original C++ source and not a completed port. The executable has stripped symbols. Function and field names below are analyst-assigned. I inspected the PE, decoded constants, followed string references into constructors, and traced selected fields into simulation routines. No original game execution or instrumented telemetry was available. Ghidra was not installed; a download attempt failed because the shell could not resolve GitHub. The installed Apple LLVM `objdump` could disassemble the PE successfully.
+This is **partial manual decompilation from x86 disassembly**, not recovered original C++ source and not a completed port. The executable has stripped symbols. Function and field names below are analyst-assigned. I inspected the PE, decoded constants, followed string references into constructors, and traced selected fields into simulation routines. No original game execution or instrumented telemetry was available during the initial static analysis. Follow-up work now runs the original practice event and captures live scheduler/bike-object observations; see [runtime status](mcm-runtime-status.md). Ghidra was not installed; a download attempt failed because the shell could not resolve GitHub. The installed Apple LLVM `objdump` could disassemble the PE successfully.
 
 Both `Downloads/mcm/mcm.exe` and `Downloads/Motocross_Madness/mcm.exe` are **byte-identical**, 1,036,800 bytes, SHA-256:
 
@@ -123,6 +123,12 @@ Clamp and rate logic are visible at `0x4ac3d3–0x4ac50e`; the inverse timestep 
 ### 4. Nominal fixed step with a fallback
 
 `0x4a54b6–0x4a5548` computes integer steps from `(remainder + frameDelta)/0.02`, stores the fractional remainder, then caps executed iterations at 10. If there are no whole steps, it clears the remainder and executes one short step (or 0.02 if the frame delta is zero). Thus **“strict 50 Hz fixed step” would be inaccurate**. Preserve our 120 Hz architecture unless an A/B experiment demonstrates that the timing behavior is essential.
+
+Follow-up recovery: the short step includes incoming carry, excess whole steps
+above the cap are discarded, and the float32 sum store can leave tiny negative
+remainders. An isolated translation and tests now exist alongside the recovered
+lookup square root; see [core recovery notes](mcm-core-recovery.md) for addresses,
+numeric limits and outstanding runtime validation.
 
 ### 5. Traction assistance: partly recovered
 

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "d78a2fc10c15e99408506fb3f247ee2d534cb96f0f83e4b69fc05bbb194a4efd",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "9282c07eb947997d61401963202ebbd469d466a6611476b35cfcfe3a8736cbcd",
+  "resultsSha256": "66e1b53404b233330669f3b6cd12c3cfacc9d1b7f226c9c19dc46e08386ca550",
+  "cases": 24000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original suspension contact geometry and component travel update together; supplied contact direction/normal, finite nondegenerate inputs, isolated transform; terrain sampling excluded"
+}

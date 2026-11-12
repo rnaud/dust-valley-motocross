@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "5e1e76a6d06db5bf0f2d8a9e3631cc93c68bee47ee6dc423c46c6048c17deee0",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "parameterTraceSha256": "f7c24e8cc7dc7aa2fe17981f984ab6175ecd18f1b3cdbf1453836b399f5bb53d",
+  "casesSha256": "4b7b18e619acdc14539a607f39b0e825ab934265098622bb44e3910193bbf04c",
+  "resultsSha256": "f61f2c8c1bd5c6f560d247fc3bf21a8b27b3f11f13b90216c23c29eef4541ea5",
+  "cases": 31680,
+  "controlWord": 639,
+  "forceScale": 341.6199951171875,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Mapped original drive-force instructions, captured parameter table, RPM knot and speed division boundaries, local/AI/released branches; not whole-bike validation"
+}

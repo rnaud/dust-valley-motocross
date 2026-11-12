@@ -1,0 +1,28 @@
+// Static translation of 0x401640 (table setup) and 0x4016c0 (lookup).
+// Scope: positive normal binary32 inputs and signed zero. See recovery notes.
+const storage = new DataView(new ArrayBuffer(4));
+export function floatBits(value) {
+  storage.setFloat32(0, value, true);
+  return storage.getUint32(0, true);
+}
+export function bitsFloat(bits) {
+  storage.setUint32(0, bits, true);
+  return storage.getFloat32(0, true);
+}
+
+const mantissas = new Uint32Array(256);
+for (let i = 0; i < 128; i++) {
+  mantissas[i] = floatBits(Math.sqrt(bitsFloat((0x3f80 | i) << 16))) & 0x7f0000;
+  mantissas[i + 128] = floatBits(Math.sqrt(bitsFloat((0x4000 | i) << 16))) & 0x7f0000;
+}
+
+export function mcmSqrt(value) {
+  const bits = floatBits(value);
+  if ((bits & 0x7fffffff) === 0) return 0;
+  const exponent = (bits >>> 23) - 127;
+  if (bits >>> 31 || exponent === -127 || exponent === 128) {
+    throw new RangeError('mcmSqrt supports positive normal float32 values and zero');
+  }
+  const index = ((bits & 0x7fffff) | ((exponent & 1) << 23)) >>> 16;
+  return bitsFloat(((127 + (exponent >> 1)) << 23) | mantissas[index]);
+}

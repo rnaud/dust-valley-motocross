@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "42ee7b07885d4f5e99005f644d4ecc5a2ae7c85ae19681ef8d362b5ba432b4ae",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "c0854e4b551a017e30297735354de4a4213ec7fb4c46428e417168ddb10715f3",
+  "resultsSha256": "05e2ef7662516ccf3cc6cf8deef27edea62ff86714c182a5e95eb5312d9ad10a",
+  "cases": 20000,
+  "applied": 10660,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original angular axis/angle preparation, skipping transform mutation; ordinary finite angular velocities and zero/positive/negative dt"
+}

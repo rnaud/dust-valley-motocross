@@ -115,6 +115,28 @@
       "value": 10000.0
     }
   },
+  "verified_routine_ranges": {
+    "sqrt_table_setup": {
+      "address": "0x401640",
+      "bytes": 114,
+      "sha256": "e8f0d83b08f28112321b647bc0f5ceef688218efd35539d8b809f10825ff59fe"
+    },
+    "sqrt_lookup": {
+      "address": "0x4016c0",
+      "bytes": 94,
+      "sha256": "3014e0e56195a38634d8ea0e7bb5b9ab2ddb48ea4199e0418e59150c943740b7"
+    },
+    "bike_scheduler": {
+      "address": "0x4a54b6",
+      "bytes": 156,
+      "sha256": "16eff988029d87d982fcb832b6ccab47db5d852242bc3089547489e803289b2b"
+    },
+    "truncate_to_integer": {
+      "address": "0x4be978",
+      "bytes": 39,
+      "sha256": "d0a2aca68648a0ae9d5cbfae1b276d4a64d4f797fc0c60f28b64096cdfa3148c"
+    }
+  },
   "compiled_power_curve_1_rpm_hp": [
     [
       0,

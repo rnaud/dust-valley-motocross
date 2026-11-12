@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "7c62482677da23cbcb4c97bab4e54ba713469834fcdca99ac8ae8d9303830d0e",
+  "importsSourceSha256": "5ce2e98b98f2c3a73336b7a1a46d942a0a47691cf1725d2695bb8b4e353d3129",
+  "crtInitialization": [
+    5001776,
+    4990176
+  ],
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "cbceef57bb6cee4f8a7199e105911aa33c762d8d908e0859ec4454908b53ecbf",
+  "resultsSha256": "9a1c696df86d1c1813393ff85dac116a14f1ddea18664b9c619b75afde080213",
+  "cases": 32000,
+  "outOfDomainTrigCases": 62,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original steering velocity correction: general finite direction vectors, zero/low/positive speed, positive wheelbase/dt, and zero/nonzero angles; including inverse-cosine domain errors with KERNEL32 imports bound and original CRT heap/thread state initialized; game entry point not invoked"
+}

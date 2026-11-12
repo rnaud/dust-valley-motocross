@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "c2bf42e4a0326c9a5936869bf6db0ca8f01606a91fef86129a2c1a947234f7a4",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "e0ff3d88172b6a45443e69ec1a57e0207391721a253fc4db2a4d2700bd9a6cb3",
+  "resultsSha256": "fb87c92ce8ebea6cf85d1003d0b83b0d409b698284c14f7b20689426285e7f04",
+  "cases": 30000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original rotating contact geometry and component update together; supplied geometry including zero cross-product branch, isolated transform; terrain sampling excluded"
+}

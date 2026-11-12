@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "b8eae8c11ac266c5ed9208d282f7f904d6ba1cdec39f2d2bd2e383166462fc06",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "parameterTraceSha256": "f7c24e8cc7dc7aa2fe17981f984ab6175ecd18f1b3cdbf1453836b399f5bb53d",
+  "casesSha256": "928816ae3b2545e133a1e7750c1312f8300fe735b48a85e2d6fa1aeac2c883c9",
+  "resultsSha256": "19b1337b3a48cafa65947aed2f35fef7919aacd70c4ffc204c17636eabb61057",
+  "cases": 34560,
+  "controlWord": 639,
+  "upshifts": 480,
+  "downshifts": 384,
+  "timerSkips": 17280,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original mapped shift instructions; synthetic state boundaries using one captured parameter table; supplied random draw replaces CRT dependency only",
+  "live": {
+    "pairs": 2496,
+    "upshifts": 4,
+    "downshifts": 2,
+    "timerSkips": 16,
+    "failures": []
+  }
+}

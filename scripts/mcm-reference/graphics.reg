@@ -1,0 +1,13 @@
+REGEDIT4
+
+; Import only into the dedicated reference prefix.
+; MCM uses signed 32-bit video-memory arithmetic; a modern GPU can report
+; 0xffffffff bytes, which makes every mode fail the buffer-budget test.
+[HKEY_CURRENT_USER\Software\Wine\Direct3D]
+"VideoMemorySize"="256"
+
+[HKEY_CURRENT_USER\Software\Wine\Explorer]
+"Desktop"="MCM"
+
+[HKEY_CURRENT_USER\Software\Wine\Explorer\Desktops]
+"MCM"="1024x768"

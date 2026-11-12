@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "2b8b8df76356ccfc3f9adba87ca58749ef89bfcb929ae757c7966a84a4d497dc",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "c48d9937a0441fd3fea7ccaee4b27fa5bcef4239568671a65ca6de07f29cc35f",
+  "resultsSha256": "675febf4919d93d8de910cc39cbd6ece910b3c33a4c4a8e78c465ba704906aa6",
+  "cases": 24000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original rotating suspension component update: travel limiting, displacement-derived velocity, state and matrix rotation; finite nondegenerate inputs, isolated transform"
+}

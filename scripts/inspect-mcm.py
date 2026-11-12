@@ -74,6 +74,17 @@ def inspect(paths):
     ]
     evidence = {name: pe.immediate(address, offset, kind)
                 for name, address, offset, kind in fields}
+    routines = {}
+    for name, address, size, expected in [
+        ('sqrt_table_setup', 0x401640, 114, 'e8f0d83b08f28112321b647bc0f5ceef688218efd35539d8b809f10825ff59fe'),
+        ('sqrt_lookup', 0x4016c0, 94, '3014e0e56195a38634d8ea0e7bb5b9ab2ddb48ea4199e0418e59150c943740b7'),
+        ('bike_scheduler', 0x4a54b6, 156, '16eff988029d87d982fcb832b6ccab47db5d852242bc3089547489e803289b2b'),
+        ('truncate_to_integer', 0x4be978, 39, 'd0a2aca68648a0ae9d5cbfae1b276d4a64d4f797fc0c60f28b64096cdfa3148c'),
+    ]:
+        actual = hashlib.sha256(pe.read(address, size)).hexdigest()
+        if actual != expected:
+            raise ValueError(f'Routine bytes changed: {name}')
+        routines[name] = {'address': hex(address), 'bytes': size, 'sha256': actual}
     configs = []
     for path in paths:
         raw = (path / 'sbike/bike2.bik').read_bytes()
@@ -104,6 +115,7 @@ def inspect(paths):
         'same_executable': len({i.sha256 for i in images}) == 1,
         'same_config': len({c['sha256'] for c in configs}) == 1,
         'verified_initializers': evidence,
+        'verified_routine_ranges': routines,
         'compiled_power_curve_1_rpm_hp': points,
         'torque_conversion_constant': struct.unpack('<f', pe.read(0x4d9718))[0],
         'peak_torque_rpm_curve_1': max(points[1:], key=lambda p: p[1]/p[0])[0],

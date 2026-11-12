@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-12",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "environment": "Wine 11.0/Rosetta, builtin DirectDraw/OpenGL, 256 MB reported VRAM",
+  "course": "Yuma Sand Dunes, Stunt Quarry practice, one opponent",
+  "scope": "Live scheduler boundary comparison and 4096-byte bike object snapshots; not full integration or replay parity",
+  "limitations": [
+    "Debugger alters elapsed time",
+    "Bike addresses not yet identified as player versus AI",
+    "No complete input/contact/pointer-target capture",
+    "idle names a no-injected-input capture, not proven stationary equilibrium",
+    "Later allocation recovery establishes 0xcc8 bytes; the final 824 bytes of each historical snapshot are outside the bike allocation"
+  ],
+  "runs": [
+    {
+      "name": "idle",
+      "sha256": "ea20c288ba70e1988d19383204e0647083276fff677f9d023bd3a330604df66d",
+      "records": 240,
+      "pairs": 120,
+      "bikes": [
+        "054fbd58",
+        "0552a3b8"
+      ],
+      "controlWords": [
+        639
+      ],
+      "frameDeltaRange": [
+        0.07500000298023224,
+        0.14900000393390656
+      ],
+      "failures": [],
+      "captureSourceSha256": "c0da5cbe32d26df22bf8e181542aca6208b8febb2cd310bc858b2a2f98dc40f9"
+    },
+    {
+      "name": "input",
+      "sha256": "4fe74b3da3cb7af9e9c506e9f2a0cd042eea154f741e1f631e9019c8e0c05e81",
+      "records": 240,
+      "pairs": 120,
+      "bikes": [
+        "054fbd58",
+        "0552a3b8"
+      ],
+      "controlWords": [
+        639
+      ],
+      "frameDeltaRange": [
+        0.014000000432133675,
+        0.10500000417232513
+      ],
+      "failures": [],
+      "captureSourceSha256": "c0da5cbe32d26df22bf8e181542aca6208b8febb2cd310bc858b2a2f98dc40f9"
+    },
+    {
+      "name": "reviewed",
+      "sha256": "c9cad44ce466d9f0ce59780dd1de99134a90ca1f686731b59ca1f0a5a2bd6133",
+      "records": 120,
+      "pairs": 60,
+      "bikes": [
+        "054fbd58",
+        "0552a3b8"
+      ],
+      "controlWords": [
+        639
+      ],
+      "frameDeltaRange": [
+        0.012000000104308128,
+        0.08800000697374344
+      ],
+      "failures": [],
+      "captureSourceSha256": "f00f1ca677536ef6fbabd70f8b320f3dac092951730a06085c4b454cd6375e61"
+    }
+  ],
+  "totalPairs": 300,
+  "totalDifferences": 0,
+  "capturePoints": {
+    "beforeScheduler": "0x4a54b6",
+    "afterScheduler": "0x4a5552",
+    "stateBytes": 4096,
+    "objectRegister": "ESI"
+  }
+}

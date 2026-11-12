@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "93b5f6ac6bec1599c10bb7dbd12de8a848395a4bbb2fc589172a84c189816964",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "2cd7e3c8f5ceaa022eba0c0d6669f6237bb7e25634a4cbc628d104d56331c25d",
+  "resultsSha256": "01117b22d480fd6dcfd1e4088f7ee92ab370961dbee12d8dc55d68893ff24b9b",
+  "cases": 32000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original contact orientation correction and inertia block, supplied contact flags and geometric scalars; contact detection excluded"
+}

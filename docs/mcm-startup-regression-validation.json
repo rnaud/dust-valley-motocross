@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-12",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "cleanPrefix": "/tmp/mcm-clean-prefix-1",
+  "experiments": [
+    {
+      "configuration": "Fresh Wine 11 prefix, imported 32-bit game registration, OpenGL, VideoMemorySize 256, MCM desktop",
+      "result": "Video-memory test dialog shown; after confirmation game HWND reports visible 640x480 client, but no normal macOS game window or usable menu"
+    },
+    {
+      "configuration": "Same clean prefix with pristine source PDM.prf",
+      "result": "Same hidden/black-window state; original changed profile then restored from backup"
+    },
+    {
+      "configuration": "Add normal Win32 window frame to hidden game HWND",
+      "result": "No usable native game window"
+    },
+    {
+      "configuration": "Clean prefix without Wine Explorer Desktop setting",
+      "result": "Visible original dialog: Could not find any 3-D acceleration hardware on your system"
+    }
+  ],
+  "assetCheck": {
+    "changedSourcePaths": [
+      "ui/profile/PDM/PDM.prf"
+    ],
+    "changedProfileByteOffsets": [
+      "0x48",
+      "0x148"
+    ],
+    "profileResetSolvedStartup": false
+  },
+  "installedX11DriverFound": false,
+  "historicalMaintainerReference": "https://github.com/Gcenx/macOS_Wine_builds/issues/16",
+  "inference": "The failure depends on the display path; fresh prefix and pristine profile did not fix it. Historical mac-driver virtual-desktop limitation is relevant but not proof of the exact Wine 11 failure.",
+  "status": "Unresolved; neither configuration currently reaches playable practice"
+}
