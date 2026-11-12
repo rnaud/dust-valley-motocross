@@ -1,0 +1,30 @@
+{
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "fixtures": [
+    {
+      "size": 5,
+      "inputHex": "0900000020c0e09000",
+      "outputHex": "414141414141"
+    },
+    {
+      "size": 6,
+      "inputHex": "0900000020c0e09000",
+      "outputHex": "414141414141"
+    },
+    {
+      "size": 4,
+      "inputHex": "0d0000000080a0201a04048000",
+      "outputHex": "01020304"
+    },
+    {
+      "size": 1,
+      "inputHex": "07000000004000",
+      "outputHex": "00"
+    },
+    {
+      "size": 3,
+      "inputHex": "090000007f80101000",
+      "outputHex": "ff0080"
+    }
+  ]
+}

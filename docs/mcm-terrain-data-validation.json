@@ -1,0 +1,261 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "9bd1505b18c7959db661374cbc4a90e2f1888d577592ad54541127da3b80bdb8",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "importsSourceSha256": "5ce2e98b98f2c3a73336b7a1a46d942a0a47691cf1725d2695bb8b4e353d3129",
+  "casesSha256": "669b68f78e2a1600a6dd6c0569e3cd0f09e131c77f9fbe6a8741116a0596ca9d",
+  "resultsSha256": "ef68848e22d0c5d075a446f304b82807c3258b9c77a895aba064c23352969d7b",
+  "cases": 28415,
+  "extraByteBlocks": 28411,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "courses": [
+    {
+      "name": "teraform/canyon/canyon01.trn",
+      "sha256": "39a8e3278ed5dae9f8a4f20b8dc1e1327340e333bebbc0fd7b6d911d930d72c4",
+      "banks": 257,
+      "heightScale": 0.01171875,
+      "nextOffset": 783432
+    },
+    {
+      "name": "teraform/canyon/canyon02.trn",
+      "sha256": "7c4ef2cbd56ca140833a7058bd38e1867a7a0fad47ddc1619393e9cbe7f90d59",
+      "banks": 257,
+      "heightScale": 0.01171875,
+      "nextOffset": 837189
+    },
+    {
+      "name": "teraform/canyon/canyon03.trn",
+      "sha256": "59c11f3214ac1bdd7ade4a4373c04a5ad0cc91eef0a9d63297b9bc9800cc8c2c",
+      "banks": 257,
+      "heightScale": 0.01171875,
+      "nextOffset": 799639
+    },
+    {
+      "name": "teraform/canyon/canyon04.trn",
+      "sha256": "736f9983008ac1f24c531a018eda93426651e1222498b14e2f9d5bcf3b734da2",
+      "banks": 257,
+      "heightScale": 0.01171875,
+      "nextOffset": 803165
+    },
+    {
+      "name": "teraform/canyon/canyon05.trn",
+      "sha256": "14be988dba65ba76f5cc9c162148f1679599bb97e4e1c8587def2be4a31fa44f",
+      "banks": 257,
+      "heightScale": 0.01171875,
+      "nextOffset": 827920
+    },
+    {
+      "name": "teraform/quarries/TRACK13.TRN",
+      "sha256": "d2e3587b66216f18f18000ba96238f4b3f774236c35e927fc24225225ba007ec",
+      "banks": 882,
+      "heightScale": 0.01171875,
+      "nextOffset": 3998122
+    },
+    {
+      "name": "teraform/quarries/dunes.trn",
+      "sha256": "942b756572b407adf9223ecc1afb22556c5bc5636d3bd5e3ac51ef5419543d0b",
+      "banks": 882,
+      "heightScale": 0.01171875,
+      "nextOffset": 4042586
+    },
+    {
+      "name": "teraform/quarries/quarry00.trn",
+      "sha256": "336947757905b43e18001ee2279719fffd52d9e8ed102b86f9b77a38a1edff56",
+      "banks": 882,
+      "heightScale": 0.01171875,
+      "nextOffset": 3970964
+    },
+    {
+      "name": "teraform/quarries/quarry01.trn",
+      "sha256": "d8b5c721841fe604aa0415b6da78ec7cd2d33544a5bd44953502331c67d24c96",
+      "banks": 882,
+      "heightScale": 0.01171875,
+      "nextOffset": 4124393
+    },
+    {
+      "name": "teraform/quarries/quarry02.trn",
+      "sha256": "922717171b9022696cac3ed60e380e93d0ea4cb69124a41877213f6976995d3e",
+      "banks": 882,
+      "heightScale": 0.01171875,
+      "nextOffset": 4111764
+    },
+    {
+      "name": "teraform/quarries/quarry03.trn",
+      "sha256": "ddd8d04e1016ee9be5f95fa4e625f6596b0735f29e17b01e4a18ddbf122d0ec9",
+      "banks": 882,
+      "heightScale": 0.01171875,
+      "nextOffset": 4206316
+    },
+    {
+      "name": "teraform/quarries/quarry19.trn",
+      "sha256": "cc9da27509102e27c3fd5c86cc39089224cb254f66d242420693edcf529b4fb6",
+      "banks": 882,
+      "heightScale": 0.01171875,
+      "nextOffset": 4272912
+    },
+    {
+      "name": "teraform/season/week01.trn",
+      "sha256": "2b58a1453ffa35f56c963cc9c21e45f12e714c506f12917dcbe840438bf61599",
+      "banks": 257,
+      "heightScale": 0.01171875,
+      "nextOffset": 835626
+    },
+    {
+      "name": "teraform/season/week02.trn",
+      "sha256": "4601e9b87119e083786021762ea72b30736a142721ce850aa9159b11ef68655e",
+      "banks": 257,
+      "heightScale": 0.01171875,
+      "nextOffset": 834524
+    },
+    {
+      "name": "teraform/season/week03.trn",
+      "sha256": "1c8e5db4cab9df9c71cf5c2d70c44f420047c7fecd1e155acdd08efc4f4a92a7",
+      "banks": 257,
+      "heightScale": 0.01171875,
+      "nextOffset": 843048
+    },
+    {
+      "name": "teraform/season/week04.trn",
+      "sha256": "5e428a29f2b7a861f305fbf152336f3a5d612a9943f4fe7b2c762bdacbdbd560",
+      "banks": 257,
+      "heightScale": 0.01171875,
+      "nextOffset": 842545
+    },
+    {
+      "name": "teraform/season/week05.trn",
+      "sha256": "8d09356b98ded541b9d202803d5b7e6692ef8030eb99eb5d3fc16a5f46d57f10",
+      "banks": 257,
+      "heightScale": 0.01171875,
+      "nextOffset": 843068
+    },
+    {
+      "name": "teraform/season/week06.trn",
+      "sha256": "efe264f48b1bcac97d07ec9777a971df8cdcdb501fd81dad2354c0ec72b1ff68",
+      "banks": 257,
+      "heightScale": 0.01171875,
+      "nextOffset": 850615
+    },
+    {
+      "name": "teraform/season/week07.trn",
+      "sha256": "aa6d5367fe6ba6a60318d6222eb9962b971d1daef69aaa7cc4175e3c5a6605d6",
+      "banks": 257,
+      "heightScale": 0.01171875,
+      "nextOffset": 858481
+    },
+    {
+      "name": "teraform/season/week08.trn",
+      "sha256": "0d5154b6b2d716cd5d218821921f824949fd4d6f0c90a87eb683249b3f5a00ec",
+      "banks": 257,
+      "heightScale": 0.01171875,
+      "nextOffset": 850013
+    },
+    {
+      "name": "teraform/season/week09.trn",
+      "sha256": "7413590b2500faed31f546483397da0131e52473be44d67825d54bca8185e831",
+      "banks": 257,
+      "heightScale": 0.01171875,
+      "nextOffset": 847653
+    },
+    {
+      "name": "teraform/season/week10.trn",
+      "sha256": "5e64b4e00d31e7586c8f351cbb9d54f03365fb4b5626da26d19377770827f0cb",
+      "banks": 257,
+      "heightScale": 0.01171875,
+      "nextOffset": 848085
+    },
+    {
+      "name": "teraform/season/week11.trn",
+      "sha256": "9d86f7b04961504250e9406fdb6a171f2f651e216567e70078592d596565c1c0",
+      "banks": 257,
+      "heightScale": 0.01171875,
+      "nextOffset": 851117
+    },
+    {
+      "name": "teraform/season/week12.trn",
+      "sha256": "a51231bef4755c3bb7615146475ac8787332ffc3488d45cbf2cff1cc76b707b9",
+      "banks": 257,
+      "heightScale": 0.01171875,
+      "nextOffset": 855582
+    },
+    {
+      "name": "teraform/season/week13.trn",
+      "sha256": "c9e3a0ec9469370c31b68462a67e47b261e015503add2ac6c09ad65a45e36f97",
+      "banks": 257,
+      "heightScale": 0.01171875,
+      "nextOffset": 844575
+    },
+    {
+      "name": "teraform/season/week14.trn",
+      "sha256": "ab1c1a4dd473d5cb42972f255dcddabede6002c448adfb9571105206d7ae0e10",
+      "banks": 257,
+      "heightScale": 0.01171875,
+      "nextOffset": 850521
+    },
+    {
+      "name": "teraform/season/week15.trn",
+      "sha256": "f77065eba777e120bed54a168f35efd803a6c91505b301ebcca8f493b046e5d3",
+      "banks": 257,
+      "heightScale": 0.01171875,
+      "nextOffset": 877959
+    },
+    {
+      "name": "teraform/waypoint/BAJA00.TRN",
+      "sha256": "f59ac2fd172889ba4aa68e7cd70430bc20f91d3ab6283cf4b0b5fca8dcf9e704",
+      "banks": 882,
+      "heightScale": 0.01171875,
+      "nextOffset": 3970959
+    },
+    {
+      "name": "teraform/waypoint/BAJA01.TRN",
+      "sha256": "d2409a6c7fa263b0ba0703fb79c3915eb80ff2cbd568de522387ad58a6a7cedd",
+      "banks": 882,
+      "heightScale": 0.01171875,
+      "nextOffset": 4124361
+    },
+    {
+      "name": "teraform/waypoint/BAJA02.TRN",
+      "sha256": "b17fb0b6ff80ede3882cee471fdde2aecd82cae3b686a041c3f3d8e251f7cf75",
+      "banks": 882,
+      "heightScale": 0.01171875,
+      "nextOffset": 4107060
+    },
+    {
+      "name": "teraform/waypoint/BAJA03.TRN",
+      "sha256": "309828af54d24769935e86c2fd4c9f4e89ca95b9c6386f025e4914c959fd3c7a",
+      "banks": 882,
+      "heightScale": 0.01171875,
+      "nextOffset": 4206174
+    },
+    {
+      "name": "teraform/waypoint/BAJA19.TRN",
+      "sha256": "2921f45072f3659956b0bdbab54a8054560ba84b60e4570af1265b50ae6c6d3f",
+      "banks": 882,
+      "heightScale": 0.01171875,
+      "nextOffset": 4301466
+    },
+    {
+      "name": "teraform/waypoint/DUNEBAJA.TRN",
+      "sha256": "0edc7d4fb68345e82b9bf9cd0da529c6e158e55198ff660a7cb7178866313ebc",
+      "banks": 882,
+      "heightScale": 0.01171875,
+      "nextOffset": 4042699
+    },
+    {
+      "name": "trakedit/tracks/mass_air.trn",
+      "sha256": "7a740b5d4c67e39cd2acca8a275993be8930fd8e27ba538bc80162fde897712e",
+      "banks": 257,
+      "heightScale": 0.01171875,
+      "nextOffset": 840157
+    },
+    {
+      "name": "ui/simple.trn",
+      "sha256": "67d93eb0673130fd88992bf31f5daa5b3cbdbd4a6365067f85ef7a9bc2632069",
+      "banks": 257,
+      "heightScale": 0.01171875,
+      "nextOffset": 825872
+    }
+  ],
+  "scope": "TRN v2 prefix and sample-bank boundaries inferred from original loaders; compressed palette and sample-bank bytes compared against original 0x427a90, including 32 guard bytes. Course hierarchy/rendering sections and connected bike updates are not yet decoded or validated."
+}
