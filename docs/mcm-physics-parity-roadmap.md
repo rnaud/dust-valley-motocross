@@ -649,3 +649,22 @@ component indices as the first branch. Both callback branches now have isolated
 original-execution evidence; ordered child-list dispatch and their connection
 inside the event wrapper remain outstanding. Null/self orientation-reference
 paths are implemented but are not covered by this callback-specific report.
+
+The event wrapper now executes ordered child callbacks instead of rejecting
+nonempty bounds-child lists. The connected `0x4a4b60` oracle, using the captured
+player vtable and real `0x430970` / `0x44fa70` dispatch, matches 48,000 original
+executions across 197 output words (`mcm-event-children-validation.json`). Three
+ordered records update two components, including repeated updates to the same
+component, both callback branches, and sibling or parent-child layouts. In
+addition to all previous bike/rider outputs, validation checks component local
+and world matrices, cache flags and mutated callback record axes/positions.
+This supersedes the earlier wrapper child-list exclusion for this tested graph
+model. The original no-child fixtures remain in the regression suite.
+
+The state adapter currently represents a root bike target, an independent or
+bike-parented orientation source, and components whose parents precede them in
+the array. Arbitrary aliasing between source and component nodes, parented bike
+targets and captured live rider tables still need evidence. Input and random
+values remain supplied call-boundary data. Full-update sequencing, live state
+adaptation and whole-bike acceleration/release trajectory comparison remain
+required before claiming complete physics parity.

@@ -644,3 +644,24 @@ test('relative child callback matches original orientation, relative position an
  }
  assert.equal(paths.size,32);assert.equal(components.size,8);
 });
+
+test('event wrapper with ordered child callbacks matches original bike, rider and component state',async()=>{
+ const {transitionMcmBikeEvent}=await import('../src/physics/mcm/event-transition.js');
+ const {floatBits,bitsFloat}=await import('../src/physics/mcm/math.js');
+ const reasons=new Set(),childModes=new Set(),layouts=new Set();let oriented=0,skipped=0,clamped=0;
+ for(const {input,angularVelocityBits,outputBits} of fixture('event-children-wine11.json').fixtures){
+  input.angularVelocity=angularVelocityBits.map(bitsFloat);
+  const r=transitionMcmBikeEvent(input);
+  const actual=[r.triggered,r.eventKind,r.reason,r.otherPresent,r.field710,r.field714,...[...r.velocity,...r.angularVelocity].map(floatBits),r.randomCalls,r.inputCalls,r.state,r.field820,r.animation,...[...r.envelope,...r.direction].map(floatBits),r.inverted,floatBits(r.field890),r.resource,...[...r.boundsMin,...r.boundsMax,...r.scratch540,...r.scratch54c,...r.target.local,...r.target.world,...r.source.world].map(floatBits),r.source.cacheValid,r.target.cacheValid,...[...r.rider.velocity,...r.rider.angularVelocity,...r.rider.previousVelocity].map(floatBits),...r.rider.selected,r.rider.active13c,r.rider.active16c,r.rider.kind,...r.components.flatMap(n=>[...[...n.local,...n.world].map(floatBits),n.cacheValid]),...r.boundsChildren.flatMap(n=>[...n.forward,...n.up,...n.position].map(floatBits))];
+  assert.deepEqual(actual,outputBits);
+  if(r.triggered&&input.field820){
+   for(const record of r.boundsChildren)childModes.add(record.local);
+   layouts.add(input.setup.components[1].parentIndex);
+  }
+  if(r.triggered)reasons.add(r.reason);else skipped++;
+  if(r.triggered&&input.field820)oriented++;
+  if(r.eventKind===1&&r.angularVelocity[0]!==input.angularVelocity[0])clamped++;
+ }
+ assert.deepEqual([...reasons].sort((a,b)=>a-b),[1,2,4,5,6,7,8,9,10,12]);
+ assert.ok(oriented>0&&skipped>0&&clamped>0);assert.equal(childModes.size,2);assert.equal(layouts.size,2);
+});
