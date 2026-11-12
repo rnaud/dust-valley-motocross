@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "2372516b7c15ea0611bdbc17828308ed24c00d777332d6a0fa1ec2e0ecb48b7d",
+  "loaderSourceSha256": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe",
+  "casesSha256": "29a777ecd650d4c53ea999ae3ba29f135fde4328c929e30384db113ddb571e98",
+  "resultsSha256": "2276f8088832529fdc62f946f218d083215fca8e34f24e457bfc0448323fd014",
+  "cases": 40000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original common post-event section 0x4ac6cd..0x4ac7c4, including world angular velocity, delayed-award helper 0x4b1a40, suspension output and dt. Real scoring arithmetic with optional UI observers absent; finite supplied state, root/parented transforms and cache combinations. Later object/collision callbacks, no-event rider update and full-step sequencing excluded."
+}

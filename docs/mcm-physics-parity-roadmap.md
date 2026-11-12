@@ -668,3 +668,21 @@ targets and captured live rider tables still need evidence. Input and random
 values remain supplied call-boundary data. Full-update sequencing, live state
 adaptation and whole-bike acceleration/release trajectory comparison remain
 required before claiming complete physics parity.
+
+The common post-event section `0x4ac6cd..0x4ac7c4` now matches 40,000 original
+executions across 50 output words (`mcm-post-event-state-validation.json`). This
+copies local transform position back to the bike, suppresses yaw rate below the
+original signed-bit speed threshold with both contacts, converts angular velocity
+to world space, advances the delayed-award timer, and copies suspension heights
+and dt to their output fields. Its real `0x4b1a40` scoring arithmetic is executed:
+scaled score minus its remainder modulo 100, followed by binary32 storage. The
+settings flag can suppress the returned award. Optional UI observers are absent
+in the harness; their callbacks are not part of this evidence. Coverage includes
+root/parented transforms, cache states, speed boundaries, timer gates and negative
+zero, whose input bits are retained in fixtures.
+
+The sequencing trace also confirms that an event clears `bike+0x8c8` and reduces
+the remaining update count to one. A no-event result calls `0x4aecb0` only on the
+last scheduled update, before this common section. That rider/animation routine,
+the object/collision callbacks starting at `0x4ac7c4`, and the subsequent scheduler
+remainder handling are still required for a complete update and trajectory test.
