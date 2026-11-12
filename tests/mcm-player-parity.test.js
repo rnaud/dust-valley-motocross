@@ -410,3 +410,19 @@ test('connected force assembly and angular update match original contact correct
   assert.equal(modes.size,4);
   assert.ok(changed>0);
 });
+
+test('force-to-linear integration preserves original steering fallback and decay state',async()=>{
+  const {updateMcmForceLinear}=await import('../src/physics/mcm/force-linear-step.js');
+  const {floatBits}=await import('../src/physics/mcm/math.js');
+  let fallback=0,generated=0,decayed=0,frozen=0;
+  for(const {input,outputBits} of fixture('force-linear-wine11.json').fixtures){
+    const r=updateMcmForceLinear(input);
+    const values=[...r.position,...r.velocity,r.speed,...r.acceleration,...r.deltaVelocity,...r.scratch540,r.field6d8,r.field6dc];
+    assert.deepEqual([...values.map(floatBits),r.field6e0>>>0,floatBits(r.rotation)],outputBits);
+    if(r.field6d8===0&&r.rotation!==0)fallback++;
+    if(r.field6dc!==input.field6dc)generated++;
+    if(r.field6e0===input.field6e0-1)decayed++;
+    if(input.frozen)frozen++;
+  }
+  assert.ok(fallback>0&&generated>0&&decayed>0&&frozen>0);
+});

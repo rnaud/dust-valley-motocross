@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "ac2e664dbb7b0f721f1268b783d89e403037194bad81463989f21735c352f2b2",
+  "loaderSourceSha256": "830163ef60a5fffcb6d5c468bb85f16298445254bf4352bf8e4a0f9fddb56812",
+  "casesSha256": "e397a17216f1976cd3377f0ad49eee7c8dfb78862671c82309e52c819fcb38d5",
+  "resultsSha256": "7f171214343312663f5f150af5fea08662905ed77a16c03781ee7d69191ecaed",
+  "cases": 40000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original 0x4aaf02..0x4ab49e: force-to-acceleration and delta velocity, steering fallback and decay state, selected rotation, velocity/speed/position integration and freeze gate. Supplied upstream forces and geometry; later rotation application and whole-bike update excluded."
+}

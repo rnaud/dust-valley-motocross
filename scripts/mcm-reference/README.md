@@ -429,3 +429,15 @@ transform and supplied assembled forces and geometry. The 40 output words cover
 force/torque sums, angular velocity/acceleration, opposing torque, clip counter,
 pivot history, transform, correction angle and mask. It exercises both inertia
 states and contact gates. Upstream forces and full bike integration are excluded.
+
+### Force-to-linear-motion and steering state
+
+```sh
+node scripts/mcm-reference/compare-force-linear-oracle.mjs /path/to/mcm.exe /tmp/new-force-linear-run
+```
+
+Executes original `0x4aaf02..0x4ab49e`, including steering fallback and decay
+between force conversion and linear integration. Compares 20 words covering
+position, velocity, speed, acceleration, delta velocity, scratch cross product,
+steering state/counter and selected rotation. Supplies upstream forces and finite
+geometry, including positive `bike+0x8cc`; downstream rotation is excluded.
