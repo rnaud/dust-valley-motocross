@@ -547,3 +547,27 @@ Synthetic tiles cover leaf/child/grandchild lookup, missing tables/children,
 positive bounds and scale changes. The API requires nonnegative integer
 coordinates, matching the upstream query's clamp. Continuous interpolation,
 real terrain extraction, and whole-bike trajectories remain outstanding.
+
+## Healthy replay with exported checkpoint — November 13
+
+[New report](mcm-healthy-replay-validation.json) and
+`tests/fixtures/mcm/healthy-replay-checkpoint-wine11.json.br` preserve a fresh
+400-frame idle/acceleration/release sequence repeated twice. Unlike the older
+capture, this fixture includes the 21-block local checkpoint from the first
+scheduler entry. Its bike bytes, engine prefix and root world matrix are checked
+against that first trace record. All 1,600 records remain in normal state zero
+with finite motion and transforms; x87 control word is `0x027f` throughout.
+
+All observed motion, transforms and engine bytes match between passes. The
+strict comparator still exits nonzero for the four inherited words at
+`0x488..0x494`; they have not been silently excluded. Frame 199 reaches
+22.2931159973 m/s, frame 200 starts release at 22.2583739319 m/s, and frame 399
+coasts to 15.5985467194 m/s. These values describe this new checkpoint and are
+not asserted to match the older session's trajectory.
+
+The original ran with its audio driver isolated after worker-thread crashes
+prevented course selection. See the runtime status for the exact environment
+and limits of that finding. This is original-versus-original evidence, not
+original-versus-recovered simulation parity. Next work must initialize the
+recovered context from captured live state and actual course data, explicitly
+capture missing rider/world dependencies, and compare every update boundary.
