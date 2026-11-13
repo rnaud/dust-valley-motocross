@@ -3201,3 +3201,28 @@ This proves the engine-state handoff across an actual loop-back. The second
 contact/force substep, unified ordinary/reset execution, complete frame tail,
 dynamic bike/rider collisions, acceleration/release trajectories and playable
 integration remain outstanding.
+
+### Persistent reset loop-back through the next ordinary contact pass
+
+The continuing original path now reaches `0x4a64dc` on its second iteration.
+All 2,156 captured words match across 16,400 executions: 8,964 continue through
+shared suspension/transform preparation, ordinary wheel terrain sampling,
+steering-component rotation and cooldown; 7,436 exit at the loop decision.
+The second pass uses the first pass's live bike, engine, transforms, points and
+scheduled timestep. No bike state or transforms are replaced between passes.
+
+The added comparison captures reference position, all ten contact points,
+heights, both tangents, normal and offset, steering angle, cooldown/flag, four
+local/world matrices and cache flags, and suspension preparation limits.
+Component-rate input represents the enclosing frame's initial steering rate;
+it is supplied once before the first substep and retained across loop-back.
+As in the earlier wheel-contact harness, uninitialized local normal scratch is
+supplied at wheel-query entry; this does not validate arbitrary native stack
+residue. Crash-event cases still end the loop, so the second contact pass in
+this corpus is necessarily normal-state, not an independently seeded crash.
+
+Report: `mcm-reset-loop-contact-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-loop-contact-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+The second force/integration pass, full frame completion, dynamic bike/rider
+collision callbacks, end-to-end acceleration/release trajectories and playable
+integration remain outstanding. Full physics parity remains unproven.
