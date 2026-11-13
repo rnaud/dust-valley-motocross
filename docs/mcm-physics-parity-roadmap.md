@@ -1639,3 +1639,27 @@ Inputs remain finite with positive wheelbase/pivot distances and the pinned
 runtime. Collision-proxy/game-object synchronization after `0x49fe3a`, the
 main routine's alternate-path dispatch and whole-loop force integration remain
 unfinished. These results do not establish whole-bike trajectory parity.
+
+### Alternate reset bounds and child transforms (2026-11-12)
+
+Extended continuous original execution through `0x49fe41`, including bounds
+copying in `0x4309d0`/`0x430970` and ordered player callbacks `0x44fa70`.
+The recovered reset now copies minimum/maximum bounds and applies each active
+child record's local or relative orientation and position. Axis normalization
+mutates the record, and transform cache invalidation follows the original.
+
+All 1,235 output words match in 16,384 cases: zero differences. The comparison
+retains the full previous reset/contact output plus all three child records,
+including inactive records. Cases exercise zero through three callbacks, both
+orientation branches, different component targets, cached/uncached transforms,
+and parent chains. Callback targets have parents, as required by the original
+relative-position routine; a deliberately invalid parentless target caused an
+original-executable fault during harness development and is excluded. The
+four-node graph permits component/body aliasing and ancestor relationships.
+
+Report: `mcm-reset-bounds-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-bounds-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+The pinned executable and loaded Wine 11 D3DRM hashes are checked. Only CRT rand
+and initial contact-normal scratch are supplied. Collision-proxy/grid updates
+and final flags after this boundary remain pending, along with main-loop
+integration and complete acceleration/release trajectory validation.

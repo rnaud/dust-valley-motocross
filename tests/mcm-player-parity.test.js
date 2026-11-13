@@ -1110,3 +1110,8 @@ test('alternate final contact correction matches original refreshed angles and w
  const {evaluateResetContactFinish}=await import('../scripts/mcm-reference/reset-contact-finish-case.mjs');
  for(const {input:c,outputBits} of fixture('reset-contact-finish-wine11.json').fixtures)assert.deepEqual(evaluateResetContactFinish(c),outputBits);
 });
+
+test('alternate reset bounds update matches original ordered child callbacks and transform invalidation',async()=>{
+ const {evaluateResetBounds}=await import('../scripts/mcm-reference/reset-bounds-case.mjs');
+ for(const {input:c,outputBits} of fixture('reset-bounds-wine11.json').fixtures)assert.deepEqual(evaluateResetBounds(c),outputBits);
+});
