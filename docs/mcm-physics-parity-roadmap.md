@@ -1576,3 +1576,32 @@ Report: `mcm-reset-pose-validation.json`. Reproduce with
 Source parameters are finite and the component rotation axis is nonzero.
 Terrain alignment after this initial pose, remaining alternate-path work and
 whole-loop integration are still needed for full trajectory parity.
+
+### Connected alternate terrain support and pivot alignment (2026-11-12)
+
+Extended the continuous reset/pose sequence through `0x49fcd0`. It reads rear
+then front wheel world positions, samples their terrain heights, sets the two
+normal outputs to world-up, and places the body at the higher support height.
+It derives half the slope angle from the height difference and bike+0x5d8,
+rotates about the corresponding positive/negative bike+0x5dc wheel pivot, saves
+the resulting local position, resolves body world orientation and applies it
+to the component with orthogonalization disabled. Shared forward/up arrays
+retain the relative-orientation helper's float32 normalization stores.
+
+16,384 original-execution cases match all 1,208 output words with zero
+differences. The comparison retains complete bike/component allocations, RNG
+count, four transform nodes, component angle, ten contact argument vectors and
+both height outputs. Cases cover both higher-support branches (including
+equal heights), all body/component and front/rear node pairings, shared nodes,
+parent graphs, cached/uncached transforms, optional engine/effect state, and
+leaf/child/parent/missing/null terrain. The four wheel/pose components are
+present because this original path dereferences them unconditionally.
+
+Report: `mcm-reset-terrain-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-terrain-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Only CRT rand is supplied; all reset, terrain, transform, pivot-rotation and
+relative-orientation helpers execute inside the original sequence. Inputs are
+finite, with positive wheelbase/pivot distances and synthetic terrain bounded
+for the leaf-only cases. The subsequent orientation-angle/contact query,
+final correction and whole-loop integration remain pending before full
+acceleration/release trajectory parity can be claimed.

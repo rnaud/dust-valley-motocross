@@ -1095,3 +1095,8 @@ test('connected reset pose matches original vertical fallback, shared axes and t
  const {evaluateResetPose}=await import('../scripts/mcm-reference/reset-pose-case.mjs');
  for(const {input:c,outputBits} of fixture('reset-pose-wine11.json').fixtures)assert.deepEqual(evaluateResetPose(c),outputBits);
 });
+
+test('connected reset terrain alignment matches original support selection and wheel-pivot rotations',async()=>{
+ const {evaluateResetTerrain}=await import('../scripts/mcm-reference/reset-terrain-case.mjs');
+ for(const {input:c,outputBits} of fixture('reset-terrain-wine11.json').fixtures)assert.deepEqual(evaluateResetTerrain(c),outputBits);
+});
