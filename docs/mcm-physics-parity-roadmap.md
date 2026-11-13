@@ -2267,3 +2267,29 @@ Report: `mcm-suspension-force-substep-validation.json`. Reproduce with
 Subsequent force/torque combination, the alternate crash branch, full-loop
 integration, and whole-bike acceleration / throttle-release trajectory parity
 remain unfinished.
+
+### Connected single-wheel force and torque assembly (2026-11-12)
+
+Extended front-only and rear-only ordinary execution through `0x4aaa55`.
+Airborne execution reaches the same boundary after restoring the local contact
+arm and clearing torque. Both-wheel execution remains observed at its assembly
+entry `0x4aa573`; crashed chassis-contact execution exits at `0x4ab426`.
+Single-wheel assembly projects suspension force onto the initialized world-up
+vector, scales it by target-roll cosine, and adds the existing contact load and
+normal force. It computes body-local torque from the contact arm, applies the
+front/rear pitch clips and shared counter, and refreshes the local contact arm.
+The rear-only branch additionally applies the original height-dependent torque
+scale and drive torque helper `0x4b1ad0` with the connected control/AI state.
+
+All 40,000 cases match across 515 output words with zero bit differences.
+Projection partial stores, normal loads, world/local torque scratch, drive
+torque, pitch counter and preceding state are captured. Arithmetic retains
+zero-times-nonfinite results in world-up projection instead of simplifying the
+projection to a Y-only copy. Original projection, transform, cross-product and
+drive-torque callees execute directly.
+
+Report: `mcm-single-contact-force-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-single-contact-force-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Both-wheel force assembly, the alternate crash branch, subsequent integration,
+complete-loop wiring, and whole-bike acceleration / throttle-release trajectory
+parity remain unfinished.
