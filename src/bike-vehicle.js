@@ -11,6 +11,7 @@ export class BikeVehicle extends RaycastVehicle {
       wheel.suspensionForce=wheel.isInContact?(this.recoveredPreview?mcmPreviewSuspension:suspensionForce)({
         compression:wheel.suspensionRestLength-wheel.suspensionLength,
         velocity:wheel.suspensionRelativeVelocity,mass:this.chassisBody.mass,
+        massShare:this.recoveredMassShares?.[wheel.isFrontWheel?1:0]??.5,
         front:wheel.isFrontWheel,contactFactor:wheel.clippedInvContactDotSuspension,
       }):0;
     }

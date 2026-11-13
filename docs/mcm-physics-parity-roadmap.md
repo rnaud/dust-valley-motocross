@@ -4507,3 +4507,43 @@ reset, classic fallback and mobile layout. New integration checks cover the
 45-foot/second branch, prior-acceleration feedback, load/bank changes, no rear
 contact, a single drive-scale application and spring-inclusive resting
 acceleration. The recovered function's original-execution fixtures remain intact.
+
+### Playable preview: recovered rider weight balance and contact load source
+
+The preview now calls `updateMcmContactBalance` and `updateMcmBalanceCenter`.
+For the captured PDM profile (bike +0x618 is zero), the original initialization at
+`0x4a3c4a..0x4a3c7a` sets the +0x8f8 filter to 0.5 with duration
+float32(nominalInterval * float32(6.3)). The constant at `0x4d9844` and the pinned
+executable SHA were rechecked. Bike/rider/total weights are 240/165/405 from
++0x684/+0x688/+0x68c; support depth is +0x5d8. Preview forward/back controls map to
+the original rider-lean sign. Neutral weight shares return immediately to 0.5
+while the internal filter history decays, matching the recovered branch.
+
+Recovered shares now feed front/rear tire loads, rear traction and spring damping
+mass shares. The returned balance-center offset adjusts contact moment arms.
+The preview body origin substitutes for the original reference transform, so
+that geometry remains an adapter. Reset clears filter history, offset and spring
+mass shares; airborne balance follows the body reference without a ground offset.
+
+The original tire-load source is the projected gravity-and-drag force, not
+Cannon's suspension impulses. `calculateMcmBaseForce` now exposes the existing
+original force/drag stores for both the recovered pipeline and the preview.
+The preview uses PDM's [0,-405,0] lbf base force and float32(0.001) drag coefficient
+and threshold, splits that force by recovered weight share before normal
+projection, and removes its old tire-load smoothing. Original drag replaces the
+preview's custom quadratic drag and Cannon linear damping; gravity is still
+applied once by Cannon. Classic mode retains its prior handling.
+
+This connects force preparation and balance inputs, not the complete original
+chassis solver. Terrain geometry, the reference transform, suspension travel,
+rider pitch/roll control, collisions and chassis integration remain adapted.
+No new whole-bike live parity claim is made.
+
+Validation: all 313 tests and the production build pass. Fresh x64 checks match
+original force-preparation/balance fixtures and all four 400-frame retained
+histories. Production-served browser checks pass for acceleration, steering,
+release, pause/photo/reset, classic fallback and mobile layout. Integration tests
+verify the captured profile, forward/back/neutral filter behavior, airborne
+reference state, projected load source, suspension mass-share response and reset.
+The existing deformable-sand acceleration checks pass without relaxing their
+expectations.
