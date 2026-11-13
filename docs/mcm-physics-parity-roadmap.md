@@ -2516,3 +2516,27 @@ Report: `mcm-normal-rotation-substep-validation.json`. Reproduce with
 The next connection is the bike-event transition call (`0x4a4b60`) at
 `0x4ac17b`, then normal-state alignment and collision/tail/entry integration. Complete-bike
 acceleration and throttle-release trajectory parity remains unproven.
+
+### Connected grounded alignment
+
+The alternate normal-state branch now reaches `0x4ac5c5`, retaining the
+connected airborne branch through `0x4ac17b`. Grounded alignment resolves
+world matrices at each original call, rotates the local body about the front
+load pivot, damps angular velocity, and applies steering minimum/maximum and
+rate limits. It preserves original contact masks, scratch vectors, cache
+invalidation and node aliasing.
+
+All 577 captured words match the pinned original in 40,000 executions.
+Connecting this branch exposed exceptional-value propagation in world-matrix
+composition and axis-angle construction. These now use the recovered x87
+arithmetic semantics rather than replacing every NaN with negative indefinite
+or relying on host arithmetic for mixed NaN signs. Cases 1099 and 3367 are
+explicitly retained in the compressed regression corpus. Coverage includes
+active masks 0 through 3, paired/single/no-contact paths and valid/invalid
+world-cache exits.
+
+Report: `mcm-normal-alignment-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-normal-alignment-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Next are the bike-event transition calls and subsequent branch joins, then
+collision/tail and entry integration. Full acceleration/throttle-release
+trajectory parity is still unproven.

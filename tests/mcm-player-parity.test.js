@@ -1288,3 +1288,11 @@ test('connected normal rotation matches original timer phases, normalized input 
  const {evaluateNormalRotationSubstep}=await import('../scripts/mcm-reference/normal-rotation-substep-case.mjs');
  for(const [i,{input:c,outputBits}] of fixture('normal-rotation-substep-wine11.json.gz').fixtures.entries()){const actual=evaluateNormalRotationSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
+
+
+test('connected grounded alignment matches original limits, world caches and pivot rotations',async()=>{
+ const {evaluateNormalAlignmentSubstep}=await import('../scripts/mcm-reference/normal-alignment-substep-case.mjs');
+ const corpus=fixture('normal-alignment-substep-wine11.json.gz');
+ for(const gate of ['active=false','active=true:mask=0','active=true:mask=1:both=1','active=true:mask=1:both=0','active=true:mask=2','active=true:mask=3',':cache=1'])assert.ok(Object.keys(corpus.source.alignmentOutcomes).some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){const actual=evaluateNormalAlignmentSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});
