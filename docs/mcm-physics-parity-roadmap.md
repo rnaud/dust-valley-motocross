@@ -1388,3 +1388,29 @@ Inputs are finite with positive filter durations and the captured five-gear
 parameter table. Arbitrary device/POV layouts remain covered separately, not
 by this connected run. Contact generation and full loop/state integration are
 still required before comparing whole-bike acceleration/release trajectories.
+
+### Connected suspension reset and contact-transform preparation (2026-11-12)
+
+Extended the continuous substep start through `0x4a5ea5`. Original front reset
+`0x49eaf0` clears its limit flag and local translation only; rear reset
+`0x49ed20` clears its flag and restores the saved local matrix. Both execute
+the original cache-invalidating helpers. The subsequent `0x4b7950` null-reference
+query resolves the designated node's world position into bike+0x504. The seven
+temporary-vector constructor calls at `0x40ded0` do not initialize storage;
+the port preserves supplied scratch values rather than inventing zeroes.
+
+40,000 original-execution cases match 257 output words each with zero
+differences. This includes all prior connected engine outputs plus six nodes'
+local/world matrices and cache flags, both limit flags, the reference position
+and seven unchanged scratch vectors. Graph coverage includes root nodes,
+front/rear ancestor relationships in either direction, separate branches,
+aliased front/rear nodes and position queries on every node. Cached/uncached
+states exercise the original rule that invalidating an already-invalid node
+skips its descendants. Real full-3D matrix resolution runs inside the original
+sequence; only the device response and shift RNG remain supplied boundaries.
+
+Report: `mcm-contact-preparation-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-contact-preparation-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+The settings-dependent contact-query branches after `0x4a5ea5`, contact/force
+assembly and whole-loop state adaptation are still required before full
+acceleration/release trajectory parity can be claimed.

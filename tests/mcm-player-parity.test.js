@@ -1060,3 +1060,8 @@ test('connected substep start matches original throttle, brake, gears, input pol
  const {evaluateSubstepStart}=await import('../scripts/mcm-reference/substep-start-case.mjs');
  for(const {input:c,outputBits} of fixture('substep-start-wine11.json').fixtures)assert.deepEqual(evaluateSubstepStart(c),outputBits);
 });
+
+test('connected substep start and contact transform preparation match original graph mutations',async()=>{
+ const {evaluateContactPreparation}=await import('../scripts/mcm-reference/contact-preparation-case.mjs');
+ for(const {input:c,outputBits} of fixture('contact-preparation-wine11.json').fixtures)assert.deepEqual(evaluateContactPreparation(c),outputBits);
+});
