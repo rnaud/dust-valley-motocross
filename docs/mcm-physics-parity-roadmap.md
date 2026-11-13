@@ -2101,3 +2101,27 @@ All prior terrain, suspension, steering, front-tire and rear-drive operations
 execute continuously with original callees. Remaining rear tire/contact-force
 processing, no-wheel response, full-loop integration and whole-bike
 acceleration/release trajectory parity remain unfinished.
+
+### Connected rear traction and tire force (2026-11-12)
+
+Extended continuous ordinary execution through `0x4a8634`; front-only contact
+now executes the original rear-response cleanup and joins this boundary.
+Only the no-wheel path remains observed at its earlier branch entry. Rear
+traction compares forward speed and crash state, derives drive acceleration
+minus the prior acceleration magnitude, clamps its factors and scales the drive
+vector. It preserves the unrounded factor for the vector's X component and uses
+the stored factor for Y/Z. Both-wheel contact chooses the front or midpoint
+contact arm using the signed-bit 0.9 threshold, then inverse-rotates that arm.
+The rear tire helper consumes the resulting scale, normal load and direction;
+its low-speed branch clears force/magnitude without overwriting unused scratch.
+
+All 40,000 cases match across 422 output words with zero differences, retaining
+all previous connected outputs plus traction intermediates and rear tire force.
+Cases include zero/nonzero acceleration, speed limits, crash/normal state,
+front-only/rear-only/both-wheel contact, skipped scaling, released drive and
+local/AI force branches. Report: `mcm-rear-tire-substep-validation.json`.
+Reproduce with
+`node scripts/mcm-reference/compare-rear-tire-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Pinned original callees execute directly throughout. Remaining combined
+contact-force processing, no-wheel response, full-loop integration and whole-bike
+acceleration/release trajectory parity remain unfinished.

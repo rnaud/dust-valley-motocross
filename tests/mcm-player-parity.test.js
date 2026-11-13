@@ -1205,3 +1205,8 @@ test('connected rear load and velocity match original force split, projection an
  const {evaluateRearMotionSubstep}=await import('../scripts/mcm-reference/rear-motion-substep-case.mjs');
  for(const [i,{input:c,outputBits}] of fixture('rear-motion-substep-wine11.json').fixtures.entries()){const actual=evaluateRearMotionSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
+
+test('connected rear traction and tire force match original scaling, arm selection and cleanup',async()=>{
+ const {evaluateRearTireSubstep}=await import('../scripts/mcm-reference/rear-tire-substep-case.mjs');
+ for(const [i,{input:c,outputBits}] of fixture('rear-tire-substep-wine11.json').fixtures.entries()){const actual=evaluateRearTireSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});
