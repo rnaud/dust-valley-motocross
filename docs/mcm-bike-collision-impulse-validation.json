@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "5c79c610e4ebee7e62d8e40480590bf68daceb7529245d922a45f8897c1c52e5",
+  "loaderSourceSha256": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe",
+  "casesSha256": "b68432a9b659f235de5662865ee32027587f0bb5fbbaf803059ae31f883a43f4",
+  "resultsSha256": "72f0efdb88984d968575a86d0d54541d44963d756896686021141260da7c2379",
+  "cases": 40000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "outcomes": {
+    "type=0:cache=1:state=0": 2667,
+    "type=1:cache=1:state=1": 2667,
+    "type=2:cache=1:state=2": 2667,
+    "type=3:cache=1:state=0": 2018,
+    "type=4:cache=1:state=1": 2667,
+    "type=0:cache=1:state=2": 2667,
+    "type=1:cache=1:state=0": 2667,
+    "type=2:cache=1:state=1": 2667,
+    "type=3:cache=1:state=2": 2031,
+    "type=4:cache=1:state=0": 2667,
+    "type=0:cache=1:state=1": 2666,
+    "type=1:cache=1:state=2": 2666,
+    "type=2:cache=1:state=0": 2666,
+    "type=3:cache=1:state=1": 2057,
+    "type=4:cache=1:state=2": 2666,
+    "type=3:cache=0:state=0": 649,
+    "type=3:cache=0:state=1": 609,
+    "type=3:cache=0:state=2": 636
+  },
+  "scope": "Connected original bike impulse wrapper 0x49d7f0 and real solver 0x45b3c0, transforms, inverse sqrt, and audio reporting routine configured with a nonmatching listener (no playback). State-dependent restitution/inertia and scale, type 3 gate, local lever copy, world angular refresh and cache checked. Audio playback side effects and full collision response excluded."
+}
