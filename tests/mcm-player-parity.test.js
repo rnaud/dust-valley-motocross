@@ -1495,3 +1495,11 @@ test('reset loop-back preserves live bike, engine and filters into the next engi
  assert.equal(Object.entries(corpus.source.loopOutcomes).filter(([k])=>k.startsWith('looped=1:')).reduce((n,[,v])=>n+v,0),8964);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetLoopEntry(c),outputBits,`reset/loop-entry fixture ${i}`);
 });
+
+test('reset loop-back carries live transforms through the next ordinary wheel-contact pass',async()=>{
+ const {evaluateResetLoopContact}=await import('../scripts/mcm-reference/reset-loop-contact-case.mjs');
+ const corpus=fixture('reset-loop-contact-wine11.json.br');
+ for(const gate of ['looped=0:','looped=1:state=0:',':frontPositive=true:rearPositive=true:',':frontPositive=true:rearPositive=false:',':frontPositive=false:rearPositive=true:',':frontPositive=false:rearPositive=false:',':cooldownZero=true:',':cooldownZero=false:',':componentChanged=true',':componentChanged=false'])assert.ok(Object.keys(corpus.source.nextContactOutcomes).some(k=>k.includes(gate)),gate);
+ assert.equal(Object.entries(corpus.source.loopOutcomes).filter(([k])=>k.startsWith('looped=1:')).reduce((n,[,v])=>n+v,0),8964);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetLoopContact(c),outputBits,`reset/loop-contact fixture ${i}`);
+});
