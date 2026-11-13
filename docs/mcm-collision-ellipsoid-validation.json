@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "f44cf6f2dcdc2a87abec0761a3775001bd100581b9782962bee4844f69ab1d70",
+  "loaderSourceSha256": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe",
+  "casesSha256": "49a32a77fcab8e2067762fe1e7a0e0a56bbaacefe248bd2c6c6b9981acbfcd4c",
+  "resultsSha256": "63546e34402e36fadbdb386eb5589891f7498b3aebf9d2f5ea475ae879ac0bb9",
+  "cases": 40000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "outcomes": {
+    "0": 35310,
+    "1": 4690
+  },
+  "scope": "Original type 1/type 1 collision 0x42bab0 with real coarse sqrt/inverse sqrt. Positive extents and radii, distinct finite centers, rotated transforms and local offsets. Hit, depth and all twelve contact words. Whole-bike integration excluded."
+}

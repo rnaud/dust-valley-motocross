@@ -940,3 +940,27 @@ test('collision dispatch matches original pair gates, contact copies and callbac
  assert.deepEqual(expected,outputBits);
  }
 });
+
+test('ellipsoid contact matches original full 3D orientation, depth and twelve contact words',async()=>{
+ const {testMcmEllipsoidPair}=await import('../src/physics/mcm/collision-ellipsoid.js');
+ const {floatBits}=await import('../src/physics/mcm/math.js');
+ for(const {input:c,outputBits} of fixture('collision-ellipsoid-wine11.json').fixtures){
+ const m={depth:1000,contactCC:[1001,1002,1003],contactD8:[1004,1005,1006],contactE4:[1007,1008,1009],otherE4:[1010,1011,1012]};
+ const hit=testMcmEllipsoidPair(m,...c.objects);
+ assert.deepEqual([+hit,...[m.depth,...m.contactCC,...m.contactD8,...m.contactE4,...m.otherE4].map(floatBits)],outputBits);
+ }
+});
+
+test('collision type routing matches original connected dispatch and intentional no-hit branches',async()=>{
+ const {dispatchMcmCollisions,testMcmCollisionPrimitive}=await import('../src/physics/mcm/collision-dispatch.js');
+ const {floatBits}=await import('../src/physics/mcm/math.js');
+ for(const {input:c,outputBits} of fixture('collision-routing-wine11.json').fixtures){
+ const calls=[],objects=c.objects.map((o,k)=>({...o,matrix:[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],localCenter:o.worldCenter,extents:[o.radius,Math.fround(o.radius*.75),Math.fround(o.radius*.5)],entries:k===0?c.entries:[],contactCC:[k*10,k*10+1,k*10+2],contactD8:[k*10+3,k*10+4,k*10+5],contactE4:[k*10+6,k*10+7,k*10+8],onPrimary:o.primary?()=>calls.push(100+k):null,onSecondary:o.secondary?()=>calls.push(200+k):null}));
+ const nodes=c.owners.map(owner=>({owner}));nodes.forEach((node,k)=>{if(k%4!==3)node.next=nodes[k+1];});
+ const m={objects,cells:[{next:nodes[0]},{next:nodes[4]}],pairs:c.pairs.map(row=>[...row]),enabled:c.enabled,depth:c.depth,contactCC:[1000,1001,1002],contactD8:[1003,1004,1005],contactE4:[1006,1007,1008],otherE4:[1009,1010,1011]};
+ dispatchMcmCollisions(m,0);
+ const expected=[...objects.flatMap(o=>[objects.indexOf(o.other)+1,...[...o.contactCC,...o.contactD8,...o.contactE4].map(floatBits)]),...m.pairs.flat(),floatBits(m.depth),m.currentA===undefined?0:m.currentA+1,m.currentB===undefined?0:m.currentB+1,calls.length,...calls,...Array(6-calls.length).fill(0)];
+ assert.deepEqual(expected,outputBits);
+ }
+ for(const [a,b] of [[1,3],[1,4],[3,1]])assert.throws(()=>testMcmCollisionPrimitive({},{type:a},{type:b}),/not recovered/);
+});

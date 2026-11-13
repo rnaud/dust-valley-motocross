@@ -1047,3 +1047,28 @@ pair states, and zero through six observational callbacks. Report:
 
 Other primitive combinations, mutating gameplay callbacks, full simulation
 integration and whole-bike trajectory parity remain unfinished.
+
+### Oriented ellipsoid contact and collision routing (2026-11-12)
+
+Recovered type 1/type 1 primitive `0x42bab0`: broad-radius rejection,
+inverse-transform support directions, per-axis extent scaling, coarse square
+root/inverse square root, depth, contact position, opposite normals, and
+penetration vector. All float stores and instruction-order sums are preserved.
+40,000 original-execution cases with full 3D rotations match all 14 output words
+with zero differences (4,690 hits). Inputs use positive extents/radii and distinct
+finite centers; coincident/degenerate inputs remain outside this validation.
+
+Connected the recovered primitive to default collision dispatch. A further
+32,000 original-execution cases match all 66 words, including original no-hit
+combinations, invalid type IDs, protected pairs and ordered observer callbacks.
+The original deliberately returns no hit for most type combinations, including
+type 2/type 2 after local scratch calculations and type 4 as the first object.
+Unrecovered line/ellipsoid combinations throw explicitly instead of returning a
+fabricated result. Reports: `mcm-collision-ellipsoid-validation.json` and
+`mcm-collision-routing-validation.json`; reproduce with corresponding
+`compare-collision-ellipsoid-oracle.mjs` / `compare-collision-routing-oracle.mjs`,
+pinned executable path, and fresh output directory.
+
+Line/ellipsoid contacts, mutating gameplay callbacks, connected main-step
+integration and end-to-end original-v-port whole-bike trajectories remain open.
+These checks do not establish full physics parity.
