@@ -3304,3 +3304,29 @@ Second-pass controller/event/post-state completion, repeated full substeps and
 frame completion, dynamic bike/rider collision callbacks, whole-bike acceleration
 and throttle-release trajectories, and playable integration remain outstanding.
 The earlier synthetic-state and supplied wheel-query scratch limitations apply.
+
+### Persistent second substep through control and alignment
+
+The continuous second iteration now reaches the pre-event exits `0x4ac17b`
+(airborne control/rotation), `0x4ac5c5` (grounded alignment), or `0x4ac64a`
+(limited-contact bypass). All 3,133 captured words match across 16,400 original
+executions: 1,101 airborne paths, 2,257 grounded paths, 5,606 limited-contact
+bypasses and 7,436 cases that exit after the first substep.
+
+The shared control and rotation stages consume current velocity, angular state,
+input fields, suspension limits and timer/phase history without replaying earlier
+physics. The controller axis now reads and commits the authoritative `axis624`
+vector, which reset clears; stale scalar aliases had hidden this history error.
+The raw `+c68` flags and `+6fc` integer are decoded and serialized as integer
+words by the reset adapter. New observations include controller vectors, control
+rotation, timer/phase fields, alignment scratch and all four transform caches.
+
+Report: `mcm-reset-loop-controls-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-loop-controls-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Every continuing second pass enters normal state 0; this corpus does not exercise
+crash handoff or flag820 velocity redirection. The forward-cache pointer is bound
+to the body node before execution. Control-vector and rotation scratch are
+observed only on the airborne path that initializes them. Event/rider/post-state
+completion, repeated full substeps and frames, dynamic bike/rider collisions,
+whole-bike acceleration/release comparisons and playable integration remain
+outstanding. Earlier synthetic-state and wheel-query scratch limitations apply.
