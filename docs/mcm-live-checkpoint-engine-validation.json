@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-13",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "hashes": {
+    "scripts/mcm-reference/live-checkpoint.mjs": "95ef01e3c88f469e78fc6fcc0b1aef74874769de6a2c971a051aa2d0bb56f3d2",
+    "scripts/mcm-reference/compare-live-checkpoint-engine.mjs": "13a7679525c0f8e573561bf4bf3f5e4e7728119aa371a31a735bc1b2f28674e5",
+    "tests/fixtures/mcm/healthy-replay-checkpoint-wine11.json.br": "f2810b52d3e1f5faf246cb1b708ae6472b169beccacb0c180e39997fd814f125"
+  },
+  "scope": "Retained engine-entry state initialized from captured memory; original chassis inputs supplied each frame. Not whole-bike parity.",
+  "frames": 800,
+  "comparedStores": 14400,
+  "comparedRandomStates": 1600,
+  "differences": 0,
+  "firstDifferences": [],
+  "passes": [
+    {
+      "pass": 0,
+      "frames": 400,
+      "randomCalls": 4,
+      "randomState": 1449997005
+    },
+    {
+      "pass": 1,
+      "frames": 400,
+      "randomCalls": 4,
+      "randomState": 1449997005
+    }
+  ],
+  "unexplainedBikeWords": [
+    "0x488",
+    "0x48c",
+    "0x490",
+    "0x494"
+  ]
+}
