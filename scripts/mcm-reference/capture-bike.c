@@ -12,6 +12,9 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#define MCM_ANIMATION_EMBEDDED
+#include "capture-animation-assets.c"
+#undef MCM_ANIMATION_EMBEDDED
 
 static const DWORD addresses[] = {0x4a54b6, 0x4ad0e1, 0x4ad5a2, 0x4bf195};
 static const BYTE expected[][6] = {{0xd9, 0x86, 0xc8, 0x08, 0, 0},
@@ -69,7 +72,14 @@ static int checkpoint(DWORD bike,int restore) {
 // not expand the set of objects restored between controlled passes.
 static int export_checkpoint(DWORD bike) {
     const char *path=getenv("MCM_CHECKPOINT");
-    if(!path||!*path)return 1;
+    const char *animations=getenv("MCM_ANIMATIONS");
+    if(!path||!*path)return !(animations&&*animations);
+    char capture_id[17]={0};
+    if(animations&&*animations){
+        LARGE_INTEGER stamp;if(!QueryPerformanceCounter(&stamp))return 0;
+        snprintf(capture_id,sizeof capture_id,"%08lx%08lx",(DWORD)stamp.HighPart,stamp.LowPart);
+        if(!capture_mcm_animation_assets(process,bike,animations,capture_id))return 0;
+    }
     FILE *out=fopen(path,"wx");if(!out)return 0;
     fprintf(out,"{\"schemaVersion\":1,\"kind\":\"mcm-partial-local-checkpoint\",\"bikeAddress\":%lu,\"blockCount\":%u,\"blocks\":[",bike,block_count);
     for(unsigned i=0;i<block_count;i++){
@@ -78,7 +88,8 @@ static int export_checkpoint(DWORD bike) {
         for(DWORD j=0;j<b->size;j++)fprintf(out,"%02x",b->bytes[j]);
         fprintf(out,"\"}");
     }
-    fprintf(out,"]}\n");const int failed=ferror(out);return fclose(out)==0&&!failed;
+    fprintf(out,"]");if(capture_id[0])fprintf(out,",\"captureId\":\"%s\",\"captureBoundary\":\"player-frame-entry\"",capture_id);
+    fprintf(out,"}\n");const int failed=ferror(out);return fclose(out)==0&&!failed;
 }
 
 static void write_byte(DWORD address, BYTE value) {

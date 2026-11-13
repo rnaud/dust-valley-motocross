@@ -736,3 +736,51 @@ corpus passes, and a subsequent complete 204-test player-parity file run.
 This is not considered fixed or evidence of stable whole-simulation parity;
 runtime warm-up/order sensitivity remains an investigation item. The checkpoint
 loader and capture changes do not alter that evaluator's code path.
+
+## Normal rider update from a consistent live state
+
+Setting `MCM_ANIMATIONS` alongside `MCM_CHECKPOINT` now exports the normal
+animation records while the replay debugger is stopped at the same player frame
+entry as the local checkpoint. Both files carry the same 16-digit `captureId`
+and `captureBoundary: player-frame-entry`. Standalone animation reads deliberately
+do not carry these fields. Failure returns through the replay debugger's cleanup
+path rather than exiting an embedded exporter with hooks still installed.
+
+The animation sidecar is read-only: its resource blocks are **not restored**
+between replay passes. The existing local checkpoint remains partial. Neither
+matching IDs nor replay repeatability establishes complete world restoration.
+
+`loadLiveNormalRider` joins the normal records to both captured visual graphs,
+checks the table pointers and active record/frame membership, and rejects mixed
+capture IDs or non-normal states. Its initialized context can execute
+`updateMcmNormalFrameRider` without synthetic transforms or poses. This loader
+covers normal seek/blend state only; it does not reinterpret the rider visual
+prefix as the separate animation-advance or recovery layout.
+
+`live-normal-rider-oracle.c` maps the captured blocks into a separate process,
+relocates only the two object vtable addresses to the pinned mapped image, and
+executes original `0x4af710` in normal state with x87 control word `0x027f`.
+Vtable words are restored before exporting the result. The recovered routine
+matches all 110,036 DWORDs across 8,821 captured blocks, including all 22 words
+changed by the original. The comparison includes untouched bytes, so unexpected
+original writes are not omitted. ARM64 and x64 comparisons both have zero
+differences. See [normal rider validation](mcm-live-normal-rider-validation.json).
+
+This is one isolated normal-rider routine execution initialized from a live
+frame-entry checkpoint, not the complete frame that precedes it or a recovered
+trajectory. The accompanying 400-frame two-pass replay still repeats in motion,
+engine and rider-controller bytes; the same four unexplained bike words remain.
+The original-input engine comparison still matches 14,400 stores. Animation
+resources, raw checkpoint/replay and native oracle input/output are preserved
+only in the local archive `player-validation/normal-rider-2026-11-13/`.
+
+To reproduce the routine comparison with local artifacts:
+
+```sh
+node scripts/mcm-reference/compare-live-normal-rider.mjs checkpoint.json animations.json original-output.bin
+```
+
+`encodeLiveNormalRiderInput` produces the native input stream after verifying
+capture identity, pointer tables and non-overlapping blocks. The native oracle
+accepts the pinned executable, input stream and output path. Capture and oracle
+source hashes and all raw artifact hashes are retained in the validation report.
