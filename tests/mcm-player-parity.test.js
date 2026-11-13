@@ -1626,3 +1626,16 @@ test('post-loop frame acceleration uses retained velocity and the stored frame i
   assert.deepEqual(actual,outputBits,`reset/post-filter fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
  }
 });
+
+test('frame-end crash animation matches original lean selection and live child transforms',async()=>{
+ const {evaluateCrashFrameAnimation}=await import('../scripts/mcm-reference/crash-frame-animation-case.mjs');
+ const {bitsFloat}=await import('../src/physics/mcm/math.js');
+ const corpus=fixture('crash-frame-animation-wine11.json.br'),outcomes=Object.keys(corpus.source.outcomes);
+ assert.equal(corpus.source.totalDifferences,0);
+ for(const gate of ['state=1:', 'state=2:', 'state=3:', ':secondary=0:', ':secondary=1:', ':children=0:', ':children=1:', ':children=2:', ':weight=zero', ':weight=one', ':weight=middle'])assert.ok(outcomes.some(k=>k.includes(gate)),gate);
+ for(const [i,{input,angleBits,outputBits}] of corpus.fixtures.entries()){
+  const actual=evaluateCrashFrameAnimation({...input,angle:bitsFloat(angleBits)});
+  assert.equal(actual.length,120);
+  assert.deepEqual(actual,outputBits,`crash/frame-animation fixture ${i}`);
+ }
+});

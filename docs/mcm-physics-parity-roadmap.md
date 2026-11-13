@@ -3512,3 +3512,26 @@ Report: `mcm-reset-post-filter-validation.json`. Reproduce with
 The `0x4af710` rider/animation update, actual frame entry and return, longer histories,
 present visual effects, dynamic bike/rider collisions, whole-bike trajectory
 comparison and playable integration remain unvalidated as a connected simulation.
+
+### Frame-end crash animation (`0x4af710`, crash branch)
+
+The frame-end rider routine differs from the `0x4aecb0` rider update inside
+individual physics substeps. Its nonzero `bike+0x844` branch now has a recovered
+implementation in `crash-frame-animation.js`. It reads the retained component
+angle at `bike+0x8ec -> +0x44`, applies the original signed-bit tests and saturation,
+stores the animation fraction at `bike+0x730`, and executes the recovered
+`0x430ab0` seek with real `0x44f8b0` child orientation/position callbacks. Secondary
+control preserves the existing fraction but still seeks the animation.
+
+The native oracle calls the original routine at its entry and runs through its
+actual crash-branch return. Across 40,000 cases, all 120 observed words match:
+three transform nodes and cache flags, selected frame/record, live bounds,
+mutated child axes and the retained animation fraction. Coverage includes states
+1–3, both secondary-control branches, signed zero, saturation boundaries, frame
+counts 1–8 and frames with zero, one or two child records. See
+`mcm-crash-frame-animation-validation.json` for input/output and source hashes.
+
+This is a branch-level validation with synthetic animation assets. Normal-state
+animation progression, trick/nearby frame updates, connection to the retained
+post-loop corpus, actual frame entry/return, longer histories, dynamic bike/rider
+collisions and complete acceleration/throttle-release trajectories remain open.
