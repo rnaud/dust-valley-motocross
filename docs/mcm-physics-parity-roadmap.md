@@ -4707,3 +4707,36 @@ inputs, angular integration, ground stabilization and the position reference
 still come from the preview adapter. Full recovered steering-force state,
 chassis impulses and motion transforms remain to be connected. Original
 checkpoint trajectory comparison remains required for a whole-bike claim.
+
+### Live wheel-contact initialization and caller-stack observations
+
+The capture tool now optionally records the 0xc00-byte main-update stack at
+both existing boundaries (`MCM_STACK=1`). Stack bytes are observations, not
+restored checkpoint state. Entry locals may be stale. The decoder checks timing
+metadata against the raw stack and preserves the ten contact point vectors.
+The checkpoint also includes the separate physics transform at bike+8ec → +50,
+which is outside the bike/rider visual graphs: 42 blocks, 25 loaded transforms.
+
+The live contact initializer shares those transforms with engine/suspension
+preparation and uses the verified original dunes terrain. On the first neutral
+controlled frame, the two contact depths and six tangent components match the
+original's surviving bike stores bit for bit on ARM and x64 Node, including
+negative zero. This checks eight stores on one frame, not the complete contact
+stage or a retained trajectory. Nested contact normal scratch is not captured;
+any terrain fallback that consumes its unknown seed throws rather than using
+invented zeroes.
+
+The new 1,600-record fixture is a **failing replay**, retained as evidence.
+Both passes enter crash state by frame 105. Rider words first differ at frame
+107 before update (a0–b4 and e8–f0); velocity/angular velocity first differ at
+frame 111 before update, and CRT random state first differs after frame 230.
+690 caller-stack word positions differ across the passes. These observations
+do not establish which missing dependency causes the divergence. The ordinary
+live engine comparator cannot validate the crash branch. The replay comparator
+now reports random-state differences alongside memory/motion differences rather
+than throwing away the comparison at the first different random state.
+`mcm-contact-stack-validation.json` records the full results and input hashes.
+
+Next: isolate crash-stage mutable dependencies and capture the missing original
+stage inputs/outputs, then extend retained full-bike comparisons. This milestone
+does not change playable preview behavior or establish full physics parity.

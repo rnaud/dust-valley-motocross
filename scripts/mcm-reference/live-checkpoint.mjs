@@ -56,7 +56,7 @@ export function loadLiveRider(checkpoint){
 
 // Shared object/scene layout used by original animation callbacks. Cache state
 // and graph identity are loaded as captured; no transform is recomputed here.
-export function loadLiveVisuals(checkpoint){
+export function loadLiveVisuals(checkpoint,{extraRoots=[]}={}){
  const memory=checkpointMemory(checkpoint),nodes=new Map();
  const loadNode=address=>{
   if(!address)return null;
@@ -81,6 +81,7 @@ export function loadLiveVisuals(checkpoint){
   return {address,bodyNode,components};
  };
  const bike=loadObject(checkpoint.bikeAddress,0x4d9a94),rider=loadObject(memory.u32(checkpoint.bikeAddress+0xc8c),0x4d7b14);
+ for(const address of extraRoots)loadNode(address);
  for(const node of nodes.values()){
   const ancestors=new Set();for(let n=node;n;n=n.parent){if(ancestors.has(n))throw Error('Cyclic transform parent chain');ancestors.add(n);}
  }
