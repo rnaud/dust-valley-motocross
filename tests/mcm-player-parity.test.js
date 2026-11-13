@@ -1455,3 +1455,11 @@ test('reset calls execute the original grounded rider body and blend tail',async
  for(const gate of ['called=0:', 'called=1:gated=true:', 'called=1:gated=false:', ':pose=7:next=8:weightOne=true:', ':pose=7:next=8:weightOne=false:', ':blendZero=true:', ':blendZero=false:', ':rear=0', ':rear=1'])assert.ok(Object.keys(corpus.source.riderOutcomes).some(k=>k.includes(gate)),gate);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetRider(c),outputBits,`reset/rider fixture ${i}`);
 });
+
+test('reset rider state refreshes position, angular motion, history and live collision grids',async()=>{
+ const {evaluateResetCollisionSync}=await import('../scripts/mcm-reference/reset-collision-sync-case.mjs');
+ const corpus=fixture('reset-collision-sync-wine11.json.br');
+ for(const gate of ['state=0:', 'state=1:', ':worldAngularNonzero=true:', ':worldAngularNonzero=false:', ':parented=true:', ':parented=false:', ':bodyWheelAlias=true:', ':bodyWheelAlias=false:', ':rear=0:', ':rear=1:'])assert.ok(Object.keys(corpus.source.postOutcomes).some(k=>k.includes(gate)),gate);
+ for(const gate of ['present=true:', 'present=false:', ':enabled=true:', ':enabled=false:', ':proxyBodyAlias=true:', ':proxyBodyAlias=false:', ':proxyParented=true:', ':proxyParented=false:', ':active=0:', ':otherCleared=true'])assert.ok(Object.keys(corpus.source.syncOutcomes).some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetCollisionSync(c),outputBits,`reset/collision sync fixture ${i}`);
+});
