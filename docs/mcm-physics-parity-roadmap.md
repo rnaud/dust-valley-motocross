@@ -3047,3 +3047,30 @@ Next reset connections remain the rider-update body, common tail, collision
 dispatch and scheduler. Shared engine/reset entry, persistent frames, dynamic
 collisions, whole acceleration/release trajectories and playable integration
 remain unproven.
+
+### Reset path connected through the complete rider-update body
+
+The continuous reset comparison now executes `0x4aecb0` when selected and returns
+to the common `0x4ac6cd` tail. All 1,855 captured words match in 16,384 original
+executions. The rider-entry observation preserves and resumes the original
+prologue; it no longer exits before the rider body.
+
+The reached paths include the signed bike+bfc early-return gate, grounded
+height-based pose selection (full and fractional weight), low-speed pose
+selection, secondary weight, and steering blend/envelope update. Steering
+limits vary independently of call/gate selection, including zero, negative,
+below-pi/4 and at/above-pi/4 values. No rider state is reseeded after reset.
+Pose integer words, float weights, blend and the crash effect are checked in
+the full bike/controller/physics snapshot.
+
+Reset naturally establishes field4bc=0 and flag820=0 here. The shared rider
+implementation therefore skips airborne input/trick/orientation callbacks;
+the adapter checks those reset invariants rather than inventing callbacks.
+The complete original function executes without branch patches or force stubs.
+Ordinary airborne/trick coverage remains separate from this reset connection.
+
+Report: `mcm-reset-rider-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-rider-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Remaining reset connections: common post-state tail, collision dispatch and
+scheduler. Shared engine/reset entry, persistent frame loops, dynamic collisions,
+whole acceleration/release trajectories and playable integration remain unproven.
