@@ -1140,3 +1140,8 @@ test('main reset selection with real terrain and course helpers matches original
  const {evaluateResetSelectionConnected}=await import('../scripts/mcm-reference/reset-selection-connected-case.mjs');
  for(const {input:c,outputBits} of fixture('reset-selection-connected-wine11.json').fixtures)assert.deepEqual(evaluateResetSelectionConnected(c),outputBits);
 });
+
+test('continuous main reset branch matches original complete reset, aliased heights and post-reset controls',async()=>{
+ const {evaluateResetSubstep}=await import('../scripts/mcm-reference/reset-substep-case.mjs');
+ for(const {input:c,outputBits} of fixture('reset-substep-wine11.json').fixtures)assert.deepEqual(evaluateResetSubstep(c),outputBits);
+});

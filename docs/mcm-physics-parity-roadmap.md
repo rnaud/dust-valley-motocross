@@ -1800,3 +1800,34 @@ Reproduce with
 `node scripts/mcm-reference/compare-reset-selection-connected-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
 The subsequent call into the complete bike reset, main-loop force integration,
 and whole-bike acceleration/release trajectories remain pending.
+
+### Continuous main-loop alternate reset branch (2026-11-12)
+
+Connected `0x4a5eb4..0x4a64dc`: mode-dependent pose selection with all real
+terrain/course/avoidance helpers, the complete `0x49f8f0` reset, and post-reset
+control/cooldown writes. Unlike the earlier standalone reset harness, this path
+passes bike `+0x590/+0x594` directly as the contact-height output pointers.
+The recovered adapter preserves that aliasing in final bike state.
+
+The main loop clears stack controls at `+0x1c/+0x30/+0x2c/+0x8c` and bike flag
+`+0x88c`. It sets cooldown `+0x888` to 3 and integer flag `+0x8ac` to 1 unless
+the optional object at settings `+0x608` refers to this bike at `+0x80`. Absent
+and other-bike observers take the cooldown path; a self observer preserves the
+existing cooldown/flag values.
+
+All 1,566 output words match across 16,384 continuous original-execution cases
+with zero differences. Outputs retain full bike/components/engine/effect,
+RNG count, transform matrices/caches, contact arguments, child records, collision
+matrix and grid links, selected pose, cleared controls, neighboring bikes and
+target nodes. Cases combine nonzero reset reasons, modes and flags, observer
+variants, targets, nearby bikes, multiple terrain scales, optional engine/effect
+and collision objects, and transform aliasing/parent graphs.
+
+Report: `mcm-reset-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+The original main branch calls its real reset routine and returns to the main
+loop before the exit boundary at `0x4a64dc`. Only that exit, CRT rand and initial
+wheel-query normal scratch are supplied; the pinned executable and loaded Wine
+11 D3DRM hashes are checked. Inputs use finite synthetic state and valid
+level-two terrain. Zero-reset ordinary-path integration, shared force updates,
+full main-loop assembly, and acceleration/release trajectory parity remain open.
