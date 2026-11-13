@@ -784,3 +784,33 @@ node scripts/mcm-reference/compare-live-normal-rider.mjs checkpoint.json animati
 capture identity, pointer tables and non-overlapping blocks. The native oracle
 accepts the pinned executable, input stream and output path. Capture and oracle
 source hashes and all raw artifact hashes are retained in the validation report.
+
+## Live engine entry through contact preparation
+
+`loadLiveSubstepStart` initializes the engine/filter state and suspension reset
+state from the consistent checkpoint. `loadLiveSuspension` maps bike `+0x8e4`
+and `+0x8e8` to their captured transform nodes, component `+0x44` flags and the
+rear component's saved local matrix at `+4`. Bike `+0xcc4` supplies the reference
+position node. The initializer accepts an already loaded visual graph so rider
+and contact stages can share transform identity rather than creating copies.
+Unsupported analog, AI, scripted and crash-state controllers are rejected.
+
+The isolated original slice `0x4a5bd7..0x4a5ea5` runs engine entry followed by
+front/rear transform preparation with explicit released throttle/brake inputs,
+`dt=float32(.02)` and inverse interval 50. A random draw fails this specific
+idle-state oracle; none occurs. Input device traversal itself is outside this
+comparison. The oracle shares the captured-memory mapping with the normal-rider
+oracle; a recheck of that existing oracle produced identical output bytes.
+
+The recovered `beginMcmSubstep` matches all 110,036 DWORDs in the complete native
+input block set, including all 16 changed words. ARM64 and x64 reports agree.
+[Live substep report](mcm-live-substep-start-validation.json) records source and
+artifact hashes. The compact regression fixture retains the 41 local checkpoint
+blocks and their original output; the unchanged animation-resource sidecar stays
+outside the repository. Tests also verify shared graph identity and reject
+missing suspension memory, unsupported controllers and damaged native output.
+
+This validates one initialized engine/contact-preparation slice. Terrain contact
+queries, forces, chassis integration and full-frame progression have not been
+included in this comparison. Raw native input/output and sources are archived
+under `player-validation/substep-start-2026-11-13/`.
