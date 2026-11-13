@@ -757,3 +757,15 @@ test('bike input gates and aggregation match original results and ordered device
  }
  assert.equal(outcomes.size,13);assert.equal(devices.size,6);assert.ok(negativeZero>0);
 });
+
+test('nearby bike selection and iterator match original execution',async()=>{
+ const {nextMcmBike,selectMcmNearbyBike}=await import('../src/physics/mcm/nearby-bike.js');
+ const selectedIds=new Set();
+ for(const {input:c,outputBits} of fixture('nearby-bike-wine11.json').fixtures){
+  const world={...c,player:c.bikes[0],players:c.players.map(i=>c.bikes[i]??null),others:c.othersPresent?c.others.map(i=>c.bikes[i]??null):null};
+  const next=nextMcmBike(world,c.cursor),selected=selectMcmNearbyBike(world,c.bikes[0]);
+  assert.deepEqual([c.bikes.indexOf(next.bike)+1,next.cursor,c.bikes.indexOf(selected)+1],outputBits);
+  selectedIds.add(outputBits[2]);
+ }
+ assert.equal(selectedIds.size,8);
+});
