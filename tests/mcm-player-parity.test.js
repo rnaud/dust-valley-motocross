@@ -864,3 +864,18 @@ test('connected substep remainder and angle refresh match original execution',as
  }
  assert.equal(outcomes.size,5);
 });
+
+test('proxy world-matrix synchronization matches original transforms and caches',async()=>{
+ const {synchronizeMcmProxyTransform}=await import('../src/physics/mcm/proxy-transform.js');
+ const {floatBits}=await import('../src/physics/mcm/math.js');
+ const layouts=new Set();
+ for(const {input:c,outputBits} of fixture('proxy-transform-wine11.json').fixtures){
+  const nodes=c.nodes.map(n=>({...n,local:[...n.local],world:[...n.world]}));
+  if(c.targetParent>=0){nodes[0].parent=nodes[c.targetParent];nodes[c.targetParent].firstChild=nodes[0];}
+  if(c.bodyParent){nodes[1].parent=nodes[2];nodes[1].nextSibling=nodes[2].firstChild;nodes[2].firstChild=nodes[1];}
+  const copied=synchronizeMcmProxyTransform(nodes[1],nodes[0]);
+  assert.deepEqual([...nodes.flatMap(n=>[...[...n.local,...n.world].map(floatBits),n.cacheValid]),...copied.map(floatBits)],outputBits);
+  layouts.add(`${c.targetParent}:${c.bodyParent}`);
+ }
+ assert.equal(layouts.size,6);
+});
