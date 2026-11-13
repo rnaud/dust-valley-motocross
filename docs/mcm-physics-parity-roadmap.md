@@ -2431,3 +2431,36 @@ Report: `mcm-motion-transform-substep-validation.json`. Reproduce with
 Next are the state-dependent crash controls and remaining main-loop updates
 from `0x4ab7fd`. Complete-loop wiring and whole-bike acceleration/throttle-release
 trajectory parity remain unfinished.
+
+### Connected controller handoff and crash orientation (2026-11-13)
+
+Extended continuous execution from `0x4ab7fd` through the controller handoff
+and nonzero-state orientation branch. Normal state exits at `0x4abb30`;
+crashed state exits at `0x4ac6cd`, before the separately recovered collision
+tail. Controller flags gate velocity/angular transfer. Transition kind 2 can
+copy another bike's velocity (including self-reference and absent-pointer
+fallback); kinds 4/7 add the bounded upward boost and copy angular velocity;
+the remaining kinds scale angular velocity by 0.75.
+
+After handoff, the original chassis-probe gate controls crash orientation.
+Both-wheel execution normalizes the combined contact normals, resolves the
+updated body world transform, converts the axis into local coordinates, and
+rotates the local matrix around the force-reference pivot. Front-only
+execution uses the negative component-rate angle about the initialized up axis.
+Transform invalidation follows the real node graph and call order.
+
+All 40,000 cases match across 568 output words with zero bit differences.
+New captures include controller linear/angular velocity, the local orientation
+axis, summed normals and projected normals. Coverage requires each active
+transition family, all kind-2 pointer choices, skipped handoff and both/front
+orientation. Fifteen initial NaN-sign differences exposed mixed-sign canonical
+NaN selection in the controller boost and matrix products. Recovered x87
+addition/multiplication replaces blanket negative-NaN canonicalization in matrix
+multiplication; existing tests still pass. Explicit regression fixtures retain
+cases 1360, 4533 and 7696.
+
+Report: `mcm-controller-handoff-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-controller-handoff-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Normal-state controls from `0x4abb30`, collision/tail connection, complete-loop
+entry and whole-bike acceleration/throttle-release trajectory validation remain.
+This synthetic connected-state evidence does not establish full physics parity.
