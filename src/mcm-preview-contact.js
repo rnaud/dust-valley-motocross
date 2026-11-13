@@ -1,27 +1,41 @@
 import {calculateMcmTireForce} from './physics/mcm/tire-force.js';
-import {limitMcmContactForce} from './physics/mcm/contact-force-limit.js';
+import {accumulateMcmTireForces} from './physics/mcm/tire-accumulation-substep.js';
+import {applyMcmBrakes} from './physics/mcm/braking-substep.js';
+import {updateMcmSteeringVelocity} from './physics/mcm/steering-velocity.js';
 
 const f=Math.fround,FT=.3048,LBF=4.448221615,SLUG=14.59390294;
-// PDM local bike in the pinned live replay: +5b0=6, +5b4=float32(.15),
-// +5e8=175. Contact loads, wheel velocities and mass shares come from the
-// preview's Cannon adapter; they are not the recovered whole-bike contact state.
-export function mcmPreviewTireForces({longSpeed,sideSpeed,load,drive=0,brake=0,front=false,dt,mass}){
-  if(load<=0)return {longitudinal:0,lateral:0,slipAngle:0,usage:0};
-  const velocity=[f(sideSpeed/FT),0,f(longSpeed/FT)];
-  const speed=f(Math.hypot(...velocity));
-  const direction=speed>0?velocity.map(v=>f(v/speed)):[0,0,0];
-  const tire=speed>0?calculateMcmTireForce({axis:[0,0,1],direction,load:f(load/LBF),
-    coefficient5b0:6,coefficient5b4:f(.15),rear:!front}):{force:[0,0,0],magnitude:0};
-  const limited=limitMcmContactForce({mass:f(mass/SLUG),dt:f(dt),remaining:speed,
-    requested:speed,magnitude:tire.magnitude,force:tire.force});
-  // Consume the friction budget before braking, as the recovered contact path
-  // does. Each preview wheel has an allocated mass share; the full original
-  // solver instead shares one budget across both contacts and their torques.
-  const brakeMagnitude=f(brake?175:0);
-  const braking=limitMcmContactForce({mass:f(mass/SLUG),dt:f(dt),remaining:limited.remaining,
-    requested:f(Math.abs(velocity[2])),magnitude:brakeMagnitude,
-    force:[0,0,f(-Math.sign(longSpeed)*brakeMagnitude)]});
-  return {longitudinal:drive+(limited.force[2]+braking.force[2])*LBF,
-    lateral:limited.force[0]*LBF,slipAngle:Math.atan2(sideSpeed,Math.abs(longSpeed)),
-    usage:tire.magnitude>0?limited.magnitude/tire.magnitude:0};
+const feet=v=>v.map(x=>f(x/FT));
+// PDM local-bike coefficients: +5b0=6, +5b4=float32(.15), +5e8=175.
+// The preview supplies world-space contact velocities, axes, arms and loads.
+// Full original contact preparation and dynamic rear traction remain upstream.
+export function mcmPreviewContactForces({front,rear,velocity,mass,dt,brake=false}){
+  const contact=(wheel,isRear)=>{
+    if(!wheel)return {active:false,axis:[0,0,1],arm:[0,0,0],motion:{speed:0,forwardMagnitude:0},tire:{force:[0,0,0],magnitude:0},forward:0};
+    const v=feet(wheel.velocity),speed=f(Math.hypot(...v));
+    const axis=wheel.axis.map(f),forward=f(v.reduce((sum,x,i)=>sum+x*axis[i],0));
+    const direction=speed>0?v.map(x=>f(x/speed)):[0,0,0];
+    const tire=speed>0?calculateMcmTireForce({axis,direction,load:f(wheel.load/LBF),
+      coefficient5b0:6,coefficient5b4:f(.15),rear:isRear}):{force:[0,0,0],magnitude:0};
+    return {active:true,axis,arm:feet(wheel.arm),motion:{speed,forwardMagnitude:f(Math.abs(forward))},tire,forward};
+  };
+  const a=contact(front,false),b=contact(rear,true);
+  const c={anyContact:a.active||b.active,bothContact:a.active&&b.active,frontContact:a.active,rearContact:b.active,
+    frontMotion:a.motion,rearMotion:b.motion,frontTire:a.tire,traction:{tire:b.tire,scratch:[1]},
+    frontLoad:{arm:a.arm},rearLoad:{arm:b.arm},tangent:a.axis,rearTangent:b.axis,
+    mass:f(mass/SLUG),dt:f(dt),speedCopy:f(Math.hypot(...feet(velocity))),force:[0,0,0],totalTorque:[0,0,0],
+    brakeInput:brake?1:0,brakeCoefficient:175,state844:0,steeringFlag:+((b.active?b.forward:a.forward)>=0),
+    brakes:{front:{},rear:{}}};
+  if(c.anyContact){accumulateMcmTireForces(c);applyMcmBrakes(c);}
+  return {force:c.force.map(x=>x*LBF),torque:c.totalTorque.map(x=>x*LBF*FT),remainingSpeed:c.speedCopy*FT};
+}
+
+// The original steering correction precedes tire accumulation. The preview
+// maps its bar angle and contact-plane axes onto that helper; applying the
+// resulting turn to Cannon's quaternion remains an orientation adapter.
+export function mcmPreviewSteering({velocity,axis,referenceAxis,angle,forwardSpeed,dt}){
+  const v=feet(velocity);
+  const result=updateMcmSteeringVelocity({velocity:v,temporary:[0,0,0],
+    a:referenceAxis.map(f),direction:axis.map(f),angle:f(angle),field5d8:f(4.998459815979004),
+    field560:f(forwardSpeed/FT),field564:f(Math.hypot(...v)),dt:f(dt),field620:+(forwardSpeed>=0)});
+  return {velocity:result.velocity.map(x=>x*FT),turnAngle:result.turnAngle};
 }

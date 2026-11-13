@@ -4446,3 +4446,33 @@ checks pass for preview acceleration, steering, throttle release, pause/photo,
 reset, classic-mode switching and mobile layout. Focused tests cover original
 pure rolling/lateral force coefficients, forward/reverse low-speed stopping,
 zero-contact force, and braking versus coasting on hardpack and deformable sand.
+
+### Playable preview: shared contact budget and steering correction
+
+The preview now feeds both wheel contacts into the recovered tire accumulation
+(`0x4a8634..0x4a875b`) and braking (`0x4a875b..0x4a8be0`) paths. Friction and
+front-then-rear braking consume one bike-wide velocity-change budget; the
+original accumulation helper supplies the combined force and moment. Those
+outputs are applied once to the preview chassis. The preceding per-wheel budget
+adapter is removed. Drive and deformable-sand resistance remain separate inputs.
+
+The recovered steering velocity helper (`0x4b1320`) now runs before contact
+accumulation when both wheels support the bike. Its support-depth constant is
+PDM's bike +0x5d8, 4.998459815979004 feet, from the checked-in player snapshot.
+The preview maps its bar angle and contact-plane axes into this helper and
+applies the returned turn to its Cannon quaternion. The resulting turn rate is
+included in balance feedback and cleared on reset and unsupported contact states.
+
+Remaining adaptations include the bar-angle controller, contact geometry/load
+filtering, rear traction scale (currently one), quaternion application, rider
+balance and chassis integration. This is not the full recovered frame runner
+and does not establish normal live riding parity. The locked-desktop live-capture
+prerequisite is separate from this playable integration work.
+
+Validation: all 308 repository tests pass, including shared-budget stopping,
+combined contact moment, both steering directions and reset cleanup. Focused
+checks also cover braking on an unloaded but present contact. Production build
+and production-served browser checks pass for acceleration, steering, release,
+pause/photo/reset, classic fallback and mobile layout. These are integration
+checks alongside the existing original-execution helper fixtures, not a new
+whole-bike original-versus-preview comparison.
