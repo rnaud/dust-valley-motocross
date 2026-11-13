@@ -3,14 +3,17 @@ import {updateMcmResetContactResponse} from '../../src/physics/mcm/reset-contact
 import {floatBits,bitsFloat} from '../../src/physics/mcm/math.js';
 
 export function evaluateResetContactResponse(input,step=updateMcmResetContactResponse){
- let phase;
+ let phase,bike;
  const words=evaluatePreparedResetSubstep(input,c=>{
+  bike=c.bike;
+  for(const field of [0x8c4,0xc6c])bike[`field${field.toString(16)}`]=input.words[field/4];
   phase=structuredClone(input.contactPhase);
   phase.frontMountNode=c.bounds.components[phase.frontMountIndex];
   phase.chassisLocal=[0x630,0x63c,0x648].map(offset=>input.words.slice(offset/4,offset/4+3).map(bitsFloat));
   c.contactPhase=phase;
   return step(c);
  });
+ for(const field of [0x8c4,0xc6c])words[field/4]=bike[`field${field.toString(16)}`]>>>0;
  const p=phase;
  return [...words,p.frontContact,p.rearContact,p.bothContact,p.anyContact,
   floatBits(p.speedCopy),...p.force.map(floatBits),floatBits(p.rearAlignment),

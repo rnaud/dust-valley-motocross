@@ -1503,3 +1503,10 @@ test('reset loop-back carries live transforms through the next ordinary wheel-co
  assert.equal(Object.entries(corpus.source.loopOutcomes).filter(([k])=>k.startsWith('looped=1:')).reduce((n,[,v])=>n+v,0),8964);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetLoopContact(c),outputBits,`reset/loop-contact fixture ${i}`);
 });
+
+test('persistent reset loop state reaches second force preparation and chassis contact response',async()=>{
+ const {evaluateResetLoopResponse}=await import('../scripts/mcm-reference/reset-loop-response-case.mjs');
+ const corpus=fixture('reset-loop-response-wine11.json.br');
+ for(const gate of ['looped=1:front=0:rear=0:','looped=1:front=1:rear=0:','looped=1:front=0:rear=1:','looped=1:front=1:rear=1:',':frontProbe=0:',':frontProbe=1:',':frontProbe=2:',':bodyProbe=0:',':bodyProbe=1:'])assert.ok(Object.keys(corpus.source.nextResponseOutcomes).some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetLoopResponse(c),outputBits,`reset/loop-response fixture ${i}`);
+});
