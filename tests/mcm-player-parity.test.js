@@ -1375,3 +1375,10 @@ test('connected ordinary entry matches suspension resets and balance-reference r
  for(const gate of ['called=1:queries=9,6,7',':animation=255:nearby=1',':animation=1:'])assert.ok(Object.keys(corpus.source.riderOutcomes).some(k=>k.includes(gate)),gate);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){const actual=evaluatePreparedSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
+
+test('connected engine entry matches throttle, gears and their downstream physics effects',async()=>{
+ const {evaluateEngineEntrySubstep}=await import('../scripts/mcm-reference/engine-entry-substep-case.mjs');
+ const corpus=fixture('engine-entry-substep-wine11.json.br');
+ for(const gate of [':shift=-1:',':shift=1:',':polls=5,4:','analog=true','analog=false',':stopped=true',':stopped=false'])assert.ok(Object.keys(corpus.source.engineOutcomes).some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){const actual=evaluateEngineEntrySubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});

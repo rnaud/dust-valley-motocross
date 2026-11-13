@@ -6,6 +6,14 @@ export function updateMcmDigitalThrottle({state, released, shiftTimer, pressed, 
   if (![level, timer, step].every(Number.isFinite) || level < 0 || level > 1 || timer < 0 || step < 0 || !Number.isInteger(maxRpm) || maxRpm < 0 || maxRpm > 0x7fffffff) {
     throw new RangeError('Unsupported original throttle state');
   }
+  return updateMcmDigitalThrottleUnchecked({state:level,released,shiftTimer:timer,pressed,aiDemand,dt:step,maxRpm});
+}
+
+// Recovered callers may carry finite out-of-range engine state from original
+// memory. Keep that behavior separate from the checked public entry above.
+export function updateMcmDigitalThrottleUnchecked({state,released,shiftTimer,pressed,aiDemand=0,dt,maxRpm}){
+  let level=Math.fround(state);
+  const timer=Math.fround(shiftTimer),step=Math.fround(dt);
   let releaseFlag = released;
   if ((pressed || aiDemand > 0) && timer === 0) {
     releaseFlag = 0;
