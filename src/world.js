@@ -1,4 +1,5 @@
 import * as C from 'cannon-es';
+import {installMcmPreviewLinear} from './mcm-preview-motion.js';
 import {createMcmPreviewAir,stepMcmPreviewAir} from './mcm-preview-air.js';
 import {SandSurface} from './sand-physics.js';
 import {createMcmPreviewEngine,stepMcmPreviewEngine} from './mcm-preview.js';
@@ -93,6 +94,7 @@ export function createState(options={}) {
   vehicle.recoveredPreview=options.physicsMode==='mcm-preview';
   vehicle.addToWorld(world);
   const s={x:p.x,z:p.z,y:chassis.position.y-.5,yaw:0,speed:0,vy:0,pitch:0,roll:0,air:false,airtime:0,boost:100,steer:0,throttle:0,contacts:0,crashed:false,crashTime:0,slip:0,compression:[0,0],gear:1,rpm:1200,quaternion:{x:0,y:0,z:0,w:1},wheelTransforms:[],landingRecovery:0,wheelContacts:[],balanceRoll:0,tireLoads:[0,0],wheelOmega:[0,0],slipRatio:[0,0],engine:options.physicsMode==='mcm-preview'?createMcmPreviewEngine():createDrivetrain(),physicsMode:options.physicsMode==='mcm-preview'?'mcm-preview':'classic',requestedLean:0};
+  if(s.physicsMode==='mcm-preview')installMcmPreviewLinear(chassis,()=>!s.crashed);
   s.recoveredAir=s.physicsMode==='mcm-preview'?createMcmPreviewAir():null;
   s.recoveredAcceleration=[0,0,0];
   s.recoveredBalance=s.physicsMode==='mcm-preview'?createMcmPreviewBalance():null;
