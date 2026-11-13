@@ -3563,3 +3563,32 @@ The two/four-record blend routines `0x430b70`/`0x431250`,
 connection to the frame-end rider state machine, complete frame entry/return,
 dynamic bike/rider collisions and whole-bike acceleration/release trajectories
 still require implementation and original-execution validation.
+
+### Normal-pose blending (`0x430b70`, `0x431250`, `0x431100`)
+
+`animation-pose-blend.js` recovers both two-record and four-record pose blending,
+including original frame selection, adjacent-frame interpolation, pair blending,
+retained animation pointers, bounds and live child callbacks. Neither routine
+normalizes the selected source assets directly: callbacks consume temporary
+interpolated children. Bounds come from the last record's following frame.
+
+The two-record routine uses the first record's count to select frames in both
+records. The four-record routine does this independently for each pair, but the
+second pair's interpolation fraction subtracts the first pair's selected index.
+It also rounds the first pair's blend products to binary32 before adding them,
+whereas the other pair and final blend use the `0x431100` arithmetic with products
+retained on the x87 stack. These details matter even for finite inputs.
+
+Both original routines now match 40,000 cases each (80,000 total), comparing all
+395/683 observed words respectively. The observations include three transform
+nodes/cache flags, selected frame/record, bounds and every source child axis and
+position. Both bike and rider-proxy vtables are exercised with frame counts 1–8,
+unequal pair lengths, empty/partial/full child lists, one/two children, fraction
+endpoints, and blend weights below zero or above one. The source/input/output
+hashes and coverage are in `mcm-animation-pose-blend-validation.json` and
+`mcm-animation-four-pose-blend-validation.json`.
+
+These are synthetic valid asset corpora. The complete frame-end rider state
+machine, connection to retained post-loop state, actual frame entry/return,
+longer histories, dynamic bike/rider collisions and complete acceleration/release
+trajectories remain open; this does not establish full physics parity.
