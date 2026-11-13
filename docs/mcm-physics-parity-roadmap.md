@@ -1327,3 +1327,32 @@ rider-class dispatch is not included here. A triggered second-bike event,
 tag reset internals, persistent event adaptation across complete steps and
 whole-bike acceleration/release trajectories remain outstanding. This does
 not establish complete physics parity.
+
+### Connected common substep tail (2026-11-12)
+
+Connected `0x4ac6cd..0x4ac94b` as one original-code sequence: local position
+copy, low-speed yaw-rate suppression, world angular refresh, delayed award,
+suspension/dt output copy, two-bike grid/contact/callback/event processing,
+remaining/carry scheduling and orientation extraction. The adapter passes
+current suspension heights and the delayed-award flag into the collision event;
+stale heights otherwise selected the wrong crash reason and rider animation.
+
+32,000 cases match 496 output words each with zero differences. Carry values
+vary independently of remaining-count values and include both sides of the
+float32 .0001 threshold. The suite checks that a collision crash clears carry
+and ends the substep sequence, while a non-crash with sufficient carry schedules
+one extra update and changes dt/reciprocal dt. Both outcomes have retained
+fixtures. Initial state 0/1/2, delayed award/suppression/timer branches,
+suspension-height event branches, both ordered bike responses and final
+orientation are covered in the connected run.
+
+Report: `mcm-substep-tail-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-substep-tail-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+The original section executes continuously, including real CRT angle helpers,
+scoring arithmetic, collision/event routines and grid mutations. Its fixture
+scope retains the prior two-bike harness limitations: root bike transforms,
+no bounds children or active audio/visual/UI observers, supplied input/CRT
+random draws, and a nontriggering second-bike event timing state. The loop
+backedge to earlier force/contact work, persistent full-step state adaptation,
+remaining update-end work and full acceleration/release trajectories are still
+required before claiming complete parity.

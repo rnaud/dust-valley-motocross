@@ -1050,3 +1050,8 @@ test('two-bike collision substep matches original ordered responses and shared g
  const {evaluateBikePairSubstep}=await import('../scripts/mcm-reference/bike-pair-substep-case.mjs');
  for(const {input:c,outputBits} of fixture('bike-pair-substep-wine11.json').fixtures)assert.deepEqual(evaluateBikePairSubstep(c),outputBits);
 });
+
+test('connected substep tail matches original post-event, collision, scheduling and orientation state',async()=>{
+ const {evaluateSubstepTail}=await import('../scripts/mcm-reference/substep-tail-case.mjs');
+ for(const {input:c,outputBits} of fixture('substep-tail-wine11.json').fixtures)assert.deepEqual(evaluateSubstepTail(c),outputBits);
+});
