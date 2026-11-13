@@ -1250,3 +1250,8 @@ test('connected paired-contact forces match original projection, sequential pitc
  const {evaluatePairedContactForceSubstep}=await import('../scripts/mcm-reference/paired-contact-force-substep-case.mjs');
  for(const [i,{input:c,outputBits}] of fixture('paired-contact-force-substep-wine11.json').fixtures.entries()){const actual=evaluatePairedContactForceSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
+
+test('connected contact correction matches original angular acceleration, masks and transform invalidation',async()=>{
+ const {evaluateContactCorrectionSubstep}=await import('../scripts/mcm-reference/contact-correction-substep-case.mjs');
+ for(const [i,{input:c,outputBits}] of fixture('contact-correction-substep-wine11.json').fixtures.entries()){const actual=evaluateContactCorrectionSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});

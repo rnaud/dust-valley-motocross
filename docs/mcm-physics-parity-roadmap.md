@@ -2319,3 +2319,29 @@ Report: `mcm-paired-contact-force-substep-validation.json`. Reproduce with
 Contact correction and integration, the alternate crash branch, full-loop
 wiring, and whole-bike acceleration / throttle-release trajectory parity remain
 unfinished.
+
+### Connected contact correction and angular acceleration (2026-11-12)
+
+Extended ordinary execution through `0x4aaded`, connecting the existing contact
+correction helper after both-wheel force assembly. The alternate crashed
+chassis-contact branch still exits at `0x4ab426`. The connected stage selects
+normal or crashed inverse inertia, produces local angular acceleration, updates
+the contact mask, and applies the original front/rear or crash pivot rotation.
+It invalidates the body transform and descendants only when the original calls
+the rotation routine; even zero-angle calls retain that invalidation behavior.
+Unordered comparison branches retain the original x87 conditions.
+
+All 40,000 cases match across 532 captured output words with zero bit
+differences, including earlier state, node local/world matrices and cache flags.
+Independent controller combinations and targeted small-roll/low-speed inputs
+exercise both crash-angle choices. Explicit coverage requirements also ensure
+front-only and rear-only pivot rotations execute. The original pivot rotation
+callee runs directly. The corpus covers finite synthetic inputs, generated
+exceptional arithmetic, graph aliases, skipped state, and float thresholds;
+it does not establish arbitrary NaN payload behavior or whole-bike parity.
+
+Report: `mcm-contact-correction-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-contact-correction-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Next: opposing-torque conversion and angular integration from `0x4aaded`.
+Subsequent linear integration, the alternate crash branch, full-loop wiring, and
+whole-bike acceleration / throttle-release trajectory parity remain unfinished.
