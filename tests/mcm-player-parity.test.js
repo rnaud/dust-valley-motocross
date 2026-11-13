@@ -1534,3 +1534,14 @@ test('persistent second substep matches airborne control, rotation and grounded 
   assert.deepEqual(actual,outputBits,`reset/loop-controls fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
  }
 });
+
+
+test('persistent second substep matches event decision, rider initialization and join',async()=>{
+ const {evaluateResetLoopEvent}=await import('../scripts/mcm-reference/reset-loop-event-case.mjs');
+ const corpus=fixture('reset-loop-event-wine11.json.br');
+ for(const gate of ['looped=0:','looped=1:exit=1:triggered=0:','looped=1:exit=2:triggered=0:','looped=1:exit=2:triggered=1:',':kind=1:',':kind=2:',':kind=3:',':kind=4:',':kind=5:',':randomCalls=2:',':randomCalls=3:',':remaining=2'])assert.ok(Object.keys(corpus.source.nextEventOutcomes).some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){
+  const actual=evaluateResetLoopEvent(c);
+  assert.deepEqual(actual,outputBits,`reset/loop-event fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
+ }
+});

@@ -3330,3 +3330,30 @@ observed only on the airborne path that initializes them. Event/rider/post-state
 completion, repeated full substeps and frames, dynamic bike/rider collisions,
 whole-bike acceleration/release comparisons and playable integration remain
 outstanding. Earlier synthetic-state and wheel-query scratch limitations apply.
+
+### Persistent second substep through event setup and rider-call join
+
+The second iteration now continues through the real event decision and wrapper,
+then reaches either rider entry `0x4aecb0` or the common `0x4ac6cd` tail. All
+3,321 captured words match across 16,400 original executions. Of the 8,964
+continuing second passes, 2,360 trigger an event and 3,738 reach rider entry;
+2,866 skip the rider with two iterations still scheduled. Event kinds 1–5 and
+both two- and three-random-call rider selections are required outcomes.
+
+The event decision can now run against live bike/controller state without
+replaying reset or alignment. The wrapper commits crash state, resource choice,
+saved heading, effect envelope, rider velocities and selected records. The join
+commits remaining-step and delay changes and captures the actual rider-call
+arguments. First-pass observations are saved before loop-back and restored only
+for serialization after execution stops; live state is never restored between
+substeps. Input/random counts in the new suffix are deltas from that boundary.
+Existing normal-control scratch is preserved when preparing event input.
+
+Report: `mcm-reset-loop-event-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-loop-event-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+This milestone stops before the second rider body. Continuing cases enter normal
+state 0, with no event random calls consumed in the first pass; external random
+values remain supplied at their call boundary. Full second-pass rider/post-state
+execution, collision synchronization/dispatch, scheduler completion, repeated
+frames, whole-bike acceleration/release comparisons and playable integration
+remain outstanding. Earlier synthetic-state and wheel-query limitations apply.
