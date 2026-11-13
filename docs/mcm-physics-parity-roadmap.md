@@ -3177,3 +3177,27 @@ separate continuous comparisons. A unified persistent state representation,
 actual loop-back/frame execution, dynamic bike/rider collision callbacks,
 end-to-end acceleration/release trajectories, and playable integration remain
 outstanding. This corpus does not establish full simulation parity.
+
+### Actual reset loop-back into the next engine update
+
+The native harness now executes the original loop decision at `0x4ac952` and
+branch at `0x4ac954`. Of 16,400 initial scenarios, 8,964 continue through the next
+engine update to `0x4a5e27`; 7,436 exit at `0x4ac95a`. All 1,971 captured words
+match. The recovered continuation uses the same live bike, rider, engine,
+filters and scheduled timestep. It does not reconstruct state from fixtures.
+
+The first completed substep is observed before the original branch. The next
+33 engine outputs are captured separately, covering the next shift timer,
+throttle/gears, brake, mass, velocity, previous speed and acceleration filter.
+Both carried and ordinary timesteps, normal/crashed state, low-speed stop and
+ordered device polling are required outcomes. Native first-substep snapshots
+are restored only after execution terminates, for output serialization; no
+physics input is replaced between the completed substep and next engine entry.
+The original branch and displaced stack cleanup retain their original behavior.
+
+Report: `mcm-reset-loop-entry-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-loop-entry-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+This proves the engine-state handoff across an actual loop-back. The second
+contact/force substep, unified ordinary/reset execution, complete frame tail,
+dynamic bike/rider collisions, acceleration/release trajectories and playable
+integration remain outstanding.
