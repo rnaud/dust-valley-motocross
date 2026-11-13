@@ -1651,3 +1651,24 @@ test('animation advancement retains timing, frames and blended/mirrored transfor
   assert.deepEqual(actual,outputBits,`animation/advance fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
  }
 });
+
+for(const [name,words] of [['animation-pose-blend',395],['animation-four-pose-blend',683]]){
+ test(`${name} matches original frame selection, interpolation and graph mutations`,async()=>{
+  const {evaluateAnimationPoseBlend}=await import('../scripts/mcm-reference/animation-pose-blend-case.mjs');
+  const corpus=fixture(`${name}-wine11.json.br`),outcomes=Object.keys(corpus.source.outcomes);
+  assert.equal(corpus.source.totalDifferences,0);
+  for(const gate of ['rider=0:', 'rider=1:', ':position=0:', ':position=1:', ':mask=0:', ':blend=negative', ':blend=zero', ':blend=middle', ':blend=one', ':blend=excess'])assert.ok(outcomes.some(k=>k.includes(gate)),gate);
+  for(let n=1;n<=8;n++)assert.ok(outcomes.some(k=>k.includes(`:frames=${n}:`)),`frame count ${n}`);
+  if(words===683){
+   for(let n=1;n<=8;n++)assert.ok(outcomes.some(k=>k.includes(`:thirdFrames=${n}:`)),`third frame count ${n}`);
+   assert.ok(outcomes.some(k=>k.includes(':mask=255:')));
+   assert.ok(corpus.fixtures.some(({input:c})=>c.secondaryBlend<0));
+   assert.ok(corpus.fixtures.some(({input:c})=>c.secondaryBlend>1));
+  }
+  for(const [i,{input,outputBits}] of corpus.fixtures.entries()){
+   const actual=evaluateAnimationPoseBlend(input);
+   assert.equal(actual.length,words);
+   assert.deepEqual(actual,outputBits,`${name} fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
+  }
+ });
+}
