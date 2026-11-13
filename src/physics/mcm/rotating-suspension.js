@@ -5,7 +5,7 @@ import {rotateMcmTransform} from './transform.js';
 export function updateMcmRotatingSuspension(c) {
   const f=Math.fround;
   let travel=c.travel,displacement=[...c.displacement],matrix=[...c.matrix];
-  const limited=+(c.limit<=travel);
+  const limited=+(!(c.limit>travel));
   let angle;
   if(limited) {
     displacement=displacement.map(v=>f(v*(c.limit/travel)));
@@ -18,5 +18,5 @@ export function updateMcmRotatingSuspension(c) {
   const ratio=(c.previousTravel-travel)/(travel*dt);
   const velocity=displacement.map(v=>f(v*ratio));
   return {travel,displacement,velocity,matrix,previousTravel:travel,limited,
-    increasing:+(c.previousTravel<=travel),cacheValid,rotationApplied:Number.isFinite(angle)};
+    increasing:+(!(c.previousTravel>travel)),cacheValid,rotationApplied:Number.isFinite(angle)};
 }

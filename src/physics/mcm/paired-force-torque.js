@@ -1,4 +1,4 @@
-import {mcmAdd as add} from './x87-arithmetic.js';
+import {mcmAdd as add,mcmSubtract as sub,mcmMultiply as mul} from './x87-arithmetic.js';
 import {floatBits} from './math.js';
 import {inverseRotateMcmVector} from './world-transform.js';
 
@@ -6,7 +6,7 @@ import {inverseRotateMcmVector} from './world-transform.js';
 // The two pitch clips update the same counter in sequence, including resets.
 export function accumulateMcmPairedForceTorque(c) {
   const f=Math.fround;
-  const cross=(a,b)=>[f(a[1]*b[2]-b[1]*a[2]),f(b[0]*a[2]-b[2]*a[0]),f(b[1]*a[0]-b[0]*a[1])];
+  const cross=(a,b)=>{const r=new Float64Array(3);r[0]=f(sub(mul(a[1],b[2]),mul(b[1],a[2])));r[1]=f(sub(mul(b[0],a[2]),mul(b[2],a[0])));r[2]=f(sub(mul(b[1],a[0]),mul(b[0],a[1])));return r;};
   // Typed stores preserve the first NaN sign across V8 array transitions.
   const totalForce=new Float64Array(3);
   for(let i=0;i<3;i++)totalForce[i]=f(add(f(add(c.totalForce[i],c.force2ac[i])),c.force2b8[i]));

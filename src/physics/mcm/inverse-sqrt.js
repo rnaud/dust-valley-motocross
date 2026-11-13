@@ -1,4 +1,5 @@
 import {floatBits, bitsFloat} from './math.js';
+import {mcmMultiply as mul,mcmSubtract as sub} from './x87-arithmetic.js';
 
 // Original table initialization 0x401720 and two-refinement lookup 0x401770.
 // Return the binary64 intermediate, as the original x87 CW 0x027f path does;
@@ -23,6 +24,6 @@ export function mcmInverseSqrtLookup(value) {
   const index = (bits & 0xfe0000) >>> 17;
   const exponent = ((0x5f000000 - ((bits & 0x7f800000) >>> 1)) & 0xff800000) >>> 0;
   let estimate = bitsFloat(exponent | (seeds[index] << 15));
-  estimate = ((3 - (estimate * estimate) * value) * estimate) * .5;
-  return ((3 - (estimate * estimate) * value) * estimate) * .5;
+  estimate = mul(mul(sub(3,mul(mul(estimate,estimate),value)),estimate),.5);
+  return mul(mul(sub(3,mul(mul(estimate,estimate),value)),estimate),.5);
 }

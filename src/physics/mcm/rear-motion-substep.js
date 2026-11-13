@@ -1,5 +1,5 @@
-import {floatBits,mcmSqrt,bitsFloat} from './math.js';
-import {mcmInverseSqrt} from './inverse-sqrt.js';
+import {floatBits,mcmSqrtLookup as mcmSqrt,bitsFloat} from './math.js';
+import {mcmInverseSqrtLookup as mcmInverseSqrt} from './inverse-sqrt.js';
 import {resolveMcmWorldMatrix,inverseRotateMcmVector} from './world-transform.js';
 import {updateMcmRearSuspensionSubstep} from './rear-suspension-substep.js';
 const f=Math.fround,dot=(a,b)=>(a[1]*b[1]+a[0]*b[0])+a[2]*b[2];

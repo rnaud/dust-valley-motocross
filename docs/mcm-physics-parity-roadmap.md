@@ -3434,3 +3434,27 @@ Third-pass force preparation onward, persistent rider history, dynamic collision
 actual frame entry/completion, whole-bike acceleration/release comparisons and
 playable integration still require connected validation. Earlier synthetic-state
 and supplied wheel-query scratch limitations apply.
+
+### Complete third persistent substep
+
+The third live iteration continues through force preparation, suspension and tire
+forces, chassis response, angular/linear integration, control handoff, event setup,
+rider update, static collision dispatch and scheduling at `0x4ac94b`. The native
+harness matches all 6,062 observed words in 17,508 cases, including 4,801
+third iterations, nearby-rider state and proxy bounds. Bike, engine, rider and transform state persist across both loop-backs.
+
+This continuation required retaining rider animation frame indices and connecting
+nearby interaction to the supplied animation records. It also exposed unordered
+suspension/pose branches and exceptional arithmetic after finite synthetic inputs
+overflow during repeated integration. Lookup callers now preserve the original
+unchecked table behavior; checked public lookup helpers retain their contracts.
+Capture adapters preserve NaN signs through array copies and argument passing.
+
+Report: `mcm-reset-third-finish-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-third-finish-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+The supplied nearby animation assets have one frame, supplied bounds and no child
+animation records; this is a limitation of this connected corpus. Standalone
+animation tests do not establish full live animation-history parity. Further
+iterations, actual frame entry/post-loop completion, dynamic bike/rider collisions,
+whole-bike acceleration/release trajectories and playable integration remain.
+Initial synthetic-state and supplied wheel-query scratch limitations still apply.

@@ -15,7 +15,9 @@ export function testMcmHorizontalLinePair(manager,line,body){
  const inverse=mcmInverseSqrt(distance),n=new Float64Array(3);
  // Indexed stores preserve the x87 NaN sign across JIT array specialization.
  n[0]=f(x*inverse);n[2]=f(z*inverse);
- manager.contactD8=[0,0,0];for(let i=0;i<3;i++)manager.contactD8[i]=f(-n[i]);
+ // Allocate double elements before overwriting every slot; an integer-array
+ // transition can canonicalize the first NaN store.
+ manager.contactD8=[.1,.1,.1];for(let i=0;i<3;i++)manager.contactD8[i]=f(-n[i]);
  const m=body.matrix,e=body.extents;
  const v=[f(((m[1]*n[1]+m[2]*n[2])+m[0]*n[0])*e[0]),f(((m[5]*n[1]+m[4]*n[0])+m[6]*n[2])*e[1]),f(((m[9]*n[1]+m[10]*n[2])+m[8]*n[0])*e[2])];
  const rawSupport=(v[1]*v[1]+v[2]*v[2])+v[0]*v[0],support=f(rawSupport);

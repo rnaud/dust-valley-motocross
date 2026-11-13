@@ -1,6 +1,6 @@
 import {resolveMcmWorldMatrix} from './world-transform.js';
 import {floatBits} from './math.js';
-import {mcmInverseSqrt} from './inverse-sqrt.js';
+import {mcmInverseSqrtLookup as mcmInverseSqrt} from './inverse-sqrt.js';
 import {updateMcmContactResponseSubstep} from './contact-response.js';
 const f=Math.fround;
 
@@ -31,8 +31,8 @@ export function updateMcmBalanceCenter(c){
  if(c.field4bc){c.balanceCenter=resolveMcmWorldMatrix(c.balanceNode).slice(12,15);return;}
  const [x,,z]=c.rearTangent,squared=z*z+x*x;
  c.balanceGeometryScratch[3]=f(squared);
- const inverse=squared===0?0:mcmInverseSqrt(f(squared));
- const direction=squared===0?[0,0,0]:[f(x*inverse),0,f(z*inverse)];
+ const inverse=(squared===0||Number.isNaN(squared))?0:mcmInverseSqrt(f(squared));
+ const direction=(squared===0||Number.isNaN(squared))?[0,0,0]:[f(x*inverse),0,f(z*inverse)];
  c.balanceGeometryScratch.splice(0,3,...direction);
  const scale=(c.supportDepth+3)*(c.rearWeight-.5);
  const offset=direction.map(v=>f(v*scale));

@@ -11,6 +11,7 @@ export function updateMcmResetEventDecision(c){
 
 export function applyMcmBikeEventDecision(c){
  const b=c.bike,p=c.contactPhase,s=p.normalEventDecision;
+ if(c.loopRider?.animationFrame!==undefined)s.frame=c.loopRider.animationFrame;
  Object.assign(s,{target:b.spawnPosition,launch:b.fieldc40,animation:b.field814&255,
   eventKind:b.field8b8,uprightThreshold:b.field86c,decel:b.field868,accel:b.field864,
   triggered:0,randomCalls:0,inputCalls:0,otherPresent:+!!b.field8b0});
@@ -24,6 +25,7 @@ export function applyMcmBikeEventDecision(c){
 
 export function commitMcmResetEventDecision(c){
  const b=c.bike,p=c.contactPhase,s=p.normalEventDecision;
+ if(c.loopRider?.animationFrame!==undefined)s.frame=c.loopRider.animationFrame;
  b.velocity=p.velocity;b.angularVelocity=[...p.chassisResponse.angularXY,p.field53c];
  b.field710=p.leanDisabled;b.field714=p.field714;
  b.field8b8=s.eventKind;b.field8b4=p.controllerHandoff.kind;b.field8b0=s.otherPresent?b.field8b0:0;

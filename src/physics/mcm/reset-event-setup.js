@@ -9,13 +9,16 @@ export function updateMcmResetEventSetup(c){
 
 export function setupMcmResetEvent(c){
  const b=c.bike,p=c.contactPhase,r=c.rider,s=p.normalEventSetup;
- Object.assign(s,{envelope:c.effect,direction:b.savedHeading,inverted:b.field8a4,field890:b.field890,
+ const resetOrientation=p.normalEventDecision.triggered&&p.normalControl.flag820;
+ Object.assign(s,{boundsMin:c.bounds.min,boundsMax:c.bounds.max,children:c.bounds.components,boundsChildren:c.bounds.children,childCount:c.bounds.count,
+  envelope:c.effect,direction:b.savedHeading,inverted:b.field8a4,field890:b.field890,
   resource:b.field884,normalResource:b.field878,alternateResource:b.field880,
   previousVelocity:r.previousVelocity,selected:r.selected,active16c:r.active16c});
  Object.assign(p.controllerHandoff,{velocity:r.velocity,angularVelocity:r.angularVelocity,flag13c:r.flag13c});
  p.contactCorrection.controller170=r.kind;p.heading=b.field4e0;
  const randomBefore=p.normalEventDecision.randomCalls;
  applyMcmSubstepEventSetup(p);
+ if(resetOrientation){b.normal=p.normal;b.offset=p.offset;b.boundsMin=s.liveBoundsMin;b.boundsMax=s.liveBoundsMax;}
  c.effect=s.envelope;b.savedHeading=s.direction;b.field8a4=s.inverted;b.field890=s.field890;b.field884=s.resource;
  b.field844=p.state844;b.field820=p.normalControl.flag820;b.field710=p.leanDisabled;b.field714=p.field714;
  b.field814=((b.field814&0xffffff00)|p.normalEventDecision.animation)>>>0;
