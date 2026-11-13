@@ -4807,3 +4807,47 @@ The rider collision object has a proven 0x110-byte allocation at
 Crash entry changes its callbacks at +108/+10c (`0x40eaf9..0x40eb09`).
 Those bytes are absent from the 42-block checkpoint and are a concrete next
 capture target; their causal role is not yet validated.
+
+### Rider collision callbacks and pair-state replay
+
+`MCM_COLLISION=1` observes the rider's 0x110-byte collision object, its owned
+0x18-byte grid entries, and its row/column in the manager's 60×60 pair table.
+Object+98 is the manager pointer; the table starts at manager+f8. Grid entries
+contain shared previous/next links, so copying only the rider allocation is not
+a consistent world restoration. The decoder checks ownership, lengths, pointer
+metadata and the overlapping pair-table diagonal. All observed differences
+remain comparator failures, including linked-entry and geometry differences.
+
+The fixed-timing observation run starts pass 0 with normal callbacks
+40b9e0/40ba00 and pass 1 with stale crash callbacks 40bb20/40bb30. Pair state
+between rider id 1 and bike id 0 also differs (3 versus 1). Motion diverges at
+frame 55. Restoring only the two callback words (43 blocks) removes their initial
+mismatch but still diverges at frame 55 with differing pair flags.
+
+`MCM_COLLISION_CALLBACKS=1` checkpoints the two observed callback words.
+`MCM_COLLISION_PAIRS=1` additionally checkpoints the rider row and column,
+including their overlap exactly once (103 total blocks). Both require scripted
+capture. `bindRiderCollisionCallbacks` binds these bytes to matching frame-0
+bike/rider observations and preserves the original block discovery order; no
+callback values or pair flags are invented. Linked entries are not restored.
+
+In the callback-plus-pair run, all 400 frames per pass match decoded motion,
+engine allocation, rider allocation, and tracked random state. The only bike
+allocation differences are the existing 488–494 words. Twenty-five collision
+word positions and raw caller-stack words still differ. This is evidence that
+these captured collision controls address this replay failure, not proof of a
+complete world checkpoint or recovered full-bike trajectory parity. Different
+uncaptured world state between experiments remains a limitation.
+
+An initial pair-state capture attached mid-frame and recorded an update exit
+before checkpoint entry. It is excluded from comparison. The tool now ignores
+in-flight throttle/exit hooks until its first player scheduler-entry boundary;
+the replacement capture begins with frame 0 before-update. Full traces and
+results are retained in `rider-collision-replays-wine11.json.br` and
+`mcm-rider-collision-validation.json`.
+
+Read-only inspection identified four collision objects and a 64×64 grid in the
+live manager. The next complete collision capture must include the manager,
+all cell sentinels and all linked object entries consistently, plus any actor
+state consumed by callbacks. Current diagnostic restoration does not close
+those dependencies.

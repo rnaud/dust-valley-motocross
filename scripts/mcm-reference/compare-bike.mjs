@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import {compareRiderCollision} from './compare-rider-collision.mjs';
 import {compareRiderTiming} from './compare-rider-timing.mjs';
 import {decodeFrameStack} from './decode-frame-stack.mjs';
 import {pathToFileURL} from 'node:url';
@@ -59,7 +60,8 @@ export function compareBikeReplay(rows) {
     if (a.phase === 'after-update' && [0, 49, 50, 100, 150, 199, 200, 224, 225, 300, 399].includes(a.playerFrame)) samples.push(x);
   }
   const riderTiming=rows.some(r=>r.riderUpdateCount!==undefined||r.riderDtBits!==undefined)?compareRiderTiming(rows):null;
-  return {riderTiming,framesPerPass: passes[0].length / 2, comparedBoundaryPairs: passes[0].length,
+  const riderCollision=rows.some(r=>r.riderCollision!==undefined)?compareRiderCollision(rows):null;
+  return {riderCollision,riderTiming,framesPerPass: passes[0].length / 2, comparedBoundaryPairs: passes[0].length,
     firstMotionDifference, randomStateDifferences, differingBikeWords: Object.fromEntries(differingBikeWords),
     differingEngineWords: Object.fromEntries(differingEngineWords), differingRiderWords: Object.fromEntries(differingRiderWords), differingStackWords: Object.fromEntries(differingStackWords), samples};
 }
@@ -69,5 +71,5 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   const report = compareBikeReplay(rows);
   console.log(JSON.stringify(report, null, 2));
   // Even the four currently unexplained inherited fields remain visible failures.
-  if (report.riderTiming?.differences.length || report.randomStateDifferences.length || report.firstMotionDifference || Object.keys(report.differingBikeWords).length || Object.keys(report.differingEngineWords).length || Object.keys(report.differingRiderWords).length || Object.keys(report.differingStackWords).length) process.exitCode = 1;
+  if ((report.riderCollision&&Object.keys(report.riderCollision.differences).length) || report.riderTiming?.differences.length || report.randomStateDifferences.length || report.firstMotionDifference || Object.keys(report.differingBikeWords).length || Object.keys(report.differingEngineWords).length || Object.keys(report.differingRiderWords).length || Object.keys(report.differingStackWords).length) process.exitCode = 1;
 }

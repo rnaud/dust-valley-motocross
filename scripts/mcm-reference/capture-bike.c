@@ -26,7 +26,7 @@ static const unsigned lengths[] = {6, 6, 2, 3, 4};
 static BYTE saved[5];
 static int armed[5];
 static HANDLE process;
-static int scripted, capture_stack, capture_rider_timing, fixed_rider;
+static int scripted, capture_stack, capture_rider_timing, fixed_rider, capture_collision, checkpoint_collision_callbacks, checkpoint_collision_pairs;
 static unsigned hook_count=4;
 static DWORD rider_update_count, rider_dt_bits, rider_observed_dt_bits;
 static DWORD player_frame, requested_throttle, pass, random_state=12345;
@@ -67,6 +67,13 @@ static int checkpoint(DWORD bike,int restore) {
     static const DWORD slots[][2]={{0x874,0x3ac},{0x8d8,0x44},{0x8dc,0x50},{0x8e0,0x50},{0x8e4,0x60},{0x8e8,0x60},{0x8ec,0x60},{0x8f0,0x1f0},{0x8f8,0x10},{0x8fc,0x10},{0x900,0x10},{0x904,0x10}};
     if(!save_block(bike,0xcc8))return 0;
     for(unsigned i=0;i<sizeof slots/sizeof slots[0];i++){DWORD ptr;if(!read_memory(bike+slots[i][0],&ptr,4))return 0;if(ptr&&!save_block(ptr,slots[i][1]))return 0;}
+    if(checkpoint_collision_callbacks){DWORD rider,collider;
+        if(!read_memory(bike+0x874,&rider,4)||!read_memory(rider+0x34,&collider,4)||!collider||!save_block(collider+0x108,8))return 0;
+        if(checkpoint_collision_pairs){DWORD manager,id;
+            if(!read_memory(collider+0x98,&manager,4)||!read_memory(collider,&id,4)||!manager||id>=60||!save_block(manager+0xf8+id*240,240))return 0;
+            for(unsigned i=0;i<60;i++)if(i!=id&&!save_block(manager+0xf8+(i*60+id)*4,4))return 0;
+        }
+    }
     DWORD proxy,vtable,engine,filter,contact_component,contact_node;
     return save_components(bike)&&read_memory(bike+0x8ec,&contact_component,4)&&
         read_memory(contact_component+0x50,&contact_node,4)&&contact_node&&save_tree(contact_node)&&
@@ -134,6 +141,25 @@ static void write_byte(DWORD address, BYTE value) {
     }
 }
 
+// Observation only: entries link into a shared world grid. Do not restore a
+// detached subset of that graph as if it were an independent allocation.
+static int observe_rider_collision(FILE *out,DWORD rider) {
+    DWORD address,entries,count,manager,id,enabled;BYTE object[0x110],entry_bytes[128*0x18],row[60*4],column[60*4];
+    if(!read_memory(rider+0x34,&address,4)||!address||!read_memory(address,object,sizeof object))return 0;
+    memcpy(&entries,object+0x8c,4);memcpy(&count,object+0x90,4);memcpy(&manager,object+0x98,4);memcpy(&id,object,4);
+    DWORD owner;memcpy(&owner,object+0x94,4);
+    if(owner!=rider||id>=60||count>128||!manager||(!entries&&count)||
+       (count&&!read_memory(entries,entry_bytes,count*0x18))||
+       !read_memory(manager+0xf8+id*60*4,row,sizeof row)||!read_memory(0x4e3754,&enabled,4))return 0;
+    for(unsigned i=0;i<60;i++)if(!read_memory(manager+0xf8+(i*60+id)*4,column+i*4,4))return 0;
+    fprintf(out,",\"riderCollision\":{\"address\":%lu,\"entriesAddress\":%lu,\"managerAddress\":%lu,\"enabled\":%lu,\"stateHex\":\"",address,entries,manager,enabled);
+    for(unsigned i=0;i<sizeof object;i++)fprintf(out,"%02x",object[i]);
+    fprintf(out,"\",\"entriesHex\":\"");for(unsigned i=0;i<count*0x18;i++)fprintf(out,"%02x",entry_bytes[i]);
+    fprintf(out,"\",\"pairRowHex\":\"");for(unsigned i=0;i<sizeof row;i++)fprintf(out,"%02x",row[i]);
+    fprintf(out,"\",\"pairColumnHex\":\"");for(unsigned i=0;i<sizeof column;i++)fprintf(out,"%02x",column[i]);
+    fprintf(out,"\"}");return !ferror(out);
+}
+
 static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CONTEXT *context) {
     DWORD frame, carry, nominal, cap, dt, steps, engine, transform, rider;
     unsigned char matrix[64], rider_state[0x3ac], frame_stack[0xc00];
@@ -166,6 +192,7 @@ static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CON
     fprintf(out,"\",\"riderAddress\":\"%08lx\",\"riderHex\":\"",rider);
     for(unsigned i=0;i<sizeof rider_state;i++)fprintf(out,"%02x",rider_state[i]);
     fprintf(out,"\"");
+    if(capture_collision&&!observe_rider_collision(out,rider))return 0;
     if(capture_stack){
         fprintf(out,",\"stackAddress\":\"%08lx\",\"stackHex\":\"",context->Esp);
         for(unsigned i=0;i<sizeof frame_stack;i++)fprintf(out,"%02x",frame_stack[i]);
@@ -184,6 +211,12 @@ int main(int argc, char **argv) {
     }
     scripted = getenv("MCM_SCRIPTED") != NULL;
     capture_stack = getenv("MCM_STACK") != NULL;
+    capture_collision = getenv("MCM_COLLISION") != NULL;
+    checkpoint_collision_callbacks = getenv("MCM_COLLISION_CALLBACKS") != NULL;
+    checkpoint_collision_pairs = getenv("MCM_COLLISION_PAIRS") != NULL;
+    if(checkpoint_collision_pairs)checkpoint_collision_callbacks=1;
+    if(checkpoint_collision_callbacks&&!scripted){fprintf(stderr,"Collision checkpoint options require MCM_SCRIPTED.\n");return 2;}
+    if(checkpoint_collision_callbacks)capture_collision=1;
     capture_rider_timing = getenv("MCM_RIDER_TIMING") != NULL;
     fixed_rider = getenv("MCM_FIXED_RIDER") != NULL;
     if(getenv("MCM_INITIAL_CHECKPOINT")&&!scripted){fprintf(stderr,"Initial checkpoint requires MCM_SCRIPTED.\n");return 2;}
@@ -275,7 +308,9 @@ int main(int argc, char **argv) {
                     if (matched == 2 && !read_memory(context.Esi, &bike, 4)) done = 2;
                     if (!read_memory(bike + 0x614, &ai, 4)) done = 2;
                     if(matched==0)player_active=ai==0;
-                    if (!done && ai == 0) {
+                    // Ignore an in-flight update when attaching: the first
+                    // observed player boundary must be scheduler entry.
+                    if (!done && ai == 0 && (matched == 0 || player_frame > 0)) {
                         if (matched == 2) {
                             if (scripted) context.Eax = requested_throttle;
                         } else {
