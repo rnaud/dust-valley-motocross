@@ -1,8 +1,9 @@
 import {floatBits,bitsFloat} from './math.js';
 import {updateMcmComponentAngle} from './contact-substep.js';
 import {updateMcmChassisProbesSubstep} from './chassis-probes.js';
+import {mcmAdd as add,mcmSubtract as sub,mcmMultiply as mul} from './x87-arithmetic.js';
 const f=Math.fround,sign=v=>floatBits(v)>0x80000000?-1:1;
-const dot=(a,b)=>(a[1]*b[1]+a[0]*b[0])+a[2]*b[2];
+const dot=(a,b)=>add(add(mul(a[1],b[1]),mul(a[0],b[0])),mul(a[2],b[2]));
 
 // Original 0x4a6c01..0x4a6eac: crash steering and airborne/landing flags.
 export function updateMcmContactResponse(c){
@@ -17,10 +18,10 @@ export function updateMcmContactResponse(c){
      c.componentRate=Math.abs(c.targetRoll)<Math.abs(c.componentAngle) && sign(c.componentAngle)===sign(c.targetRoll)?step:-step;
     }else c.componentRate=sign(c.componentAngle)<0?step:-step;
    }else{
-    c.responseScratch[0]=f(1-Math.abs((c.rearTangent[0]*c.bikeForward[0]+c.bikeForward[1]*c.rearTangent[1])+c.bikeForward[2]*c.rearTangent[2]));
-    c.responseScratch[1]=f(((dot(c.velocity,c.points[4])*f(.025))*c.responseScratch[0])*c.dt);
+    c.responseScratch[0]=f(sub(1,Math.abs(add(add(mul(c.rearTangent[0],c.bikeForward[0]),mul(c.bikeForward[1],c.rearTangent[1])),mul(c.bikeForward[2],c.rearTangent[2])))));
+    c.responseScratch[1]=f(mul(mul(mul(dot(c.velocity,c.points[4]),f(.025)),c.responseScratch[0]),c.dt));
     c.responseScratch[2]=sign(c.targetRoll);
-    c.componentRate=f(-((c.dt*c.dt*f(32.2)+c.responseScratch[1])*c.responseScratch[2]));
+    c.componentRate=f(-mul(add(mul(mul(c.dt,c.dt),f(32.2)),c.responseScratch[1]),c.responseScratch[2]));
    }
   }
   if(Math.abs(c.componentAngle)<c.componentLimit*1.25)updateMcmComponentAngle(c,c.componentRate);

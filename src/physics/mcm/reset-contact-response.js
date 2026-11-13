@@ -22,7 +22,7 @@ export function applyMcmBikeContactResponse(c){
   dragCoefficient:b.field69c,dragThreshold:b.field6a0,velocity:b.velocity,
   bikeForward:b.forward,rearTangent:b.rearTangent,tangent:b.tangent,
   offset:b.offset,normal:b.normal,state844:b.field844,roll:b.field4d8,pitch:b.field4dc,
-  componentAngle:c.componentAngle,control1c:c.control1c,control30:c.control30,control2c:c.control2c});
+  componentAngle:c.componentAngle,componentLimit:c.riderComponentLimit??p.componentLimit,control1c:c.control1c,control30:c.control30,control2c:c.control2c});
  for(const field of ['4bc','870','718','8c4','b4c','c6c','714','c78','c70','c74'])p[`field${field}`]=b[`field${field}`];
  p.field53c=b.angularVelocity[2];
  prepareMcmContactForces(p);prepareMcmContactRoll(p);prepareMcmContactGeometry(p);

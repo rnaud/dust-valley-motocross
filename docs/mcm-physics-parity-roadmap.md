@@ -4134,3 +4134,29 @@ from the initialized CRT draw; this is deterministic external input, not a claim
 of the original application's complete random-stream parity.
 
 Validation gates: all 295 tests and the production build pass.
+
+### Retained next-frame contact response
+
+The next response comparison continues completed ordinary contacts and resets
+through `0x4a64dc..0x4a6eac`, retaining bike, component and transform state. It
+captures 202 further words for force preparation, roll, chassis probes, landing
+flags and crash steering. Pending controllers, nonpositive iteration counts and
+original avoidance cycles do not enter this stage.
+
+Crash steering must consume the retained component angle limit. Without that
+binding the recovered path silently skipped the original component transform
+update. Exceptional chassis depth and crash-response arithmetic now use the
+existing x87 helpers. Indexed matrix copies and typed pointer-product/event
+scratch preserve NaN signs across cold and optimized execution, including
+parented event orientation and proxy synchronization. Regression inputs include
+cases 34, 47, 73, 75, 352, 9956 and 10664.
+
+This comparison still stops before the second frame's suspension, tire forces,
+integration and collisions. It does not connect those stages to playable preview
+or establish whole-bike acceleration/release trajectory parity.
+
+Validation: 17,941 cases match on ARM64 and x64, including 10,896 completed
+responses; no exceptions or changed prior native traces. The 119 archived
+fixtures pass in fresh ARM64/x64 test processes, and case 9956 also matches when
+run first. All 296 repository tests and the production build pass. See
+[machine-readable response evidence](mcm-reset-next-response-validation.json).

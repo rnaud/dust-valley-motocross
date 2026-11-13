@@ -35,15 +35,16 @@ export function alignMcmEventRootOrientation(source,target){
  up=cross(forward,cross(up,forward));
  up=normalize(up);forward=normalize(forward);
  const right=cross(up,forward),position=target.local.slice(12,15);
- let matrix=new Array(16).fill(.1);
+ let matrix=new Float64Array(16);
  for(let i=0;i<3;i++){matrix[i]=right[i];matrix[4+i]=up[i];matrix[8+i]=forward[i];matrix[12+i]=position[i];}
  matrix[3]=matrix[7]=matrix[11]=0;matrix[15]=1;
  if(target.parent){
   // Preallocate double elements: swapping boxed NaNs can canonicalize signs.
-  const transpose=m=>{const r=new Array(16).fill(.1),indices=[0,4,8,3,1,5,9,7,2,6,10,11,12,13,14,15];for(let i=0;i<16;i++)r[i]=Math.fround(m[indices[i]]);return r;};
-  matrix=transpose(multiplyMcmMatrixPointers(transpose(matrix),resolveMcmWorldMatrix(target.parent)));matrix.splice(12,3,...position);
+  const transpose=m=>{const r=new Float64Array(16),indices=[0,4,8,3,1,5,9,7,2,6,10,11,12,13,14,15];for(let i=0;i<16;i++)r[i]=Math.fround(m[indices[i]]);return r;};
+  matrix=transpose(multiplyMcmMatrixPointers(transpose(matrix),resolveMcmWorldMatrix(target.parent)));for(let i=0;i<3;i++)matrix[12+i]=position[i];
  }
- target.local=matrix;
+ const local=new Array(16).fill(.1);for(let i=0;i<16;i++)local[i]=matrix[i];
+ target.local=local;
  invalidateMcmTransform(target);
  return {forward,up};
 }

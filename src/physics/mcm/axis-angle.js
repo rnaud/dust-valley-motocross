@@ -51,5 +51,8 @@ export function mcmAxisAngleMatrix(axis, angle) {
   const t46 = Math.fround(t45);
   const t47 = add(t43,t9);
   const t48 = Math.fround(t47);
-  return [t15, t22, t29, 0, t31, t36, t42, 0, t44, t46, t48, 0, 0, 0, 0, 1];
+  // Array literals can canonicalize the first NaN in partially warmed execution.
+  const result=new Float64Array(16);
+  result[0]=t15;result[1]=t22;result[2]=t29;result[4]=t31;result[5]=t36;result[6]=t42;result[8]=t44;result[9]=t46;result[10]=t48;result[15]=1;
+  return result;
 }

@@ -3,6 +3,7 @@ import {transformMcmPoint} from './position-transform.js';
 import {queryMcmTerrainHeight} from './terrain-height.js';
 import {queryMcmTerrainNormal} from './terrain-normal.js';
 import {updateMcmContactGeometrySubstep} from './contact-geometry.js';
+import {mcmSubtract as sub} from './x87-arithmetic.js';
 const f=Math.fround;
 
 // Original 0x4a69e8..0x4a6c01. Compare penetration before its float32 store.
@@ -14,7 +15,7 @@ export function queryMcmChassisProbes(c){
   const normal=queryMcmTerrainNormal({...c.terrain,point:world,normal:c.chassisNormals[index]});
   const surface=queryMcmTerrainHeight({...c.terrain,point:world});
   c.chassisWorld[index]=world;c.chassisSurface[index]=surface;c.chassisNormals[index]=normal;
-  const depth=surface[1]-world[1];c.chassisDepth[index]=f(depth);return depth;
+  const depth=sub(surface[1],world[1]);c.chassisDepth[index]=f(depth);return depth;
  };
  if(probe(c.chassisLocal[0],c.frontMountNode,0)>=0)c.control1c=1;
  else if(probe(c.chassisLocal[1],c.frontMountNode,0)>=0)c.control1c=2;

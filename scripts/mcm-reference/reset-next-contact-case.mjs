@@ -2,7 +2,7 @@ import {evaluateResetNextEngine} from './reset-next-engine-case.mjs';
 import {prepareMcmFrameContacts} from '../../src/physics/mcm/frame-contact-entry.js';
 import {resetLoopContactWords} from './reset-loop-contact-case.mjs';
 import {floatBits} from '../../src/physics/mcm/math.js';
-export function evaluateResetNextContact(input){
+export function evaluateResetNextContact(input,observe){
  let words=Array(267).fill(0),contactBranch='pending';
  const result=evaluateResetNextEngine(input,(c,decision,reached)=>{
   if(!reached){words[0]=1;contactBranch='no-iterations';return;}
@@ -15,6 +15,7 @@ export function evaluateResetNextContact(input){
   for(const field of ['position','savedPosition','forward','up','velocity','acceleration','angularVelocity','worldAngularVelocity','localLever','axis624'])words.push(...Array.from(b[field],floatBits));
   words.push(engine.released,engine.gear,...[engine.state,engine.rpmDemand,engine.previousRpmDemand,engine.shiftTimer,engine.shiftThreshold].map(floatBits),...Array.from(c.effect,floatBits));
   for(const child of c.bounds.children)words.push(...[child.forward,child.up,child.position].flatMap(v=>Array.from(v,floatBits)));
+  observe?.(c);
  });
  return {...result,tail:[...result.tail,...words],contactBranch};
 }

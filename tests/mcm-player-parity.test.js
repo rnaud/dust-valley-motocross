@@ -1928,3 +1928,20 @@ test('retained next-frame contacts distinguish completed resets from original av
   assert.deepEqual(actual.tail,outputBits,`next contact tail ${caseIndex}`);
  }
 });
+
+
+test('retained next-frame contact response consumes the component limit and completed contacts',async()=>{
+ const {evaluateResetNextResponse}=await import('../scripts/mcm-reference/reset-next-response-case.mjs');
+ const corpus=fixture('reset-next-response-wine11.json.br');
+ assert.equal(corpus.source.mismatchCount,0);
+ assert.equal(corpus.source.exceptionCount,0);
+ assert.equal(corpus.source.priorTraceChangedCases,0);
+ assert.equal(corpus.source.priorTraceComparedCases,17941);
+ for(const {caseIndex,input,prefixBits,outputBits} of corpus.fixtures){
+  const actual=evaluateResetNextResponse(input);
+  assert.equal(actual.responseReached,['ordinary','reset'].includes(actual.contactBranch));
+  assert.equal(actual.tail.length,12353);
+  assert.deepEqual(actual.prefix,prefixBits,`next response prefix ${caseIndex}`);
+  assert.deepEqual(actual.tail,outputBits,`next response tail ${caseIndex}`);
+ }
+});
