@@ -9,11 +9,7 @@ const f=Math.fround;
 export function updateMcmContactSubstep(c){
  const result=queryMcmSubstepWheelContacts(c);
  if(!c.state844){
-  c.componentAngle=f(c.componentAngle+f(c.dt*c.componentRate));
-  if(!Number.isFinite(c.componentAngle)||Math.abs(c.componentAngle)<f(.0001))c.componentAngle=0;
-  c.node.local=[...c.bodyNode.local];invalidateMcmTransform(c.node);
-  c.node.local.splice(12,3,0,0,0);invalidateMcmTransform(c.node);
-  if(c.componentAngle!==0){c.node.local=rotateMcmTransform(c.node.local,c.componentAxis,-c.componentAngle);invalidateMcmTransform(c.node);}
+  updateMcmComponentAngle(c,f(c.dt*c.componentRate));
  }
  // The original tests signed float bits, including the sign of zero.
  if((floatBits(c.cooldown)|0)>0){
@@ -21,4 +17,13 @@ export function updateMcmContactSubstep(c){
   if((floatBits(c.cooldown)|0)<=0){c.cooldown=0;c.cooldownFlag=0;}
  }
  return result;
+}
+
+// Original 0x49eef0; delta is already float32 at both main-loop call sites.
+export function updateMcmComponentAngle(c,delta){
+  c.componentAngle=f(c.componentAngle+delta);
+  if(!Number.isFinite(c.componentAngle)||Math.abs(c.componentAngle)<f(.0001))c.componentAngle=0;
+  c.node.local=[...c.bodyNode.local];invalidateMcmTransform(c.node);
+  c.node.local.splice(12,3,0,0,0);invalidateMcmTransform(c.node);
+  if(c.componentAngle!==0){c.node.local=rotateMcmTransform(c.node.local,c.componentAxis,-c.componentAngle);invalidateMcmTransform(c.node);}
 }

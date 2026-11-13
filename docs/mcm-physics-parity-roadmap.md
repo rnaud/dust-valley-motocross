@@ -1923,3 +1923,28 @@ The executable and loaded Wine D3DRM remain hash pinned. Only initial scratch
 and observation boundaries are supplied; terrain and transform callees execute
 in the original. Remaining force assembly, full-loop integration and repeatable
 acceleration/throttle-release trajectory parity are still unfinished.
+
+### Connected crash steering and landing response (2026-11-12)
+
+Extended continuous ordinary execution through `0x4a6eac`, including both
+crashed and upright branches. Recovered crash steering selects signed steering
+increments from wheel contacts and target roll, or computes the single-front
+contact response from velocity/normal alignment. The component update executes
+with the original angle limit and invalidates the same transform descendants.
+The upright branch updates landing flags and records airborne roll sign and
+angular state. Skipped branches preserve incoming state and scratch values.
+
+All 40,000 original-execution cases match, across 278 output words with zero
+differences. The extension exposed a previously untested extreme-angle mismatch:
+x87 FCOS/FSIN leave finite operands with magnitude at least 2^63 unchanged.
+The recovered axis-angle construction now preserves that behavior, including
+resulting overflowing matrix entries, instead of JavaScript range reduction.
+An original-execution regression fixture retains this case. Earlier ordinary
+component updates and crash updates share the recovered `0x49eef0` operation.
+
+Report: `mcm-contact-response-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-contact-response-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Pinned executable/Wine DLL checks, real terrain/transform callees and supplied
+scratch/observation boundaries remain as before. This completes another shared
+response block, not the force assembly, full main-loop integration or whole-bike
+acceleration/release trajectory comparison; those remain unfinished.
