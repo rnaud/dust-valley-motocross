@@ -9,8 +9,8 @@ export function evaluateBikeReset(input,apply=resetMcmBikeState){
  const c={bike:b,randomValue:input.randomValue};
  if(input.mask&1)c.front={limited:read(818+0x4c/4)};
  if(input.mask&2)c.rear={limited:read(842+0x4c/4)};
- if(input.mask&4)c.component8e4={field58:read(866+0x58/4),value:vec(866+0x4c/4),field5c:read(866+0x5c/4)};
- if(input.mask&8)c.component8e8={field58:read(890+0x58/4),field5c:read(890+0x5c/4)};
+ if(input.mask&4)c.component8e4={limit:read(866+0x48/4),field58:read(866+0x58/4),value:vec(866+0x4c/4),field5c:read(866+0x5c/4)};
+ if(input.mask&8)c.component8e8={limit:read(890+0x54/4),limitAngle:read(890+0x48/4),divisor:read(890+0x4c/4),field58:read(890+0x58/4),field5c:read(890+0x5c/4)};
  const engineFields={gear:0x158,rpmDemand:0x15c,brake:0x7c,state:0x160,previousRpmDemand:0x164,shiftTimer:0x168,released:0x150,shiftThreshold:0x154};
  if(input.mask&16){c.engine={thresholdBases:[read(914+0x20/4)],thresholdRanges:[read(914+0x50/4)]};for(const [key,offset] of Object.entries(engineFields))c.engine[key]=read(914+offset/4);}
  if(input.mask&32)c.effect=Array.from({length:4},(_,j)=>read(1038+j));
