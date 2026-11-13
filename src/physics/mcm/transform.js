@@ -5,7 +5,7 @@ import {mcmAxisAngleMatrix} from './axis-angle.js';
 // 0x4b7d90: rotate the local matrix while preserving its translation.
 export function rotateMcmTransform(matrix, axis, angle) {
   const result = multiplyMcmMatrices(matrix, mcmAxisAngleMatrix(axis, angle));
-  result.splice(12, 3, ...matrix.slice(12, 15));
+  for(let i=0;i<3;i++)result[12+i]=matrix[12+i];
   return result;
 }
 

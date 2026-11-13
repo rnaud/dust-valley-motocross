@@ -17,6 +17,8 @@ export function applyMcmSubstepNormalRotation(c){
  c.fieldc6c=floatBits(r.timer);c.fieldc70=r.previousSign;c.fieldc74=r.accumulator;c.fieldc78=r.phase;
  c.chassisResponse.angularXY=r.angularVelocity.slice(0,2);c.field53c=r.angularVelocity[2];
  c.normalControl.vector=r.controlVector;c.normalRotation.angle=r.angle;
- if(r.applied){for(let i=0;i<16;i++)c.bodyNode.local[i]=r.matrix[i];invalidateMcmTransform(c.bodyNode);}
+ // Retain the computed matrix: copying into an existing array can canonicalize
+ // its first NaN during x64 JIT transitions (retained case 9956).
+ if(r.applied){c.bodyNode.local=r.matrix;invalidateMcmTransform(c.bodyNode);}
  return;
 }
