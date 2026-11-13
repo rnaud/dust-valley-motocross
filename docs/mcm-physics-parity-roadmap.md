@@ -2897,3 +2897,33 @@ Rear drive/loading, force accumulation, motion integration and substep completio
 still need to be connected to this reset path. Engine entry preceding reset,
 dynamic collisions, repeated frames and complete acceleration/throttle-release
 parity remain unproven.
+
+### Reset state connected through tire forces and chassis impulse
+
+The continuous reset comparison now runs `0x4a5e27..0x4a9b29`. It extends the
+balance/suspension path through rear drive/loading, velocity and traction,
+combined tire-force accumulation, braking gates, chassis contact merging,
+penetration correction, angular response and the real type-3 impulse solver.
+All 1,763 captured words match in 16,384 original executions.
+
+Required coverage includes rear traction enabled/skipped by its speed threshold,
+positive/negative traction factors, front-only/rear-contact drive routing, skipped
+chassis handling, two/three merged contacts and changed/unchanged angular state.
+The reset-produced engine release flag yields zero drive thrust; reset also
+clears braking. This validates their actual immediate post-reset behavior, not
+accelerating or actively braking trajectories. The corpus supplies a present
+engine for the downstream original drive call, while earlier reset-only tests
+continue to cover engine absence.
+
+Position, balance center, local/angular velocity, contact lever, rear speed and
+suspension history remain connected through their original shared fields. The
+new observation captures skipped scratch alongside rear traction and chassis
+solver outputs; only external random input, initial scratch and observation
+boundaries are supplied to the original.
+
+Report: `mcm-reset-chassis-impulse-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-chassis-impulse-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Reset-path suspension/contact force contributions, angular/linear integration,
+transform updates and substep completion remain to be connected. Engine entry
+preceding reset, dynamic collisions, repeated frames and complete acceleration /
+throttle-release parity remain unproven.
