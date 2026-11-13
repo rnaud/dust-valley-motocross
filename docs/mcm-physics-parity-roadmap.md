@@ -2345,3 +2345,31 @@ Report: `mcm-contact-correction-substep-validation.json`. Reproduce with
 Next: opposing-torque conversion and angular integration from `0x4aaded`.
 Subsequent linear integration, the alternate crash branch, full-loop wiring, and
 whole-bike acceleration / throttle-release trajectory parity remain unfinished.
+
+### Connected opposing torque and angular integration (2026-11-12)
+
+Extended ordinary execution through `0x4aaf02`. After contact correction,
+the original resolves the potentially invalidated world transform and converts
+the accumulated opposing torque into body-local coordinates. The recovered
+stage applies normal/crashed inverse inertia, the normal-state X/Z scale
+factors, stationary/moving damping, and the final angular velocity update.
+The original inverse-transform and damping callees execute directly in the
+oracle. Its exit adapter removes the five outstanding cdecl arguments before
+capturing the common stack frame; the early crashed-contact exit is unchanged.
+
+All 40,000 cases match across 538 output words with zero bit differences.
+The capture adds local opposing torque and scaled opposing acceleration and
+checks the updated angular acceleration, angular velocity, and resolved world
+caches along with all preceding state. Connecting the damping helper exposed
+298 initial differences involving generated NaNs. Matching the original
+unsigned bit-sign checks, unordered comparisons, and x87 arithmetic reduced
+these to four differences in one inverse-transform case; recovered multiply/
+add semantics eliminated those too. The saved fixtures retain that case.
+All 229 preceding tests also passed after these shared-helper corrections.
+
+Report: `mcm-angular-integration-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-angular-integration-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+This is synthetic connected-state validation, not full trajectory parity.
+Linear integration, subsequent orientation/position updates, the alternate
+crash branch, complete-loop wiring and repeatable whole-bike acceleration /
+throttle-release comparisons remain unfinished.

@@ -1,3 +1,4 @@
+import {mcmAdd as add,mcmMultiply as mul} from './x87-arithmetic.js';
 import {bitsFloat} from './math.js';
 const x87Indefinite=bitsFloat(0xffc00000);
 // Overflowed finite transforms can produce invalid arithmetic; x87 stores
@@ -29,9 +30,9 @@ export function composeMcmWorldMatrix(parent, local) {
 // Original 0x4b8720, using the resolved world matrix at node+0xc4.
 export function inverseRotateMcmVector(matrix, vector) {
   return [
-    Math.fround((((matrix[1] * vector[1]) + (matrix[2] * vector[2])) + (matrix[0] * vector[0]))),
-    Math.fround((((matrix[6] * vector[2]) + (matrix[5] * vector[1])) + (matrix[4] * vector[0]))),
-    Math.fround((((matrix[9] * vector[1]) + (matrix[10] * vector[2])) + (matrix[8] * vector[0]))),
+    Math.fround(add(add(mul(matrix[1],vector[1]),mul(matrix[2],vector[2])),mul(matrix[0],vector[0]))),
+    Math.fround(add(add(mul(matrix[6],vector[2]),mul(matrix[5],vector[1])),mul(matrix[4],vector[0]))),
+    Math.fround(add(add(mul(matrix[9],vector[1]),mul(matrix[10],vector[2])),mul(matrix[8],vector[0]))),
   ];
 }
 
