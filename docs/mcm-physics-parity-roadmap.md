@@ -4020,3 +4020,39 @@ fixtures pass cold on both architectures. Case 14101 additionally guards x87 NaN
 signs during pivot-translation stores and subsequent matrix copying. Full tests
 and the production build pass. See `mcm-reset-next-reset-validation.json` and
 `mcm-frame-reset-decision-validation.json`.
+
+### Retained next-frame terrain probes
+
+The comparison now continues from the reset result through `0x4a599f..0x4a5bc5`.
+When reset/crash state, iteration count and roll allow it, the original probes
+one or two front component points and a body point, producing terrain heights,
+smooth normals, penetration depths and the three contact-control words. The
+recovered path uses the same carried transform graph and terrain. It then clears
+`bike+8c4` before the loop iteration gate. No initial state or external input is
+changed from the preceding reset-decision corpus.
+
+The observer compares queried scratch values and all four transform nodes.
+Skipped scratch is normalized to zero only in the observation, since this block
+does not write it; live scratch is preserved. AI/scripted paths remain at their
+existing explicit pending boundaries. Execution stops before the next physics
+loop, so this is not yet continuous whole-bike acceleration/release validation.
+
+```sh
+node scripts/mcm-reference/compare-reset-next-terrain.mjs /path/to/mcm.exe /path/to/next-reset-corpus /path/to/new-output-directory
+```
+
+The original frame calls now reuse the same stack base, with a native assertion
+at the next frame entry. Previously, the injected first frame and the C-called
+second frame used different stack locations. That exposed unrelated bytes when
+a terrain query left its normal output untouched. Calling the second frame from
+the first frame's assembly return preserves scratch without assigning a new
+normal or reseeding bike state. Cases 16630, 16750 and 16770 cover this behavior.
+The original first-frame and preceding next-frame observations must still match
+the source corpus byte-for-byte.
+
+Validation: all 17,941 retained cases match all 20,109 observed words on ARM64
+and x64, with zero exceptions and zero changed prior native traces. There are
+44 two-probe and 70 three-probe cases; the remaining cases skip probing or stop
+at a pending controller boundary. Forty-four compressed regression cases pass
+cold on both architectures. See `mcm-reset-next-terrain-validation.json` and
+`reset-next-terrain-wine11.json.br`.
