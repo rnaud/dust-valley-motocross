@@ -25,7 +25,7 @@ test('rendered triangles and terrain sampling match Cannon on both sides of ever
 });
 
 test('suspension probes its full extension and remains unloaded without ground',()=>{
- const s=createState({flat:true,height:()=>0}),{chassis,vehicle}=s.physics,wheel=vehicle.wheelInfos[0];
+ const s=createState({sand:false,flat:true,height:()=>0}),{chassis,vehicle}=s.physics,wheel=vehicle.wheelInfos[0];
  chassis.position.set(0,1.43,0); // Contact needs 0.70 m extension, beyond 0.55 m rest.
  vehicle.castRay(wheel);assert.equal(wheel.isInContact,true);assert.ok(Math.abs(wheel.suspensionLength-.7)<1e-6);
  chassis.position.y=3;vehicle.castRay(wheel);assert.equal(wheel.isInContact,false);assert.ok(Math.abs(wheel.suspensionLength-.85)<1e-12);
@@ -33,7 +33,7 @@ test('suspension probes its full extension and remains unloaded without ground',
 
 test('steering across a flat heightfield seam does not drop a tire contact',()=>{
  for(const direction of [-1,1]){
-  const s=createState({flat:true,height:()=>0});
+  const s=createState({sand:false,flat:true,height:()=>0});
   for(let i=0;i<120;i++)stepBike(s,{},1/120);
   s.physics.chassis.velocity.z=15;
   for(let i=0;i<120;i++){stepBike(s,{gas:true,steer:direction*.5},1/120);assert.equal(s.contacts,2,`false contact loss at step ${i}`);}
@@ -41,7 +41,7 @@ test('steering across a flat heightfield seam does not drop a tire contact',()=>
 });
 
 test('free ride starter line delivers three jumps and rideable landings in ten seconds',()=>{
- const s=createState({height:freeTerrain,spawn:{x:0,z:0,yaw:0}});let landings=0;
+ const s=createState({sand:false,height:freeTerrain,spawn:{x:0,z:0,yaw:0}});let landings=0;
  for(let i=0;i<1200;i++){
   const result=stepBike(s,{gas:true},1/120);assert.equal(s.crashed,false);
   if(result.landed>.5){landings++;assert.ok(s.speed>15);}

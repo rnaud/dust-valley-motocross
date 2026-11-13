@@ -5,7 +5,7 @@ import {Vector3,Quaternion} from 'three';
 import {bikeLinkagePoints,fitBikeLink} from '../src/bike-linkage.js';
 
 test('playable preview accelerates, releases, disables boost and resets recovered state',()=>{
- const run=boost=>{const s=createState({flat:true,height:()=>0,physicsMode:'mcm-preview'});for(let i=0;i<300;i++)stepBike(s,{gas:true,boost},.02);return s;};
+ const run=boost=>{const s=createState({sand:false,flat:true,height:()=>0,physicsMode:'mcm-preview'});for(let i=0;i<300;i++)stepBike(s,{gas:true,boost},.02);return s;};
  const a=run(false),b=run(true);
  assert.ok(a.speed>10&&a.gear>1);assert.equal(a.crashed,false);
  assert.equal(a.z,b.z);assert.equal(a.speed,b.speed);

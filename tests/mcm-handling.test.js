@@ -49,7 +49,7 @@ test('springs support original mass with independent front/rear sag and progress
  const force=(x,front)=>suspensionForce({compression:x,velocity:0,mass:MCM_HANDLING.mass,front});
  assert.ok(force(.2,true)>force(.1,true)*2);
  assert.ok(Math.abs(force(.1,false)/force(.1,true)-.6)<1e-12);
- const s=createState({flat:true,height:()=>0});for(let i=0;i<360;i++)stepBike(s,{},1/120);
+ const s=createState({sand:false,flat:true,height:()=>0});for(let i=0;i<360;i++)stepBike(s,{},1/120);
  const [rear,front]=s.physics.vehicle.wheelInfos;
  assert.ok(rear.suspensionLength<front.suspensionLength);
  assert.ok(Math.abs(rear.suspensionForce+front.suspensionForce-s.physics.chassis.mass*9.81)<5);
@@ -63,7 +63,7 @@ test('high-speed compression damping is continuous with half the incremental slo
  }
 });
 test('reset clears transmission, pending shifts and wheel slip',()=>{
- const s=createState({flat:true,height:()=>0});for(let i=0;i<600;i++)stepBike(s,{gas:true},1/120);
+ const s=createState({sand:false,flat:true,height:()=>0});for(let i=0;i<600;i++)stepBike(s,{gas:true},1/120);
  assert.ok(s.engine.gear>1);resetBike(s,0,0,0);
  assert.equal(s.gear,1);assert.equal(s.rpm,DRIVE.idleRpm);assert.equal(s.engine.shiftRemaining,0);
  assert.deepEqual(s.wheelOmega,[0,0]);assert.deepEqual(s.slipRatio,[0,0]);

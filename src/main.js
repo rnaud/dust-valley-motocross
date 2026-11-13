@@ -11,14 +11,18 @@ import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {GroundDetail} from './ground-detail.js';
 import { TireTracks, createTreadTexture } from './tire-tracks.js';
 import { createTextures, applyTerrainTexture, createSkyTexture, createDustTexture } from './textures.js';
+import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
+import {SandSurface} from './sand-surface.js';
 import {RideAudio} from './audio.js';
 import {track,terrain as raceTerrain,freeTerrain,trackDistance,nearestTrack,createState,resetBike,stepBike,TAU} from './world.js';
+let activeSand=null;
 let mode='race';
 let physicsMode='classic';
 const simulationStep=()=>physicsMode==='mcm-preview'?.02:1/120;
-const terrain=(x,z)=>mode==='free'?freeTerrain(x,z):raceTerrain(x,z);
+const terrain=(x,z)=>activeSand?activeSand.height(x,z):(mode==='free'?freeTerrain(x,z):raceTerrain(x,z));
 const $=id=>document.getElementById(id);
-$('physics-mode').onchange=()=>{physicsMode=$('physics-mode').value;$('physics-note').textContent=physicsMode==='mcm-preview'?'Recovered engine + suspension. Chassis, grip and steering remain experimental adaptations. Boost disabled.':'Original Dust Valley handling.';};
+$('physics-mode').onchange=()=>{physicsMode=$('physics-mode').value;syncSandOption();$('physics-note').textContent=physicsMode==='mcm-preview'?'Recovered engine + suspension. Chassis, grip and steering remain experimental adaptations. Boost disabled.':'Original Dust Valley handling.';};
+function syncSandOption(){$('sand-option').hidden=false;$('sand-mode').disabled=false;$('sand-note').textContent='Tires carve soft sand in every mode. Switch off for hardpack.';}
 const speedCanvas=$('speedlines'),speedCtx=speedCanvas?speedCanvas.getContext('2d'):null;
 const mobile=matchMedia('(pointer: coarse)').matches||navigator.maxTouchPoints>0;
 const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -31,11 +35,15 @@ let renderer;
 try{renderer=new THREE.WebGLRenderer({canvas:$('game'),antialias:true,powerPreference:'high-performance'});}catch(e){$('menu').innerHTML='<h2>WebGL is unavailable</h2><p>Please open this game in a browser with hardware acceleration enabled.</p>';throw e;}
 renderer.setPixelRatio(Math.min(devicePixelRatio,mobile?1.5:2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
 const sky=new THREE.Mesh(new THREE.SphereGeometry(650,32,16),new THREE.MeshBasicMaterial({map:createSkyTexture(),side:THREE.BackSide,depthWrite:false,fog:false}));scene.add(sky);
+const environmentGenerator=new THREE.PMREMGenerator(renderer);
+let environmentTarget;
+const environmentScene=new THREE.Scene();
+const environmentSky=sky.clone();environmentSky.material=sky.material.clone();environmentScene.add(environmentSky);
 const sunDir=new THREE.Vector3(-110,62,48).normalize(),glowTexture=createDustTexture();
 const sunGlow=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTexture,color:'#ffcf8a',transparent:true,opacity:.34,depthWrite:false,blending:THREE.AdditiveBlending,fog:false}));sunGlow.scale.set(170,170,1);scene.add(sunGlow);
 const sunCore=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTexture,color:'#fff0c8',transparent:true,opacity:.85,depthWrite:false,blending:THREE.AdditiveBlending,fog:false}));sunCore.scale.set(42,42,1);scene.add(sunCore);
 const camera=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,.1,1000);
-const hemi=new THREE.HemisphereLight('#d7e7f0','#7a5638',1.35);scene.add(hemi);const sun=new THREE.DirectionalLight('#ffd6a3',2.35);sun.position.set(-110,62,48);sun.castShadow=true;sun.shadow.mapSize.set(mobile?1024:2048,mobile?1024:2048);Object.assign(sun.shadow.camera,{left:-65,right:65,top:65,bottom:-65,near:1,far:320});sun.shadow.bias=-.0005;scene.add(sun);scene.add(sun.target);
+const hemi=new THREE.HemisphereLight('#d7e7f0','#7a5638',1.35);scene.add(hemi);const sun=new THREE.DirectionalLight('#ffd6a3',2.35);sun.position.set(-110,62,48);sun.castShadow=true;sun.shadow.mapSize.set(mobile?1024:2048,mobile?1024:2048);Object.assign(sun.shadow.camera,{left:-24,right:24,top:24,bottom:-24,near:1,far:320});sun.shadow.bias=-.00012;sun.shadow.normalBias=.035;scene.add(sun);scene.add(sun.target);
 const timePresets={
  dawn:{sun:'#ffd6a3',sunI:2.35,hemiSky:'#d7e7f0',hemiGround:'#7a5638',hemiI:1.35,fog:'#d8c0a0',exposure:1.08,sky:'#ffffff',glow:'#ffcf8a'},
  day:{sun:'#fff4dc',sunI:2.8,hemiSky:'#e5f1f7',hemiGround:'#8b6946',hemiI:1.5,fog:'#cfd6c3',exposure:1.15,sky:'#ffffff',glow:'#fff3cf'},
@@ -43,8 +51,9 @@ const timePresets={
 };
 function applyTime(value=settings.time){
  const p=timePresets[value]||timePresets.dawn;
- sun.color.set(p.sun);sun.intensity=p.sunI;hemi.color.set(p.hemiSky);hemi.groundColor.set(p.hemiGround);hemi.intensity=p.hemiI;
+ sun.color.set(p.sun);sun.intensity=p.sunI;hemi.color.set(p.hemiSky);hemi.groundColor.set(p.hemiGround);hemi.intensity=p.hemiI*.65;
  scene.fog.color.set(p.fog);renderer.toneMappingExposure=p.exposure;sky.material.color.set(p.sky);sunGlow.material.color.set(p.glow);sunCore.material.color.set(p.glow);
+ environmentSky.material.color.set(p.sky);const old=environmentTarget;environmentTarget=environmentGenerator.fromScene(environmentScene,.04,.1,1000);scene.environment=environmentTarget.texture;scene.environmentIntensity=.45;if(old)old.dispose();
 }
 applyTime();
 function applyQuality(value=settings.quality){
@@ -58,17 +67,18 @@ function applyQuality(value=settings.quality){
  if(typeof grassMesh!=='undefined')grassMesh.count=low?Math.min(420,grassData.length):grassData.length;
  if(typeof dust!=='undefined')dust.visible=!low;
 }
-const materials={dirt:new THREE.MeshStandardMaterial({vertexColors:true,roughness:1,flatShading:true}),sand:new THREE.MeshStandardMaterial({color:'#b5794c',roughness:1}),rock:new THREE.MeshStandardMaterial({color:'#ac6846',roughness:1,flatShading:true}),dark:new THREE.MeshStandardMaterial({color:'#202b28',roughness:.8}),lime:new THREE.MeshStandardMaterial({color:'#d5f461',roughness:.5}),steel:new THREE.MeshStandardMaterial({color:'#b5c1ba',metalness:.7,roughness:.35}),white:new THREE.MeshStandardMaterial({color:'#eee9d4'}),green:new THREE.MeshStandardMaterial({color:'#727849',roughness:1})};
+const materials={dirt:new THREE.MeshStandardMaterial({vertexColors:true,roughness:1,flatShading:true}),sand:new THREE.MeshStandardMaterial({color:'#b5794c',roughness:1}),rock:new THREE.MeshStandardMaterial({color:'#ac6846',roughness:1,flatShading:true}),dark:new THREE.MeshStandardMaterial({color:'#202b28',roughness:.8}),lime:new THREE.MeshStandardMaterial({color:'#d5f461',roughness:.3}),steel:new THREE.MeshStandardMaterial({color:'#b5c1ba',metalness:.7,roughness:.35}),white:new THREE.MeshStandardMaterial({color:'#eee9d4'}),green:new THREE.MeshStandardMaterial({color:'#727849',roughness:1})};
 const textures=createTextures(renderer,mobile);
 applyTerrainTexture(materials.dirt,textures);
-materials.rock.map=textures.rock;materials.rock.color.set('#ffffff');materials.rock.bumpMap=textures.rock;materials.rock.bumpScale=.22;
+materials.rock.map=textures.rock;materials.rock.color.set('#ffffff');materials.rock.normalMap=textures.rockRelief.normal;materials.rock.normalScale.set(.85,.85);materials.rock.roughnessMap=textures.rockRelief.roughness;
 materials.green.map=textures.cactus;materials.green.color.set('#ffffff');materials.green.bumpMap=textures.cactus;materials.green.bumpScale=.06;
 materials.dark.map=textures.rubber;materials.dark.color.set('#ffffff');
 const groundGeo=new THREE.PlaneGeometry(900,900,360,360);groundGeo.rotateX(-Math.PI/2);groundGeo.setIndex(terrainIndices(360));const pos=groundGeo.attributes.position,colors=[];const c=new THREE.Color();for(let i=0;i<pos.count;i++){const x=pos.getX(i),z=pos.getZ(i);pos.setY(i,terrain(x,z));const d=trackDistance(x,z);c.set(d<10?'#a66b42':d<12?'#be8a57':'#c49765');c.multiplyScalar(.94+.07*Math.sin(x*3+z*6));colors.push(c.r,c.g,c.b);}groundGeo.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));groundGeo.computeVertexNormals();const ground=new THREE.Mesh(groundGeo,materials.dirt);ground.receiveShadow=true;scene.add(ground);
+const sandSurface=new SandSurface(scene,textures,materials.dirt);
 const groundDetail=new GroundDetail(scene,(x,z)=>surfaceHeight(x,z));
 const tireTracks=new TireTracks(scene,{capacity:mobile?3000:6000,texture:createTreadTexture()});
 // Sample the rendered triangles so tread decals sit on the visible ground.
-function surfaceHeight(x,z){return sampleGrid(i=>pos.getY(i),x,z,360,2.5);}
+function surfaceHeight(x,z){if(activeSand)return activeSand.height(x,z);return sampleGrid(i=>pos.getY(i),x,z,360,2.5);}
 
 function mesh(geo,mat,x,y,z,parent=scene){const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);parent.add(m);return m;}
 function box(w,h,d,mat,x,y,z,parent){return mesh(new THREE.BoxGeometry(w,h,d),mat,x,y,z,parent);}
@@ -259,6 +269,7 @@ function makeBike(){
     for(let j=0;j<12;j++){const spoke=box(.03,.87,.025,materials.steel,0,0,0,wheel);spoke.rotation.x=j*Math.PI/6;}
     for(let j=0;j<24;j++){const a=j/24*TAU;const tread=box(.29,.08,.14,materials.dark,0,Math.cos(a)*.745,Math.sin(a)*.745,wheel);tread.rotation.x=a;}
     // Wheels animate as assemblies; their tread and spokes need only two draws.
+    const brake=mesh(new THREE.RingGeometry(.16,.29,32),materials.steel,.18,0,0,wheel);brake.rotation.y=Math.PI/2;brake.material=materials.steel;
     const parts=[...wheel.children];
     const assemblies=batchMeshes(parts,wheel);
     // The old art had a 0.79 m outer radius around a 0.61 m physics tire.
@@ -276,13 +287,20 @@ function makeBike(){
     tube([x,.25,-.28],[x,.96,-.5]);tube([x,.96,-.5],[x,1.18,.65]);
     tube([x,.96,-.5],[x,1.02,-1.05],.025);tube([x,.42,-.1],[x,1.02,-1.05],.025);
   }
-  const tank=box(.48,.32,.62,materials.lime,0,1.02,.3,body);tank.rotation.x=-.14;
-  const seat=box(.39,.13,1.12,materials.dark,0,1.14,-.36,body);seat.rotation.x=.035;
+  // Radiator louvers, skid plate and side graphics give the chassis a readable silhouette.
+  mesh(new RoundedBoxGeometry(.42,.08,.6,2,.03),materials.dark,0,.22,.02,body);
+  for(const side of [-1,1]){
+    for(let i=0;i<6;i++)box(.035,.025,.27,materials.dark,side*.255,.78+i*.035,.4,body);
+    const decal=box(.008,.08,.35,materials.lime,side*.283,.88,-.5,body);decal.rotation.x=-.12;
+    tube([side*.23,1.12,.67],[side*.23,1.31,.72],.025);
+  }
+  const tank=mesh(new RoundedBoxGeometry(.48,.32,.62,3,.07),materials.lime,0,1.02,.3,body);tank.rotation.x=-.14;
+  const seat=mesh(new RoundedBoxGeometry(.39,.13,1.12,3,.05),materials.dark,0,1.14,-.36,body);seat.rotation.x=.035;
   const engine=box(.38,.4,.48,materials.steel,0,.53,.02,body);engine.rotation.x=.13;
   for(let i=0;i<5;i++)box(.43,.023,.32,materials.dark,0,.55+i*.055,.12,body);
   const caseCover=mesh(new THREE.CylinderGeometry(.18,.18,.44,16),materials.steel,0,.38,-.12,body);caseCover.rotation.z=Math.PI/2;
   for(const side of [-1,1]){
-    const panel=box(.025,.34,.58,materials.white,side*.25,.85,-.48,body);panel.rotation.x=-.12;
+    const panel=mesh(new RoundedBoxGeometry(.055,.34,.58,2,.025),materials.white,side*.25,.85,-.48,body);panel.rotation.x=-.12;
     box(.18,.05,.18,materials.steel,side*.32,.32,-.16,body);
   }
   const frontFender=mesh(new THREE.SphereGeometry(1,16,8),materials.lime,0,0,0);frontFender.scale.set(.22,.055,.5);frontFender.castShadow=true;
@@ -296,6 +314,11 @@ function makeBike(){
 
   const bar=mesh(new THREE.CylinderGeometry(.035,.035,1.08,10),materials.steel,0,0,0,handlebar);bar.rotation.z=Math.PI/2;
   for(const side of [-1,1]){const grip=mesh(new THREE.CylinderGeometry(.052,.052,.19,10),materials.dark,side*.49,0,0,handlebar);grip.rotation.z=Math.PI/2;}
+  // Batch rigid chassis pieces by material without baking the animated body offset.
+  const bodyOffset=body.position.y;body.position.y=0;body.updateMatrixWorld(true);
+  const rigidParts=body.children.filter(o=>o.isMesh);batchMeshes(rigidParts,body);
+  for(const part of rigidParts){body.remove(part);part.geometry.dispose();}
+  body.position.y=bodyOffset;
   const flameMat=new THREE.MeshBasicMaterial({color:'#ffb35c',transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false});
   const boostFlame=mesh(new THREE.ConeGeometry(.11,.7,8),flameMat,.3,1.02,-1.18,body);boostFlame.rotation.x=Math.PI/2;boostFlame.visible=false;boostFlame.castShadow=false;
   const boostGlow=new THREE.Sprite(new THREE.SpriteMaterial({map:createDustTexture(),color:'#ffb15c',transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false}));boostGlow.scale.set(.6,.6,1);boostGlow.position.set(.3,1.02,-1.18);boostGlow.renderOrder=3;boostGlow.visible=false;body.add(boostGlow);
@@ -371,7 +394,7 @@ joystick.addEventListener('pointerdown',e=>{if(joystickPointer!==null)return;e.p
 joystick.addEventListener('pointermove',moveJoystick);
 for(const event of ['pointerup','pointercancel','lostpointercapture'])joystick.addEventListener(event,e=>{if(e.pointerId!==joystickPointer)return;input.steer=undefined;input.lean=undefined;resetJoystick();});
 for(const b of document.querySelectorAll('[data-control]')){b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture(e.pointerId);input[b.dataset.control]=true;b.classList.add('pressed');});const up=()=>{input[b.dataset.control]=false;b.classList.remove('pressed');};b.addEventListener('pointerup',up);b.addEventListener('pointercancel',up);b.addEventListener('lostpointercapture',up);}
-for(const b of document.querySelectorAll('[data-mode]')){b.setAttribute('aria-pressed',String(b.classList.contains('selected')));b.onclick=()=>{mode=b.dataset.mode;updateEnvironment();document.querySelectorAll('[data-mode]').forEach(v=>{v.classList.toggle('selected',v===b);v.setAttribute('aria-pressed',String(v===b));});};}
+for(const b of document.querySelectorAll('[data-mode]')){b.setAttribute('aria-pressed',String(b.classList.contains('selected')));b.onclick=()=>{mode=b.dataset.mode;activeSand=null;updateEnvironment();document.querySelectorAll('[data-mode]').forEach(v=>{v.classList.toggle('selected',v===b);v.setAttribute('aria-pressed',String(v===b));});};}
 let settingsWasPlaying=false;
 function syncSettingsUI(){
  for(const b of document.querySelectorAll('[data-camera]'))b.classList.toggle('selected',b.dataset.camera===settings.camera);
@@ -416,7 +439,7 @@ renderer.domElement.addEventListener('pointermove',e=>{
 });
 for(const ev of ['pointerup','pointercancel','lostpointercapture'])renderer.domElement.addEventListener(ev,()=>{photoDrag=false;});
 renderer.domElement.addEventListener('wheel',e=>{if(phase!=='photo')return;e.preventDefault();photoDistance=Math.max(3,Math.min(22,photoDistance+e.deltaY*.01));},{passive:false});
-$('daily').onclick=()=>{physicsMode='classic';$('physics-mode').value='classic';$('physics-mode').onchange();mode='daily';updateEnvironment();document.querySelectorAll('[data-mode]').forEach(v=>{v.classList.remove('selected');v.setAttribute('aria-pressed','false');});laps=1;start();};
+$('daily').onclick=()=>{physicsMode='classic';$('physics-mode').value='classic';$('physics-mode').onchange();mode='daily';activeSand=null;updateEnvironment();document.querySelectorAll('[data-mode]').forEach(v=>{v.classList.remove('selected');v.setAttribute('aria-pressed','false');});laps=1;start();};
 function toast(text,duration=2){$('toast').textContent=text;toastTime=duration;}
 function formatTime(t){return `${String(Math.floor(t/60)).padStart(2,'0')}:${(t%60).toFixed(2).padStart(5,'0')}`;}
 function refreshMenuBest(){
@@ -430,6 +453,7 @@ const lightEls=[...document.querySelectorAll('#lights i')];
 function setLights(lit,go=false){lightEls.forEach((el,i)=>{el.classList.toggle('on',!go&&lit>i);el.classList.toggle('go',go);});}
 function highlight(){gates.forEach((g,i)=>{g.mat.color.set(i===nextGate?'#e4ff69':'#e4d8b2');g.mat.emissive.set(i===nextGate?'#556500':'#000000');});}
 function updateEnvironment(){
+  sandSurface.material.map=mode==='free'?textures.freeMacro:textures.macro;sandSurface.update(activeSand);syncSandOption();
   tireTracks.clear();
   trackObjects.visible=mode!=='free';tyreStacks.visible=mode!=='free';jumpMarkers.visible=mode==='free';materials.dirt.map=mode==='free'?textures.freeMacro:textures.macro;
   for(let i=0;i<pos.count;i++)pos.setY(i,terrain(pos.getX(i),pos.getZ(i)));
@@ -443,7 +467,8 @@ function updateEnvironment(){
 function start(){
  tireTracks.clear();
  laps=mode==='daily'?1:3;
- state=createState({physicsMode,...(mode==='free'?{height:freeTerrain,spawn:{x:0,z:0,yaw:0}}:{})});
+ state=createState({physicsMode,sand:$('sand-mode').checked,...(mode==='free'?{height:freeTerrain,spawn:{x:0,z:0,yaw:0}}:{})});
+ activeSand=state.physics?.sand||null;sandSurface.update(activeSand);updateEnvironment();
  $('preview-badge').hidden=physicsMode!=='mcm-preview';
  document.body.classList.toggle('mcm-preview',physicsMode==='mcm-preview');
  document.querySelector('.ride-hint').textContent=physicsMode==='mcm-preview'?'WASD ride · I / K rider lean · R recover':'WASD ride · SPACE boost · I / K rider lean · R recover';
@@ -704,8 +729,8 @@ if(phase==='playing'&&state.speed>4&&!state.air&&countdown<=0){
 for(let i=0;i<moteCount;i++){const m=moteBase[i];motePos[i*3]=camera.position.x+m.x+Math.sin(total*.13+m.phase)*1.2;motePos[i*3+1]=camera.position.y-1+m.y+Math.cos(total*.09+m.phase)*.35;motePos[i*3+2]=camera.position.z+m.z+Math.cos(total*.11+m.phase)*1.2;}moteGeo.attributes.position.needsUpdate=true;
 particles.forEach((p,i)=>{p.life-=dt*.62;if(p.life>0){p.x+=p.vx*dt;p.y+=p.vy*dt;p.z+=p.vz*dt;p.vx*=1-dt*1.4;p.vz*=1-dt*1.4;p.vy+=.12*dt;}dustPositions[i*3]=p.x;dustPositions[i*3+1]=p.life>0?p.y:-100;dustPositions[i*3+2]=p.z;});dustGeo.attributes.position.needsUpdate=true;
 rideAudio.update(state,input,phase==='playing'&&countdown<=0);
-$('speed').textContent=Math.round(state.speed*3.6);$('time').textContent=formatTime(elapsed);$('lap').innerHTML=mode==='free'?String(score):`${String(Math.min(lap,laps)).padStart(2,'0')}<span>/${String(laps).padStart(2,'0')}</span>`;$('gate').innerHTML=`${String(nextGate===0?12:nextGate).padStart(2,'0')}<span>/12</span>`;$('boost').style.width=state.boost+'%';$('gear').textContent=state.gear||1;$('rpm').style.width=Math.min(100,(state.rpm||1200)/10000*100)+'%';groundDetail.update(state.x,state.z);sky.position.copy(camera.position);sunGlow.position.copy(camera.position).addScaledVector(sunDir,560);sunCore.position.copy(sunGlow.position);drawMap();gates.forEach(g=>{g.group.visible=phase==='menu'?camera.aspect>0.95:g.group.position.distanceTo(camera.position)>13;});renderer.render(scene,camera);if(!$('loading').hidden)$('loading').hidden=true;}
+$('speed').textContent=Math.round(state.speed*3.6);$('time').textContent=formatTime(elapsed);$('lap').innerHTML=mode==='free'?String(score):`${String(Math.min(lap,laps)).padStart(2,'0')}<span>/${String(laps).padStart(2,'0')}</span>`;$('gate').innerHTML=`${String(nextGate===0?12:nextGate).padStart(2,'0')}<span>/12</span>`;$('boost').style.width=state.boost+'%';$('gear').textContent=state.gear||1;$('rpm').style.width=Math.min(100,(state.rpm||1200)/10000*100)+'%';sandSurface.update(activeSand);groundDetail.update(state.x,state.z);sky.position.copy(camera.position);sunGlow.position.copy(camera.position).addScaledVector(sunDir,560);sunCore.position.copy(sunGlow.position);drawMap();gates.forEach(g=>{g.group.visible=phase==='menu'?camera.aspect>0.95:g.group.position.distanceTo(camera.position)>13;});renderer.render(scene,camera);if(!$('loading').hidden)$('loading').hidden=true;}
 function resize(){renderer.setSize(innerWidth,innerHeight);if(speedCanvas){speedCanvas.width=innerWidth;speedCanvas.height=innerHeight;}camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}window.addEventListener('resize',resize);resize();updateDailyButton();
 requestAnimationFrame(animate);
 // Read-only diagnostics for smoke tests and performance inspection.
-window.__game={environment:()=>({trackVisible:trackObjects.visible,trackTexture:materials.dirt.map===textures.macro,height:state.physics.height(state.x,state.z),visualHeight:terrain(state.x,state.z),mountains:mountains.map(m=>({x:m.position.x,z:m.position.z,radius:m.userData.radius*Math.max(m.scale.x,m.scale.z),foundation:m.userData.foundation}))}),snapshot:()=>({phase,mode,elapsed,lap,nextGate,score,countdown,tireTrackSegments:tireTracks.count,...state}),renderer};
+window.__game={environment:()=>({sand:activeSand?{version:activeSand.version,tiles:activeSand.tiles.size,renderedTiles:sandSurface.meshes.size}:null,trackVisible:trackObjects.visible,trackTexture:materials.dirt.map===textures.macro,height:state.physics.height(state.x,state.z),visualHeight:terrain(state.x,state.z),mountains:mountains.map(m=>({x:m.position.x,z:m.position.z,radius:m.userData.radius*Math.max(m.scale.x,m.scale.z),foundation:m.userData.foundation}))}),snapshot:()=>({phase,mode,elapsed,lap,nextGate,score,countdown,tireTrackSegments:tireTracks.count,...state}),renderer};

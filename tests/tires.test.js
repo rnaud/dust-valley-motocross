@@ -19,7 +19,7 @@ test('slip produces an opposing lateral force and combined demand stays in the g
  assert.ok(Math.abs(powered.lateral)>100,'power must not erase all cornering grip');
 });
 function turn(speed,steer){
- const s=createState({flat:true,height:()=>0});
+ const s=createState({sand:false,flat:true,height:()=>0});
  for(let i=0;i<120;i++)stepBike(s,{},1/120);
  s.physics.chassis.velocity.z=speed;let heading=0,peakSlip=0;
  for(let i=0;i<120;i++){
