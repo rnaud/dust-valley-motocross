@@ -1762,3 +1762,20 @@ test('retained physics continues through the original frame-end rider return wit
   assert.deepEqual(actual.tail,outputBits,`connected frame-rider tail ${caseIndex}`);
  }
 });
+
+test('retained physics executes the original caller tail and frame return',async()=>{
+ const {evaluateResetFrameReturn}=await import('../scripts/mcm-reference/reset-frame-return-case.mjs');
+ const corpus=fixture('reset-frame-return-wine11.json.br');
+ assert.equal(corpus.source.mismatchCount,0);
+ assert.equal(corpus.source.exceptionCount,0);
+ assert.equal(corpus.source.priorTraceChangedCases,0);
+ assert.equal(Object.keys(corpus.source.returnGates).length,8);
+ assert.ok(corpus.fixtures.some(c=>c.input.frameReturn.playerIsBike&&c.input.frameReturn.state===3&&!c.input.frameReturn.disabled));
+ for(const {caseIndex,input,prefixBits,outputBits} of corpus.fixtures){
+  const actual=evaluateResetFrameReturn(input);
+  assert.equal(actual.tail.length,11097);
+  assert.equal(actual.tail[11096],1);
+  assert.deepEqual(actual.prefix,prefixBits,`frame return prefix ${caseIndex}`);
+  assert.deepEqual(actual.tail,outputBits,`frame return tail ${caseIndex}`);
+ }
+});
