@@ -1,15 +1,7 @@
 import {resolveMcmWorldMatrix} from './world-transform.js';
 import {invalidateMcmTransform} from './event-orientation.js';
-import {bitsFloat,floatBits} from './math.js';
+import {mcmAdd as add,mcmMultiply as mul} from './x87-arithmetic.js';
 const f=Math.fround;
-// x87 invalid arithmetic yields negative indefinite. For equal NaN payloads,
-// mixed signs propagate the positive value. This path handles overflowed state.
-const indefinite=bitsFloat(0xffc00000),positiveNaN=bitsFloat(0x7fc00000);
-function exceptional(a,b,operation){
- if(Number.isNaN(a)||Number.isNaN(b))return (Number.isNaN(a)&&!(floatBits(a)>>>31))||(Number.isNaN(b)&&!(floatBits(b)>>>31))?positiveNaN:indefinite;
- const value=operation(a,b);return Number.isNaN(value)?indefinite:value;
-}
-const mul=(a,b)=>exceptional(a,b,(x,y)=>x*y),add=(a,b)=>exceptional(a,b,(x,y)=>x+y);
 function exceptionalPoint(m,[x,y,z]){
  return [0,1,2].map(i=>f(add(add(add(mul(m[8+i],z),mul(m[i],x)),mul(m[4+i],y)),m[12+i])));
 }
