@@ -34,12 +34,16 @@ export function updateMcmBalanceCenter(c){
  c.balanceGeometryScratch[3]=f(squared);
  const inverse=(squared===0||Number.isNaN(squared))?0:mcmInverseSqrt(f(squared));
  const direction=(squared===0||Number.isNaN(squared))?[0,0,0]:[f(x*inverse),0,f(z*inverse)];
- c.balanceGeometryScratch.splice(0,3,...direction);
+ c.balanceGeometryScratch=new Float64Array(c.balanceGeometryScratch);
+ for(let i=0;i<3;i++)c.balanceGeometryScratch[i]=direction[i];
  const scale=(c.supportDepth+3)*(c.rearWeight-.5);
- const offset=direction.map(v=>f(mul(v,scale)));
- c.balanceGeometryScratch.splice(4,6,...offset,...offset);
- c.balanceCenter=c.balanceCenter.map((v,i)=>f(add(v,offset[i])));
- c.balanceGeometryScratch.splice(10,3,...c.balanceCenter);
+ const offset=new Float64Array(3),center=new Float64Array(3);
+ for(let i=0;i<3;i++){
+  offset[i]=f(mul(direction[i],scale));
+  c.balanceGeometryScratch[4+i]=c.balanceGeometryScratch[7+i]=offset[i];
+  center[i]=f(add(c.balanceCenter[i],offset[i]));c.balanceGeometryScratch[10+i]=center[i];
+ }
+ c.balanceCenter=center;
 }
 export function updateMcmContactBalanceSubstep(c){
  const result=updateMcmContactResponseSubstep(c);updateMcmContactBalance(c);updateMcmBalanceCenter(c);return result;

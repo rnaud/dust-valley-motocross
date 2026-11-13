@@ -4200,3 +4200,41 @@ motion stage; 7,045 retain the explicit pending, iteration-gate or original-cycl
 outcomes. The 236 archived fixtures pass in fresh processes on both architectures,
 and all 297 repository tests and the production build pass. See
 [machine-readable motion evidence](mcm-reset-next-motion-validation.json).
+
+### Retained next-frame controls and event setup
+
+The comparison continues from `0x4ab7fd` through controller handoff, crash
+orientation, airborne control/rotation, grounded alignment and limited-suspension
+exits. It then executes the original event decision/setup, stopping at the real
+rider-update entry or the common `0x4ac6cd` join. New observations contain 170
+control words and 188 event words. The source frame, next-frame motion and all
+previous observations remain unchanged.
+
+A bike already in crash state bypasses event decision and setup. The recovered
+continuation now follows that branch, preserving bike/rider state and join
+scratch; only observer counters are cleared. This accounts for 8,023 retained
+cases. The other control routes cover 77 airborne, 2,127 grounded and 669
+suspension-limited cases. Pending controllers, original reset cycles and
+nonpositive iteration counts still do not execute the new stage.
+
+Event input queries and random draws are observed separately from reset draws.
+The native event boundary supplies the same explicit launch and rider-selection
+values as the recovered adapter, with its own draw index. This validates the
+consumption order, including events with two through five draws; it does not
+claim that the complete application CRT RNG stream has been reproduced.
+
+Case 12088 reaches infinite crash steering. Original FSINCOS produces negative
+indefinite for either infinity, and the recovered trigonometric helper now
+preserves that sign. Typed balance scratch and native array slicing in proxy
+copies also preserve NaN signs across cold and partially warmed execution. The
+older prepared-substep fixture 5 guards the proxy copy.
+
+Rider updates, collisions and the remaining iterations of this second frame are
+not connected by this milestone. Long original-asset acceleration/release
+histories, nonzero carried extra suspension stiffness, AI/scripted controllers
+and full playable-preview integration remain outstanding.
+
+Validation: all 17,941 retained cases match on ARM64 and x64 with zero
+exceptions and zero changed prior native traces. The 341 archived fixtures pass
+in fresh processes on both architectures. All 298 repository tests and the
+production build pass. See [machine-readable controls/event evidence](mcm-reset-next-event-validation.json).
