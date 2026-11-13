@@ -3767,3 +3767,42 @@ maximum scheduler depth, present visual effects, dynamic bike/rider collisions,
 whole-bike acceleration/release trajectory comparison and playable integration
 remain required. This milestone does not establish complete frame or physics
 parity.
+
+### Connected caller tail and original frame return (`0x4ad07f..0x4ad115`)
+
+`frame-return.js` implements the tail after the rider call. With the manager gate
+clear, scene state 3 and this bike selected, it restores the bike and proxy's
+**local** translations from the old saved position, using the original ordered
+cache invalidation. It sets `+0x568` on that path and clears it on every other
+path. Every path then copies the current position to `+0x56c..0x574`.
+
+The extended harness continues from the same retained rider state into the
+unmodified caller tail and executes the original epilogue and `ret 4`. Its
+continuation is reached by that return, rather than by patching the tail's final
+stores or bypassing stack cleanup. Manager/scene state is initialized before
+the physics loop. All eight gate combinations are covered, with 2,206 cases
+each, including aliased and parented transform nodes already present in the
+source corpus.
+
+All 17,648 cases match all 19,374 observed words. The prior physics and rider
+captures remain byte-for-byte unchanged against the preceding native corpus.
+The new 143 words include the final flag, saved position, four complete
+transform/cache states, the old saved position, the current position and the
+return observation. See `mcm-reset-frame-return-validation.json` and
+`tests/fixtures/mcm/reset-frame-return-wine11.json.br`.
+
+```sh
+node scripts/mcm-reference/compare-reset-frame-return.mjs /path/to/mcm.exe /path/to/frame-rider-corpus /path/to/new-output-directory
+```
+
+Use `--replay` for comparison on another architecture. The source frame-rider
+corpus is required to verify that extending the native run preserves its earlier
+observations.
+
+Frame **entry** at `0x4a52c0` remains unconnected. Its initial vector constructors
+are no-ops, and `0x4a548a..0x4a54b6` restores the current position when `+0x568`
+was set by this tail. Scheduler setup, pre-loop recovery/control handling and
+that position-restore pairing must be connected before repeated-frame parity
+can be claimed. Longer histories, original asset/state integration, present
+visual effects, dynamic collisions, acceleration/release trajectory comparisons
+and playable integration also remain open.

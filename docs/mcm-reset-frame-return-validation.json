@@ -1,0 +1,75 @@
+{
+  "scope": "Retained reset, substeps, post-loop filter, rider update, caller tail and actual original frame epilogue/ret 4; frame entry not yet connected",
+  "cases": 17648,
+  "wordsPerCase": 19374,
+  "branches": {
+    "crash": 10758,
+    "normal": 5473,
+    "recovery": 984,
+    "trick": 293,
+    "nearby": 140
+  },
+  "recovery": {
+    "advance": 162,
+    "restart": 822
+  },
+  "returnGates": {
+    "disabled=0:state=2:player=false:restored=0": 2206,
+    "disabled=1:state=2:player=false:restored=0": 2206,
+    "disabled=0:state=3:player=false:restored=0": 2206,
+    "disabled=1:state=3:player=false:restored=0": 2206,
+    "disabled=0:state=2:player=true:restored=0": 2206,
+    "disabled=1:state=2:player=true:restored=0": 2206,
+    "disabled=0:state=3:player=true:restored=1": 2206,
+    "disabled=1:state=3:player=true:restored=0": 2206
+  },
+  "priorTraceChangedCases": 0,
+  "rawDeltaDiffersFromStoredInterval": 14084,
+  "initialStateChanges": {
+    "balanceFilter": "Initial value constrained to [0.25,0.75]; old arithmetic corpus includes invalid pose-domain values -0.1/1.1",
+    "control6f4": "Initial values in [-1,1]; arbitrary old raw control words can drive animation blend out of range",
+    "animation": "Complete linked pose/trick records and live objects initialized before reset; stopped and advancing rider objects",
+    "nearby": "Inherited initial side-target scenarios from the source frame-rider corpus; no mid-loop state changes",
+    "frameReturn": "All eight combinations of disabled gate, scene state 2/3, and selected player initialized before execution"
+  },
+  "limitations": [
+    "Synthetic initial state and animation assets",
+    "Frame entry not yet connected",
+    "At most four substeps in this corpus",
+    "Visual object c90 absent; static wall callbacks only",
+    "Long histories and whole-bike acceleration/release parity remain open"
+  ],
+  "mismatchCount": 0,
+  "exceptionCount": 0,
+  "mismatches": [],
+  "exceptions": [],
+  "exeSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "d3drmSha256": "7edb1ed218aececbb44f4d92d5b0880f0ff1777dc525e555140f987015d8be1a",
+  "inputSha256": "4a482120337d5e03ce7f11fcff07eb8f17fe9f5411fba0abd3c14793a4b6c7ab",
+  "outputSha256": "2155b888fdf13db63ad26afff3be9eb277cbeffa43e5cd48355805824c9046b7",
+  "prefixSha256": "f171496d14444cc09b46c30638d2de959f83756b13758a853d13ecb44848a8a1",
+  "architecture": "arm64",
+  "node": "v24.22.2",
+  "replays": [
+    {
+      "architecture": "arm64",
+      "node": "v24.22.2",
+      "mismatchCount": 0,
+      "exceptionCount": 0,
+      "priorTraceChangedCases": 0
+    },
+    {
+      "architecture": "x64",
+      "node": "v22.23.5",
+      "mismatchCount": 0,
+      "exceptionCount": 0,
+      "priorTraceChangedCases": 0
+    }
+  ],
+  "regressionFixtures": 943,
+  "coldFixtureReplay": [
+    "arm64",
+    "x64"
+  ],
+  "tests": 285
+}
