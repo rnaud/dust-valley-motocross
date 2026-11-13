@@ -1,0 +1,1937 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "sourceSha256": "6551f2600716c91fac89ff9b9969a3dd8206b58714bf21fad0d6b4c1b601a9ac",
+  "importSha256": "41ac306e9d1f5b8336a517faa0a13fec35b46eacd5560c13a244ce821fb5f36d",
+  "fixtureSha256": "0b2cf26e9070ecd2b2f3671dc3c2db0929ac028899836db169eb8db378f6282c",
+  "captureHashes": {
+    "observed": "014b81d36226e232b7c5a347925121dabe14999669c08d8b064a72b1c5b6f0d7",
+    "fixed": "f5c098fb0259caa021c211a253d800bc21bdc2306727aff34eaf0c2aa3f0b101"
+  },
+  "scope": "Same partial local checkpoint, different timing protocols. World, resources and caller stack are not restored. Not recovered full-bike parity.",
+  "checkpointBlocks": 42,
+  "observed": {
+    "framesPerPass": 400,
+    "firstMotionDifference": {
+      "frame": 113,
+      "phase": "before-update",
+      "fields": [
+        "velocityFeetPerSecond",
+        "angularVelocity"
+      ]
+    },
+    "firstRiderDifference": {
+      "offset": "0xa0",
+      "records": 282,
+      "firstFrame": 108,
+      "phase": "before-update"
+    },
+    "firstRandomDifference": {
+      "frame": 237,
+      "phase": "after-update",
+      "a": 2529458780,
+      "b": 3681394607
+    },
+    "randomDifferenceCount": 22,
+    "differingBikeWords": {
+      "0x488": {
+        "records": 482,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x48c": {
+        "records": 468,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x490": {
+        "records": 742,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x494": {
+        "records": 270,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x510": {
+        "records": 574,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x514": {
+        "records": 574,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x518": {
+        "records": 574,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x528": {
+        "records": 253,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x52c": {
+        "records": 253,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x530": {
+        "records": 572,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x534": {
+        "records": 572,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x538": {
+        "records": 253,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x53c": {
+        "records": 253,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x540": {
+        "records": 574,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x544": {
+        "records": 574,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x548": {
+        "records": 574,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x654": {
+        "records": 272,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x658": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x65c": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x6a4": {
+        "records": 574,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x8a8": {
+        "records": 19,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x4c0": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x4c4": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x4c8": {
+        "records": 270,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x4cc": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x4d0": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x4d4": {
+        "records": 270,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x4dc": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x4e0": {
+        "records": 270,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x4e4": {
+        "records": 276,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x4e8": {
+        "records": 270,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x4ec": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x4f8": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x4fc": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x51c": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x520": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x524": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x54c": {
+        "records": 569,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x550": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x554": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x558": {
+        "records": 26,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x55c": {
+        "records": 26,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x560": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x564": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x694": {
+        "records": 26,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x738": {
+        "records": 571,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x848": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x84c": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x850": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x854": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x56c": {
+        "records": 572,
+        "firstFrame": 114,
+        "phase": "before-update"
+      },
+      "0x570": {
+        "records": 572,
+        "firstFrame": 114,
+        "phase": "before-update"
+      },
+      "0x4d8": {
+        "records": 268,
+        "firstFrame": 114,
+        "phase": "after-update"
+      },
+      "0x4f0": {
+        "records": 268,
+        "firstFrame": 114,
+        "phase": "after-update"
+      },
+      "0x4f4": {
+        "records": 268,
+        "firstFrame": 114,
+        "phase": "after-update"
+      },
+      "0x500": {
+        "records": 569,
+        "firstFrame": 114,
+        "phase": "after-update"
+      },
+      "0x504": {
+        "records": 571,
+        "firstFrame": 114,
+        "phase": "after-update"
+      },
+      "0x508": {
+        "records": 571,
+        "firstFrame": 114,
+        "phase": "after-update"
+      },
+      "0x50c": {
+        "records": 569,
+        "firstFrame": 114,
+        "phase": "after-update"
+      },
+      "0x578": {
+        "records": 571,
+        "firstFrame": 114,
+        "phase": "after-update"
+      },
+      "0x57c": {
+        "records": 571,
+        "firstFrame": 114,
+        "phase": "after-update"
+      },
+      "0x580": {
+        "records": 278,
+        "firstFrame": 114,
+        "phase": "after-update"
+      },
+      "0x584": {
+        "records": 571,
+        "firstFrame": 114,
+        "phase": "after-update"
+      },
+      "0x588": {
+        "records": 571,
+        "firstFrame": 114,
+        "phase": "after-update"
+      },
+      "0x58c": {
+        "records": 276,
+        "firstFrame": 114,
+        "phase": "after-update"
+      },
+      "0x590": {
+        "records": 571,
+        "firstFrame": 114,
+        "phase": "after-update"
+      },
+      "0x594": {
+        "records": 571,
+        "firstFrame": 114,
+        "phase": "after-update"
+      },
+      "0x660": {
+        "records": 270,
+        "firstFrame": 114,
+        "phase": "after-update"
+      },
+      "0x664": {
+        "records": 571,
+        "firstFrame": 114,
+        "phase": "after-update"
+      },
+      "0x668": {
+        "records": 571,
+        "firstFrame": 114,
+        "phase": "after-update"
+      },
+      "0x66c": {
+        "records": 268,
+        "firstFrame": 114,
+        "phase": "after-update"
+      },
+      "0x670": {
+        "records": 563,
+        "firstFrame": 114,
+        "phase": "after-update"
+      },
+      "0x674": {
+        "records": 571,
+        "firstFrame": 114,
+        "phase": "after-update"
+      },
+      "0x73c": {
+        "records": 497,
+        "firstFrame": 114,
+        "phase": "after-update"
+      },
+      "0x894": {
+        "records": 571,
+        "firstFrame": 114,
+        "phase": "after-update"
+      },
+      "0x574": {
+        "records": 568,
+        "firstFrame": 115,
+        "phase": "before-update"
+      },
+      "0x624": {
+        "records": 264,
+        "firstFrame": 116,
+        "phase": "after-update"
+      },
+      "0x628": {
+        "records": 264,
+        "firstFrame": 116,
+        "phase": "after-update"
+      },
+      "0x62c": {
+        "records": 264,
+        "firstFrame": 116,
+        "phase": "after-update"
+      },
+      "0x6b0": {
+        "records": 26,
+        "firstFrame": 116,
+        "phase": "after-update"
+      },
+      "0x6b4": {
+        "records": 264,
+        "firstFrame": 116,
+        "phase": "after-update"
+      },
+      "0x6b8": {
+        "records": 561,
+        "firstFrame": 119,
+        "phase": "after-update"
+      },
+      "0x6bc": {
+        "records": 561,
+        "firstFrame": 119,
+        "phase": "after-update"
+      },
+      "0x6c0": {
+        "records": 561,
+        "firstFrame": 119,
+        "phase": "after-update"
+      },
+      "0x6c4": {
+        "records": 561,
+        "firstFrame": 119,
+        "phase": "after-update"
+      },
+      "0x6c8": {
+        "records": 561,
+        "firstFrame": 119,
+        "phase": "after-update"
+      },
+      "0x6cc": {
+        "records": 561,
+        "firstFrame": 119,
+        "phase": "after-update"
+      },
+      "0x730": {
+        "records": 256,
+        "firstFrame": 120,
+        "phase": "after-update"
+      },
+      "0x884": {
+        "records": 250,
+        "firstFrame": 123,
+        "phase": "after-update"
+      },
+      "0xca4": {
+        "records": 24,
+        "firstFrame": 125,
+        "phase": "after-update"
+      },
+      "0x8bc": {
+        "records": 42,
+        "firstFrame": 127,
+        "phase": "after-update"
+      },
+      "0x14": {
+        "records": 180,
+        "firstFrame": 154,
+        "phase": "after-update"
+      },
+      "0x218": {
+        "records": 180,
+        "firstFrame": 154,
+        "phase": "after-update"
+      },
+      "0x21c": {
+        "records": 180,
+        "firstFrame": 154,
+        "phase": "after-update"
+      },
+      "0x220": {
+        "records": 180,
+        "firstFrame": 154,
+        "phase": "after-update"
+      },
+      "0x224": {
+        "records": 180,
+        "firstFrame": 154,
+        "phase": "after-update"
+      },
+      "0x228": {
+        "records": 180,
+        "firstFrame": 154,
+        "phase": "after-update"
+      },
+      "0x22c": {
+        "records": 180,
+        "firstFrame": 154,
+        "phase": "after-update"
+      },
+      "0x620": {
+        "records": 140,
+        "firstFrame": 167,
+        "phase": "after-update"
+      },
+      "0x4bc": {
+        "records": 80,
+        "firstFrame": 169,
+        "phase": "after-update"
+      },
+      "0x8c4": {
+        "records": 12,
+        "firstFrame": 185,
+        "phase": "after-update"
+      },
+      "0x844": {
+        "records": 66,
+        "firstFrame": 215,
+        "phase": "after-update"
+      },
+      "0xcc0": {
+        "records": 66,
+        "firstFrame": 215,
+        "phase": "after-update"
+      },
+      "0x724": {
+        "records": 22,
+        "firstFrame": 237,
+        "phase": "after-update"
+      },
+      "0x728": {
+        "records": 22,
+        "firstFrame": 237,
+        "phase": "after-update"
+      },
+      "0x72c": {
+        "records": 22,
+        "firstFrame": 237,
+        "phase": "after-update"
+      },
+      "0x734": {
+        "records": 325,
+        "firstFrame": 237,
+        "phase": "after-update"
+      },
+      "0x888": {
+        "records": 324,
+        "firstFrame": 237,
+        "phase": "after-update"
+      },
+      "0x8ac": {
+        "records": 44,
+        "firstFrame": 237,
+        "phase": "after-update"
+      },
+      "0xc70": {
+        "records": 22,
+        "firstFrame": 237,
+        "phase": "after-update"
+      },
+      "0xc74": {
+        "records": 22,
+        "firstFrame": 237,
+        "phase": "after-update"
+      },
+      "0xc78": {
+        "records": 22,
+        "firstFrame": 237,
+        "phase": "after-update"
+      },
+      "0x6e8": {
+        "records": 22,
+        "firstFrame": 238,
+        "phase": "after-update"
+      },
+      "0x6ec": {
+        "records": 22,
+        "firstFrame": 238,
+        "phase": "after-update"
+      },
+      "0x6f4": {
+        "records": 22,
+        "firstFrame": 238,
+        "phase": "after-update"
+      },
+      "0x700": {
+        "records": 22,
+        "firstFrame": 238,
+        "phase": "after-update"
+      }
+    },
+    "differingEngineWords": {
+      "0x154": {
+        "records": 22,
+        "firstFrame": 237,
+        "phase": "after-update"
+      }
+    },
+    "differingRiderWords": {
+      "0xa0": {
+        "records": 282,
+        "firstFrame": 108,
+        "phase": "before-update"
+      },
+      "0xa4": {
+        "records": 282,
+        "firstFrame": 108,
+        "phase": "before-update"
+      },
+      "0xa8": {
+        "records": 282,
+        "firstFrame": 108,
+        "phase": "before-update"
+      },
+      "0xac": {
+        "records": 282,
+        "firstFrame": 108,
+        "phase": "before-update"
+      },
+      "0xb0": {
+        "records": 282,
+        "firstFrame": 108,
+        "phase": "before-update"
+      },
+      "0xb4": {
+        "records": 282,
+        "firstFrame": 108,
+        "phase": "before-update"
+      },
+      "0xe8": {
+        "records": 584,
+        "firstFrame": 108,
+        "phase": "before-update"
+      },
+      "0xec": {
+        "records": 584,
+        "firstFrame": 108,
+        "phase": "before-update"
+      },
+      "0xf0": {
+        "records": 584,
+        "firstFrame": 108,
+        "phase": "before-update"
+      },
+      "0x58": {
+        "records": 574,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x5c": {
+        "records": 574,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x60": {
+        "records": 574,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x64": {
+        "records": 574,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x68": {
+        "records": 574,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x6c": {
+        "records": 574,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0xb8": {
+        "records": 574,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0xbc": {
+        "records": 574,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0xc0": {
+        "records": 574,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0xc8": {
+        "records": 574,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0xcc": {
+        "records": 574,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0xd0": {
+        "records": 574,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0xd8": {
+        "records": 574,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0xdc": {
+        "records": 574,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0xe0": {
+        "records": 574,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0xf8": {
+        "records": 32,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x138": {
+        "records": 26,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x140": {
+        "records": 4,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x154": {
+        "records": 68,
+        "firstFrame": 113,
+        "phase": "before-update"
+      },
+      "0x70": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x74": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x78": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x7c": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x80": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x84": {
+        "records": 573,
+        "firstFrame": 113,
+        "phase": "after-update"
+      },
+      "0x40": {
+        "records": 572,
+        "firstFrame": 114,
+        "phase": "before-update"
+      },
+      "0x44": {
+        "records": 572,
+        "firstFrame": 114,
+        "phase": "before-update"
+      },
+      "0x148": {
+        "records": 34,
+        "firstFrame": 114,
+        "phase": "before-update"
+      },
+      "0x48": {
+        "records": 568,
+        "firstFrame": 115,
+        "phase": "before-update"
+      },
+      "0x4c": {
+        "records": 570,
+        "firstFrame": 115,
+        "phase": "before-update"
+      },
+      "0x50": {
+        "records": 570,
+        "firstFrame": 115,
+        "phase": "before-update"
+      },
+      "0x54": {
+        "records": 566,
+        "firstFrame": 116,
+        "phase": "before-update"
+      },
+      "0x144": {
+        "records": 54,
+        "firstFrame": 123,
+        "phase": "before-update"
+      },
+      "0x14c": {
+        "records": 24,
+        "firstFrame": 123,
+        "phase": "before-update"
+      },
+      "0x168": {
+        "records": 554,
+        "firstFrame": 123,
+        "phase": "before-update"
+      },
+      "0x3a4": {
+        "records": 456,
+        "firstFrame": 135,
+        "phase": "before-update"
+      },
+      "0x16c": {
+        "records": 22,
+        "firstFrame": 237,
+        "phase": "after-update"
+      }
+    },
+    "differingStackWordCount": 680,
+    "timing": {
+      "fixed": false,
+      "passes": [
+        {
+          "updates": 399,
+          "updatesDuringBike": 0,
+          "intervalBits": [
+            1010055513,
+            1034147595,
+            1033208071,
+            1033073853,
+            1033342288,
+            1032939635,
+            1032805417,
+            1032671200,
+            1038979433,
+            1033476506,
+            1033610724,
+            1037637256,
+            1035087119,
+            1034952901,
+            1035221337,
+            1034818683,
+            1034684466,
+            1033879159,
+            1034013377,
+            1033744942,
+            1034281812,
+            1038308345,
+            1034416030,
+            1035623990,
+            1034550248
+          ]
+        },
+        {
+          "updates": 399,
+          "updatesDuringBike": 0,
+          "intervalBits": [
+            1033610724,
+            1033744942,
+            1033342288,
+            1033208071,
+            1034416030,
+            1035087119,
+            1034952901,
+            1034818683,
+            1034684466,
+            1036160861,
+            1035623990,
+            1036697732,
+            1036563514,
+            1035221337,
+            1035892425,
+            1035758208,
+            1036429296,
+            1036966167,
+            1037771474,
+            1036295078,
+            1037637256,
+            1036831949,
+            1037100385,
+            1061846778,
+            1040388719,
+            1039918957,
+            1038039909,
+            1037368820,
+            1037503038,
+            1038442562,
+            1037234603,
+            1039113651,
+            1039247869,
+            1038308345,
+            1036026643,
+            1038174127,
+            1035355554,
+            1055018452,
+            1069983728,
+            1067190322,
+            1064296252,
+            1049381307,
+            1040724263,
+            1040522937,
+            1040657154,
+            1041261134,
+            1041194025,
+            1041126917,
+            1040053175,
+            1038710998,
+            1035489772,
+            1034550248,
+            1034281812,
+            1034147595,
+            1037905691,
+            1034013377,
+            1033879159,
+            1033476506,
+            1033073853,
+            1032939635,
+            1032805417,
+            1032671200
+          ]
+        }
+      ],
+      "differences": 748
+    },
+    "crashedBoundaries": [
+      288,
+      266
+    ]
+  },
+  "fixed": {
+    "framesPerPass": 400,
+    "firstMotionDifference": {
+      "frame": 55,
+      "phase": "before-update",
+      "fields": [
+        "angularVelocity"
+      ]
+    },
+    "firstRiderDifference": {
+      "offset": "0x58",
+      "records": 798,
+      "firstFrame": 1,
+      "phase": "before-update"
+    },
+    "firstRandomDifference": {
+      "frame": 104,
+      "phase": "after-update",
+      "a": 1449997005,
+      "b": 2644521496
+    },
+    "randomDifferenceCount": 591,
+    "differingBikeWords": {
+      "0x488": {
+        "records": 724,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x48c": {
+        "records": 744,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x490": {
+        "records": 738,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x494": {
+        "records": 572,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x540": {
+        "records": 744,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x544": {
+        "records": 744,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x548": {
+        "records": 737,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x654": {
+        "records": 743,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x658": {
+        "records": 739,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x65c": {
+        "records": 739,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x8a8": {
+        "records": 115,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x528": {
+        "records": 690,
+        "firstFrame": 55,
+        "phase": "before-update"
+      },
+      "0x52c": {
+        "records": 690,
+        "firstFrame": 55,
+        "phase": "before-update"
+      },
+      "0x538": {
+        "records": 683,
+        "firstFrame": 55,
+        "phase": "before-update"
+      },
+      "0x53c": {
+        "records": 690,
+        "firstFrame": 55,
+        "phase": "before-update"
+      },
+      "0x4c8": {
+        "records": 689,
+        "firstFrame": 55,
+        "phase": "after-update"
+      },
+      "0x4d4": {
+        "records": 689,
+        "firstFrame": 55,
+        "phase": "after-update"
+      },
+      "0x4d8": {
+        "records": 629,
+        "firstFrame": 55,
+        "phase": "after-update"
+      },
+      "0x4e4": {
+        "records": 689,
+        "firstFrame": 55,
+        "phase": "after-update"
+      },
+      "0x4f0": {
+        "records": 665,
+        "firstFrame": 56,
+        "phase": "after-update"
+      },
+      "0x518": {
+        "records": 687,
+        "firstFrame": 56,
+        "phase": "after-update"
+      },
+      "0x524": {
+        "records": 687,
+        "firstFrame": 56,
+        "phase": "after-update"
+      },
+      "0x58c": {
+        "records": 687,
+        "firstFrame": 56,
+        "phase": "after-update"
+      },
+      "0x660": {
+        "records": 687,
+        "firstFrame": 56,
+        "phase": "after-update"
+      },
+      "0x66c": {
+        "records": 687,
+        "firstFrame": 56,
+        "phase": "after-update"
+      },
+      "0x674": {
+        "records": 687,
+        "firstFrame": 56,
+        "phase": "after-update"
+      },
+      "0x6ac": {
+        "records": 68,
+        "firstFrame": 56,
+        "phase": "after-update"
+      },
+      "0x580": {
+        "records": 685,
+        "firstFrame": 57,
+        "phase": "after-update"
+      },
+      "0x670": {
+        "records": 683,
+        "firstFrame": 57,
+        "phase": "after-update"
+      },
+      "0x51c": {
+        "records": 681,
+        "firstFrame": 58,
+        "phase": "after-update"
+      },
+      "0x554": {
+        "records": 669,
+        "firstFrame": 58,
+        "phase": "after-update"
+      },
+      "0x560": {
+        "records": 677,
+        "firstFrame": 58,
+        "phase": "after-update"
+      },
+      "0x734": {
+        "records": 641,
+        "firstFrame": 58,
+        "phase": "after-update"
+      },
+      "0x738": {
+        "records": 675,
+        "firstFrame": 58,
+        "phase": "after-update"
+      },
+      "0x4c4": {
+        "records": 681,
+        "firstFrame": 59,
+        "phase": "after-update"
+      },
+      "0x4cc": {
+        "records": 681,
+        "firstFrame": 59,
+        "phase": "after-update"
+      },
+      "0x4fc": {
+        "records": 679,
+        "firstFrame": 59,
+        "phase": "after-update"
+      },
+      "0x508": {
+        "records": 679,
+        "firstFrame": 59,
+        "phase": "after-update"
+      },
+      "0x514": {
+        "records": 681,
+        "firstFrame": 59,
+        "phase": "after-update"
+      },
+      "0x520": {
+        "records": 681,
+        "firstFrame": 59,
+        "phase": "after-update"
+      },
+      "0x530": {
+        "records": 681,
+        "firstFrame": 59,
+        "phase": "after-update"
+      },
+      "0x534": {
+        "records": 681,
+        "firstFrame": 59,
+        "phase": "after-update"
+      },
+      "0x590": {
+        "records": 677,
+        "firstFrame": 59,
+        "phase": "after-update"
+      },
+      "0x594": {
+        "records": 679,
+        "firstFrame": 59,
+        "phase": "after-update"
+      },
+      "0x6a4": {
+        "records": 681,
+        "firstFrame": 59,
+        "phase": "after-update"
+      },
+      "0x570": {
+        "records": 678,
+        "firstFrame": 60,
+        "phase": "before-update"
+      },
+      "0x4e0": {
+        "records": 675,
+        "firstFrame": 60,
+        "phase": "after-update"
+      },
+      "0x564": {
+        "records": 679,
+        "firstFrame": 60,
+        "phase": "after-update"
+      },
+      "0x664": {
+        "records": 679,
+        "firstFrame": 60,
+        "phase": "after-update"
+      },
+      "0x668": {
+        "records": 679,
+        "firstFrame": 60,
+        "phase": "after-update"
+      },
+      "0x848": {
+        "records": 679,
+        "firstFrame": 60,
+        "phase": "after-update"
+      },
+      "0x84c": {
+        "records": 679,
+        "firstFrame": 60,
+        "phase": "after-update"
+      },
+      "0x850": {
+        "records": 675,
+        "firstFrame": 60,
+        "phase": "after-update"
+      },
+      "0x854": {
+        "records": 675,
+        "firstFrame": 60,
+        "phase": "after-update"
+      },
+      "0x500": {
+        "records": 667,
+        "firstFrame": 61,
+        "phase": "after-update"
+      },
+      "0x578": {
+        "records": 661,
+        "firstFrame": 61,
+        "phase": "after-update"
+      },
+      "0x57c": {
+        "records": 675,
+        "firstFrame": 61,
+        "phase": "after-update"
+      },
+      "0x574": {
+        "records": 666,
+        "firstFrame": 62,
+        "phase": "before-update"
+      },
+      "0x510": {
+        "records": 669,
+        "firstFrame": 62,
+        "phase": "after-update"
+      },
+      "0x588": {
+        "records": 673,
+        "firstFrame": 62,
+        "phase": "after-update"
+      },
+      "0x894": {
+        "records": 663,
+        "firstFrame": 62,
+        "phase": "after-update"
+      },
+      "0x50c": {
+        "records": 653,
+        "firstFrame": 67,
+        "phase": "after-update"
+      },
+      "0x584": {
+        "records": 657,
+        "firstFrame": 68,
+        "phase": "after-update"
+      },
+      "0x4c0": {
+        "records": 657,
+        "firstFrame": 69,
+        "phase": "after-update"
+      },
+      "0x4d0": {
+        "records": 657,
+        "firstFrame": 69,
+        "phase": "after-update"
+      },
+      "0x4dc": {
+        "records": 661,
+        "firstFrame": 69,
+        "phase": "after-update"
+      },
+      "0x4ec": {
+        "records": 661,
+        "firstFrame": 69,
+        "phase": "after-update"
+      },
+      "0x4f8": {
+        "records": 653,
+        "firstFrame": 73,
+        "phase": "after-update"
+      },
+      "0x56c": {
+        "records": 652,
+        "firstFrame": 74,
+        "phase": "before-update"
+      },
+      "0x504": {
+        "records": 647,
+        "firstFrame": 74,
+        "phase": "after-update"
+      },
+      "0x4e8": {
+        "records": 613,
+        "firstFrame": 75,
+        "phase": "after-update"
+      },
+      "0x54c": {
+        "records": 601,
+        "firstFrame": 76,
+        "phase": "after-update"
+      },
+      "0x550": {
+        "records": 607,
+        "firstFrame": 76,
+        "phase": "after-update"
+      },
+      "0x4f4": {
+        "records": 595,
+        "firstFrame": 87,
+        "phase": "after-update"
+      },
+      "0x73c": {
+        "records": 589,
+        "firstFrame": 93,
+        "phase": "after-update"
+      },
+      "0x6b8": {
+        "records": 609,
+        "firstFrame": 95,
+        "phase": "after-update"
+      },
+      "0x6bc": {
+        "records": 609,
+        "firstFrame": 95,
+        "phase": "after-update"
+      },
+      "0x6c0": {
+        "records": 609,
+        "firstFrame": 95,
+        "phase": "after-update"
+      },
+      "0x6c4": {
+        "records": 609,
+        "firstFrame": 95,
+        "phase": "after-update"
+      },
+      "0x6c8": {
+        "records": 609,
+        "firstFrame": 95,
+        "phase": "after-update"
+      },
+      "0x6cc": {
+        "records": 609,
+        "firstFrame": 95,
+        "phase": "after-update"
+      },
+      "0xc74": {
+        "records": 609,
+        "firstFrame": 95,
+        "phase": "after-update"
+      },
+      "0x728": {
+        "records": 137,
+        "firstFrame": 98,
+        "phase": "after-update"
+      },
+      "0x844": {
+        "records": 288,
+        "firstFrame": 104,
+        "phase": "before-update"
+      },
+      "0x884": {
+        "records": 556,
+        "firstFrame": 104,
+        "phase": "before-update"
+      },
+      "0x890": {
+        "records": 592,
+        "firstFrame": 104,
+        "phase": "before-update"
+      },
+      "0x898": {
+        "records": 592,
+        "firstFrame": 104,
+        "phase": "before-update"
+      },
+      "0x8a0": {
+        "records": 592,
+        "firstFrame": 104,
+        "phase": "before-update"
+      },
+      "0x8b4": {
+        "records": 1,
+        "firstFrame": 104,
+        "phase": "before-update"
+      },
+      "0x8b8": {
+        "records": 1,
+        "firstFrame": 104,
+        "phase": "before-update"
+      },
+      "0x6e8": {
+        "records": 133,
+        "firstFrame": 104,
+        "phase": "after-update"
+      },
+      "0x6ec": {
+        "records": 133,
+        "firstFrame": 104,
+        "phase": "after-update"
+      },
+      "0x6f4": {
+        "records": 133,
+        "firstFrame": 104,
+        "phase": "after-update"
+      },
+      "0x700": {
+        "records": 133,
+        "firstFrame": 104,
+        "phase": "after-update"
+      },
+      "0x870": {
+        "records": 131,
+        "firstFrame": 104,
+        "phase": "after-update"
+      },
+      "0xcb8": {
+        "records": 52,
+        "firstFrame": 104,
+        "phase": "after-update"
+      },
+      "0xcbc": {
+        "records": 2,
+        "firstFrame": 104,
+        "phase": "after-update"
+      },
+      "0x624": {
+        "records": 569,
+        "firstFrame": 115,
+        "phase": "after-update"
+      },
+      "0x628": {
+        "records": 569,
+        "firstFrame": 115,
+        "phase": "after-update"
+      },
+      "0x62c": {
+        "records": 569,
+        "firstFrame": 115,
+        "phase": "after-update"
+      },
+      "0x6b0": {
+        "records": 22,
+        "firstFrame": 115,
+        "phase": "after-update"
+      },
+      "0x6b4": {
+        "records": 569,
+        "firstFrame": 115,
+        "phase": "after-update"
+      },
+      "0x730": {
+        "records": 567,
+        "firstFrame": 115,
+        "phase": "after-update"
+      },
+      "0x8bc": {
+        "records": 40,
+        "firstFrame": 115,
+        "phase": "after-update"
+      },
+      "0x14": {
+        "records": 426,
+        "firstFrame": 116,
+        "phase": "after-update"
+      },
+      "0x218": {
+        "records": 426,
+        "firstFrame": 116,
+        "phase": "after-update"
+      },
+      "0x21c": {
+        "records": 426,
+        "firstFrame": 116,
+        "phase": "after-update"
+      },
+      "0x220": {
+        "records": 426,
+        "firstFrame": 116,
+        "phase": "after-update"
+      },
+      "0x224": {
+        "records": 426,
+        "firstFrame": 116,
+        "phase": "after-update"
+      },
+      "0x228": {
+        "records": 426,
+        "firstFrame": 116,
+        "phase": "after-update"
+      },
+      "0x22c": {
+        "records": 426,
+        "firstFrame": 116,
+        "phase": "after-update"
+      },
+      "0x4bc": {
+        "records": 515,
+        "firstFrame": 118,
+        "phase": "after-update"
+      },
+      "0x8c4": {
+        "records": 16,
+        "firstFrame": 119,
+        "phase": "after-update"
+      },
+      "0x558": {
+        "records": 169,
+        "firstFrame": 120,
+        "phase": "after-update"
+      },
+      "0x55c": {
+        "records": 169,
+        "firstFrame": 120,
+        "phase": "after-update"
+      },
+      "0x694": {
+        "records": 169,
+        "firstFrame": 120,
+        "phase": "after-update"
+      },
+      "0xca4": {
+        "records": 90,
+        "firstFrame": 120,
+        "phase": "after-update"
+      },
+      "0x620": {
+        "records": 152,
+        "firstFrame": 124,
+        "phase": "after-update"
+      },
+      "0xcc0": {
+        "records": 287,
+        "firstFrame": 256,
+        "phase": "after-update"
+      },
+      "0x724": {
+        "records": 133,
+        "firstFrame": 333,
+        "phase": "after-update"
+      },
+      "0x72c": {
+        "records": 133,
+        "firstFrame": 333,
+        "phase": "after-update"
+      },
+      "0x888": {
+        "records": 133,
+        "firstFrame": 333,
+        "phase": "after-update"
+      },
+      "0x8ac": {
+        "records": 133,
+        "firstFrame": 333,
+        "phase": "after-update"
+      },
+      "0xc70": {
+        "records": 2,
+        "firstFrame": 333,
+        "phase": "after-update"
+      },
+      "0xc78": {
+        "records": 2,
+        "firstFrame": 333,
+        "phase": "after-update"
+      },
+      "0xc6c": {
+        "records": 2,
+        "firstFrame": 334,
+        "phase": "after-update"
+      }
+    },
+    "differingEngineWords": {
+      "0x7c": {
+        "records": 52,
+        "firstFrame": 104,
+        "phase": "after-update"
+      },
+      "0x150": {
+        "records": 2,
+        "firstFrame": 104,
+        "phase": "after-update"
+      },
+      "0x15c": {
+        "records": 52,
+        "firstFrame": 104,
+        "phase": "after-update"
+      },
+      "0x160": {
+        "records": 52,
+        "firstFrame": 104,
+        "phase": "after-update"
+      },
+      "0x154": {
+        "records": 547,
+        "firstFrame": 126,
+        "phase": "after-update"
+      },
+      "0x158": {
+        "records": 292,
+        "firstFrame": 126,
+        "phase": "after-update"
+      },
+      "0x168": {
+        "records": 12,
+        "firstFrame": 126,
+        "phase": "after-update"
+      }
+    },
+    "differingRiderWords": {
+      "0x58": {
+        "records": 798,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x5c": {
+        "records": 798,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x60": {
+        "records": 798,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x64": {
+        "records": 798,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x68": {
+        "records": 798,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x6c": {
+        "records": 798,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0xe8": {
+        "records": 798,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0xec": {
+        "records": 798,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0xf0": {
+        "records": 798,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x154": {
+        "records": 476,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x44": {
+        "records": 678,
+        "firstFrame": 60,
+        "phase": "before-update"
+      },
+      "0x50": {
+        "records": 676,
+        "firstFrame": 61,
+        "phase": "before-update"
+      },
+      "0x48": {
+        "records": 666,
+        "firstFrame": 62,
+        "phase": "before-update"
+      },
+      "0x54": {
+        "records": 664,
+        "firstFrame": 63,
+        "phase": "before-update"
+      },
+      "0x40": {
+        "records": 652,
+        "firstFrame": 74,
+        "phase": "before-update"
+      },
+      "0x4c": {
+        "records": 650,
+        "firstFrame": 75,
+        "phase": "before-update"
+      },
+      "0x70": {
+        "records": 592,
+        "firstFrame": 104,
+        "phase": "before-update"
+      },
+      "0x74": {
+        "records": 592,
+        "firstFrame": 104,
+        "phase": "before-update"
+      },
+      "0x78": {
+        "records": 592,
+        "firstFrame": 104,
+        "phase": "before-update"
+      },
+      "0x7c": {
+        "records": 592,
+        "firstFrame": 104,
+        "phase": "before-update"
+      },
+      "0x80": {
+        "records": 592,
+        "firstFrame": 104,
+        "phase": "before-update"
+      },
+      "0x84": {
+        "records": 592,
+        "firstFrame": 104,
+        "phase": "before-update"
+      },
+      "0x13c": {
+        "records": 1,
+        "firstFrame": 104,
+        "phase": "before-update"
+      },
+      "0x160": {
+        "records": 1,
+        "firstFrame": 104,
+        "phase": "before-update"
+      },
+      "0x164": {
+        "records": 592,
+        "firstFrame": 104,
+        "phase": "before-update"
+      },
+      "0x168": {
+        "records": 592,
+        "firstFrame": 104,
+        "phase": "before-update"
+      },
+      "0x16c": {
+        "records": 134,
+        "firstFrame": 104,
+        "phase": "before-update"
+      },
+      "0x170": {
+        "records": 1,
+        "firstFrame": 104,
+        "phase": "before-update"
+      },
+      "0xb8": {
+        "records": 590,
+        "firstFrame": 105,
+        "phase": "before-update"
+      },
+      "0xbc": {
+        "records": 590,
+        "firstFrame": 105,
+        "phase": "before-update"
+      },
+      "0xc0": {
+        "records": 590,
+        "firstFrame": 105,
+        "phase": "before-update"
+      },
+      "0xc8": {
+        "records": 590,
+        "firstFrame": 105,
+        "phase": "before-update"
+      },
+      "0xcc": {
+        "records": 590,
+        "firstFrame": 105,
+        "phase": "before-update"
+      },
+      "0xd0": {
+        "records": 590,
+        "firstFrame": 105,
+        "phase": "before-update"
+      },
+      "0xd8": {
+        "records": 590,
+        "firstFrame": 105,
+        "phase": "before-update"
+      },
+      "0xdc": {
+        "records": 590,
+        "firstFrame": 105,
+        "phase": "before-update"
+      },
+      "0xe0": {
+        "records": 590,
+        "firstFrame": 105,
+        "phase": "before-update"
+      },
+      "0xa0": {
+        "records": 560,
+        "firstFrame": 120,
+        "phase": "before-update"
+      },
+      "0xa4": {
+        "records": 560,
+        "firstFrame": 120,
+        "phase": "before-update"
+      },
+      "0xa8": {
+        "records": 560,
+        "firstFrame": 120,
+        "phase": "before-update"
+      },
+      "0xac": {
+        "records": 560,
+        "firstFrame": 120,
+        "phase": "before-update"
+      },
+      "0xb0": {
+        "records": 560,
+        "firstFrame": 120,
+        "phase": "before-update"
+      },
+      "0xb4": {
+        "records": 560,
+        "firstFrame": 120,
+        "phase": "before-update"
+      },
+      "0xf8": {
+        "records": 136,
+        "firstFrame": 120,
+        "phase": "before-update"
+      },
+      "0x138": {
+        "records": 169,
+        "firstFrame": 120,
+        "phase": "before-update"
+      },
+      "0x140": {
+        "records": 36,
+        "firstFrame": 120,
+        "phase": "before-update"
+      },
+      "0x3a4": {
+        "records": 550,
+        "firstFrame": 120,
+        "phase": "before-update"
+      },
+      "0x144": {
+        "records": 255,
+        "firstFrame": 121,
+        "phase": "before-update"
+      },
+      "0x148": {
+        "records": 318,
+        "firstFrame": 123,
+        "phase": "before-update"
+      },
+      "0x14c": {
+        "records": 40,
+        "firstFrame": 182,
+        "phase": "before-update"
+      }
+    },
+    "differingStackWordCount": 696,
+    "timing": {
+      "fixed": true,
+      "passes": [
+        {
+          "updates": 399,
+          "updatesDuringBike": 0,
+          "intervalBits": [
+            1017370378
+          ]
+        },
+        {
+          "updates": 399,
+          "updatesDuringBike": 0,
+          "intervalBits": [
+            1017370378
+          ]
+        }
+      ],
+      "differences": 0
+    },
+    "crashedBoundaries": [
+      591,
+      459
+    ]
+  }
+}

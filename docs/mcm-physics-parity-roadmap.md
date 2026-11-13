@@ -4774,3 +4774,36 @@ exclude the preceding frame's interval at the checkpoint boundary. Missing,
 regressing or mixed-protocol observations and invalid forced intervals fail.
 Next, replay the earlier crash checkpoint under both timing protocols and trace
 any remaining animation/world inputs before expanding the retained simulator.
+
+### Replaying the same local checkpoint disproves timing sufficiency
+
+`encode-replay-checkpoint.mjs` writes the captured block discovery order to a
+bounded binary import (`MCMCP01\0`, bike address, block count, then addressed
+blocks). `MCM_INITIAL_CHECKPOINT` requires scripted capture. At the existing
+frame-entry breakpoint the tool first discovers the current local allocations,
+then requires every imported address and size to match before writing any
+imported memory. It rejects extra/truncated bytes and mismatched bike identity.
+This is same-process partial state restoration, not a portable save. A live
+malformed-address test was rejected with zero records and all hooks restored.
+
+Both new runs restore exactly the same 42 blocks from the earlier contact-stack
+checkpoint. The observed-rider-timing run again diverges: motion first differs
+at frame 113 and tracked RNG at frame 237. The fixed-rider-timing run has matching
+rider counts and intervals but rider state already differs before frame 1;
+bike+540/544/548, +654/658/65c and +8a8 also differ then. Angular velocity first
+differs before frame 55 and RNG after frame 104. Both failures are retained in
+`same-start-timing-wine11.json.br` and `mcm-same-start-timing-validation.json`.
+
+Thus controlling rider time is insufficient for general replay repeatability.
+The earlier fixed-timing success remains valid for its recorded checkpoint but
+cannot establish a complete replay protocol. Uncaptured collision dependencies,
+mutable animation assets, world updates, caller stack and registers remain
+candidates; this experiment does not isolate which causes the new differences.
+The next investigation starts with changes between bike frame 0 exit and frame
+1 entry, particularly rider+34's collision object and rider animation resources.
+Whole-bike recovered trajectory parity remains unproven.
+The rider collision object has a proven 0x110-byte allocation at
+`0x40d6c6..0x40d706` (constructor `0x42a470`, stored at rider+34).
+Crash entry changes its callbacks at +108/+10c (`0x40eaf9..0x40eb09`).
+Those bytes are absent from the 42-block checkpoint and are a concrete next
+capture target; their causal role is not yet validated.
