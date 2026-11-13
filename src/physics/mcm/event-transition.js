@@ -19,7 +19,7 @@ export function transitionMcmBikeEvent(c){
  r.animation=0;r.field710=0;r.field714=0;
  r.inverted=+(floatBits(c.up[1])>0x80000000);r.field890=s.field4e0;
  if(r.eventKind===1&&(floatBits(r.angularVelocity[0])|0)<0x3fc8f5c3)r.angularVelocity[0]=f(1.57);
- const rider=startMcmRiderEvent({kind:r.eventKind,records:s.records,randomValues:s.randomValues,velocity:r.velocity});
+ const rider=startMcmRiderEvent({kind:r.eventKind,records:s.records,randomValues:s.randomValues,drawRandom:s.drawRandom,velocity:r.velocity});
  r.rider={...rider,velocity:[...r.velocity],angularVelocity:r.angularVelocity.map(v=>f(v*.75))};
  r.randomCalls+=rider.randomCalls;r.resource=r.eventKind===2?s.alternateResource:s.normalResource;
  return r;

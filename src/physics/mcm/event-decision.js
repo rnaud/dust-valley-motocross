@@ -9,7 +9,8 @@ export function decideMcmBikeEvent(c){
  const side=()=>signed(r.angularVelocity[2])>0?4:5;
  if(c.launch){
   r.velocity=c.target.map((v,i)=>f((v-c.position[i])*f(.055)));r.velocity[1]=120;
-  r.angularVelocity=[f(c.rand1/32768),f(c.rand0/32768),f(.02)];r.randomCalls=2;
+  const rand0=c.drawRandom?c.drawRandom():c.rand0,rand1=c.drawRandom?c.drawRandom():c.rand1;
+  r.angularVelocity=[f(rand1/32768),f(rand0/32768),f(.02)];r.randomCalls=2;
   return event(3,12);
  }
  if(!c.field710&&c.inputPresent){

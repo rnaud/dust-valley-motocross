@@ -5,6 +5,8 @@ import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 const [exeArg,sourceArg,outputArg]=process.argv.slice(2);
 if(!outputArg)throw new Error('Usage: capture-retained-history.mjs mcm.exe native-next-return-corpus output-directory');
+const randomSeed=process.env.MCM_HISTORY_SEED===undefined?undefined:Number(process.env.MCM_HISTORY_SEED);
+if(randomSeed!==undefined&&(!/^\d+$/.test(process.env.MCM_HISTORY_SEED)||!Number.isInteger(randomSeed)||randomSeed<0||randomSeed>0xffffffff))throw Error('MCM_HISTORY_SEED must be an unsigned 32-bit decimal integer');
 const exe=resolve(exeArg),source=resolve(sourceArg),output=resolve(outputArg);
 const hash=path=>createHash('sha256').update(fs.readFileSync(path)).digest('hex');
 const exeSha256=hash(exe);
@@ -20,5 +22,6 @@ for(const suffix of ['','-repeat'])run(process.env.MCM_WINE||'/Applications/Wine
 const d3drmSha256=hash(join(output,'prefix.bin.d3drm.dll'));
 if(d3drmSha256!=='7edb1ed218aececbb44f4d92d5b0880f0ff1777dc525e555140f987015d8be1a')throw Error('Unrecognized D3DRM');
 if(hash(join(output,'results.bin'))!==hash(join(output,'results-repeat.bin'))||hash(join(output,'prefix.bin'))!==hash(join(output,'prefix-repeat.bin')))throw Error('Nonrepeatable native history');
-fs.writeFileSync(join(output,'capture.json'),JSON.stringify({exeSha256,d3drmSha256,indices,frames:400,delta:Math.fround(.02),throttleStart:50,throttleRelease:200,repeats:2},null,2)+'\n');
+if(process.env.MCM_HISTORY_SEED!==undefined&&hash(join(output,'results.bin.rng.bin'))!==hash(join(output,'results-repeat.bin.rng.bin')))throw Error('Nonrepeatable native RNG');
+fs.writeFileSync(join(output,'capture.json'),JSON.stringify({exeSha256,d3drmSha256,indices,randomSeed,frames:400,delta:Math.fround(.02),throttleStart:50,throttleRelease:200,repeats:2},null,2)+'\n');
 console.log('Captured four repeatable 400-frame histories.');

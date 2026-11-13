@@ -35,7 +35,20 @@ uint32_t next_response_output[202],next_tires_output[332],next_motion_output[273
 uint32_t next_rider_output[175],next_nearby_output[11],next_finish_output[498];
 uint32_t next_loop_count,next_loop_records[11][2168];
 static jmp_buf next_contact_abort;static uint32_t cycle_history[128][8],cycle_count;
+uint32_t history_random_enabled,history_random_active,history_random_seed,history_random_calls;
+uint32_t history_random_thread[6],history_random_records[400][2];
+int original_random(void);
+/* Supply the thread-data pointer, then execute the original arithmetic and
+   state store unchanged. Only the TLS lookup at 0x4bf190 is bypassed. */
+__asm__(".text\n_original_random:\n mov $_history_random_thread,%eax\n mov $0x200bf195,%edx\n jmp *%edx\n");
 int __cdecl draw_random(void){
+ if(history_random_active){
+  if(engine_entry_active)engine_random_calls++;
+  else if(next_stage==2&&next_event_active)next_event_random_calls++;
+  else if(next_stage==2)next_contact_random_calls++;
+  else random_calls++;
+  history_random_calls++;return original_random();
+ }
  if(engine_entry_active){engine_random_calls++;return (int)start_input[57];}
  if(next_stage==2&&next_event_active){unsigned index=next_event_random_calls++;if(get32(0xc40)){if(index<2)return (int)event_input[3+index];index-=2;}if(index>=3)fail("next event random overflow");return (int)rider_input[16+index];}
  if(next_stage==2){next_contact_random_calls++;return (int)random_value;}
@@ -544,7 +557,7 @@ void history_transfer(uint32_t*r,int restore){
  if(restore)memcpy(second_rider,r,sizeof second_rider);else memcpy(r,second_rider,sizeof second_rider);r+=(sizeof second_rider)/4;
  if(restore)memcpy(second_return,r,sizeof second_return);else memcpy(r,second_return,sizeof second_return);r+=(sizeof second_return)/4;
 }
-void history_begin(void){if(next_loop_count)transfer_next_loop(next_loop_records[0],1);history_transfer(history_saved,0);history_cursor=0;}
+void history_begin(void){if(next_loop_count)transfer_next_loop(next_loop_records[0],1);history_transfer(history_saved,0);history_cursor=0;history_random_active=history_random_enabled;history_random_thread[5]=history_random_seed;history_random_calls=0;}
 int history_prepare(void){if(history_cursor>=400)return 0;
  memset(next_entry_output,0,sizeof next_entry_output);
  memset(next_recovery_output,0,sizeof next_recovery_output);
@@ -572,8 +585,8 @@ int history_prepare(void){if(history_cursor>=400)return 0;
  memcpy(settings+0x12fc,&pressed,4);start_input[58]=0;start_input[59]=pressed;
  start_next_frame();return 1;
 }
-void history_capture(void){if(!next_loop_count)fail("unsupported history frame boundary");if(next_loop_count)transfer_next_loop(next_loop_records[0],1);history_transfer(history_records[history_cursor++],0);}
-void history_restore(void){history_transfer(history_saved,1);transfer_next_loop(next_loop_records[0],0);}
+void history_capture(void){history_random_records[history_cursor][0]=history_random_thread[5];history_random_records[history_cursor][1]=history_random_calls;if(!next_loop_count)fail("unsupported history frame boundary");if(next_loop_count)transfer_next_loop(next_loop_records[0],1);history_transfer(history_records[history_cursor++],0);}
+void history_restore(void){history_random_active=0;history_transfer(history_saved,1);transfer_next_loop(next_loop_records[0],0);}
 DWORD WINAPI oracle_watchdog(void*unused){(void)unused;uint32_t previous=0xffffffff;for(;;){Sleep(5000);uint32_t now=active_case;if(now==previous){SuspendThread(oracle_main_thread);CONTEXT c;memset(&c,0,sizeof c);c.ContextFlags=CONTEXT_FULL;if(GetThreadContext(oracle_main_thread,&c))fprintf(stderr,"oracle stalled case=%u stage=%d eip=%08lx eax=%08lx ebx=%08lx ecx=%08lx edx=%08lx esi=%08lx edi=%08lx esp=%08lx\n",now,next_stage,c.Eip,c.Eax,c.Ebx,c.Ecx,c.Edx,c.Esi,c.Edi,c.Esp);fflush(stderr);ExitProcess(4);}previous=now;}return 0;}
 
 LONG WINAPI report_native_fault(EXCEPTION_POINTERS*p){
@@ -605,10 +618,12 @@ unsigned char*p=(void*)0x200bf190;p[0]=0xe9;*(uint32_t*)(p+1)=(uintptr_t)draw_ra
  p=(void*)0x200a0130;p[0]=0xe9;*(uint32_t*)(p+1)=(uintptr_t)frame_entry-0x200a0130-5;
  ((void (__cdecl *)(void))0x2009d680)();
  unsigned short cw=0x027f;__asm__ volatile("fninit; fldcw %0"::"m"(cw));
+ const char*seed=getenv("MCM_HISTORY_SEED");history_random_enabled=seed!=NULL;history_random_seed=seed?(uint32_t)strtoul(seed,NULL,10):0;
+ FILE*rng_out=NULL;if(history_random_enabled&&argc==5){char path[MAX_PATH];if(snprintf(path,sizeof path,"%s.rng.bin",argv[4])>=(int)sizeof path)fail("rng path");rng_out=fopen(path,"wb");if(!rng_out)fail("rng open");}
  FILE*entry_out=argc==5?fopen(argv[4],"wb"):NULL;if(argc==5&&!entry_out)fail("entry open");
  FILE*in=fopen(argv[2],"rb"),*out=fopen(argv[3],"wb");if(!in||!out)fail("open");uint32_t count;if(fread(&count,4,1,in)!=1||count>1000000)fail("count");
  for(uint32_t i=0;i<count;i++){
-  active_case=i;history_cursor=0;memset(history_records,0,sizeof history_records);memset(second_post,0,sizeof second_post);memset(second_rider,0,sizeof second_rider);memset(second_return,0,sizeof second_return);next_loop_count=0;memset(next_loop_records,0,sizeof next_loop_records);
+  active_case=i;history_random_active=0;history_cursor=0;memset(history_records,0,sizeof history_records);memset(second_post,0,sizeof second_post);memset(second_rider,0,sizeof second_rider);memset(second_return,0,sizeof second_return);next_loop_count=0;memset(next_loop_records,0,sizeof next_loop_records);
   uint32_t v[2016],r[8277];if(fread(v,sizeof v,1,in)!=1)fail("input");reset_pressed_value=v[2015];memcpy(frame_input,v+2000,sizeof frame_input);memcpy(&raw_frame_delta,v+2003,4);memcpy(frame_return_input,v+2004,12);memcpy(&next_frame_delta,v+2007,4);memcpy(input_parameters,v+2008,sizeof input_parameters);memset(next_rider_output,0,sizeof next_rider_output);memset(next_nearby_output,0,sizeof next_nearby_output);memset(next_finish_output,0,sizeof next_finish_output);next_event_active=next_event_random_calls=0;memset(next_event_output,0,sizeof next_event_output);memset(next_controls_output,0,sizeof next_controls_output);memset(next_tires_output,0,sizeof next_tires_output);memset(next_motion_output,0,sizeof next_motion_output);memset(next_response_output,0,sizeof next_response_output);memset(next_contact_output,0,sizeof next_contact_output);memset(next_engine_output,0,sizeof next_engine_output);memset(next_terrain_output,0,sizeof next_terrain_output);memset(next_reset_output,0,sizeof next_reset_output);memset(next_steering_output,0,sizeof next_steering_output);memset(next_entry_output,0,sizeof next_entry_output);memset(frame_return_output,0,sizeof frame_return_output);
   memcpy(&loop_component_rate,v+1964,4);memcpy(start_input,v+1902,sizeof start_input);memcpy(bike,v+2,sizeof bike);memcpy(parts,v+820,sizeof parts);memcpy(engine,v+916,sizeof engine);memcpy(effect,v+1040,16);random_value=v[1];random_calls=0;
   unsigned offsets[6]={0x8dc,0x8e0,0x8e4,0x8e8,0x8f0,0x904};void*ptrs[6]={parts[0],parts[1],parts[2],parts[3],engine,effect};
@@ -749,7 +764,9 @@ unsigned char*p=(void*)0x200bf190;p[0]=0xe9;*(uint32_t*)(p+1)=(uintptr_t)draw_ra
   if(entry_out&&fwrite(second_return,sizeof second_return,1,entry_out)!=1)fail("second return");
   if(entry_out&&fwrite(&history_cursor,4,1,entry_out)!=1)fail("history count");
   if(entry_out&&fwrite(history_records,sizeof history_records,1,entry_out)!=1)fail("history records");
+  if(rng_out&&fwrite(history_random_records,sizeof history_random_records,1,rng_out)!=1)fail("rng records");
  }
+ if(rng_out&&fclose(rng_out))fail("rng close");
  if(fclose(out))fail("close");
  if(entry_out&&fclose(entry_out))fail("entry close");
  return 0;

@@ -17,10 +17,10 @@ export function resetMcmBikeState(c){
  if(c.component8e4){c.component8e4.value=[0,0,0];c.component8e4.field5c=0;}
  if(c.component8e8){c.component8e8.field58=0;c.component8e8.field5c=0;}
  if(c.engine){
-  const e=c.engine;
-  if(!Number.isInteger(c.randomValue)||c.randomValue<0||c.randomValue>32767)throw new RangeError('Bike reset requires an original CRT random draw');
+  const e=c.engine,randomValue=c.drawRandom?c.drawRandom():c.randomValue;
+  if(!Number.isInteger(randomValue)||randomValue<0||randomValue>32767)throw new RangeError('Bike reset requires an original CRT random draw');
   e.gear=e.rpmDemand=e.brake=e.state=e.previousRpmDemand=e.shiftTimer=0;e.released=1;
-  e.shiftThreshold=f((c.randomValue*.000030517578125)*e.thresholdRanges[0]+e.thresholdBases[0]);
+  e.shiftThreshold=f((randomValue*.000030517578125)*e.thresholdRanges[0]+e.thresholdBases[0]);
  }
  return {randomCalls:c.engine?1:0};
 }

@@ -1,9 +1,10 @@
 // Original automatic shift helper, 0x4ad720–0x4ad970.
 // Speed thresholds are in original feet/second. randomValue is the original
-// CRT rand() result for a shift; callers must supply its captured/replayed draw.
+// CRT rand() result for a shift; alternatively drawRandom consumes a shared stream
+// only when the original shift branch calls rand().
 export function updateMcmGears(input) {
   const {ratios, speedThresholds, thresholdBases, thresholdRanges, gearCount,
-    downshiftRpm, shiftDuration, maxRpm, topGearLimitDisabled, speed, randomValue,
+    downshiftRpm, shiftDuration, maxRpm, topGearLimitDisabled, speed,
     randomScale} = input;
   let {gear, state, rpmDemand, previousRpmDemand, shiftThreshold, shiftTimer} = input;
   if (shiftTimer !== 0) return {gear, state, rpmDemand, previousRpmDemand, shiftThreshold, shiftTimer, randomUsed: false};
@@ -16,6 +17,7 @@ export function updateMcmGears(input) {
     direction = -1;
   }
   if (direction) {
+    const randomValue=input.drawRandom?input.drawRandom():input.randomValue;
     if (!Number.isInteger(randomValue) || randomValue < 0 || randomValue > 32767) throw new RangeError('A shift requires an original CRT random draw');
     const oldGear = gear;
     gear += direction;
