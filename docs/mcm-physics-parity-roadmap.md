@@ -1689,3 +1689,30 @@ the executable and loaded Wine 11 D3DRM hashes are verified. These cases use
 existing four-entry collision objects; allocation and line collision types are
 outside this integrated comparison. Main-loop alternate dispatch, force
 integration, and whole-bike acceleration/release trajectories remain unfinished.
+
+### Main-loop reset pose selection (2026-11-12)
+
+Recovered `0x4a5eb4..0x4a62eb`, entered with a nonzero reset reason. Modes
+0/1/4 call the terrain selector; mode 2 chooses a stored respawn pose or a
+normalized direction from current position toward the stored point (with the
+stored point's Y cleared), then optionally adjusts position through the terrain
+selector without a heading argument. Mode 3 uses related pose selection and
+calls the course selector with both position and heading. Other signed-short
+mode values retain current position/forward. Mode 2's stored-pose branch writes
+bike position before any terrain adjustment; mode 3 leaves it unchanged here.
+
+All 18 output words match in 40,000 original-execution cases: zero differences.
+The outputs include chosen position/forward, mutated bike position, helper call
+count/type, nullable heading argument, and exact vectors passed to the helper.
+Inputs cover modes 0..5, -1 and signed-short extrema, settings and bike flags,
+nonzero reset reasons, zero/general direction vectors, and seeded caller
+scratch (the original vector constructor does not initialize it).
+
+Report: `mcm-reset-selection-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-selection-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+This comparison executes the real branching, subtraction and normalization.
+Terrain selector `0x4ae0b0` and course selector `0x4adb10` are supplied boundaries
+with captured inputs and deterministic outputs; their internal logic is not
+claimed validated by this report. Recovering these selectors and connecting the
+main-loop dispatch through the complete reset remain pending. Whole-loop force
+integration and acceleration/release trajectory parity are still unfinished.

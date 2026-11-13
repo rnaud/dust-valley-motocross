@@ -1120,3 +1120,8 @@ test('complete alternate reset matches original proxy, collision grid, saved pos
  const {evaluateResetFull}=await import('../scripts/mcm-reference/reset-full-case.mjs');
  for(const {input:c,outputBits} of fixture('reset-full-wine11.json').fixtures)assert.deepEqual(evaluateResetFull(c),outputBits);
 });
+
+test('main reset selection matches original mode branches, normalization and helper arguments',async()=>{
+ const {evaluateResetSelection}=await import('../scripts/mcm-reference/reset-selection-case.mjs');
+ for(const {input:c,outputBits} of fixture('reset-selection-wine11.json').fixtures)assert.deepEqual(evaluateResetSelection(c),outputBits);
+});
