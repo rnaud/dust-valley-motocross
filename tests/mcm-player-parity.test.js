@@ -1434,3 +1434,10 @@ test('reset alignment reaches original launch, suppression and crash event decis
  for(const gate of ['triggered=0:', 'triggered=1:', ':reason=12:', ':reason=4:', ':reason=5:', ':reason=6:', ':reason=7:', ':inputCalls=0:', ':inputCalls=1:', ':randomCalls=0:', ':randomCalls=2:', ':suppressed=true:', ':suppressed=false:', ':limited=true', ':limited=false'])assert.ok(Object.keys(corpus.source.eventOutcomes).some(k=>k.includes(gate)),gate);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetEventDecision(c),outputBits,`reset/event fixture ${i}`);
 });
+
+test('reset events initialize the original rider controller and preserve skipped state',async()=>{
+ const {evaluateResetEventSetup}=await import('../scripts/mcm-reference/reset-event-setup-case.mjs');
+ const corpus=fixture('reset-event-setup-wine11.json.br');
+ for(const gate of ['triggered=0:state=0:', 'triggered=1:state=1:', ':firstEmpty=true:', ':firstEmpty=false:', ':pitchFloor=true:', ':pitchFloor=false:', ':randomCalls=0:', ':randomCalls=2:', ':randomCalls=3:', ':randomCalls=4:', ':randomCalls=5:', ':limited=true', ':limited=false'])assert.ok(Object.keys(corpus.source.setupOutcomes).some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetEventSetup(c),outputBits,`reset/rider setup fixture ${i}`);
+});
