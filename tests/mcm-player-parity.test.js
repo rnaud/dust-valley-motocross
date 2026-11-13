@@ -1463,3 +1463,11 @@ test('reset rider state refreshes position, angular motion, history and live col
  for(const gate of ['present=true:', 'present=false:', ':enabled=true:', ':enabled=false:', ':proxyBodyAlias=true:', ':proxyBodyAlias=false:', ':proxyParented=true:', ':proxyParented=false:', ':active=0:', ':otherCleared=true'])assert.ok(Object.keys(corpus.source.syncOutcomes).some(k=>k.includes(gate)),gate);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetCollisionSync(c),outputBits,`reset/collision sync fixture ${i}`);
 });
+
+test('reset state reaches real wall dispatch, impulse and collision-induced events',async()=>{
+ const {evaluateResetCollisionDispatch}=await import('../scripts/mcm-reference/reset-collision-dispatch-case.mjs');
+ const corpus=fixture('reset-collision-dispatch-wine11.json.br');
+ for(const gate of [':callbacks=0:', ':callbacks=1:', ':pair=0:', ':pair=1:', ':pair=3:', ':enabled=0:', ':enabled=1:', ':objectEnabled=0:', ':objectEnabled=1:', ':eventChanged=true', ':eventChanged=false'])assert.ok(Object.keys(corpus.source.dispatchOutcomes).some(k=>k.includes(gate)),gate);
+ assert.equal(corpus.source.transitionCases,16);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetCollisionDispatch(c),outputBits,`reset/collision dispatch fixture ${i}`);
+});

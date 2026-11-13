@@ -3,7 +3,12 @@ import {applyMcmSubstepEventSetup} from './normal-event-setup-substep.js';
 
 // Continue through the event wrapper return at 0x4ac5fc/0x4ac681.
 export function updateMcmResetEventSetup(c){
- const result=updateMcmResetEventDecision(c),b=c.bike,p=c.contactPhase,r=c.rider,s=p.normalEventSetup;
+ const result=updateMcmResetEventDecision(c),randomCalls=setupMcmResetEvent(c);
+ return {...result,randomCalls:result.randomCalls+randomCalls};
+}
+
+export function setupMcmResetEvent(c){
+ const b=c.bike,p=c.contactPhase,r=c.rider,s=p.normalEventSetup;
  Object.assign(s,{envelope:c.effect,direction:b.savedHeading,inverted:b.field8a4,field890:b.field890,
   resource:b.field884,normalResource:b.field878,alternateResource:b.field880,
   previousVelocity:r.previousVelocity,selected:r.selected,active16c:r.active16c});
@@ -18,5 +23,5 @@ export function updateMcmResetEventSetup(c){
  Object.assign(r,{previousVelocity:s.previousVelocity,selected:s.selected,active16c:s.active16c,
   velocity:p.controllerHandoff.velocity,angularVelocity:p.controllerHandoff.angularVelocity,
   flag13c:p.controllerHandoff.flag13c,kind:p.contactCorrection.controller170});
- return {...result,randomCalls:result.randomCalls+p.normalEventDecision.randomCalls-randomBefore};
+ return p.normalEventDecision.randomCalls-randomBefore;
 }

@@ -9,9 +9,9 @@ export function evaluateResetSubstep(input,step=resetMcmSubstep){
  const child={level:1,children:Array(256).fill(leaf)},parent={level:2,children:Array(256).fill(child)};
  t.root=[leaf,child,parent,{level:1},{level:1,children:Array(256).fill(null)},null][t.mode];
  const g=p.collision;
- const cells=Array.from({length:65},(_,i)=>({id:1000+i})),markers=cells.map((cell,i)=>({id:2000+i,previous:cell}));
+ const cells=Array.from({length:65},(_,i)=>({id:1000+i})),markers=cells.map((cell,i)=>({id:2000+i,previous:cell,owner:g.markerOwner??0}));
  cells.forEach((cell,i)=>{cell.next=markers[i];});
- const entries=g.oldCells.map((cell,i)=>({id:i+1,cell,active:g.active[i],owner:123,other:77+i}));
+ const entries=g.oldCells.map((cell,i)=>({id:i+1,cell,active:g.active[i],owner:g.owner??123,other:77+i}));
  for(const e of entries)if(e.active){let tail=cells[e.cell];while(tail.next)tail=tail.next;tail.next=e;e.previous=tail;}
  const object={...g,entries};
  const q=p.selection;
@@ -31,6 +31,6 @@ export function evaluateResetSubstep(input,step=resetMcmSubstep){
  words[0xbb8/4]=q[5];words[0x614/4]=q[8];words[0xc08/4]=q[9];words[0xbe4/4]=q[10];
  if(q[115]!==1)words[0x8ac/4]=cooldownFlag>>>0;
  const id=x=>x?.id||0;
- const collisionOutput=[...object.matrix.map(floatBits),object.other||0,...object.worldCenter.map(floatBits),...entries.flatMap(e=>[id(e.previous),id(e.next),e.owner,e.cell,e.other,e.active]),...cells.flatMap((cell,i)=>[id(cell.next),id(markers[i].previous),id(markers[i].next)])];
+ const collisionOutput=[...object.matrix.map(floatBits),(typeof object.other==='object'?object.other?.token||0:object.other||0),...object.worldCenter.map(floatBits),...entries.flatMap(e=>[id(e.previous),id(e.next),e.owner,e.cell,e.other,e.active]),...cells.flatMap((cell,i)=>[id(cell.next),id(markers[i].previous),id(markers[i].next)])];
  return [...words,...nodes.flatMap(n=>[...[...n.local,...n.world].map(floatBits),n.cacheValid]),floatBits(angle),...[...points.flat(),...heights,...p.bounds.children.flatMap(r=>[...r.forward,...r.up,...r.position])].map(floatBits),...collisionOutput,...selectedPose.map(floatBits),...controls,...others.flatMap(o=>[...o.position.map(floatBits),o.fieldc30]),...targetNodes.flatMap(n=>[...n.local.map(floatBits),...n.world.map(floatBits),n.cacheValid])];
 }
