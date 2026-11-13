@@ -2,10 +2,10 @@ import {evaluateResetLoopTireForces} from './reset-loop-tire-forces-case.mjs';
 import {continueMcmResetLoopMotion} from '../../src/physics/mcm/reset-loop-motion.js';
 import {resetIntegrationWords} from './reset-linear-integration-case.mjs';
 import {floatBits} from '../../src/physics/mcm/math.js';
-export function evaluateResetLoopMotion(input){
+export function evaluateResetLoopMotion(input,observe){
  let tail=Array(273).fill(0);
  const words=evaluateResetLoopTireForces(input,(c,{looped})=>{
-  if(!looped)return;
+  if(!looped){observe?.(c,{looped});return;}
   continueMcmResetLoopMotion(c);const b=c.bike,p=c.contactPhase,s=p.chassisContact;
   tail=[floatBits(s.absTurn),...Array.from(s.coefficients,floatBits),...Array.from(s.arm,floatBits),...Array.from(s.normal,floatBits),...Array.from(s.velocity,floatBits),s.count>>>0,s.enabled>>>0,...Array.from(p.chassisResponse.scratch,floatBits),floatBits(p.chassisImpulse.squaredSpeed)];
   tail.push(...resetIntegrationWords(p));
@@ -15,5 +15,6 @@ export function evaluateResetLoopMotion(input){
   tail.push(floatBits(c.front.limited),floatBits(c.rear.limited));
   for(const n of c.bounds.components)tail.push(...Array.from(n.local,floatBits),...Array.from(n.world,floatBits),n.cacheValid);
   tail.push(...Array.from(p.force,floatBits),...Array.from(p.totalTorque,floatBits),...Array.from(c.component8e4.value,floatBits),floatBits(c.component8e4.field5c),floatBits(c.component8e8.field58));
+  observe?.(c,{looped});
  });return [...words,...tail];
 }

@@ -1524,3 +1524,13 @@ test('persistent second substep matches chassis impulse, force integration and m
  for(const gate of ['looped=1:enabled=0:','looped=1:enabled=1:',':mask=0:',':mask=1:',':mask=2:',':rotationZero=true',':rotationZero=false'])assert.ok(Object.keys(corpus.source.nextMotionOutcomes).some(k=>k.includes(gate)),gate);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){const actual=evaluateResetLoopMotion(c);assert.deepEqual(actual,outputBits,`reset/loop-motion fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);}
 });
+
+test('persistent second substep matches airborne control, rotation and grounded alignment',async()=>{
+ const {evaluateResetLoopControls}=await import('../scripts/mcm-reference/reset-loop-controls-case.mjs');
+ const corpus=fixture('reset-loop-controls-wine11.json.br');
+ for(const gate of ['looped=0:',':route=1:',':route=2:',':route=3:'])assert.ok(Object.keys(corpus.source.nextControlsOutcomes).some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){
+  const actual=evaluateResetLoopControls(c);
+  assert.deepEqual(actual,outputBits,`reset/loop-controls fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
+ }
+});
