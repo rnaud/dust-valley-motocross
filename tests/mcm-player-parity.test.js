@@ -1230,3 +1230,8 @@ test('connected chassis response matches original contact-count angular response
  const {evaluateChassisResponseSubstep}=await import('../scripts/mcm-reference/chassis-response-substep-case.mjs');
  for(const [i,{input:c,outputBits}] of fixture('chassis-response-substep-wine11.json').fixtures.entries()){const actual=evaluateChassisResponseSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
+
+test('connected chassis impulse matches original local velocity updates and low-speed stopping',async()=>{
+ const {evaluateChassisImpulseSubstep}=await import('../scripts/mcm-reference/chassis-impulse-substep-case.mjs');
+ for(const [i,{input:c,outputBits}] of fixture('chassis-impulse-substep-wine11.json').fixtures.entries()){const actual=evaluateChassisImpulseSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});

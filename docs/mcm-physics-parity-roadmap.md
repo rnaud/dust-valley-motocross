@@ -2219,3 +2219,25 @@ Report: `mcm-chassis-response-substep-validation.json`. Reproduce with
 The following single-body impulse call, remaining force assembly, full-loop
 integration, and whole-bike acceleration / throttle-release trajectory parity
 remain unfinished.
+
+### Connected chassis impulse and low-speed stopping (2026-11-12)
+
+Extended continuous ordinary execution through the shared `0x4a9b29` boundary.
+The chassis response now feeds original bike wrapper `0x49d7f0` and single-body
+solver `0x45b3c0` with its merged normal, contact velocity, world/local contact
+arms and angular scale. Restitution and inverse inertia follow the current crash
+state, including a state change in the preceding response. The type-3 branch
+updates linear and local angular velocity, preserves stored world angular
+velocity, and bypasses audio notification. The caller then recomputes speed
+with its original sum/store/square-root order and applies the low-speed stop
+using signed float-bit thresholds, preserving squared-speed scratch.
+
+All 40,000 cases match across 478 output words with zero bit differences.
+The capture includes resulting speed and squared speed plus explicit world
+angular velocity, in addition to all earlier connected state. Both solver and
+wrapper execute directly; no solver/audio substitute is installed. Skipped
+contact response preserves scratch and initial post-impulse speed.
+Report: `mcm-chassis-impulse-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-chassis-impulse-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Remaining force assembly, full-loop integration, and whole-bike acceleration /
+throttle-release trajectory parity are still unfinished.
