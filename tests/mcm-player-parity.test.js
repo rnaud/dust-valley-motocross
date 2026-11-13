@@ -1813,3 +1813,22 @@ test('retained next-frame recovery matches original animation and bounds transit
   assert.deepEqual(actual.tail,outputBits,`next recovery tail ${caseIndex}`);
  }
 });
+
+test('retained player input matches original axes, device curve and controller boundaries',async()=>{
+ const {evaluateResetNextInput}=await import('../scripts/mcm-reference/reset-next-input-case.mjs');
+ const corpus=fixture('reset-next-input-wine11.json.br');
+ assert.equal(corpus.source.mismatchCount,0);
+ assert.equal(corpus.source.exceptionCount,0);
+ assert.equal(corpus.source.priorTraceChangedCases,0);
+ for(const branch of ['crash','player','ai','scripted'])assert.ok(corpus.source.inputBranches[branch]);
+ for(const path of ['linear','cubic','analogEnabled','analogDisabled','trickReleased'])assert.ok(corpus.source.inputCoverage[path]);
+ assert.ok(corpus.source.initialVariantCases>0);
+ assert.equal(corpus.source.priorTraceComparedCases,17648);
+ for(const {caseIndex,input,prefixBits,outputBits} of corpus.fixtures){
+  const actual=evaluateResetNextInput(input);
+  assert.equal(actual.tail.length,11496);
+  assert.equal(actual.tail[11476],['crash','player','ai','scripted'].indexOf(actual.inputBranch));
+  assert.deepEqual(actual.prefix,prefixBits,`next input prefix ${caseIndex}`);
+  assert.deepEqual(actual.tail,outputBits,`next input tail ${caseIndex}`);
+ }
+});

@@ -24,7 +24,10 @@ export function applyMcmBikeLinearIntegration(c){
  correctMcmSubstepContacts(p);integrateMcmSubstepAngularVelocity(p);integrateMcmSubstepLinearVelocity(p);
  c.component8e4.value=p.frontSuspension.previousDisplacement;c.component8e4.field5c=p.frontSuspension.previousTravel;c.component8e8.field58=p.rearSuspension.previousTravel;
  b.position=p.bodyPosition;b.referencePosition=p.balanceCenter;b.velocity=p.velocity;b.acceleration=p.traction.acceleration;
- b.angularVelocity=[...p.chassisResponse.angularXY,p.field53c];b.localLever=p.frontLoad.localArm;b.normal=p.normal;b.offset=p.offset;
+ // Preserve the x87 NaN sign when copying the scalar z component in cold x64 JIT execution.
+ b.angularVelocity=new Float64Array(3);
+ for(let i=0;i<2;i++)b.angularVelocity[i]=p.chassisResponse.angularXY[i];
+ b.angularVelocity[2]=p.field53c;b.localLever=p.frontLoad.localArm;b.normal=p.normal;b.offset=p.offset;
  b.field8bc=p.singleContactForce.counter;b.field6ac=p.contactCorrection.angle;b.field6a4=p.chassisImpulse.speed;
  b.field6d8=p.linearIntegration.angle;b.field6dc=p.linearIntegration.decay;b.field6e0=p.linearIntegration.counter;
  for(let i=0;i<3;i++)b[`field${(0x660+i*4).toString(16)}`]=p.chassisResponse.localLever[i];

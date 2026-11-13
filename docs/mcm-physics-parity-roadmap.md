@@ -3884,3 +3884,56 @@ Validation: all 17,648 cases match all 19,753 observed words on ARM64 and x64,
 with zero exceptions and zero prior-trace changes. Branch counts are 16,554
 bypasses, 546 animation starts, and 548 immediate restorations. The regression
 fixture retains 133 cases and passes cold on both architectures.
+
+### Retained player input and explicit controller boundaries
+
+The next-frame continuation now runs `0x4a5672` through player input sampling
+at `0x4a57c0`, or through crash input clearing at `0x4a58c8`. It reads the three
+axis scalars from the original settings layout, preserves analog-disable `-1`,
+negates the longitudinal and steering axes, and applies cubic steering for
+device kinds 2/3 unless device byte `+0x5d` is 4. The two multiplications retain
+intermediate precision until the final float store. The completed-trick gate
+clears `+0x710` and sets `+0x714` before control dispatch. Crash input clearing
+sets only the low byte of `+0xb6c` and zeros the original control words.
+
+AI and scripted control are **pending boundaries**, not simulated callbacks.
+The native harness stops at `0x4a56d3` before the AI call to `0x46d240`, or at
+`0x4a57b1` before the scripted call to `0x470560`. The recovered helper returns
+`pendingController` for these paths. Player cases finish input sampling; crash
+cases finish clearing. No path is represented as a complete next frame.
+
+The harness initializes axis/device inputs and analog enable before the first
+reset. It changes no bike state at the frame handoff. Prior native traces must
+remain unchanged, allowing only the initial `+0x6f8` enable word in the prefix.
+Twenty added observations capture dispatch, current and previous trick flags,
+AI/scripted flags, analog enable, the byte-preserving crash flag, all affected
+controls, the analog value, raw frame delta, and rider stopped state.
+
+```sh
+node scripts/mcm-reference/compare-reset-next-input.mjs /path/to/mcm.exe /path/to/next-recovery-corpus /path/to/new-output-directory
+```
+
+Use `--replay` for another architecture. Evidence is in
+`mcm-reset-next-input-validation.json` and
+`tests/fixtures/mcm/reset-next-input-wine11.json.br`. Steering-rate setup,
+pre-loop reset/terrain checks, AI/scripted controllers, subsequent substeps and
+continuous acceleration/release trajectories remain open, alongside the prior
+recovery coverage gap and original-world/playable integration work.
+
+The input corpus also adds initial-state variants with non-looping trick records
+and a 1.2-second first-frame raw delta. These exercise animation completion
+followed by `+0x710` clearing and `+0x714` activation at the next entry. They are
+compared against original execution but are reported separately from the
+unchanged-prior-source check because their initial assets/delta differ.
+
+Cold x64 replay exposed a NaN sign change in an earlier angular-velocity copy:
+array spread could canonicalize the z component before capture. The copy now
+uses `Float64Array` and indexed assignments to preserve the original x87 bits.
+A selected regression retains source case 1034, which exposed this difference.
+
+The expanded corpus contains 17,941 cases: 17,648 unchanged-source cases plus
+293 non-looping trick variants. All 19,773 observed words match per case on
+ARM64 and x64. Input boundaries include 10,758 crash, 640 player, 2,954 AI-pending and
+3,589 scripted-pending cases. Coverage includes 554 cubic and 3,675 linear
+input paths, both analog-enable states, and 293 completed-trick releases. The
+selected regression corpus contains 789 cases, including the cold-x64 NaN case.
