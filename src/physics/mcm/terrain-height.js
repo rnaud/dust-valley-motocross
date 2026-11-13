@@ -1,4 +1,6 @@
 import {sampleMcmTerrain} from './terrain-sample.js';
+import {floatBits} from './math.js';
+import {mcmMultiply} from './x87-arithmetic.js';
 
 const f=Math.fround;
 function nearestEven(value) {
@@ -30,7 +32,10 @@ export function queryMcmTerrainHeight({root,point,heightScale,worldToGrid}) {
 
 // Shared cell selection and distance stores for the height and normal paths.
 export function resolveMcmTerrainCell(point,worldToGrid) {
-  const x=Math.max(0,f(point[0]*worldToGrid)),z=Math.max(0,f(point[2]*worldToGrid));
+  // Unsigned bit comparison clamps negative values (including negative NaN),
+  // but preserves -0 and leaves positive NaN for the FISTP rejection below.
+  const clamp=value=>floatBits(value)>0x80000000?0:value;
+  const x=clamp(f(mcmMultiply(point[0],worldToGrid))),z=clamp(f(mcmMultiply(point[2],worldToGrid)));
   const ix=nearestEven(f(x-.5)),iz=nearestEven(f(z-.5));
   if(!Number.isFinite(ix)||!Number.isFinite(iz)||ix<0||iz<0||ix>0x7fffffff||iz>0x7fffffff)return null;
   const tx=f(x-f(ix)),tz=f(z-f(iz)),x2=tx*tx,z2=f((z-f(iz))*tz);

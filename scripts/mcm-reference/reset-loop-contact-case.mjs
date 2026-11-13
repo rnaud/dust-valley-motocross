@@ -9,9 +9,13 @@ export function evaluateResetLoopContact(input,observe){
  const words=evaluateResetEngineEntry(input,state=>{c=state;c.contactPhase.componentRate=input.loopComponentRate;return updateMcmResetEngineEntry(c);});
  const result=continueMcmResetLoopEntry(c),entry=result.looped?substepStartWords(c.engineEntry,result):Array(33).fill(0);
  if(result.looped)continueMcmResetLoopContact(c);
- const b=c.bike;
- const contact=result.looped?[...Array.from(b.referencePosition,floatBits),...c.points.flatMap(v=>Array.from(v,floatBits)),...Array.from(c.heights,floatBits),...[b.tangent,b.rearTangent,b.normal,b.offset].flatMap(v=>Array.from(v,floatBits)),floatBits(b.field6b0),floatBits(c.componentAngle),floatBits(b.field888),b.field8ac>>>0,...c.bounds.components.flatMap(n=>[...Array.from(n.local,floatBits),...Array.from(n.world,floatBits),n.cacheValid]),c.suspension.front.limited>>>0,c.suspension.rear.limited>>>0]:Array(185).fill(0);
+ const contact=resetLoopContactWords(c,result);
  const wordsOut=[...words,+result.looped,...entry,...contact];
  observe?.(c,result);
  return wordsOut;
+}
+
+export function resetLoopContactWords(c,result){
+ const b=c.bike;
+ return result.looped?[...Array.from(b.referencePosition,floatBits),...c.points.flatMap(v=>Array.from(v,floatBits)),...Array.from(c.heights,floatBits),...[b.tangent,b.rearTangent,b.normal,b.offset].flatMap(v=>Array.from(v,floatBits)),floatBits(b.field6b0),floatBits(c.componentAngle),floatBits(b.field888),b.field8ac>>>0,...c.bounds.components.flatMap(n=>[...Array.from(n.local,floatBits),...Array.from(n.world,floatBits),n.cacheValid]),c.suspension.front.limited>>>0,c.suspension.rear.limited>>>0]:Array(185).fill(0);
 }

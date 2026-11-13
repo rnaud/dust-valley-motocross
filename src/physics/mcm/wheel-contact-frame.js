@@ -2,12 +2,13 @@ import {queryMcmTerrainHeight} from './terrain-height.js';
 import {queryMcmTerrainNormal} from './terrain-normal.js';
 import {resolveMcmWorldMatrix} from './world-transform.js';
 import {rotateMcmWorldVector} from './collision-impulse.js';
-import {mcmInverseSqrt} from './inverse-sqrt.js';
+import {mcmInverseSqrtLookup} from './inverse-sqrt.js';
 const f=Math.fround;
 const cross=(a,b)=>[f(a[1]*b[2]-b[1]*a[2]),f(a[2]*b[0]-b[2]*a[0]),f(a[0]*b[1]-b[0]*a[1])];
 const normalize=(v,squared)=>{
- if(squared===0)return [0,0,0];
- const inverse=mcmInverseSqrt(f(squared));return v.map(x=>f(x*inverse));
+ // Original FCOM zero test also selects the zero vector when unordered.
+ if(squared===0||Number.isNaN(squared))return [0,0,0];
+ const inverse=mcmInverseSqrtLookup(f(squared));return v.map(x=>f(x*inverse));
 };
 // Original 0x4a1450. A null up vector uses the node's rotated world-up axis.
 export function buildMcmWheelContactAxis({node,forward,up}){

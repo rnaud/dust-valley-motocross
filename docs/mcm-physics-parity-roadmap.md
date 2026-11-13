@@ -3409,3 +3409,28 @@ full simulation parity. Further iterations, actual frame entry and post-loop
 completion, persistent rider history, dynamic bike/rider collisions, whole-bike
 acceleration/release trajectory comparisons and playable integration remain.
 Synthetic initial state and supplied wheel-query scratch limitations still apply.
+
+### Third engine update and ordinary wheel contact
+
+The native harness now follows the second loop-back with unchanged live state
+through the third engine/input/filter update, transform preparation and ordinary
+wheel-contact pass at `0x4a64dc`. The corpus has 17,508 original executions,
+including 4,801 third passes and all four front/rear contact-height sign pairs.
+The appended observations preserve both earlier iterations' snapshots and compare
+4,213 words per case.
+
+This continuation exposed two previously unhandled exceptional-value branches.
+Wheel-axis/tangent normalization uses the original unordered comparison behavior,
+which selects the zero vector for a NaN squared length. Terrain coordinate clamping
+uses the original unsigned float-bit comparison: negative NaN clamps to zero,
+negative zero survives, and positive NaN is rejected by integer conversion.
+Collision-line contact stores also preserve NaN signs across JavaScript JIT
+specialization. These cases originate from finite synthetic initial state;
+they are not evidence that real riding normally produces non-finite coordinates.
+
+Report: `mcm-reset-third-contact-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-third-contact-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Third-pass force preparation onward, persistent rider history, dynamic collisions,
+actual frame entry/completion, whole-bike acceleration/release comparisons and
+playable integration still require connected validation. Earlier synthetic-state
+and supplied wheel-query scratch limitations apply.
