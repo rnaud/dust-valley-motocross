@@ -1379,6 +1379,8 @@ test('connected ordinary entry matches suspension resets and balance-reference r
 test('connected engine entry matches throttle, gears and their downstream physics effects',async()=>{
  const {evaluateEngineEntrySubstep}=await import('../scripts/mcm-reference/engine-entry-substep-case.mjs');
  const corpus=fixture('engine-entry-substep-wine11.json.br');
+ assert.ok(corpus.fixtures.every(({outputBits})=>outputBits.length===976),'includes pre-branch scratch observation');
+ assert.ok(corpus.fixtures.some(({outputBits})=>outputBits.slice(964).every(v=>v!==0)),'nonzero scratch survives common preparation');
  for(const gate of [':shift=-1:',':shift=1:',':polls=5,4:','analog=true','analog=false',':stopped=true',':stopped=false'])assert.ok(Object.keys(corpus.source.engineOutcomes).some(k=>k.includes(gate)),gate);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){const actual=evaluateEngineEntrySubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
