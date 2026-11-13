@@ -1265,3 +1265,8 @@ test('connected linear integration matches original steering correction, speed, 
  const {evaluateLinearIntegrationSubstep}=await import('../scripts/mcm-reference/linear-integration-substep-case.mjs');
  for(const [i,{input:c,outputBits}] of fixture('linear-integration-substep-wine11.json').fixtures.entries()){const actual=evaluateLinearIntegrationSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
+
+test('connected wheel and body transforms match original rotations, aliases and cache invalidation',async()=>{
+ const {evaluateMotionTransformSubstep}=await import('../scripts/mcm-reference/motion-transform-substep-case.mjs');
+ for(const [i,{input:c,outputBits}] of fixture('motion-transform-substep-wine11.json').fixtures.entries()){const actual=evaluateMotionTransformSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});

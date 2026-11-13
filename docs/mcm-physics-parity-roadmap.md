@@ -2399,3 +2399,35 @@ The full-loop entry, remaining orientation/wheel updates and later branches
 still need connecting. Whole-bike acceleration/throttle-release trajectory
 parity remains unproven; this synthetic connected-state comparison does not
 establish 100% physics parity.
+
+### Connected wheel and body transforms (2026-11-13)
+
+Extended continuous original execution through `0x4ab7fd`. Wheel increments
+now follow airborne coast/brake/engine behavior and front/rear contact motion.
+Finite increments rotate their wheel nodes; nonfinite increments remain stored
+without rotating. The body then receives integrated position and the normalized
+angular-velocity pivot rotation. Node mutations occur in original call order,
+preserving wheel/body aliases and parent/child cache invalidation. The original
+wheel, translation and pivot-rotation callees execute directly in the oracle.
+
+All 40,000 cases match across 553 output words with zero bit differences.
+Coverage requires applied/skipped body rotation, large angles, wheel/body and
+wheel/wheel aliases, and nonfinite wheel increments generated from finite
+scales. Saved fixtures explicitly retain cases 12943, 16940 and 23908, which
+exposed large-angle trig reduction and mixed-NaN pivot arithmetic.
+
+Connecting rotation also required the original zero/unordered squared-length
+guards and unchecked inverse-square-root lookup for overflowed finite inputs.
+Two very large angles (approximately 3.32e12 and 4.44e13 radians) exposed x87
+argument reduction differences from host libm. A direct Wine x87 probe confirmed
+the phase difference; the recovered reducer subtracts quadrants using the
+66-bit pi/2 constant `0x3243f6a8885a308d3 * 2^-65` with exact integer arithmetic.
+Small remainders use host sine/cosine, and the existing >=2^63 operand-preserving
+behavior remains. This is validated against the captured original outputs,
+not a claim of exhaustive x87 transcendental emulation.
+
+Report: `mcm-motion-transform-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-motion-transform-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Next are the state-dependent crash controls and remaining main-loop updates
+from `0x4ab7fd`. Complete-loop wiring and whole-bike acceleration/throttle-release
+trajectory parity remain unfinished.
