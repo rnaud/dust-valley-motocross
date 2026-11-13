@@ -1240,3 +1240,8 @@ test('connected suspension forces match original lean gate, spring damping and a
  const {evaluateSuspensionForceSubstep}=await import('../scripts/mcm-reference/suspension-force-substep-case.mjs');
  for(const [i,{input:c,outputBits}] of fixture('suspension-force-substep-wine11.json').fixtures.entries()){const actual=evaluateSuspensionForceSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
+
+test('connected single-contact forces match original projection, pitch clips and drive torque',async()=>{
+ const {evaluateSingleContactForceSubstep}=await import('../scripts/mcm-reference/single-contact-force-substep-case.mjs');
+ for(const [i,{input:c,outputBits}] of fixture('single-contact-force-substep-wine11.json').fixtures.entries()){const actual=evaluateSingleContactForceSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});
