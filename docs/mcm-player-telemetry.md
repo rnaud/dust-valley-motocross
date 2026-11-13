@@ -571,3 +571,44 @@ and limits of that finding. This is original-versus-original evidence, not
 original-versus-recovered simulation parity. Next work must initialize the
 recovered context from captured live state and actual course data, explicitly
 capture missing rider/world dependencies, and compare every update boundary.
+
+## Recovered engine initialized from the live checkpoint
+
+`live-checkpoint.mjs` reads addressed blocks with strict bounds and overlap
+checks. Missing memory fails explicitly. It loads the actual engine tables,
+current gear/throttle/shift state and analog filter from the exported allocation;
+no preview profile or synthetic reset initializes this path. Saved RPM demand
+comes from engine `+0x7c`. The missing rider (`bike+0x874`) and terrain
+(`bike+0x8f4`) targets remain explicit bootstrap gaps.
+
+[Engine comparison](mcm-live-checkpoint-engine-validation.json) runs the recovered
+`updateMcmSubstepStart` across both 400-frame sequences. Engine state, analog and
+acceleration filters, brake pressure, previous speed/Y velocity and the CRT
+stream are initialized once per pass and retained. Four random draws occur per
+pass, ending at state 1449997005. All 14,400 observed engine/entry stores and
+1,600 RNG boundaries match exactly. The supplied digital throttle return is the
+capture's scripted input; no physical input-device emulation is claimed.
+
+This comparison supplies original speed and velocity at each frame entry and
+uses captured scheduler inputs. It rejects crashes, AI/scripted/analog modes,
+nonzero AI demand and schedules needing intermediate chassis observations.
+Consequently it validates captured-state initialization and retained engine
+execution, not chassis/terrain integration or complete trajectory parity.
+Regression tests also reject missing filters, overlapping/truncated blocks,
+wrong initial state and altered output. The prior four unexplained bike words
+remain visible in the report.
+
+Reproduce with:
+
+```sh
+node scripts/mcm-reference/compare-live-checkpoint-engine.mjs tests/fixtures/mcm/healthy-replay-checkpoint-wine11.json.br
+```
+
+The original allocates the missing rider controller as **0x3ac bytes** at
+`0x4a3a6b..0x4a3aa9`, then calls constructor `0x40d400`. A future live exporter
+must use that allocation bound; the synthetic oracle's larger scratch buffer
+is not evidence of the live object's size.
+
+Validation: all 324 tests pass locally; the new checkpoint tests also pass on
+x64 Node under Rosetta. This milestone changes the validation harness, not the
+browser preview's physics wiring.
