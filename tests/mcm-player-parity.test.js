@@ -829,3 +829,17 @@ test('rider control flow matches original dispatch, pose and blend',async()=>{
  }
  assert.equal(outcomes.size,19);
 });
+
+test('connected rider update matches original graph, input and animation effects',async()=>{
+ const {runRiderStepCase}=await import('../scripts/mcm-reference/rider-step-case.mjs');
+ const {floatBits,bitsFloat}=await import('../src/physics/mcm/math.js');
+ const tricks=new Set();let nearby=0;
+ for(const {input:c,angularVelocityBits,controlBits,outputBits} of fixture('rider-step-wine11.json').fixtures){
+ c.angularVelocity=angularVelocityBits.map(bitsFloat);c.riderControl.control=bitsFloat(controlBits);
+ const s=c.setup,t=runRiderStepCase(c),r={...t,triggered:c.state,eventKind:c.eventKind,reason:c.reason,otherPresent:c.otherPresent,field714:c.field714,velocity:c.velocity,angularVelocity:c.angularVelocity,randomCalls:0,inputCalls:t.inputCalls,state:c.state,direction:s.direction,inverted:s.inverted,field890:s.field890,resource:s.resource,rider:s.rider},expected=[r.triggered,r.eventKind,r.reason,r.otherPresent,r.field710,r.field714,...[...r.velocity,...r.angularVelocity].map(floatBits),r.randomCalls,r.inputCalls,r.state,r.field820,r.animation,...[...r.envelope,...r.direction].map(floatBits),r.inverted,floatBits(r.field890),r.resource,...[...r.boundsMin,...r.boundsMax,...r.scratch540,...r.scratch54c,...r.target.local,...r.target.world,...r.source.world].map(floatBits),r.source.cacheValid,r.target.cacheValid,...[...r.rider.velocity,...r.rider.angularVelocity,...r.rider.previousVelocity].map(floatBits),...r.rider.selected,r.rider.active13c,r.rider.active16c,r.rider.kind,...r.components.flatMap(n=>[...[...n.local,...n.world].map(floatBits),n.cacheValid]),...r.boundsChildren.flatMap(n=>[...n.forward,...n.up,...n.position].map(floatBits)),floatBits(t.awardBase),t.fieldb4c,...t.bikeAnimation,...t.riderAnimation,+!!t.nearby,floatBits(t.angle),t.field824>>>0,floatBits(t.lean),floatBits(t.progress),...t.riderBounds.map(floatBits),...[t.blend,t.positivePeak,t.negativePeak,...t.envelope].map(floatBits),t.pose>>>0,floatBits(t.weight),t.nextPose>>>0,floatBits(t.secondaryWeight),...t.queries,...Array(3-t.queries.length).fill(0)];
+ assert.deepEqual(expected,outputBits);
+ if(t.field710&&t.inputCalls===3)tricks.add(t.animation);
+ if(t.accepted)nearby++;
+ }
+ assert.equal(tricks.size,16);assert.ok(nearby>0);
+});
