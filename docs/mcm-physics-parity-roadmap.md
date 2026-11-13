@@ -3275,3 +3275,32 @@ Second-pass chassis impulse/integration, later control/event handling, full
 frame execution, dynamic bike/rider collisions, end-to-end acceleration/release
 trajectories and playable integration remain outstanding. The synthetic-state
 and supplied wheel-query scratch limitations from earlier stages still apply.
+
+### Persistent second substep through impulse, integration and transforms
+
+The continuous second iteration now reaches `0x4ab7fd`. All 2,963 captured
+words match in 16,400 executions, including 8,964 continuing second substeps.
+The recovered common stages now execute chassis contact/response and type-3
+impulse, suspension force assembly, single/paired contact torque, pivot/contact
+correction, angular and linear integration, and ordered wheel/body transforms
+without restarting any earlier stage or replacing state across loop-back.
+
+The new comparison captures impulse/integration scratch, bike position and
+velocities, accelerations, angular state, contact levers, force/torque, motion
+counters, wheel angles, four transform/cache records and suspension histories.
+Airborne integration commits cleared suspension histories back to the component
+state for subsequent substeps. Required outcomes include enabled/skipped chassis
+response, contact masks 0/1/2 and zero/nonzero body rotation. Mask 3 cannot be
+produced here: engine entry clears the mask and these correction branches assign
+only 0, 1 or 2. Integration vectors are encoded to words before concatenation,
+preserving the original negative NaN sign in exceptional synthetic cases.
+The pivot transform uses an indexed Float64Array copy: warmed-up x64 execution
+otherwise canonicalized negative NaNs when updating a spread-copied matrix.
+The fixture regression checks the resulting body matrix as well as scratch.
+
+Report: `mcm-reset-loop-motion-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-loop-motion-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Second-pass controller/event/post-state completion, repeated full substeps and
+frame completion, dynamic bike/rider collision callbacks, whole-bike acceleration
+and throttle-release trajectories, and playable integration remain outstanding.
+The earlier synthetic-state and supplied wheel-query scratch limitations apply.

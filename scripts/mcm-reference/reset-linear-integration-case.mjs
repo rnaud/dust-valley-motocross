@@ -10,10 +10,12 @@ function groups(p){
   p.angularIntegration.local,p.angularIntegration.opposing,p.linearIntegration.deltaVelocity,[p.linearIntegration.rotation]];
 }
 export function resetIntegrationScratch(p){return groups(p).flatMap(v=>Array.from(v));}
+export function resetIntegrationWords(p){
+ const scratch=groups(p).flatMap(v=>Array.from(v,floatBits));scratch[49]=p.contactCorrection.mask>>>0;return scratch;
+}
 export function evaluateResetLinearIntegration(input,step=updateMcmResetLinearIntegration){
  let p;
  const words=evaluateResetChassisImpulse(input,c=>{const result=step(c);p=c.contactPhase;return result;});
  words[0x8bc/4]=p.singleContactForce.counter>>>0;words[0x6e0/4]=p.linearIntegration.counter>>>0;
- const scratch=groups(p).flatMap(v=>Array.from(v,floatBits));scratch[49]=p.contactCorrection.mask>>>0;
- return [...words,...scratch];
+ return [...words,...resetIntegrationWords(p)];
 }
