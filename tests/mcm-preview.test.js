@@ -38,7 +38,7 @@ test('recovered preview contact resists rolling and lateral motion without rever
   assert.ok(Math.abs(rolling.longitudinal+135)<.001);
   assert.ok(rolling.lateral===0);
   const lateral=mcmPreviewTireForces({longSpeed:0,sideSpeed:20,load:900,mass:90,front,dt:.02});
-  assert.ok(Math.abs(lateral.lateral+(front?540:5400))<.001);
+  assert.ok(Math.abs(lateral.lateral+(front?540:5400*Math.fround(.9505)))<.001);
   for(const sign of [-1,1])for(const speed of [.0001,.1,2,20]){
    const result=mcmPreviewTireForces({longSpeed:sign*speed,sideSpeed:0,load:900,mass:90,front,dt:.02,brake:true});
    const next=sign*speed+result.longitudinal/90*.02;
@@ -101,4 +101,35 @@ test('recovered steering correction turns both ways and preserves speed',async()
   assert.ok(turn*steer<-.2);assert.equal(s.crashed,false);
   resetBike(s,0,0,0);assert.equal(s.recoveredTurnRate,0);assert.equal(s.recoveredContact,null);
  }
+});
+
+test('preview rear traction scales drive with retained acceleration, load share and speed',async()=>{
+ const {mcmPreviewContactForces}=await import('../src/mcm-preview-contact.js');
+ const wheel=speed=>({velocity:[0,0,speed],axis:[0,0,1],arm:[0,0,0],load:900});
+ const base={rear:wheel(1),velocity:[0,0,1],mass:180,dt:.02,drive:3000};
+ const initial=mcmPreviewContactForces(base);
+ const accelerating=mcmPreviewContactForces({...base,acceleration:[0,0,3000/180]});
+ assert.ok(initial.rearTractionScale>.8&&initial.rearTractionScale<.9);
+ assert.equal(accelerating.rearTractionScale,Math.fround(.9505));
+ assert.ok(initial.driveForce[2]<accelerating.driveForce[2]);
+ assert.ok(Math.abs(initial.driveForce[2]-3000*initial.rearTractionScale)<.001);
+ const fast=mcmPreviewContactForces({...base,rear:wheel(45*.3048),velocity:[0,0,45*.3048]});
+ assert.equal(fast.rearTractionScale,1);assert.ok(Math.abs(fast.driveForce[2]-3000)<.001);
+ const lightRear=mcmPreviewContactForces({...base,drive:0,rearShare:.25});
+ const heavyRear=mcmPreviewContactForces({...base,drive:0,rearShare:.75});
+ assert.ok(lightRear.rearTractionScale<heavyRear.rearTractionScale);
+ const uphill=mcmPreviewContactForces({...base,drive:0,bikeForward:[0,.2,Math.sqrt(.96)],roll:.6});
+ const downhill=mcmPreviewContactForces({...base,drive:0,bikeForward:[0,-.2,Math.sqrt(.96)],roll:.6});
+ assert.ok(uphill.rearTractionScale<downhill.rearTractionScale);
+ assert.deepEqual(mcmPreviewContactForces({...base,rear:null}).driveForce,[0,0,0]);
+});
+
+test('retained preview acceleration includes spring impulses without applying them twice',()=>{
+ const s=createState({sand:false,flat:true,height:()=>0,physicsMode:'mcm-preview'});
+ for(let i=0;i<250;i++)stepBike(s,{},.02);
+ assert.equal(s.contacts,2);assert.ok(Math.hypot(...s.recoveredAcceleration)<.001);
+ for(let i=0;i<100;i++)stepBike(s,{gas:true},.02);
+ assert.ok(s.recoveredAcceleration.every(Number.isFinite));
+ assert.ok(s.recoveredContact.driveForce[2]>0);
+ resetBike(s,0,0,0);assert.deepEqual(s.recoveredAcceleration,[0,0,0]);
 });

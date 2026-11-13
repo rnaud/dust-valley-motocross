@@ -4476,3 +4476,34 @@ and production-served browser checks pass for acceleration, steering, release,
 pause/photo/reset, classic fallback and mobile layout. These are integration
 checks alongside the existing original-execution helper fixtures, not a new
 whole-bike original-versus-preview comparison.
+
+### Playable preview: dynamic rear traction
+
+The preview now runs `updateMcmRearTire` (`0x4a8216..0x4a8634`) before the shared
+tire/brake accumulation. Its PDM gain is float32(0.9505), and its speed threshold
+is 45 feet/second (bike +0x6d0 and +0x6d4). Drive, rear tire force and rear braking
+now use the stage's computed scale rather than independent constant factors.
+The previous unconditional drive multiplier is removed from the preview path;
+the scaled drive vector is applied once. The original substep reset value of one
+is retained for branches that skip dynamic scaling.
+
+The stage receives prior force acceleration, load share, bank cosine, forward
+orientation and current contact velocities. Cannon's spring impulses are
+included as equivalent forces when observing the prior acceleration, without
+applying those impulses again. Reset clears that history. At rest on level
+hardpack, the observed acceleration approaches zero instead of incorrectly
+reporting gravity alone.
+
+Contact loads and lever geometry, bank/load-share control and chassis integration
+remain adapted. The previous acceleration includes preview forces and is not a
+captured original-bike state. Native helper fixture parity and preview behavior
+checks therefore do not establish whole-bike live parity. The desktop was
+rechecked and remains locked; a new original-game riding checkpoint still needs
+an unlocked session.
+
+Validation: all 310 tests and the production build pass. Production-served
+browser checks pass for acceleration, steering, throttle release, pause/photo,
+reset, classic fallback and mobile layout. New integration checks cover the
+45-foot/second branch, prior-acceleration feedback, load/bank changes, no rear
+contact, a single drive-scale application and spring-inclusive resting
+acceleration. The recovered function's original-execution fixtures remain intact.
