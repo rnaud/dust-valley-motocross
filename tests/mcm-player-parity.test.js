@@ -1175,3 +1175,8 @@ test('connected contact response matches original crash steering, transforms and
  const {evaluateContactResponseSubstep}=await import('../scripts/mcm-reference/contact-response-substep-case.mjs');
  for(const {input:c,outputBits} of fixture('contact-response-substep-wine11.json').fixtures)assert.deepEqual(evaluateContactResponseSubstep(c),outputBits);
 });
+
+test('connected balance matches original takeoff state, weight filtering and force reference position',async()=>{
+ const {evaluateContactBalanceSubstep}=await import('../scripts/mcm-reference/contact-balance-substep-case.mjs');
+ for(const {input:c,outputBits} of fixture('contact-balance-substep-wine11.json').fixtures)assert.deepEqual(evaluateContactBalanceSubstep(c),outputBits);
+});
