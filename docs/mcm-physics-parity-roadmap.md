@@ -2824,3 +2824,25 @@ words as well as the existing 964 entry/final observations. All 976 words match
 across 40,326 original executions after the correction. This strengthens
 single-substep evidence; reset/force integration, dynamic collisions, repeated
 substeps and whole-bike acceleration/release parity remain incomplete.
+
+### Common preparation connected to reset selection and pose
+
+The reset comparison now enters at `0x4a5e27`, sharing the original front
+translation reset, rear rest-matrix restoration and balance-reference refresh
+before selecting the nonzero-reset branch. It continues through `0x4a64dc`,
+including all reset pose selection helpers, bike/engine reset, terrain support,
+bounds-child callbacks, collision proxy/grid synchronization and cooldown flags.
+All 1,566 captured words match in 16,384 original executions.
+
+Required coverage includes every reset mode (0–4 and fallback), shared and
+distinct suspension nodes, body/reference aliasing and parented/unparented rear
+nodes. The initial rear rest matrix lives in its real component storage; it is
+not rebuilt after preparation invalidates or mutates the live transform graph.
+The original constructor calls preserve scratch storage at this boundary.
+
+Report: `mcm-prepared-reset-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-prepared-reset-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+This connects common preparation to reset, but the reset-produced state still
+needs to flow into the complete downstream force/collision/finish path. Engine
+entry preceding reset, dynamic collisions, frame loops and full acceleration /
+throttle-release trajectories remain unproven.

@@ -1,7 +1,7 @@
 import {evaluateBikeReset} from './bike-reset-case.mjs';
 import {resetMcmSubstep} from '../../src/physics/mcm/reset-substep.js';
 import {floatBits,bitsFloat} from '../../src/physics/mcm/math.js';
-export function evaluateResetSubstep(input){
+export function evaluateResetSubstep(input,step=resetMcmSubstep){
  const p=structuredClone(input),nodes=p.nodes;
  nodes.forEach((n,i)=>{const parent=p.parents[i];if(parent>=0){n.parent=nodes[parent];n.nextSibling=n.parent.firstChild;n.parent.firstChild=n;}});
  const t=p.terrain;
@@ -23,7 +23,7 @@ export function evaluateResetSubstep(input){
   Object.assign(c,{bodyNode:nodes[p.bodyIndex],componentNode:nodes[p.componentIndex],pose:p.pose,componentAxis:p.componentAxis,componentAngle:p.componentAngle,frontNode:nodes[p.frontIndex],rearNode:nodes[p.rearIndex],terrain:t,points:p.points,heights:p.heights,frontRadius:bitsFloat(p.words[818+0x44/4]),rearRadius:bitsFloat(p.words[842+0x44/4]),contactScratch:p.contactScratch,referenceNode:nodes[p.referenceIndex],bounds:{...p.bounds,components:nodes},collision:g.present?object:null,proxy:nodes[g.proxyIndex],grid:{...g,cells},gridEnabled:g.enabled});
   Object.assign(c.bike,{fieldbb8:q[5],field88c:q[6],field614:q[8],fieldc08:q[9],fieldbe4:q[10],savedHeading:q.slice(28,31),spawnPosition:q.slice(31,34),spawnForward:q.slice(34,37),position:q.slice(37,40),forward:q.slice(40,43),up:q.slice(43,46)});
   Object.assign(c,{mode:q[0],setting:q[1],playerCount:q[2],aiCount:q[3],enumerationDisabled:q[4],resetReason:q[7],width:q[11],bikes:[c.bike,...others.slice(0,q[2]-1+q[3])],targetNode:q[46]?targetNodes[1-q[47]]:null,observerBike:q[115]===1?c.bike:q[115]===2?others[0]:null,control1c:q[116],control30:q[117],control2c:q[118]});
-  const result=resetMcmSubstep(c);selectedPose=[...c.pose.position,...c.pose.forward];controls=[c.control1c,c.control30,c.control2c,c.resetReason];cooldownFlag=c.bike.field8ac;resetFlags=[c.bike.field8c0,c.bike.fieldcb4];angle=c.componentAngle;points=c.points;heights=c.heights;
+  const result=step(c);selectedPose=[...c.pose.position,...c.pose.forward];controls=[c.control1c,c.control30,c.control2c,c.resetReason];cooldownFlag=c.bike.field8ac;resetFlags=[c.bike.field8c0,c.bike.fieldcb4];angle=c.componentAngle;points=c.points;heights=c.heights;
   for(const [key,offset] of [['savedHeading',0x898],['spawnPosition',0xbc0],['spawnForward',0xbcc],['savedPosition',0x56c],['boundsMin',0x218],['boundsMax',0x224],['forward',0x4c0],['up',0x4cc],['position',0x4f8],['tangent',0x578],['rearTangent',0x584],['normal',0x54c],['offset',0x540],['referencePosition',0x504]])c.bike[key].forEach((v,j)=>{c.bike[`field${(offset+j*4).toString(16)}`]=v;});
   return result;
  });
