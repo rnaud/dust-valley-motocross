@@ -812,3 +812,32 @@ Still required: identify the rider proxy's actual callback table, integrate both
 animation seeks with nearby interaction orientation/state updates, then connect
 the full rider update. Whole-bike parity remains unproven and the playable preview
 continues to use its hybrid chassis.
+
+### Complete nearby interaction with both animation seeks (2026-11-12)
+
+Recovered and validated the whole `0x4a16d0` helper: iterator/selection, angle gate,
+orientation and bounds reset, interaction flags, +/-2.7 angle clamp and +/-0.7 lean,
+progress reset, then rider and bike animation seeks in original order. The accepted
+path resets orientation regardless of the incoming +0x820 flag. No candidate and
+rejected-angle paths preserve the other transition state.
+
+Rider proxy identity evidence: bike construction at `0x4a2519..0x4a2556` calls
+`0x45bbc0`, which installs primary vtable `0x4d7b14`; slot +0x30 is `0x44ede0`
+and the returned +0x404 interface is adjusted back before storage at bike+0xc8c.
+Both that table and bike vtable `0x4d9a94` have `0x44f8b0` at slot +0x14.
+The oracle uses those original tables and runs both real animation seeks.
+
+48,000 cases, 220 compared words per case, zero differences. All frame counts
+1–8 include no-candidate, rejected-angle and accepted-angle cases. Compared state
+includes matrices/caches, mutated child records, bounds, animation record/frame
+identity, flags, envelope, angle/lean/progress, and preserved unrelated fields.
+The initial comparison exposed only signed versus unsigned representation of an
+unchanged -1 state word; the comparison now consistently uses unsigned words.
+Report: `mcm-nearby-transition-validation.json`; reproduction:
+`node scripts/mcm-reference/compare-nearby-transition-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+
+Scope: supplied finite state, root target, source root/child, nested/sibling
+components, with bike and rider deliberately sharing the component graph and
+child records to exercise mutation order. Independent rider graphs, live asset
+records, full rider-input integration, and whole-bike trajectories remain open.
+No full-physics parity claim follows from this helper validation.
