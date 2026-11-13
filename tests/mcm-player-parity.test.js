@@ -1779,3 +1779,21 @@ test('retained physics executes the original caller tail and frame return',async
   assert.deepEqual(actual.tail,outputBits,`frame return tail ${caseIndex}`);
  }
 });
+
+
+test('retained frame return enters the original next-frame scheduler without reseeding',async()=>{
+ const {evaluateResetNextEntry}=await import('../scripts/mcm-reference/reset-next-entry-case.mjs');
+ const corpus=fixture('reset-next-entry-wine11.json.br');
+ assert.equal(corpus.source.mismatchCount,0);
+ assert.equal(corpus.source.exceptionCount,0);
+ assert.equal(corpus.source.priorTraceChangedCases,0);
+ for(const path of ['negative','capped','single','multiple'])assert.ok(Object.keys(corpus.source.schedules).some(k=>k.startsWith(`path=${path}:`)));
+ for(const bits of [0,0x80000000])assert.ok(corpus.fixtures.some(c=>c.input.nextFrame.deltaBits===bits));
+ for(const {caseIndex,input,prefixBits,outputBits} of corpus.fixtures){
+  const actual=evaluateResetNextEntry(input);
+  assert.equal(actual.tail.length,11248);
+  assert.equal(actual.tail[11096],1);
+  assert.deepEqual(actual.prefix,prefixBits,`next entry prefix ${caseIndex}`);
+  assert.deepEqual(actual.tail,outputBits,`next entry tail ${caseIndex}`);
+ }
+});
