@@ -1972,3 +1972,30 @@ Report: `mcm-contact-balance-substep-validation.json`. Reproduce with
 Executable/DLL pinning and observation boundaries remain unchanged. Filter
 durations and masses are finite positive values. Remaining force assembly,
 full-loop integration and whole-bike acceleration/release parity are unfinished.
+
+### Connected front suspension and crash reference transform (2026-11-12)
+
+Extended ordinary execution from `0x4a63d2` through the first front suspension
+response at `0x4a73e2`; no-wheel/rear-only branches are observed at `0x4a8b6e`
+and `0x4a7ad6` before their later response calculations. The force reference is
+converted into body-local space, lowered by one local unit in crash state and
+transformed back. Front suspension now consumes the actual earlier wheel
+height, lever and contact normal; its component translation invalidates the
+real parent/child graph, including aliases with earlier queried nodes.
+
+The 40,000-case comparison matches all 325 output words with zero differences, preserving all previous
+outputs and adding local reference position, suspension displacement/velocity,
+travel history, limit/contact flags and activity. It exercises state 2's bypass,
+missing front/any contacts, travel limits, signed zeros, zero timestep, graph
+aliasing and extreme finite steering. Zero-timestep velocity and overflowed
+reference transforms exposed additional x87 NaN-sign behavior. Recovered code
+preserves negative invalid results, sign reversal and equal-payload positive
+NaN propagation; saved fixtures retain these observed exceptional paths.
+Arbitrary input NaN payload propagation remains outside this finite-input corpus.
+
+Report: `mcm-front-suspension-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-front-suspension-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+The original suspension/transform callees execute directly with pinned
+executable and Wine D3DRM hashes. Later front/rear force calculations, no-wheel
+response, complete integration and whole-bike acceleration/release parity
+remain unfinished.
