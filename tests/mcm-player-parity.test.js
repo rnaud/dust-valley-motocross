@@ -1384,3 +1384,10 @@ test('connected engine entry matches throttle, gears and their downstream physic
  for(const gate of [':shift=-1:',':shift=1:',':polls=5,4:','analog=true','analog=false',':stopped=true',':stopped=false'])assert.ok(Object.keys(corpus.source.engineOutcomes).some(k=>k.includes(gate)),gate);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){const actual=evaluateEngineEntrySubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
+
+test('common suspension preparation feeds the original complete reset branch',async()=>{
+ const {evaluatePreparedResetSubstep}=await import('../scripts/mcm-reference/prepared-reset-substep-case.mjs');
+ const corpus=fixture('prepared-reset-substep-wine11.json.br');
+ for(const gate of ['frontRearAlias=true','frontRearAlias=false',':bodyAlias=true',':bodyAlias=false',':referenceAlias=true',':referenceAlias=false',':parented=true',':parented=false',':mode=0:',':mode=1:',':mode=2:',':mode=3:',':mode=4:',':mode=-1:'])assert.ok(Object.keys(corpus.source.preparationOutcomes).some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluatePreparedResetSubstep(c),outputBits,`reset fixture ${i}`);
+});
