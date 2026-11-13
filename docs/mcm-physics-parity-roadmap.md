@@ -841,3 +841,28 @@ components, with bike and rider deliberately sharing the component graph and
 child records to exercise mutation order. Independent rider graphs, live asset
 records, full rider-input integration, and whole-bike trajectories remain open.
 No full-physics parity claim follows from this helper validation.
+
+### Rider-update control flow, pose and blend (2026-11-12)
+
+Recovered the complete control flow of `0x4aecb0`, joining early state gates,
+local-input gates, ordered actions 9/6/7, nearby/trick dispatch, the +0xc68 flag
+branch, high-stance pose selection, orientation reset dispatch and ordinary
+pose/blend. A nearby call returns immediately even if its callee rejects the
+interaction. Queries 6 and 7 both occur before testing their combined result.
+The high-stance branch sets +0x820 and updates pose/weight without rewriting the
+next-pose or secondary-weight fields, then enters the common blend tail.
+
+48,000 original-execution cases, zero differences in 20 words including query
+order, all 16 trick indices, nearby/reset dispatch and pose/blend state. Fixtures
+retain every one of the 19 observed dispatch outcomes and signed-zero controls.
+Report: `mcm-rider-update-validation.json`; reproduce with
+`node scripts/mcm-reference/compare-rider-update-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+
+This oracle runs the original full rider function with recording adapters at
+input query, nearby and trick calls. The orientation reset block is recorded,
+then the original +0x820 clear runs. It therefore validates routing and pose/blend,
+not the complete graph/animation integration. The recovered JS function likewise
+accepts adapter callbacks that mutate its result state. Next, wire the already
+recovered transitions and real graph resets into those adapters and validate the
+connected original function without these transition substitutions. Full
+whole-bike trajectories and the hybrid-preview replacement remain unfinished.
