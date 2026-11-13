@@ -612,3 +612,39 @@ is not evidence of the live object's size.
 Validation: all 324 tests pass locally; the new checkpoint tests also pass on
 x64 Node under Rosetta. This milestone changes the validation harness, not the
 browser preview's physics wiring.
+
+## Live terrain dependency identified
+
+The original session's terrain pointer `0x02f0b628` resolves to the installed
+`teraform/quarries/dunes.trn`, SHA-256
+`942b756572b407adf9223ecc1afb22556c5bc5636d3bd5e3ac51ef5419543d0b`.
+[Live terrain report](mcm-live-terrain-validation.json) compares all three bank
+payloads, all hierarchy physics fields/child links and both scale values against
+`readMcmTerrain`. All 882 banks (5,041,512 bytes) and 12,594 nodes match exactly.
+Two independent live reads produce identical bank and tree bytes. ARM64 and x64
+comparators produce identical reports. This identifies the data source for the
+healthy replay; it does not yet wire that terrain into a complete live context.
+
+Disassembly confirms terrain `+0x9f8` is the bank count and `+0x9fc` the pointer
+table. Each bank allocation is `0x165c` bytes; physics samples occupy the first
+4,624 bytes, with serialized 512-byte and 580-byte payloads at `+0x1210` and
+`+0x1410`. The capture reads these payloads only. Tree observations include
+bias/scale (`+0xc/+0x10`), level/shift (`+0x20/+0x24`), bank index (`+0x3c`)
+and the child table (`+0x54`). Rendering caches are outside the comparison.
+The exporter reads memory without attaching a debugger or modifying the game.
+
+The complete original course, raw live banks and hierarchy stay in the local
+reference archive, not the repository. Reproduce the comparison with the
+installed course and local observations:
+
+```sh
+node scripts/mcm-reference/compare-live-terrain.mjs /path/to/dunes.trn /path/to/prefix.bin /path/to/banks.bin /path/to/tree.bin
+```
+
+`capture-terrain-banks.c` accepts PID, terrain address, expected bank count,
+exclusive output binary and metadata paths. `capture-terrain-tree.c` accepts
+PID, terrain address and exclusive output binary. The prefix is a read-only
+`0xa08`-byte observation of the terrain owner. Capture sources and raw data are
+preserved under `player-validation/live-terrain-2026-11-13/`. These static
+observations were taken after the replay; they are not a new atomic checkpoint
+of rider, collision grid, opponents or other mutable world state.
