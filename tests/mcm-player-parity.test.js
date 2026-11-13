@@ -1545,3 +1545,14 @@ test('persistent second substep matches event decision, rider initialization and
   assert.deepEqual(actual,outputBits,`reset/loop-event fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
  }
 });
+
+test('persistent second substep matches rider input, all directional tricks and pose blending',async()=>{
+ const {evaluateResetLoopRider}=await import('../scripts/mcm-reference/reset-loop-rider-case.mjs');
+ const corpus=fixture('reset-loop-rider-wine11.json.br'),outcomes=Object.keys(corpus.source.nextRiderOutcomes);
+ for(const gate of ['looped=0:',':called=1:',':queries=3:',':enabled=1:',':flag=1:',':flag=2:'])assert.ok(outcomes.some(k=>k.includes(gate)),gate);
+ for(let index=1;index<=16;index++)assert.ok(outcomes.some(k=>k.includes(`:trick=${index}:`)),`directional trick ${index-1}`);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){
+  const actual=evaluateResetLoopRider(c);
+  assert.deepEqual(actual,outputBits,`reset/loop-rider fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
+ }
+});

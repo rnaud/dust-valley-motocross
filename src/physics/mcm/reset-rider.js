@@ -5,9 +5,15 @@ import {updateMcmRider} from './rider-update.js';
 // Reset establishes ground contact and clears trick control. Those native
 // invariants exclude input/trick/orientation callbacks in this invocation.
 export function updateMcmResetRider(c){
- const result=updateMcmResetEventJoin(c),b=c.bike,p=c.contactPhase,j=p.normalEventJoin;
- if(!j.called)return result;
+ const result=updateMcmResetEventJoin(c),p=c.contactPhase;
+ if(!p.normalEventJoin.called)return result;
  if(p.field4bc||p.normalControl.flag820)throw new RangeError('Unexpected airborne/trick state after reset');
+ applyMcmBikeRider(c);return result;
+}
+
+export function applyMcmBikeRider(c,callbacks){
+ const b=c.bike,p=c.contactPhase,j=p.normalEventJoin;
+ if(!j.called)return;
  const r=updateMcmRider({state:b.field844,field710:b.field710,fieldbfc:b.fieldbfc,
   ai:b.field614,secondaryControl:b.field618,field4bc:p.field4bc,
   height0:c.heights[0],height1:c.heights[1],height:j.height,steer:j.control,
@@ -16,9 +22,10 @@ export function updateMcmResetRider(c){
   axis:p.componentAngle,limit:c.riderComponentLimit,dt:p.dt,
   lowerHeight:b.field71c,upperHeight:b.field720,poseSpeed:b.field738,
   pose:b.field724,weight:b.field728,nextPose:b.field72c,secondaryWeight:b.field734,
-  fieldb4c:b.fieldb4c});
+  fieldb4c:b.fieldb4c,flags:b.fieldc68,directionX:b.field6e8,directionY:b.field6ec},callbacks);
  b.field724=r.pose;b.field728=r.weight;b.field72c=r.nextPose;b.field734=r.secondaryWeight;
  b.field730=r.blend;b.field708=r.positivePeak;b.field704=r.negativePeak;c.effect=r.envelope;
+ b.field820=p.normalControl.flag820=r.enabled;b.field710=p.leanDisabled=r.field710;b.fieldb4c=p.fieldb4c=r.fieldb4c;
  p.normalControl.field730=r.blend;p.normalEventSetup.envelope=r.envelope;
- return result;
+ return r;
 }
