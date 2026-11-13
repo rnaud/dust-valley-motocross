@@ -1519,3 +1519,27 @@ Report: `mcm-substep-wheel-query-validation.json`. Reproduce with
 This connects the ordinary query branch only. The alternate settings-dependent
 branch, common work after the query and force/whole-loop integration remain
 pending; this does not establish full acceleration/release trajectory parity.
+
+### Alternate-contact bike reset (2026-11-12)
+
+Recovered complete reset `0x4a1a40`, called by the alternate pose/contact
+routine `0x49f8f0`. It clears motion/event/contact fields, restores mass from
+bike+0x68c, resets optional components, and resets the engine to gear zero with
+one CRT draw for its new threshold. The inverse mass uses the unrounded mass
+product; field+0x814 clears only its low byte. Fields outside the original
+write set remain unchanged, including component parameters and engine filters.
+
+8,192 original-execution cases match all 1,043 output words with zero
+differences. Each comparison covers the complete 0xcc8-byte bike allocation,
+four component buffers, engine allocation, optional effect buffer, and RNG
+call count. All 64 optional-component combinations run with zero, maximum and
+varied CRT draws. Allocations start with independent finite sentinel values;
+the packed byte field starts with arbitrary bits. Supplied pointer slots are
+restored to their input sentinels before comparison; only CRT rand is replaced.
+
+Report: `mcm-bike-reset-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-bike-reset-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Source mass is positive and source time/threshold parameters are finite.
+The reset is validated independently; the subsequent pose rebuild, terrain
+alignment and alternate-path integration remain pending before whole-loop
+acceleration/release parity can be established.

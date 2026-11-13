@@ -1085,3 +1085,8 @@ test('main-substep wheel query matches original ordered transform reads and comp
  const {evaluateSubstepWheelQuery}=await import('../scripts/mcm-reference/substep-wheel-query-case.mjs');
  for(const {input:c,outputBits} of fixture('substep-wheel-query-wine11.json').fixtures)assert.deepEqual(evaluateSubstepWheelQuery(c),outputBits);
 });
+
+test('bike reset matches original complete allocation writes, optional components and random draw count',async()=>{
+ const {evaluateBikeReset}=await import('../scripts/mcm-reference/bike-reset-case.mjs');
+ for(const {input:c,outputBits} of fixture('bike-reset-wine11.json').fixtures)assert.deepEqual(evaluateBikeReset(c),outputBits);
+});
