@@ -1,11 +1,12 @@
+import {mcmMultiply as mul} from './x87-arithmetic.js';
 import {floatBits} from './math.js';
 import {integrateMcmLinear} from './integrate-linear.js';
 
 // Original 0x4aaf02..0x4ab49e. Offset names retain unresolved steering semantics.
 export function updateMcmForceLinear(c) {
   const f=Math.fround,signed=v=>floatBits(v)|0;
-  const acceleration=c.totalForce.map(v=>f(c.inverseMass*v));
-  const deltaVelocity=acceleration.map(v=>f(v*c.dt));
+  const acceleration=c.totalForce.map(v=>f(mul(c.inverseMass,v)));
+  const deltaVelocity=acceleration.map(v=>f(mul(v,c.dt)));
   let scratch540=[...c.scratch540],fallback=0;
   if(c.both && signed(c.field738)>0x40e00000 && signed(c.fieldcc)>=0x38d1b717 && signed(c.fieldc8)<0x3e800000){
     const a=c.axis584,b=c.direction4ec;

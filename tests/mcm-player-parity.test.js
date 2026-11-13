@@ -1260,3 +1260,8 @@ test('connected angular integration matches original opposing torque, damping an
  const {evaluateAngularIntegrationSubstep}=await import('../scripts/mcm-reference/angular-integration-substep-case.mjs');
  for(const [i,{input:c,outputBits}] of fixture('angular-integration-substep-wine11.json').fixtures.entries()){const actual=evaluateAngularIntegrationSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
+
+test('connected linear integration matches original steering correction, speed, freeze and crash position updates',async()=>{
+ const {evaluateLinearIntegrationSubstep}=await import('../scripts/mcm-reference/linear-integration-substep-case.mjs');
+ for(const [i,{input:c,outputBits}] of fixture('linear-integration-substep-wine11.json').fixtures.entries()){const actual=evaluateLinearIntegrationSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});
