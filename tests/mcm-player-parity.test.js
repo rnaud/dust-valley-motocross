@@ -1200,3 +1200,8 @@ test('connected rear suspension and drive match original rear-only entry, rotati
  const {evaluateRearSuspensionSubstep}=await import('../scripts/mcm-reference/rear-suspension-substep-case.mjs');
  for(const [i,{input:c,outputBits}] of fixture('rear-suspension-substep-wine11.json').fixtures.entries()){const actual=evaluateRearSuspensionSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
+
+test('connected rear load and velocity match original force split, projection and combined motion',async()=>{
+ const {evaluateRearMotionSubstep}=await import('../scripts/mcm-reference/rear-motion-substep-case.mjs');
+ for(const [i,{input:c,outputBits}] of fixture('rear-motion-substep-wine11.json').fixtures.entries()){const actual=evaluateRearMotionSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});
