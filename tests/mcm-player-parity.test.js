@@ -1145,3 +1145,13 @@ test('continuous main reset branch matches original complete reset, aliased heig
  const {evaluateResetSubstep}=await import('../scripts/mcm-reference/reset-substep-case.mjs');
  for(const {input:c,outputBits} of fixture('reset-substep-wine11.json').fixtures)assert.deepEqual(evaluateResetSubstep(c),outputBits);
 });
+
+test('ordinary contact branch matches original component rotation, cache invalidation and cooldown',async()=>{
+ const {evaluateContactSubstep}=await import('../scripts/mcm-reference/contact-substep-case.mjs');
+ for(const {input:c,outputBits} of fixture('contact-substep-wine11.json').fixtures)assert.deepEqual(evaluateContactSubstep(c),outputBits);
+});
+
+test('connected ordinary force preparation matches original contacts, drag and alignment',async()=>{
+ const {evaluateContactForceSubstep}=await import('../scripts/mcm-reference/contact-force-substep-case.mjs');
+ for(const {input:c,outputBits} of fixture('contact-force-substep-wine11.json').fixtures)assert.deepEqual(evaluateContactForceSubstep(c),outputBits);
+});

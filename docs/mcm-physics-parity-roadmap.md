@@ -1831,3 +1831,39 @@ wheel-query normal scratch are supplied; the pinned executable and loaded Wine
 11 D3DRM hashes are checked. Inputs use finite synthetic state and valid
 level-two terrain. Zero-reset ordinary-path integration, shared force updates,
 full main-loop assembly, and acceleration/release trajectory parity remain open.
+
+### Ordinary contact update and shared force preparation (2026-11-12)
+
+Extended the ordinary branch from `0x4a63d2` through `0x4a64dc`, including
+complete wheel contacts, conditional component update `0x49eef0`, and cooldown.
+The component accumulates a rounded time/rate increment, clears non-finite or
+sub-threshold angles, copies the body local transform, zeroes its translation,
+and rotates only when the resulting angle is nonzero. Invalidation follows the
+original child graph. Cooldown tests signed float bits before and after the
+subtraction, preserving negative zero and clearing the associated integer flag
+only when a positive cooldown expires.
+
+A second continuous comparison extends through `0x4a663d`: signed-zero-aware
+contact flags, rear-normal and speed copies, initial force, conditional velocity
+drag, absolute rear alignment, and normalized contact-position difference. Drag
+rounds its scalar before scaling velocity; direction normalization uses the
+original inverse-square-root routine even for a zero vector.
+
+Both original-execution runs cover 40,000 cases with zero differences across
+214 and 227 output words respectively. Inputs cover four-node parent/child
+and alias combinations, both component-update branches, tiny angle thresholds,
+overflowing angle increments from finite input floats, signed-zero cooldowns,
+expiry/equality cases, all terrain-query modes and drag threshold equality.
+Component-angle/cooldown bits are stored explicitly in fixture inputs to retain
+negative zero through JSON serialization.
+
+Reports: `mcm-contact-substep-validation.json` and
+`mcm-contact-force-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-contact-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`
+and
+`node scripts/mcm-reference/compare-contact-force-substep-oracle.mjs /path/to/mcm.exe /tmp/another-new-output-directory`.
+The original component, terrain and math callees execute directly. Query scratch
+is seeded as before, and query-return/main-exit observation boundaries capture
+outputs. Pinned executable and loaded Wine 11 D3DRM hashes are checked. Later
+force assembly, unified complete main-loop execution, and acceleration/release
+trajectory parity remain unfinished.
