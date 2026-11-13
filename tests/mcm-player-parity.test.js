@@ -1245,3 +1245,8 @@ test('connected single-contact forces match original projection, pitch clips and
  const {evaluateSingleContactForceSubstep}=await import('../scripts/mcm-reference/single-contact-force-substep-case.mjs');
  for(const [i,{input:c,outputBits}] of fixture('single-contact-force-substep-wine11.json').fixtures.entries()){const actual=evaluateSingleContactForceSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
+
+test('connected paired-contact forces match original projection, sequential pitch clips and drive torque',async()=>{
+ const {evaluatePairedContactForceSubstep}=await import('../scripts/mcm-reference/paired-contact-force-substep-case.mjs');
+ for(const [i,{input:c,outputBits}] of fixture('paired-contact-force-substep-wine11.json').fixtures.entries()){const actual=evaluatePairedContactForceSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});
