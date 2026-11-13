@@ -1,3 +1,4 @@
+import {mcmSinCos} from './x87-trig.js';
 // Axis-angle construction from 0x4b7d90. Temporaries preserve instruction
 // order and asymmetric float32 stores; trig equivalence requires oracle checks.
 export function mcmAxisAngleMatrix(axis, angle) {
@@ -10,10 +11,7 @@ export function mcmAxisAngleMatrix(axis, angle) {
   const t6 = axis[0] / t5;
   const t7 = axis[1] / t5;
   const t8 = axis[2] / t5;
-  // x87 FCOS/FSIN leave finite operands with magnitude >= 2^63 unchanged.
-  const outOfRange = Number.isFinite(angle) && Math.abs(angle) >= 2 ** 63;
-  const t9 = outOfRange ? angle : Math.cos(angle);
-  const t10 = outOfRange ? angle : Math.sin(angle);
+  const {sin:t10,cos:t9}=mcmSinCos(angle);
   const t11 = 1 - t9;
   const t12 = t6 * t6;
   const t13 = t12 * t11;
