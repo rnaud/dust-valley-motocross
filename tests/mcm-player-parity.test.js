@@ -1448,3 +1448,10 @@ test('reset event returns match remaining-step commitment and rider-call argumen
  for(const gate of ['called=0:', 'called=1:', ':triggered=0:', ':triggered=1:flag=1:delayZero=true:', ':delayZero=false:', ':heightZero=true:', ':heightZero=false:', ':rear=0:', ':rear=1:', ':limited=true', ':limited=false'])assert.ok(Object.keys(corpus.source.joinOutcomes).some(k=>k.includes(gate)),gate);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetEventJoin(c),outputBits,`reset/event join fixture ${i}`);
 });
+
+test('reset calls execute the original grounded rider body and blend tail',async()=>{
+ const {evaluateResetRider}=await import('../scripts/mcm-reference/reset-rider-case.mjs');
+ const corpus=fixture('reset-rider-wine11.json.br');
+ for(const gate of ['called=0:', 'called=1:gated=true:', 'called=1:gated=false:', ':pose=7:next=8:weightOne=true:', ':pose=7:next=8:weightOne=false:', ':blendZero=true:', ':blendZero=false:', ':rear=0', ':rear=1'])assert.ok(Object.keys(corpus.source.riderOutcomes).some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetRider(c),outputBits,`reset/rider fixture ${i}`);
+});
