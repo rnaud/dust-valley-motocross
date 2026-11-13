@@ -1130,3 +1130,13 @@ test('reset course helper matches original nearby-bike avoidance, terrain limits
  const {evaluateResetCourse}=await import('../scripts/mcm-reference/reset-course-case.mjs');
  for(const {input:c,outputBits} of fixture('reset-course-wine11.json').fixtures)assert.deepEqual(evaluateResetCourse(c),outputBits);
 });
+
+test('terrain reset selection matches original five supports, target local position and real avoidance',async()=>{
+ const {evaluateResetTerrainSelection}=await import('../scripts/mcm-reference/reset-terrain-selection-case.mjs');
+ for(const {input:c,outputBits} of fixture('reset-terrain-selection-wine11.json').fixtures)assert.deepEqual(evaluateResetTerrainSelection(c),outputBits);
+});
+
+test('main reset selection with real terrain and course helpers matches original connected execution',async()=>{
+ const {evaluateResetSelectionConnected}=await import('../scripts/mcm-reference/reset-selection-connected-case.mjs');
+ for(const {input:c,outputBits} of fixture('reset-selection-connected-wine11.json').fixtures)assert.deepEqual(evaluateResetSelectionConnected(c),outputBits);
+});
