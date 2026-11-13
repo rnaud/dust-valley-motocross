@@ -1605,3 +1605,37 @@ finite, with positive wheelbase/pivot distances and synthetic terrain bounded
 for the leaf-only cases. The subsequent orientation-angle/contact query,
 final correction and whole-loop integration remain pending before full
 acceleration/release trajectory parity can be claimed.
+
+### Alternate contact query and final correction (2026-11-12)
+
+Extended the alternate reset sequence through `0x49fe3a`. The first boundary
+at `0x49fd8b` includes orientation extraction `0x43f870` and the complete
+`0x4a0130` wheel-contact query. It consumes the existing terrain support
+positions rather than rereading wheel transforms. The second boundary includes
+`0x49ff10` support correction, another orientation extraction, and the final
+rear/front/reference-node world-position reads. The correction uses the same
+half-angle pivot arithmetic as the first alignment, then writes -0.01 for the
+unsupported wheel and zero for the supported wheel.
+
+Both continuous original-execution comparisons match all 1,208 output words
+in 16,384 cases with zero differences. They retain full bike/component state,
+RNG count, four transform graphs, contact arguments and height outputs. The
+final comparison additionally checks the refreshed reference position stored
+within bike state. Inputs cover both support branches, all body/component and
+wheel-node pairings, all reference-node choices, cached/uncached parent graphs,
+vertical/zero/general forward vectors, optional engine/effect state, varied
+wheel radii, and leaf/child/parent/missing/null synthetic terrain.
+
+The real original CRT orientation helpers execute with their heap/thread setup;
+the actual loaded Wine 11 D3DRM DLL is hash-checked. CRT rand and initial
+uninitialized contact-normal scratch are the supplied boundaries. Separate
+fixture sets preserve both intermediate and final states. Reports:
+`mcm-reset-contacts-validation.json` and
+`mcm-reset-contact-finish-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-contacts-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`
+and `node scripts/mcm-reference/compare-reset-contact-finish-oracle.mjs /path/to/mcm.exe /tmp/another-new-output-directory`.
+
+Inputs remain finite with positive wheelbase/pivot distances and the pinned
+runtime. Collision-proxy/game-object synchronization after `0x49fe3a`, the
+main routine's alternate-path dispatch and whole-loop force integration remain
+unfinished. These results do not establish whole-bike trajectory parity.

@@ -6,6 +6,8 @@ import {rotateMcmTransform,rotateMcmTransformAtPivot} from './transform.js';
 import {resolveMcmWorldMatrix} from './world-transform.js';
 import {setMcmRelativeChildOrientation} from './relative-child-transform.js';
 import {queryMcmTerrainHeight} from './terrain-height.js';
+import {extractMcmOrientationAngles} from './orientation-angles.js';
+import {queryMcmWheelContacts} from './wheel-contact-frame.js';
 const f=Math.fround;
 
 // Original 0x49f8f0..0x49fa3c, including the complete bike reset and 0x49ee70.
@@ -39,6 +41,12 @@ export function alignMcmResetPoseToTerrain(c){
  p[1]=queryMcmTerrainHeight({...c.terrain,point:p[1]});
  p[0]=queryMcmTerrainHeight({...c.terrain,point:p[0]});
  p[4]=[0,1,0];p[5]=[0,1,0];
+ return {...result,rearHigher:alignResetSupport(c)};
+}
+
+// Shared arithmetic in the initial alignment and original 0x49ff10.
+function alignResetSupport(c){
+ const b=c.bike,p=c.points;
  const rearHigher=p[1][1]>p[0][1],height=rearHigher?p[1][1]:p[0][1];
  b.position[1]=height;c.bodyNode.local.splice(12,3,...b.position);invalidateMcmTransform(c.bodyNode);
  const depth=f((rearHigher?p[0][1]:p[1][1])-height);
@@ -50,5 +58,31 @@ export function alignMcmResetPoseToTerrain(c){
  const world=resolveMcmWorldMatrix(c.bodyNode);b.forward=world.slice(8,11);b.up=world.slice(4,7);
  setMcmRelativeChildOrientation(c.componentNode,null,b.forward,b.up);
  c.component8e4.field58=0;c.component8e8.field5c=0;
+ return rearHigher;
+}
+
+// Continue through 0x49fd8b: extract angles and run the full wheel query on
+// the terrain support positions produced above (not fresh transform reads).
+export function queryMcmResetContacts(c){
+ const result=alignMcmResetPoseToTerrain(c),b=c.bike;
+ c.heights[result.rearHigher?0:1]=f(-.01);b.field4bc=0;
+ const angles=extractMcmOrientationAngles(b.forward,b.up);
+ Object.assign(b,{field4e0:angles.yaw,field4dc:angles.pitch,field4d8:angles.roll,field4e4:angles.sinRoll,field4e8:angles.cosRoll,field4ec:angles.cosPitch});
+ const q={terrain:c.terrain,node:c.componentNode,radius:c.frontRadius,rearRadius:c.rearRadius,points:c.points,heights:c.heights,bikeForward:b.forward,bikeUp:b.up,pitch:angles.pitch,heading:angles.yaw,sinRoll:angles.sinRoll,...c.contactScratch};
+ const contact=queryMcmWheelContacts(q);
+ c.points=q.points;c.heights=q.heights;b.tangent=q.tangent;b.rearTangent=q.rearTangent;b.normal=q.normal;b.offset=q.offset;
+ return {...result,contact};
+}
+
+// Continue through 0x49fe3a: second support correction, refreshed angles,
+// final wheel world positions and the designated reference-node position.
+export function finishMcmResetContacts(c){
+ const result=queryMcmResetContacts(c),b=c.bike,rearHigher=alignResetSupport(c);
+ c.heights[rearHigher?0:1]=f(-.01);b.field4bc=0;
+ const angles=extractMcmOrientationAngles(b.forward,b.up);
+ Object.assign(b,{field4e0:angles.yaw,field4dc:angles.pitch,field4d8:angles.roll,field4e4:angles.sinRoll,field4e8:angles.cosRoll,field4ec:angles.cosPitch});
+ c.points[1]=resolveMcmWorldMatrix(c.rearNode).slice(12,15);
+ c.points[0]=resolveMcmWorldMatrix(c.frontNode).slice(12,15);
+ b.referencePosition=resolveMcmWorldMatrix(c.referenceNode).slice(12,15);
  return {...result,rearHigher};
 }
