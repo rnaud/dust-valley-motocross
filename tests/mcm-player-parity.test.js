@@ -1282,3 +1282,9 @@ test('connected normal controls match original airborne input, velocity redirect
  const {evaluateNormalControlSubstep}=await import('../scripts/mcm-reference/normal-control-substep-case.mjs');
  for(const [i,{input:c,outputBits}] of fixture('normal-control-substep-wine11.json.gz').fixtures.entries()){const actual=evaluateNormalControlSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
+
+
+test('connected normal rotation matches original timer phases, normalized input and pivot transforms',async()=>{
+ const {evaluateNormalRotationSubstep}=await import('../scripts/mcm-reference/normal-rotation-substep-case.mjs');
+ for(const [i,{input:c,outputBits}] of fixture('normal-rotation-substep-wine11.json.gz').fixtures.entries()){const actual=evaluateNormalRotationSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});
