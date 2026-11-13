@@ -1165,3 +1165,8 @@ test('connected contact geometry matches original post-rotation mount reads, whe
  const {evaluateContactGeometrySubstep}=await import('../scripts/mcm-reference/contact-geometry-substep-case.mjs');
  for(const {input:c,outputBits} of fixture('contact-geometry-substep-wine11.json').fixtures)assert.deepEqual(evaluateContactGeometrySubstep(c),outputBits);
 });
+
+test('connected chassis probes match original terrain contacts and preserved skipped controls',async()=>{
+ const {evaluateChassisProbesSubstep}=await import('../scripts/mcm-reference/chassis-probes-substep-case.mjs');
+ for(const {input:c,outputBits} of fixture('chassis-probes-substep-wine11.json').fixtures)assert.deepEqual(evaluateChassisProbesSubstep(c),outputBits);
+});

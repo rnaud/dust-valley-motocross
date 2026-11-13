@@ -1902,3 +1902,24 @@ normal scratch and query-return/main-exit observation boundaries are supplied;
 geometry and math callees execute directly. Chassis terrain probes, remaining
 force assembly, complete main-loop integration and acceleration/release
 trajectory parity remain unfinished.
+
+### Connected chassis terrain probes (2026-11-12)
+
+Extended continuous ordinary execution from `0x4a63d2` through `0x4a6c01`.
+The recovered chassis block gates on crash state, control20, roll and pitch;
+transforms two candidate component probes and one body probe; and executes
+terrain height/normal queries to select chassis contacts. It compares depth
+before float32 storage, preserves incoming scratch and controls when skipped,
+and preserves the prior component contact flag when both candidate probes miss.
+
+The original-execution comparison matches 40,000 cases with zero differences
+across 262 output words, including all earlier wheel/contact/force/transform
+outputs and the new probe world positions, surfaces, normals, depths and flags.
+Coverage includes exact/adjacent roll and pitch thresholds, absent terrain,
+parent/mount aliasing, cached transforms, both component probes and missed
+contacts. Report: `mcm-chassis-probes-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-chassis-probes-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+The executable and loaded Wine D3DRM remain hash pinned. Only initial scratch
+and observation boundaries are supplied; terrain and transform callees execute
+in the original. Remaining force assembly, full-loop integration and repeatable
+acceleration/throttle-release trajectory parity are still unfinished.
