@@ -8,7 +8,7 @@ unsigned char first_bound_records[3][0x30];
 unsigned char trick_frames[32][4];
 unsigned char near_records[2][0x70],near_frames[2][0x34];
 uint32_t third_response[202],third_tires[332],third_motion[273],third_controls[170],third_event[188],third_rider[175],third_finished[498],third_event_base[2],third_nearby[11];
-float frame_input[3],frame_filter[2];uint32_t post_filter[147];
+float frame_input[3],frame_filter[2];uint32_t post_filter[147],rider_entry_words[56];
 uint32_t saved_third[2068];
 uint32_t third_looped,third_output[33],third_contact[185];
 float start_input[62],analog_filter[2],acceleration_filter[2];uint32_t finished_next[498],first_finish[4],first_dispatch[4],first_award;unsigned char first_grid_object[0x110],first_grid_manager[0x3988],first_grid_cells[65][0x18],first_grid_markers[65][0x18],first_grid_entries[4][0x18],first_wall[0x110];uint32_t rider_next[175],rider_queries[3],rider_query_count,trick_selected;float*loop_rider_input;unsigned char trick_records[32][0x6c];uint32_t event_next[188],first_event[7];unsigned char first_effect[16];uint32_t controls_next[170],normal_redirected;unsigned char normal_forward[4],first_rider[0x500];uint32_t motion_next[273];uint32_t tires_next[332];uint32_t response_next[202];uint32_t contact_next[185];float loop_component_rate;unsigned char first_nodes[4][0x114],first_parts[4][0x60],first_component[0x60];uint32_t next_output[33],looped,entry_count,first_bike[818],first_engine[124],first_filters[2];uint32_t start_output[33],query_count,query_log[12],engine_random_calls,engine_entry_active;
@@ -125,7 +125,26 @@ void copy_substep(unsigned char*s){
 void run_substep(void);void substep_exit(void);
 __asm__(".text\n_run_substep:\n push %ebp\n push %ebx\n push %esi\n push %edi\n sub $0xc00,%esp\n mov %esp,%eax\n push %eax\n call _setup_substep\n add $4,%esp\n mov $_bike,%esi\n lea 0x54c(%esi),%edi\n mov $0x200a5bd7,%eax\n jmp *%eax\n_substep_exit:\n add $0xc00,%esp\n pop %edi\n pop %esi\n pop %ebx\n pop %ebp\n ret\n");
 void copy_post_entry(void){post_filter[143]=get32(0x854);memcpy(post_filter+144,frame_filter,4);post_filter[145]=get32(0x850);post_filter[146]=get32(0x8c0);}
+void copy_rider_entry(void){
+ const int fields[]={0x844,0x710,0x714,0xbfc,0x614,0x618,0x724,0x72c,0x820,0x824,0x814,
+  0x728,0x730,0x734,0x848,0x818,0x81c,0x82c,0x830,0x834,0x4e0,0x828};
+ uint32_t*r=rider_entry_words;
+ for(int k=0;k<22;k++)r[k]=get32(fields[k]);
+ memcpy(r+22,bike+0x4f8,12);memcpy(r+25,bike+0x54c,12);memcpy(r+28,bike+0x540,12);memcpy(r+31,component+0x44,4);
+ const int animation_fields[]={4,0x10,0x14,0x30,0x2c};
+ for(int k=0;k<5;k++){r[32+k]=get32(animation_fields[k]);memcpy(r+37+k,proxy+animation_fields[k],4);}
+ for(int k=0;k<16;k++){
+  if(get32(0x10)==(uintptr_t)trick_records[k])r[33]=k+1;
+  if(*(uintptr_t*)(proxy+0x10)==(uintptr_t)trick_records[16+k])r[38]=k+1;
+  if(get32(0x14)==(uintptr_t)trick_frames[k])r[34]=*(uint32_t*)trick_frames[k];
+  if(*(uintptr_t*)(proxy+0x14)==(uintptr_t)trick_frames[16+k])r[39]=*(uint32_t*)trick_frames[16+k];
+ }
+ if(get32(0x10)==(uintptr_t)near_records[0]){r[33]=17;r[34]=1;}
+ if(*(uintptr_t*)(proxy+0x10)==(uintptr_t)near_records[1]){r[38]=17;r[39]=1;}
+ memcpy(r+42,bike+0x218,24);memcpy(r+48,proxy+0x218,24);r[54]=get32(8);memcpy(r+55,proxy+8,4);
+}
 void copy_post_filter(unsigned char*s){
+ copy_rider_entry();
  post_filter[0]=get32(0x8c0);memcpy(post_filter+1,bike+0x540,12);memcpy(post_filter+4,s+0x1d4,4);memcpy(post_filter+5,bike+0x850,8);memcpy(post_filter+7,frame_filter,8);memcpy(post_filter+9,s+0x64,4);post_filter[10]=entry_count;
  for(int j=0;j<4;j++){memcpy(post_filter+11+j*33,nodes[j]+0x84,128);memcpy(post_filter+43+j*33,nodes[j]+0x104,4);}
 }
@@ -310,7 +329,7 @@ void observe_contact(void);
 __asm__(".text\n_observe_contact:\n mov %eax,_impulse_count\n movl $1,_impulse_enabled\n mov 0x2c(%esp),%ecx\n test %ecx,%ecx\n push $0x200a8de5\n ret\n");
 __asm__(".data");
 int main(int argc,char**argv){
- if(argc!=4)return 2;
+ if(argc!=4&&argc!=5)return 2;
  map_image(argv[1]);{unsigned char*p=(void*)0x200a1970;p[0]=0xe9;*(uint32_t*)(p+1)=(uintptr_t)trick_entry-0x200a1970-5;}{unsigned char*p=(void*)0x200ac17b;p[0]=0xe9;*(uint32_t*)(p+1)=(uintptr_t)controls_air-0x200ac17b-5;}{unsigned char*p=(void*)0x200ac5c5;p[0]=0xe9;*(uint32_t*)(p+1)=(uintptr_t)controls_ground-0x200ac5c5-5;}{unsigned char*p=(void*)0x200ac64a;p[0]=0xe9;*(uint32_t*)(p+1)=(uintptr_t)controls_limited-0x200ac64a-5;}{unsigned char*p=(void*)0x200ac6cd;p[0]=0xe9;*(uint32_t*)(p+1)=(uintptr_t)controls_crash-0x200ac6cd-5;}{unsigned char*p=(void*)0x200abd6e;p[0]=0xe9;*(uint32_t*)(p+1)=(uintptr_t)normal_redirect_entry-0x200abd6e - 5;}unsigned char*mp=(void*)0x200ab7fd;mp[0]=0xe9;*(uint32_t*)(mp+1)=(uintptr_t)motion_boundary - 0x200ab7fd - 5;unsigned char*tp=(void*)0x200a8be0;tp[0]=0xe9;*(uint32_t*)(tp+1)=(uintptr_t)tires_boundary - 0x200a8be0 - 5;unsigned char*rp=(void*)0x200a6eac;rp[0]=0xe9;*(uint32_t*)(rp+1)=(uintptr_t)response_boundary - 0x200a6eac - 5;unsigned char*cp=(void*)0x200a64dc;cp[0]=0xe9;*(uint32_t*)(cp+1)=(uintptr_t)contact_boundary - 0x200a64dc - 5;unsigned char*done=(void*)0x200ac95a;done[0]=0xe9;*(uint32_t*)(done+1)=(uintptr_t)post_loop_entry - 0x200ac95a - 5;unsigned char*pf=(void*)0x200ad07a;pf[0]=0xe9;*(uint32_t*)(pf+1)=(uintptr_t)post_filter_exit-0x200ad07a-5;unsigned char*ob=(void*)0x200a8ddf;ob[0]=0xe9;*(uint32_t*)(ob+1)=(uintptr_t)observe_contact-0x200a8ddf-5;uint32_t exits[]={0x200a4baa};for(int j=0;j<1;j++){unsigned char*exit_patch=(void*)(uintptr_t)exits[j];exit_patch[0]=0xe9;*(uint32_t*)(exit_patch+1)=(uintptr_t)event_decision_exit-exits[j]-5;}unsigned char*fp=(void*)0x200ac89e;fp[0]=0xe9;*(uint32_t*)(fp+1)=(uintptr_t)finish_entry - 0x200ac89e - 5;uint32_t ends[]={0x200ac94b};for(int j=0;j<1;j++){unsigned char*ep=(void*)(uintptr_t)ends[j];ep[0]=0xe9;*(uint32_t*)(ep+1)=(uintptr_t)loop_boundary-ends[j]-5;}
  unsigned char*jp=(void*)0x200aecb0;jp[0]=0xe9;*(uint32_t*)(jp+1)=(uintptr_t)join_rider_entry-0x200aecb0-5;
  unsigned char*ap=(void*)0x200b1a40;ap[0]=0xe9;*(uint32_t*)(ap+1)=(uintptr_t)award_entry-0x200b1a40-5;
@@ -327,6 +346,7 @@ unsigned char*p=(void*)0x200bf190;p[0]=0xe9;*(uint32_t*)(p+1)=(uintptr_t)draw_ra
  p=(void*)0x200a0130;p[0]=0xe9;*(uint32_t*)(p+1)=(uintptr_t)frame_entry-0x200a0130-5;
  ((void (__cdecl *)(void))0x2009d680)();
  unsigned short cw=0x027f;__asm__ volatile("fninit; fldcw %0"::"m"(cw));
+ FILE*entry_out=argc==5?fopen(argv[4],"wb"):NULL;if(argc==5&&!entry_out)fail("entry open");
  FILE*in=fopen(argv[2],"rb"),*out=fopen(argv[3],"wb");if(!in||!out)fail("open");uint32_t count;if(fread(&count,4,1,in)!=1||count>1000000)fail("count");
  for(uint32_t i=0;i<count;i++){
   uint32_t v[2003],r[8277];if(fread(v,sizeof v,1,in)!=1)fail("input");memcpy(frame_input,v+2000,sizeof frame_input);
@@ -436,7 +456,9 @@ unsigned char*p=(void*)0x200bf190;p[0]=0xe9;*(uint32_t*)(p+1)=(uintptr_t)draw_ra
   memcpy(r+2690,motion_next,sizeof motion_next);memcpy(r+2963,controls_next,sizeof controls_next);memcpy(r+3133,event_next,sizeof event_next);memcpy(r+3321,rider_next,sizeof rider_next);memcpy(r+3496,finished_next,sizeof finished_next);
   memcpy(r+3994,saved_third,sizeof saved_third);encode_later(r+6062);memcpy(r+8130,post_filter,sizeof post_filter);
   if(fwrite(r,sizeof r,1,out)!=1)fail("output");
+  if(entry_out&&fwrite(rider_entry_words,sizeof rider_entry_words,1,entry_out)!=1)fail("entry output");
  }
  if(fclose(out))fail("close");
+ if(entry_out&&fclose(entry_out))fail("entry close");
  return 0;
 }
