@@ -2689,3 +2689,25 @@ for existing JSON and gzip fixtures.
 Next is collision processing and the scheduler/orientation tail, then entry
 wiring and full acceleration/throttle-release trajectory comparisons. Full
 whole-bike parity remains unproven.
+
+### Connected collision synchronization
+
+The original-execution prefix now reaches `0x4ac81b` after collision proxy/grid
+synchronization, or `0x4ac89e` on the no-collision-object branch. Collision dispatch
+is the next connection. The corpus checks 876 words across 40,256 executions,
+including live grid links, type 0/1 centers, root/parented proxies, grid opt-out,
+and the preceding rider/event paths.
+
+The collision proxy shares the rider animation object. The reference preserves
+its animation state and components while attaching a distinct proxy transform
+before the physics prefix. Recovered rider animation callbacks now accept that
+separate target; existing shared-target callers retain their behavior. The first
+extended run exposed NaN-sign differences in proxy translation and world-center
+conversion. Recovered x87 operations now preserve those signs; the final corpus
+matches every captured word. Explicit regressions include cases 388, 2328, 5238,
+5529 and 6984.
+
+Report: `mcm-collision-sync-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-collision-sync-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Collision callbacks, scheduler/entry wiring and whole-bike acceleration/release
+trajectories remain to be connected and validated. This is not full parity.
