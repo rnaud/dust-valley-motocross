@@ -1,4 +1,5 @@
 import {mcmAdd as add,mcmMultiply as mul} from './x87-arithmetic.js';
+import {mcmFtolLowWord} from './x87-integer.js';
 import {insertMcmCollisionLine} from './collision-line-grid.js';
 const f=Math.fround;
 // Original 0x42a550 followed by 0x42a6e0, types 0/1.
@@ -29,9 +30,9 @@ export function updateMcmCollisionGrid(object,grid,enabled){
  const originX=f(grid.centerX-(n*.5)*size),originZ=f(grid.centerZ-(n*.5)*size);
  const radius=object.radius,seen=[];
  for(let i=0;i<4;i++){
-  const x=f(Math.trunc((((i&1)?radius:-radius)-originX+object.worldCenter[0])/size)|0);
-  const z=f(Math.trunc((((i&2)?radius:-radius)-originZ+object.worldCenter[2])/size)|0);
-  const cell=x<0||z<0||!(n>x)||!(n>z)?Math.imul(n,n):Math.trunc(n*z+x)|0;
+  const x=f(mcmFtolLowWord((((i&1)?radius:-radius)-originX+object.worldCenter[0])/size));
+  const z=f(mcmFtolLowWord((((i&2)?radius:-radius)-originZ+object.worldCenter[2])/size));
+  const cell=x<0||z<0||!(n>x)||!(n>z)?Math.imul(n,n):mcmFtolLowWord(n*z+x);
   if(!seen.includes(cell)){
    const entry=object.entries[i];entry.active=1;entry.cell=cell;
    let tail=grid.cells[cell];while(tail.next)tail=tail.next;

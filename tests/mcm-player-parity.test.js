@@ -885,7 +885,9 @@ test('proxy world-matrix synchronization matches original transforms and caches'
 test('collision center and grid lists match original mutations',async()=>{
  const {updateMcmCollisionGrid}=await import('../src/physics/mcm/collision-grid.js');
  const {floatBits}=await import('../src/physics/mcm/math.js');
- for(const {input:c,outputBits} of fixture('collision-grid-wine11.json').fixtures){
+ const corpus=fixture('collision-grid-wine11.json');
+ assert.equal(corpus.source.integerBoundaryCases,90);
+ for(const {input:c,outputBits} of corpus.fixtures){
  const cells=Array.from({length:65},(_,i)=>({id:1000+i})),markers=Array.from({length:65},(_,i)=>({id:2000+i}));
  cells.forEach((cell,i)=>{cell.next=markers[i];markers[i].previous=cell;});
  const entries=c.oldCells.map((cell,i)=>({id:i+1,cell,active:c.active[i],owner:123,other:77+i}));
@@ -1554,5 +1556,19 @@ test('persistent second substep matches rider input, all directional tricks and 
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){
   const actual=evaluateResetLoopRider(c);
   assert.deepEqual(actual,outputBits,`reset/loop-rider fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
+ }
+});
+
+
+test('persistent second substep completes post-state, live collision dispatch and scheduling',async()=>{
+ const {evaluateResetLoopFinish}=await import('../scripts/mcm-reference/reset-loop-finish-case.mjs');
+ const corpus=fixture('reset-loop-finish-wine11.json.br'),outcomes=Object.keys(corpus.source.nextFinishedOutcomes);
+ assert.equal(corpus.source.secondCollisionTransitionCases,8);
+ for(const gate of ['looped=0:','looped=1:callbacks=0:',':callbacks=1:',':remaining=0:',':remaining=1:',':carryChanged=true:',':carryChanged=false:',':state=1:priorState=0:'])assert.ok(outcomes.some(k=>k.includes(gate)),gate);
+ assert.ok(outcomes.some(k=>k.startsWith('looped=1:callbacks=1:')&&k.includes(':state=1:priorState=0:')));
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){
+  const actual=evaluateResetLoopFinish(c);
+  assert.equal(actual.length,3994);
+  assert.deepEqual(actual,outputBits,`reset/loop-finish fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
  }
 });

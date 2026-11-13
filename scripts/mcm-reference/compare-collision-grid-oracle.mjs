@@ -27,6 +27,13 @@ for(const dimension of [1,4,8])for(const x of [-1.00001,-1,-.99999,-.00001,0,.00
  const cx=f(x-dimension*.5),cz=f(z-dimension*.5);
  cases.push({matrix:[1,0,0,0,0,1,0,0,0,0,1,0,cx,0,cz,1],localCenter:[0,0,0],worldCenter:[1,2,3],radius,centerX:0,centerZ:0,dimension,cellSize:1,enabled:true,type:0,oldCells:[0,0,0,dimension*dimension],active:[1,1,1,1]});
 }
+// Exercise the original signed-64 conversion and low-word use, including
+// finite coordinates whose grid quotient overflows FISTP qword.
+let integerBoundaryCases=0;
+for(const magnitude of [2**31,2**32,2**63-2**40,2**63,2**63+2**40,1e20,1e22,1e23,1e25])for(const sign of [-1,1])for(const cellSize of [.1,.3,1,3,10]){
+ const x=f(sign*magnitude),z=f(-sign*magnitude);
+ cases.push({matrix:[1,0,0,0,0,1,0,0,0,0,1,0,x,0,z,1],localCenter:[0,0,0],worldCenter:[1,2,3],radius:0,centerX:0,centerZ:0,dimension:8,cellSize:f(cellSize),enabled:true,type:0,oldCells:[0,0,0,64],active:[1,1,1,1]});integerBoundaryCases++;
+}
 const input=Buffer.alloc(4+cases.length*148);input.writeUInt32LE(cases.length);
 for(let i=0;i<cases.length;i++){
  const c=cases[i],values=[...c.matrix,...c.localCenter,...c.worldCenter,c.radius,c.centerX,c.centerZ,c.dimension,c.cellSize,+c.enabled,c.type,...c.oldCells,...c.active];
@@ -49,5 +56,5 @@ for(let i=0;i<cases.length;i++) {
  for(let j=0;j<222;j++)if(actual[j]!==expected[j]){totalDifferences++;if(firstDifferences.length<10)firstDifferences.push({case:i,field:j,actual:actual[j],expected:expected[j],input:c});}
  if(i>=32000||i%71===0||outcomes[key]===1)fixtures.push({input:c,outputBits:actual});
 }
-const report={schemaVersion:1,executableSha256:exeHash,oracleSourceSha256:hash(fs.readFileSync(source)),loaderSourceSha256:hash(fs.readFileSync(join(dirname(source),'oracle.c'))),casesSha256:hash(input),resultsSha256:hash(results),cases:cases.length,controlWord:0x027f,totalDifferences,firstDifferences,outcomes,scope:'Original 0x42a550 plus 0x42a6e0 world-center update, entry unlink and type 0/1 four-corner grid insertion. Existing entry storage, prepopulated cell lists, duplicate/outside cells, dimensions 1..8, enabled/disabled and type 2/invalid cleanup. All entry metadata and observable list links compared. Allocation branch, types 3/4, collision dispatch and whole-bike trajectories excluded.'};
+const report={schemaVersion:1,executableSha256:exeHash,oracleSourceSha256:hash(fs.readFileSync(source)),loaderSourceSha256:hash(fs.readFileSync(join(dirname(source),'oracle.c'))),casesSha256:hash(input),resultsSha256:hash(results),cases:cases.length,integerBoundaryCases,controlWord:0x027f,totalDifferences,firstDifferences,outcomes,scope:'Original 0x42a550 plus 0x42a6e0 world-center update, entry unlink and type 0/1 four-corner grid insertion. Existing entry storage, prepopulated cell lists, duplicate/outside cells, dimensions 1..8, enabled/disabled and type 2/invalid cleanup. All entry metadata and observable list links compared, including signed-64 integer conversion overflow and its low-word grid index. Allocation branch, types 3/4, collision dispatch and whole-bike trajectories excluded.'};
 fs.writeFileSync(join(output,'report.json'),JSON.stringify(report,null,2)+'\n');fs.writeFileSync(join(output,'fixtures.json'),JSON.stringify({source:report,fixtures})+'\n');console.log(JSON.stringify({...report,firstDifferences:firstDifferences.map(({input,...rest})=>rest)},null,2));if(totalDifferences)process.exitCode=1;

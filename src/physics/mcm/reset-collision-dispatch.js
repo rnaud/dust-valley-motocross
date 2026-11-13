@@ -7,7 +7,12 @@ import {setupMcmResetEvent} from './reset-event-setup.js';
 
 // Connected reset path through the real static-wall dispatcher at 0x4ac89e.
 export function updateMcmResetCollisionDispatch(c){
- const result=updateMcmResetCollisionSync(c),b=c.bike,p=c.contactPhase,d=c.dispatch;
+ const result=updateMcmResetCollisionSync(c),randomCalls=applyMcmBikeCollisionDispatch(c);
+ return {...result,randomCalls:result.randomCalls+randomCalls};
+}
+
+export function applyMcmBikeCollisionDispatch(c){
+ const b=c.bike,p=c.contactPhase,d=c.dispatch;
  const randomBefore=p.normalEventDecision.randomCalls;
  const bike={transform:c.bodyNode,field8a8:b.field8a8,field618:b.field618,field8ac:b.field8ac,
   carry:b.field8c8,field564:b.field564,field8d0:b.field8d0,inverseMass:b.inverseMass,
@@ -31,5 +36,5 @@ export function updateMcmResetCollisionDispatch(c){
  const step={bike,collision:c.collision,manager:d.manager,remaining:p.control20};
  dispatchMcmCollisionState(step);toState();
  b.field8a8=bike.field8a8;b.field8c8=p.normalEventJoin.delay=bike.carry;p.control20=p.normalEventJoin.flag=step.remaining;
- return {...result,randomCalls:result.randomCalls+p.normalEventDecision.randomCalls-randomBefore};
+ return p.normalEventDecision.randomCalls-randomBefore;
 }
