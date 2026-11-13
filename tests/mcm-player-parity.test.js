@@ -1745,3 +1745,20 @@ test('retained physics supplies the original frame-end rider entry state without
   assert.deepEqual(actual,outputBits,`frame-rider entry case ${caseIndex}`);
  }
 });
+
+test('retained physics continues through the original frame-end rider return with live animation state',async()=>{
+ const {evaluateResetFrameRider}=await import('../scripts/mcm-reference/reset-frame-rider-case.mjs');
+ const corpus=fixture('reset-frame-rider-wine11.json.br');
+ assert.equal(corpus.source.mismatchCount,0);
+ assert.equal(corpus.source.exceptionCount,0);
+ assert.ok(corpus.source.rawDeltaDiffersFromStoredInterval>0);
+ assert.ok(corpus.source.recovery.advance>0&&corpus.source.recovery.restart>0);
+ for(const branch of ['crash','normal','recovery','trick','nearby'])assert.ok(corpus.fixtures.some(c=>c.key.startsWith(`${branch}:`)),branch);
+ for(const {caseIndex,input,prefixBits,outputBits} of corpus.fixtures){
+  const actual=evaluateResetFrameRider(input);
+  assert.equal(actual.prefix.length,8277);
+  assert.equal(actual.tail.length,10954);
+  assert.deepEqual(actual.prefix,prefixBits,`connected frame-rider prefix ${caseIndex}`);
+  assert.deepEqual(actual.tail,outputBits,`connected frame-rider tail ${caseIndex}`);
+ }
+});

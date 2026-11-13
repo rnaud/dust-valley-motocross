@@ -3707,3 +3707,63 @@ node scripts/mcm-reference/compare-frame-rider-entry.mjs /path/to/mcm.exe /path/
 
 Pass `--replay` as a fourth argument to compare an existing native capture under
 another Node architecture without rerunning Wine.
+
+### Connected frame-end rider return
+
+`retained-frame-rider.js` now connects the live physics context to `0x4af710`.
+Bike controls and pose fields are accessed through the existing bike state;
+animation objects are initialized before reset and retained through all substeps.
+Trick selection and nearby interaction update those same objects. The frame-end
+call uses the raw incoming delta, while the preceding acceleration filter keeps
+its distinct stored interval. Child callbacks operate on the existing transform
+graph and bounds, including body/proxy aliases and parented components.
+
+The extended original harness now executes the complete reset path, up to four
+retained substeps, loop exhaustion, acceleration filter, and the actual rider
+routine through its return. All **17,648 cases** match **19,231 observed words**
+each: the preceding 8,277-word trace plus 10,954 rider/graph/animation words.
+Coverage includes 10,758 crash, 5,473 normal, 984 recovery, 293 trick and 140
+nearby calls. Recovery includes 162 already-running and 822 stopped/restarted
+animations. Raw and stored frame intervals differ in 14,084 cases. Observation
+includes input query count/order, fractional animation time, both animation
+objects, live graph/cache state, source child mutations and bounds records.
+
+This is a new connected corpus derived from the earlier arithmetic corpus,
+with initial-state requirements made explicit:
+
+- Balance filter values start in the lean-derived `[0.25, 0.75]` domain. The old
+  `1.1` seed produced pose `-1` in source case 68, causing the original to read a
+  non-animation field as a record pointer.
+- Control `+0x6f4` starts in `[-1, 1]`. An old value near `-4972` in source case
+  508 drove blend to `1.476`, beyond the linked animation frames; both original
+  execution and the recovered implementation failed on that invalid state.
+- Pose/trick assets have linked frames, integer FPS, consistent pose component
+  indices, and translation flags appropriate to the graph's parent links.
+  Nearby assets retain the earlier childless, single-frame records.
+- The 140 additional side-target scenarios change other bikes' **initial**
+  positions. Their distances remain representable at the large coordinates
+  reached by these synthetic trajectories. No target or player state is changed
+  at the handoff.
+
+The small regression corpus also exposed a cold-versus-optimized JavaScript
+NaN-sign difference in recovery orientation (case 107). Typed orientation scratch
+now preserves the original negative x87 NaNs; validation includes both the cold
+fixture replay and the complete corpus on ARM64 and x64.
+
+See `mcm-reset-frame-rider-validation.json` and
+`tests/fixtures/mcm/reset-frame-rider-wine11.json.br`. Reproduce with:
+
+```sh
+node scripts/mcm-reference/compare-reset-frame-rider.mjs /path/to/mcm.exe /path/to/post-filter-corpus /path/to/new-output-directory
+```
+
+Use `--replay` to compare retained native captures on another architecture.
+The comparator requires all five branches, both recovery paths and distinct
+frame timings. It reports native faults and JavaScript exceptions as failures.
+
+The original frame-entry setup and caller tail after the rider return are still
+not connected. Original asset/state integration, longer multi-frame histories,
+maximum scheduler depth, present visual effects, dynamic bike/rider collisions,
+whole-bike acceleration/release trajectory comparison and playable integration
+remain required. This milestone does not establish complete frame or physics
+parity.

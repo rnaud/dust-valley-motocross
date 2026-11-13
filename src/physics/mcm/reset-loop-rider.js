@@ -1,3 +1,4 @@
+import {startMcmAnimation} from './animation-seek.js';
 import {applyMcmBikeRider} from './reset-rider.js';
 import {queryMcmBikeInput} from './bike-input.js';
 import {startMcmTrick} from './trick-start.js';
@@ -21,6 +22,7 @@ export function continueMcmResetLoopRider(c){
    s.trickIndex=trickIndex;s.animationFrame=s.bikeRecords[trickIndex];
    Object.assign(r,startMcmTrick({setup,trickIndex,field820:r.enabled,time:b.field8cc,
     bikeAnimationRecords:s.bikeRecords,riderAnimationRecords:s.riderRecords}));r.enabled=r.field820;
+   if(c.frameRider){startMcmAnimation(c.frameRider.bikeAnimation,c.frameRider.tricks[0][trickIndex]);startMcmAnimation(c.frameRider.riderAnimation,c.frameRider.tricks[1][trickIndex]);}
   },
   resetOrientation(r){Object.assign(r,setup.graph);resetMcmEventOrientation(r,setup);},
   nearby(r){
@@ -33,6 +35,7 @@ export function continueMcmResetLoopRider(c){
      const {bikeRecord,riderRecord,positionFlags}=s.nearbySetup;
      const rider={target:c.bodyNode};seekMcmInteractionAnimations(result,rider,bikeRecord,riderRecord,positionFlags);
      s.riderBounds=[...rider.boundsMin,...rider.boundsMax];
+     if(c.frameRider){c.frameRider.bikeAnimation.record=bikeRecord;c.frameRider.bikeAnimation.frame=result.frame;c.frameRider.riderAnimation.record=riderRecord;c.frameRider.riderAnimation.frame=rider.frame;}
      result.bikeAnimation=[...s.bikeAnimation];result.riderAnimation=[...s.riderAnimation];
      result.bikeAnimation[1]=bikeRecord.token;result.riderAnimation[1]=riderRecord.token;
      result.bikeAnimation[2]=result.frame.token;result.riderAnimation[2]=rider.frame.token;s.animationFrame=result.frame.index;
