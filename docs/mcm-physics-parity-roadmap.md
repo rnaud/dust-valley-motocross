@@ -3384,3 +3384,28 @@ does not yet establish persistent multi-frame parity. Second-pass post-state,
 collision synchronization/dispatch and scheduler completion, repeated frames,
 whole-bike acceleration/release comparisons and playable integration remain
 outstanding. Earlier synthetic-state and supplied wheel-query limitations apply.
+
+### Two complete persistent substeps
+
+The same live second iteration now continues through post-state refresh,
+collision proxy/grid synchronization, static-wall dispatch and scheduler completion
+at `0x4ac94b`. All 3,994 observed words match in 17,508 original executions,
+including eight initial-state cases where the second wall collision starts a new
+event. The corpus covers carry consumption, substep exit and a remaining iteration.
+State is not restored or reseeded across the native loop-back.
+
+This exposed the original signed 64-bit `_ftol` conversion used by collision-grid
+indexing: out-of-range inputs produce the integer-indefinite value with low word
+zero. The recovered conversion now preserves that behavior. The standalone grid
+corpus also matches all 32,252 native cases, including 90 added finite cases around
+integer boundaries and large-coordinate overflow.
+
+Reports: `mcm-reset-loop-finish-validation.json` and
+`mcm-collision-grid-validation.json`. Reproduce the connected comparison with
+`node scripts/mcm-reference/compare-reset-loop-finish-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+
+This establishes two complete substeps for the covered reset-path corpus, not
+full simulation parity. Further iterations, actual frame entry and post-loop
+completion, persistent rider history, dynamic bike/rider collisions, whole-bike
+acceleration/release trajectory comparisons and playable integration remain.
+Synthetic initial state and supplied wheel-query scratch limitations still apply.

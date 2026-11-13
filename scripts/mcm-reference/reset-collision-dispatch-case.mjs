@@ -7,7 +7,7 @@ export function evaluateResetCollisionDispatch(input,step=updateMcmResetCollisio
  const words=evaluateResetCollisionSync(input,c=>{
   d=c.dispatch=structuredClone(input.dispatch);o=c.collision;
   // Keep a supplied object even when the bike has no collision pointer.
-  if(!o)o={...input.collision};
+  if(!o)o=c.collisionState;
   Object.assign(o,{owner:0,enabled:d.objectEnabled,radiusSquared:Math.fround(o.radius*o.radius),extents:[o.radius,o.radius,o.radius],contactCC:[0,0,0],contactD8:[0,0,0],contactE4:[0,0,0]});
   w={token:1,owner:1,enabled:1,type:3,start:d.start,end:d.end,contactCC:[0,0,0],contactD8:[0,0,0],contactE4:[0,0,0]};
   d.manager={objects:[o,w],cells:c.grid.cells,enabled:d.enabled,pairs:Array.from({length:2},()=>[d.pairState,d.pairState]),depth:0,contactCC:[1000,1001,1002],contactD8:[1003,1004,1005],contactE4:[1006,1007,1008],otherE4:[1009,1010,1011],currentA:null,currentB:null};
