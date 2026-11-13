@@ -4335,3 +4335,32 @@ Validation after the recovery-copy fix: all 17,941 retained cases match on
 ARM64 and x64 with zero mismatches, exceptions or changed prior native traces.
 The 636 archived fixtures pass in fresh processes on both architectures. All
 302 repository tests and the production build pass.
+
+### Reusable retained-frame runner
+
+`advanceMcmRetainedFrame` in `src/physics/mcm/retained-frame.js` now owns the
+supported frame sequence in production code: entry/recovery, controls, steering,
+reset decision, terrain probes, every engine/contact/motion/rider/collision
+substep, the frame filter, animation and return. It accepts an already initialized
+context and a frame's delta/mode/input. It does not reconstruct bike state,
+replace animation assets or reset filters between calls. Optional observers
+expose original stage boundaries for comparison.
+
+The caller supplies the live reset-input adapter, terrain, collision world,
+controller responses and random inputs on the context. AI/scripted controller
+calls and synthetic no-iteration schedules return explicit boundary statuses;
+they are not reported as completed frames. Original repeated reset avoidance is
+observed by the comparison harness, without inserting a gameplay escape.
+
+The runner is checked against the pinned native return corpus, including all
+24,872 substep-finish snapshots, 10,896 actual returns and the unchanged prior
+frame. The 6,543 pending controllers, 450 no-iteration cases and 52 original
+reset cycles retain their explicit outcomes. This replaces test-adapter nesting
+with a callable frame sequence needed for longer histories. It does not by
+itself validate third-and-later frames, the real application RNG stream or the
+original-asset acceleration/release trajectory, and it is not yet connected to
+the playable preview. See [runner evidence](mcm-retained-frame-validation.json).
+
+Validation: 17,941 native-source cases match on ARM64 and x64, with zero
+mismatches or exceptions; 232 saved fixtures pass in fresh processes on both
+architectures. All 303 repository tests and the production build pass.
