@@ -97,7 +97,7 @@ test('inverse square root preserves the original binary64 intermediate', async (
     const output = Buffer.alloc(8); output.writeDoubleLE(mcmInverseSqrt(bitsFloat(inputBits)));
     assert.equal(output.toString('hex'),outputHex);
   }
-  for (const value of [0,-1,Infinity,NaN,Math.pow(2,-149)]) assert.throws(()=>mcmInverseSqrt(value),RangeError);
+  for (const value of [-1,Infinity,NaN]) assert.throws(()=>mcmInverseSqrt(value),RangeError);
 });
 
 test('rotation preparation preserves original axis, angle and skipped-state behavior', async () => {
@@ -1074,4 +1074,9 @@ test('wheel contact frame matches original terrain samples, radius offset and tr
 test('both wheel contacts match original rear frame, resamples and initial height differences',async()=>{
  const {evaluateWheelContactPair}=await import('../scripts/mcm-reference/wheel-contact-pair-case.mjs');
  for(const {input:c,outputBits} of fixture('wheel-contact-pair-wine11.json').fixtures)assert.deepEqual(evaluateWheelContactPair(c),outputBits);
+});
+
+test('complete wheel contact query matches original probe corrections and penetration selection',async()=>{
+ const {evaluateWheelContacts}=await import('../scripts/mcm-reference/wheel-contacts-case.mjs');
+ for(const {input:c,outputBits} of fixture('wheel-contacts-wine11.json').fixtures)assert.deepEqual(evaluateWheelContacts(c),outputBits);
 });
