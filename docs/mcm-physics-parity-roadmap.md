@@ -3845,3 +3845,42 @@ before next-frame recovery/input handling and subsequent substeps. Connecting
 those paths, longer histories, original assets/terrain, present visual effects,
 dynamic collisions, whole-bike acceleration/release comparisons, and playable
 integration remain necessary for full parity.
+
+### Next-frame recovery before input sampling
+
+The retained next-frame harness now continues through `0x4a5672`: the recovery
+branch after scheduling and the zero initialization of control scratch `+0x28`.
+The initial `+0xbf8` recovery choice is varied between 0 and 1 before reset;
+there is no mutation or reseeding at the frame boundary. Modes 1/2/3 with
+recovery state `+0xbfc == 1` select animation start or immediate restoration.
+Other modes/states bypass recovery. Animation start uses record `+0x77c`,
+preserves animation remainder, changes recovery state to 2, and clears the two
+trick flags. Immediate restoration changes recovery state to 3, aligns the
+body orientation, restores bounds and child transforms, and clears `+0x820`.
+
+The observation adds 228 words: bike/rider state, both animation objects, four
+transform/cache states, mutable bounds children, incoming recovery/pose flags,
+the initial recovery choice, mode, and zeroed control scratch. Earlier native
+observations are compared against the preceding next-entry corpus, allowing
+only the intentionally changed initial `+0xbf8` word in the physics prefix.
+
+The retained corpus reaches bypass, animation start without a pose restoration,
+and immediate restoration. It does **not** reach animation start with an
+incoming `+0x820 == 1`; that branch remains a coverage gap. The helper includes
+its disassembled behavior, but this corpus does not validate that combination.
+Input processing after `0x4a5672`, subsequent substeps, long histories, original
+assets/terrain, dynamic collisions, whole-bike acceleration/release comparisons,
+and playable integration remain open.
+
+```sh
+node scripts/mcm-reference/compare-reset-next-recovery.mjs /path/to/mcm.exe /path/to/next-entry-corpus /path/to/new-output-directory
+```
+
+Use `--replay` for another architecture. Evidence and selected regression cases
+are in `mcm-reset-next-recovery-validation.json` and
+`tests/fixtures/mcm/reset-next-recovery-wine11.json.br`.
+
+Validation: all 17,648 cases match all 19,753 observed words on ARM64 and x64,
+with zero exceptions and zero prior-trace changes. Branch counts are 16,554
+bypasses, 546 animation starts, and 548 immediate restorations. The regression
+fixture retains 133 cases and passes cold on both architectures.
