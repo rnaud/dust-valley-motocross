@@ -1,5 +1,5 @@
 const f=Math.fround;
-// Original 0x42a550 followed by 0x42a6e0, existing entry storage, types 0/1.
+// Original 0x42a550 followed by 0x42a6e0, types 0/1.
 // Cells are linked-list sentinels. Entry metadata survives unlinking.
 export function updateMcmCollisionGrid(object,grid,enabled){
  if(object.type===0||object.type===1){
@@ -7,7 +7,7 @@ export function updateMcmCollisionGrid(object,grid,enabled){
   object.worldCenter=[f(((m[4]*y+m[0]*x)+m[8]*z)+m[12]),f(((m[9]*z+m[5]*y)+m[1]*x)+m[13]),f(((m[2]*x+m[10]*z)+m[6]*y)+m[14])];
  }
  if(!enabled)return;
- for(const entry of object.entries){
+ for(const entry of object.entries||[]){
   if(!entry.active)continue;
   if(entry.previous)entry.previous.next=entry.next;
   if(entry.next)entry.next.previous=entry.previous;
@@ -17,6 +17,9 @@ export function updateMcmCollisionGrid(object,grid,enabled){
   if(object.type===3||object.type===4)throw new RangeError('Collision grid types 3/4 not recovered');
   return;
  }
+ // The original initializes links, owner, auxiliary and active fields, but
+ // leaves unused cell indices uninitialized until their first insertion.
+ if(!object.entries)object.entries=Array.from({length:4},()=>({previous:null,next:null,owner:object.owner,other:0,active:0}));
  const n=grid.dimension,size=grid.cellSize;
  const originX=f(grid.centerX-(n*.5)*size),originZ=f(grid.centerZ-(n*.5)*size);
  const radius=object.radius,seen=[];

@@ -894,3 +894,23 @@ test('collision center and grid lists match original mutations',async()=>{
  assert.deepEqual(expected,outputBits);
  }
 });
+
+test('collision entry allocation matches original initialized state and links',async()=>{
+ const {updateMcmCollisionGrid}=await import('../src/physics/mcm/collision-grid.js');
+ const {floatBits}=await import('../src/physics/mcm/math.js');
+ let allocated=0,skipped=0;
+ for(const {input:c,outputBits} of fixture('collision-grid-allocation-wine11.json').fixtures){
+ const cells=Array.from({length:65},(_,i)=>({id:1000+i})),markers=Array.from({length:65},(_,i)=>({id:2000+i}));
+ cells.forEach((cell,i)=>{cell.next=markers[i];markers[i].previous=cell;});
+ let entries=c.fresh?null:c.oldCells.map((cell,i)=>({id:i+1,cell,active:c.active[i],owner:123,other:77+i}));
+ for(const e of entries||[])if(e.active){let tail=cells[e.cell];while(tail.next)tail=tail.next;tail.next=e;e.previous=tail;}
+ const object={...c,owner:123,worldCenter:[...c.worldCenter],entries};updateMcmCollisionGrid(object,{...c,cells},c.enabled);
+ entries=object.entries||[];entries.forEach((e,i)=>e.id=i+1);
+ const id=n=>n?.id||0;
+ const expected=[...object.worldCenter.map(floatBits),...entries.flatMap(e=>[id(e.previous),id(e.next),e.owner,c.fresh&&!e.active?0:e.cell,e.other,e.active]),...Array((4-entries.length)*6).fill(0),...cells.flatMap((cell,i)=>[id(cell.next),id(markers[i].previous),id(markers[i].next)]),entries.length];
+ assert.deepEqual(expected,outputBits);
+ if(c.fresh&&entries.length)allocated++;
+ if(c.fresh&&!entries.length)skipped++;
+ }
+ assert.ok(allocated>0);assert.ok(skipped>0);
+});
