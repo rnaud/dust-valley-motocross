@@ -943,3 +943,28 @@ count +0x90, entry stride 0x18), and dispatches types 0..4 through `0x42b67c`.
 The subsequent work includes grid insertion/allocation and cannot be represented
 by matrix copying alone. Collision dispatch `0x42ccc0`, complete main-step
 sequencing and whole-bike trajectory comparisons remain outstanding.
+
+### Collision world center and type 0/1 spatial-grid updates (2026-11-12)
+
+Recovered `0x42a550` world-center calculation and the type 0/1 path through
+`0x42a6e0`: unlink existing active entries, calculate four corner cells, suppress
+duplicate cell insertions, and append entries to each cell's linked-list tail.
+Entry owner/auxiliary metadata and unused cell indices survive unlinking. The
+world center still updates when the global spatial-grid enable is off. Types 2
+and invalid values unlink but do not insert; types 3/4 remain unrecovered.
+
+Grid coordinates use truncation toward zero through original `0x4be978`, not
+floor. Thus coordinates between -1 and 0 map to cell zero. Out-of-range corners
+use the extra cell at dimension squared and participate in duplicate suppression.
+The four entry slots correspond to corner order, rather than a packed unique list.
+
+32,162 original-execution cases match 222 words each with zero differences:
+world center, all entry words with normalized pointers, and cell/neighbor links.
+Includes 162 directed boundary cases, dimensions 1–8, cell sizes .5–100,
+prepopulated lists, multiple old entries in the same cell and one-to-four unique
+new cells. Report: `mcm-collision-grid-validation.json`; reproduce with
+`node scripts/mcm-reference/compare-collision-grid-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+
+Scope uses existing four-entry storage. Allocation, types 3/4, collision dispatch,
+main-update integration and complete world checkpoints/trajectories remain open.
+The original routine was executed without patched callees for these cases.

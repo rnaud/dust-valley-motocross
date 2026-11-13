@@ -879,3 +879,18 @@ test('proxy world-matrix synchronization matches original transforms and caches'
  }
  assert.equal(layouts.size,6);
 });
+
+test('collision center and grid lists match original mutations',async()=>{
+ const {updateMcmCollisionGrid}=await import('../src/physics/mcm/collision-grid.js');
+ const {floatBits}=await import('../src/physics/mcm/math.js');
+ for(const {input:c,outputBits} of fixture('collision-grid-wine11.json').fixtures){
+ const cells=Array.from({length:65},(_,i)=>({id:1000+i})),markers=Array.from({length:65},(_,i)=>({id:2000+i}));
+ cells.forEach((cell,i)=>{cell.next=markers[i];markers[i].previous=cell;});
+ const entries=c.oldCells.map((cell,i)=>({id:i+1,cell,active:c.active[i],owner:123,other:77+i}));
+ for(const e of entries)if(e.active){let tail=cells[e.cell];while(tail.next)tail=tail.next;tail.next=e;e.previous=tail;}
+ const object={...c,worldCenter:[...c.worldCenter],entries};updateMcmCollisionGrid(object,{...c,cells},c.enabled);
+ const id=n=>n?.id||0;
+ const expected=[...object.worldCenter.map(floatBits),...entries.flatMap(e=>[id(e.previous),id(e.next),e.owner,e.cell,e.other,e.active]),...cells.flatMap((cell,i)=>[id(cell.next),id(markers[i].previous),id(markers[i].next)])];
+ assert.deepEqual(expected,outputBits);
+ }
+});
