@@ -11,7 +11,8 @@ export function evaluateResetEventSetup(input,step=updateMcmResetEventSetup){
  let b,r;
  const integers=[0x8a4,0x878,0x880];
  const words=evaluateResetEventDecision(input,c=>{
-  b=c.bike;r=c.rider=structuredClone(input.rider);
+  // Match the original harness zeroed rider allocation before the first reset.
+  b=c.bike;r=c.rider={field154:0,fieldf8:0,field138:0,field144:0,...structuredClone(input.rider)};
   for(const offset of integers)b[`field${offset.toString(16)}`]=input.words[offset/4]|0;
   c.contactPhase.contactCorrection.controller170=r.kind;c.contactPhase.contactCorrection.controller140=r.field140;
   return step(c);
