@@ -43,7 +43,9 @@ export function alignMcmEventRootOrientation(source,target){
   const transpose=m=>{const r=new Float64Array(16),indices=[0,4,8,3,1,5,9,7,2,6,10,11,12,13,14,15];for(let i=0;i<16;i++)r[i]=Math.fround(m[indices[i]]);return r;};
   matrix=transpose(multiplyMcmMatrixPointers(transpose(matrix),resolveMcmWorldMatrix(target.parent)));for(let i=0;i<3;i++)matrix[12+i]=position[i];
  }
- const local=new Array(16).fill(.1);for(let i=0;i<16;i++)local[i]=matrix[i];
+ // Appending into a double array preserves the first NaN sign during partial
+ // optimization; indexed copies and generic typed-array slicing can lose it.
+ const scratch=[.1];for(let i=0;i<16;i++)scratch.push(matrix[i]);const local=scratch.slice(1);
  target.local=local;
  invalidateMcmTransform(target);
  return {forward,up};
