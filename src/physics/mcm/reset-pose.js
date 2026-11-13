@@ -1,4 +1,6 @@
 import {resetMcmBikeState} from './bike-reset.js';
+import {applyMcmLocalChildTransform} from './local-child-transform.js';
+import {applyMcmRelativeChildTransform} from './relative-child-transform.js';
 import {floatBits} from './math.js';
 import {invalidateMcmTransform} from './event-orientation.js';
 import {setMcmLocalChildOrientation} from './local-child-transform.js';
@@ -85,4 +87,17 @@ export function finishMcmResetContacts(c){
  c.points[0]=resolveMcmWorldMatrix(c.frontNode).slice(12,15);
  b.referencePosition=resolveMcmWorldMatrix(c.referenceNode).slice(12,15);
  return {...result,rearHigher};
+}
+
+// Continue through 0x49fe41, including 0x4309d0/0x430970 and each real
+// player child callback. Records are mutable: orientation normalizes axes.
+export function updateMcmResetBounds(c){
+ const result=finishMcmResetContacts(c);
+ c.bike.boundsMin=[...c.bounds.min];c.bike.boundsMax=[...c.bounds.max];
+ for(const record of c.bounds.children.slice(0,c.bounds.count)){
+  const node=c.bounds.components[record.componentIndex];
+  if(!node)throw new RangeError('Unknown child component index');
+  (record.local?applyMcmLocalChildTransform:applyMcmRelativeChildTransform)(c.bodyNode,node,record);
+ }
+ return result;
 }
