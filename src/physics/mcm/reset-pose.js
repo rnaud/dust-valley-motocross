@@ -1,3 +1,5 @@
+import {setMcmWorldMatrix} from './proxy-transform.js';
+import {updateMcmCollisionGrid} from './collision-grid.js';
 import {resetMcmBikeState} from './bike-reset.js';
 import {applyMcmLocalChildTransform} from './local-child-transform.js';
 import {applyMcmRelativeChildTransform} from './relative-child-transform.js';
@@ -99,5 +101,22 @@ export function updateMcmResetBounds(c){
   if(!node)throw new RangeError('Unknown child component index');
   (record.local?applyMcmLocalChildTransform:applyMcmRelativeChildTransform)(c.bodyNode,node,record);
  }
+ return result;
+}
+
+// Complete original 0x49f8f0. Copy the body world matrix before proxy updates:
+// the proxy may share ancestors with the body and invalidate its cache.
+export function resetMcmBikePose(c){
+ const result=updateMcmResetBounds(c),b=c.bike;
+ if(c.collision){
+  c.collision.other=null;
+  c.collision.matrix=[...resolveMcmWorldMatrix(c.bodyNode)];
+  setMcmWorldMatrix(c.proxy,c.collision.matrix);
+  updateMcmCollisionGrid(c.collision,c.grid,c.gridEnabled);
+ }else{
+  const matrix=[...resolveMcmWorldMatrix(c.bodyNode)];
+  setMcmWorldMatrix(c.proxy,matrix);
+ }
+ b.savedPosition=[...b.position];b.field8c0=1;b.fieldcb4=1;
  return result;
 }

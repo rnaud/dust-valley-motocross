@@ -1663,3 +1663,29 @@ The pinned executable and loaded Wine 11 D3DRM hashes are checked. Only CRT rand
 and initial contact-normal scratch are supplied. Collision-proxy/grid updates
 and final flags after this boundary remain pending, along with main-loop
 integration and complete acceleration/release trajectory validation.
+
+### Complete alternate reset routine (2026-11-12)
+
+Connected `0x49f8f0` through its original return. After ordered bounds callbacks,
+the routine clears the collision partner, copies the resolved body world matrix,
+synchronizes the proxy, and updates collision-grid membership. With no collision
+object it still copies the body matrix before synchronizing the proxy. It then
+saves bike position at `+0x56c` and sets integer flags `+0x8c0` and `+0xcb4`.
+The matrix copy matters when proxy updates invalidate shared transform ancestors.
+
+All 1,474 output words match in 16,384 continuous original-execution cases with
+zero differences. Outputs include full bike/component state, transform matrices
+and caches, contact arguments, mutable child records, collision matrix/partner,
+world center, all four grid entries, and links for 65 cell/marker pairs. Cases
+cover collision present/absent, grid enabled/disabled, object types 0/1/2/5,
+4- and 8-cell grid dimensions, active and inactive prior entries, proxy/body
+aliasing and shared ancestors, plus the existing reset/contact/bounds variations.
+
+Report: `mcm-reset-full-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-full-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+The original routine now returns normally; there is no patched exit boundary.
+CRT rand and initial uninitialized contact-normal scratch remain supplied, and
+the executable and loaded Wine 11 D3DRM hashes are verified. These cases use
+existing four-entry collision objects; allocation and line collision types are
+outside this integrated comparison. Main-loop alternate dispatch, force
+integration, and whole-bike acceleration/release trajectories remain unfinished.
