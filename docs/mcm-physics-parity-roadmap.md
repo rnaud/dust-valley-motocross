@@ -4364,3 +4364,41 @@ the playable preview. See [runner evidence](mcm-retained-frame-validation.json).
 Validation: 17,941 native-source cases match on ARM64 and x64, with zero
 mismatches or exceptions; 232 saved fixtures pass in fresh processes on both
 architectures. All 303 repository tests and the production build pass.
+
+### Repeatable 400-frame retained histories
+
+The original now runs 400 further frames on each of four retained player-bike
+states (source cases 16616, 16624, 16672 and 16680), using the same frame stack,
+bike, engine, transforms, filters, animation objects and collision world. The
+supplied frame interval is float32 0.02. Throttle is off for frames 0–49, on for
+50–199 and released for 200–399; the supplied brake and manual reset inputs are
+off. Only external inputs and diagnostic counters change between frames.
+
+Both native runs produce byte-identical prefix and history files. All earlier
+native checkpoints remain unchanged. Across 1,600 further frames, the reusable
+recovered runner matches the engine snapshots, every substep finish and each
+frame's filter/animation/return output. The capture script verifies the pinned
+executable and loaded D3DRM hashes and rejects unsupported frame boundaries.
+
+These are synthetic initial states and assets, not a normal riding baseline.
+Source cases 16616 and 16680 produce 44 and 22 nonfinite speed observations;
+16624 is crashed throughout, and 16672 is crashed for 398 of 400 frames. The
+original produces those same trajectories. Matching them establishes retained
+state continuity, including crash and exceptional arithmetic, but does not
+establish the requested normal acceleration/release parity. Realistic initial
+states and original terrain/assets remain required. Random draws are still
+externally supplied and repeated per substep rather than a continuous application
+CRT stream. AI/scripted controllers and playable-preview integration remain open.
+
+Reproduce with `capture-retained-history.mjs mcm.exe native-next-return-corpus
+output-directory`, then `compare-retained-history.mjs native-next-return-corpus
+output-directory`. The capture performs two original runs. Set
+`MCM_WRITE_FIXTURES=1` on the ARM64 comparison to write the regression archive
+source. [Machine-readable evidence and telemetry](mcm-retained-history-validation.json)
+include raw speed, position, velocity, throttle and RPM bits so nonfinite values
+are not lost through JSON's numeric representation.
+
+Validation: both native captures are byte-identical; all 1,600 frame comparisons
+match on ARM64 and x64, including engine snapshots. Fresh-process history and
+runner fixtures pass on both architectures. All 304 repository tests and the
+production build pass.
