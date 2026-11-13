@@ -1,27 +1,28 @@
-import {floatBits,bitsFloat} from './math.js';
+import {floatBits} from './math.js';
+import {mcmAdd as add,mcmSubtract as sub,mcmMultiply as mul,mcmDivide as div} from './x87-arithmetic.js';
 
 // Original 0x49e900: component travel limiting and displacement-derived
 // suspension velocity. Transform output assumes an isolated root node.
 export function updateMcmSuspensionTravel(c) {
   const f=Math.fround;
   let travel=c.travel,displacement=[...c.displacement],componentDisplacement=[...c.componentDisplacement];
-  const limited=+(c.limit<=travel);
+  const limited=+(!(c.limit>travel));
   if(limited) {
-    componentDisplacement=c.axis.map(v=>f(v*-c.limit));
-    displacement=displacement.map(v=>f(v*(c.limit/travel)));
+    componentDisplacement=c.axis.map(v=>f(mul(v,-c.limit)));
+    displacement=displacement.map(v=>f(mul(v,div(c.limit,travel))));
     travel=c.limit;
   }
-  const translation=componentDisplacement.map(v=>f(v*f(.6)));
+  const translation=componentDisplacement.map(v=>f(mul(v,f(.6))));
   let dt=c.dt;
-  if(floatBits(c.previousHeight)>0x80000000)dt=f((c.height/(c.height-c.previousHeight))*dt);
-  const delta=componentDisplacement.map((v,i)=>f(v-c.previousDisplacement[i]));
+  if(floatBits(c.previousHeight)>0x80000000)dt=f(mul(div(c.height,sub(c.height,c.previousHeight)),dt));
+  const delta=componentDisplacement.map((v,i)=>f(sub(v,c.previousDisplacement[i])));
   const [x,y,z]=componentDisplacement;
-  const numerator=delta[2]*z+(delta[1]*y+delta[0]*x);
-  const denominator=(z*z+(x*x+y*y))*dt;
-  const ratio=numerator/denominator;
+  const numerator=add(mul(delta[2],z),add(mul(delta[1],y),mul(delta[0],x)));
+  const denominator=mul(add(mul(z,z),add(mul(x,x),mul(y,y))),dt);
+  const ratio=div(numerator,denominator);
   // x87 invalid arithmetic produces negative indefinite before FCHS.
-  const velocity=displacement.map(v=>{const product=v*ratio;return f(-(Number.isNaN(product)?bitsFloat(0xffc00000):product));});
+  const velocity=displacement.map(v=>{return f(-mul(v,ratio));});
   return {travel,displacement,componentDisplacement,velocity,translation,
     previousDisplacement:[...componentDisplacement],previousTravel:travel,
-    limited,increasing:+(c.previousTravel<=travel),cacheValid:0};
+    limited,increasing:+(!(c.previousTravel>travel)),cacheValid:0};
 }

@@ -5,7 +5,14 @@ export function evaluateResetLoopFinish(input,observe){
  let tail=Array(498).fill(0);
  const words=evaluateResetLoopRider(input,(c,{looped})=>{
   if(!looped){observe?.(c,{looped});return;}
-  continueMcmResetLoopFinish(c);const b=c.bike,p=c.contactPhase,r=c.rider,d=c.dispatch,m=d.manager,o=c.collisionState,w=m.objects[1];
+  continueMcmResetLoopFinish(c);tail=resetLoopFinishWords(c);
+  observe?.(c,{looped});
+ });return [...words,...tail];
+}
+
+export function resetLoopFinishWords(c) {
+ let tail;
+ const b=c.bike,p=c.contactPhase,r=c.rider,d=c.dispatch,m=d.manager,o=c.collisionState,w=m.objects[1];
   const integer=new Set(['844','8b8','8b4','8b0','8a8','714','870','710','820','814','884','8a4']);tail=[];
   for(const field of ['844','8b8','8b4','8b0','8a8','8c8','6a4','714','870','718','c7c','8d0','4e0','4dc','4d8','4e4','4e8','4ec','710','820','814','884','8a4','890'])tail.push(field==='8b0'?+!!b.field8b0:integer.has(field)?b[`field${field}`]>>>0:floatBits(b[`field${field}`]));
   for(const v of [b.position,b.velocity,b.angularVelocity,b.worldAngularVelocity,b.normal,b.offset,b.localLever,b.forward,b.up,b.savedHeading])tail.push(...Array.from(v,floatBits));
@@ -21,6 +28,6 @@ export function evaluateResetLoopFinish(input,observe){
   for(const v of [m.contactCC,m.contactD8,m.contactE4,m.otherE4,o.contactCC,o.contactD8,o.contactE4,w.contactCC,w.contactD8,w.contactE4])tail.push(...Array.from(v,floatBits));
   tail.push(+(w.other===o),+(m.currentA===0),+(m.currentB===1),d.priorKind,floatBits(d.priorAngularX));
   tail.push(floatBits(p.dt),floatBits(p.turnScale),c.finishPrior.remaining>>>0,floatBits(c.finishPrior.carry),p.control20>>>0,+c.postState.awardCalled,p.normalEventDecision.randomCalls,p.normalEventDecision.inputCalls,p.normalEventDecision.triggered);
-  observe?.(c,{looped});
- });return [...words,...tail];
+
+ return tail;
 }

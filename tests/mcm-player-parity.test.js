@@ -1584,3 +1584,16 @@ test('second loop-back preserves live state into third engine and ordinary wheel
   assert.deepEqual(actual,outputBits,`reset/third-contact fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
  }
 });
+
+
+test('third persistent substep completes forces, motion, rider interaction and scheduling',async()=>{
+ const {evaluateResetThirdFinish}=await import('../scripts/mcm-reference/reset-third-finish-case.mjs');
+ const corpus=fixture('reset-third-finish-wine11.json.br'),outcomes=Object.keys(corpus.source.thirdFinishedOutcomes);
+ assert.equal(corpus.source.totalDifferences,0);
+ for(const gate of ['looped=0:', 'looped=1:route=1:', 'looped=1:route=2:', 'looped=1:route=3:', ':triggered=0:', ':triggered=1:', ':queries=3:', ':enabled=1:', ':nearbyRecord=true:', ':callbacks=1:', ':remaining=0', ':remaining=1'])assert.ok(outcomes.some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){
+  const actual=evaluateResetThirdFinish(c);
+  assert.equal(actual.length,6062);
+  assert.deepEqual(actual,outputBits,`reset/third-finish fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
+ }
+});

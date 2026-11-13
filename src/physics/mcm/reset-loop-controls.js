@@ -9,7 +9,7 @@ export function continueMcmResetLoopControls(c){
  Object.assign(p.controllerHandoff,{velocity:r.velocity,angularVelocity:r.angularVelocity,
   flag13c:r.flag13c,kind:b.field8b4,other:b.field8b0,otherVelocity:[0,0,0],axis:b.axis624});
  p.contactCorrection.controller140=r.field140;
- p.nodes=[c.bodyNode];
+ p.nodes=[c.bodyNode];p.normalEventSetup.sourceIndex=0;
  p.normalControl={vector:[0,0,0],yaw:b.field6f4,flag820:b.field820,field730:b.field730,
   flags:b.fieldc68,flag6fc:b.field6fc,forwardIndex:0};
  p.normalRotation={angle:0};

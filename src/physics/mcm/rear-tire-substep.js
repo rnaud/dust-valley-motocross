@@ -1,5 +1,5 @@
 import {floatBits} from './math.js';
-import {mcmInverseSqrt} from './inverse-sqrt.js';
+import {mcmInverseSqrtLookup as mcmInverseSqrt} from './inverse-sqrt.js';
 import {calculateMcmTireForce} from './tire-force.js';
 import {resolveMcmWorldMatrix,inverseRotateMcmVector} from './world-transform.js';
 import {updateMcmRearMotionSubstep} from './rear-motion-substep.js';
@@ -15,7 +15,7 @@ export function updateMcmRearTire(c){
  }
  if(t.maxSpeed>c.rearMotion.forwardMagnitude && !c.state844){
   const [x,y,z]=t.acceleration,squared=(x*x+y*y)+z*z;s[3]=f(squared);
-  s[2]=f(t.inverseMass*c.driveScalar-(squared===0?0:1/mcmInverseSqrt(s[3])));
+  s[2]=f(t.inverseMass*c.driveScalar-((squared===0||Number.isNaN(squared))?0:1/mcmInverseSqrt(s[3])));
   s[4]=f(c.frontWeight+.5);s[5]=(floatBits(c.bikeForward[1])|0)>0?t.rollCos:1;
   if((floatBits(s[2])|0)<0x3f8147ae)s[6]=1;
   else{s[7]=(floatBits(s[2])|0)<0x43a00000?s[2]:320;s[6]=f((400-s[7])*f(.0025));}

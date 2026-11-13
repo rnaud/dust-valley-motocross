@@ -1,5 +1,5 @@
 import {floatBits} from './math.js';
-import {mcmInverseSqrt} from './inverse-sqrt.js';
+import {mcmInverseSqrtLookup as mcmInverseSqrt} from './inverse-sqrt.js';
 import {updateMcmContactSubstep} from './contact-substep.js';
 const f=Math.fround;
 

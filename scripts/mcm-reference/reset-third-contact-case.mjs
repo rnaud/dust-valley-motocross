@@ -4,15 +4,16 @@ import {continueMcmResetLoopContact} from '../../src/physics/mcm/reset-loop-cont
 import {substepStartWords} from './substep-start-case.mjs';
 import {resetLoopContactWords} from './reset-loop-contact-case.mjs';
 
-export function evaluateResetThirdContact(input){
+export function evaluateResetThirdContact(input,observe){
  let tail=Array(219).fill(0);
  const words=evaluateResetLoopFinish(input,(c,{looped})=>{
-  if(!looped)return;
+  if(!looped){observe?.(c,{looped:false});return;}
   const entry=continueMcmResetLoopEntry(c);
-  if(!entry.looped)return;
+  if(!entry.looped){observe?.(c,{looped:false});return;}
   const engine=substepStartWords(c.engineEntry,entry);
   continueMcmResetLoopContact(c);
   tail=[1,...engine,...resetLoopContactWords(c,entry)];
+  observe?.(c,{looped:true});
  });
  return [...words,...tail];
 }

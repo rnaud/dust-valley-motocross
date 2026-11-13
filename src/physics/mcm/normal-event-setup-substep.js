@@ -28,7 +28,7 @@ export function applyMcmSubstepEventSetup(c){
   }
   c.normalControl.flag820=0;
  }
- s.direction=[c.bikeForward[0],0,c.bikeForward[2]];d.animation=0;c.leanDisabled=0;c.field714=0;
+ s.direction=new Float64Array(3);s.direction[0]=c.bikeForward[0];s.direction[2]=c.bikeForward[2];d.animation=0;c.leanDisabled=0;c.field714=0;
  s.inverted=+(floatBits(c.bikeUp[1])>0x80000000);s.field890=c.heading;
  if(d.eventKind===1&&(floatBits(c.chassisResponse.angularXY[0])|0)<0x3fc8f5c3)c.chassisResponse.angularXY[0]=f(1.57);
  c.controllerHandoff.velocity=[...c.velocity];

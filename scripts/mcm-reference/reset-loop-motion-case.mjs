@@ -6,7 +6,14 @@ export function evaluateResetLoopMotion(input,observe){
  let tail=Array(273).fill(0);
  const words=evaluateResetLoopTireForces(input,(c,{looped})=>{
   if(!looped){observe?.(c,{looped});return;}
-  continueMcmResetLoopMotion(c);const b=c.bike,p=c.contactPhase,s=p.chassisContact;
+  continueMcmResetLoopMotion(c);tail=resetLoopMotionWords(c);
+  observe?.(c,{looped});
+ });return [...words,...tail];
+}
+
+export function resetLoopMotionWords(c) {
+ let tail;
+ const b=c.bike,p=c.contactPhase,s=p.chassisContact;
   tail=[floatBits(s.absTurn),...Array.from(s.coefficients,floatBits),...Array.from(s.arm,floatBits),...Array.from(s.normal,floatBits),...Array.from(s.velocity,floatBits),s.count>>>0,s.enabled>>>0,...Array.from(p.chassisResponse.scratch,floatBits),floatBits(p.chassisImpulse.squaredSpeed)];
   tail.push(...resetIntegrationWords(p));
   tail.push(floatBits(p.motionTransform.signedDt),floatBits(p.motionTransform.rearDelta),floatBits(p.motionTransform.angle));
@@ -15,6 +22,6 @@ export function evaluateResetLoopMotion(input,observe){
   tail.push(floatBits(c.front.limited),floatBits(c.rear.limited));
   for(const n of c.bounds.components)tail.push(...Array.from(n.local,floatBits),...Array.from(n.world,floatBits),n.cacheValid);
   tail.push(...Array.from(p.force,floatBits),...Array.from(p.totalTorque,floatBits),...Array.from(c.component8e4.value,floatBits),floatBits(c.component8e4.field5c),floatBits(c.component8e8.field58));
-  observe?.(c,{looped});
- });return [...words,...tail];
+
+ return tail;
 }

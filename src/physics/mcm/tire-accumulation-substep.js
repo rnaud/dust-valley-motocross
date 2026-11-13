@@ -1,4 +1,5 @@
 import {floatBits} from './math.js';
+import {mcmAdd} from './x87-arithmetic.js';
 import {accumulateMcmContactForce} from './contact-accumulation.js';
 import {updateMcmRearTireSubstep} from './rear-tire-substep.js';
 const f=Math.fround;
@@ -9,8 +10,8 @@ export function accumulateMcmTireForces(c){
  if(!c.anyContact)return;
  const front=c.frontTire,rear=c.traction.tire;
  if(c.bothContact){
-  c.combinedTireForce=rear.force.map((v,i)=>f(v+front.force[i]));
-  c.combinedTireMagnitude=f(rear.magnitude+front.magnitude);
+  c.combinedTireForce=rear.force.map((v,i)=>f(mcmAdd(v,front.force[i])));
+  c.combinedTireMagnitude=f(mcmAdd(rear.magnitude,front.magnitude));
  }else c.combinedTireMagnitude=c.frontContact?front.magnitude:rear.magnitude;
  const r=accumulateMcmContactForce({
   first:!!c.frontContact && (floatBits(c.frontMotion.speed)|0)>0x3a83126f,
