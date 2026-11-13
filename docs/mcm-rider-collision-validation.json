@@ -1,0 +1,3148 @@
+{
+  "schemaVersion": 1,
+  "scope": "Partial replay variants: observation, restored rider callbacks, restored callbacks and pair flags. Shared linked collision grid and other world dependencies remain uncaptured.",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "sourceSha256": "23cad2dc3c69f460890f37f42b9295b87783086dcebd889a04e55a68e0f231a8",
+  "fixtureSha256": "80e97707620dad3e808acd033cf2ebca743f322f6c9507a1ee6b2c62256c2834",
+  "runs": {
+    "observed": {
+      "captureSha256": "2c44d8399a843647514963cdbd3e87deb4d4a0960fb9c3c05cea6c8296826a66",
+      "checkpointBlocks": 42,
+      "firstMotionDifference": {
+        "frame": 55,
+        "phase": "before-update",
+        "fields": [
+          "angularVelocity"
+        ]
+      },
+      "firstRandomDifference": {
+        "frame": 104,
+        "phase": "after-update",
+        "a": 1449997005,
+        "b": 2644521496
+      },
+      "differingBikeWords": {
+        "0x488": {
+          "records": 716,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x48c": {
+          "records": 740,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x490": {
+          "records": 716,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x494": {
+          "records": 574,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x540": {
+          "records": 744,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x544": {
+          "records": 744,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x548": {
+          "records": 737,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x654": {
+          "records": 743,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x658": {
+          "records": 739,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x65c": {
+          "records": 739,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x8a8": {
+          "records": 174,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x528": {
+          "records": 690,
+          "firstFrame": 55,
+          "phase": "before-update"
+        },
+        "0x52c": {
+          "records": 690,
+          "firstFrame": 55,
+          "phase": "before-update"
+        },
+        "0x538": {
+          "records": 683,
+          "firstFrame": 55,
+          "phase": "before-update"
+        },
+        "0x53c": {
+          "records": 690,
+          "firstFrame": 55,
+          "phase": "before-update"
+        },
+        "0x4c8": {
+          "records": 689,
+          "firstFrame": 55,
+          "phase": "after-update"
+        },
+        "0x4d4": {
+          "records": 689,
+          "firstFrame": 55,
+          "phase": "after-update"
+        },
+        "0x4d8": {
+          "records": 623,
+          "firstFrame": 55,
+          "phase": "after-update"
+        },
+        "0x4e4": {
+          "records": 689,
+          "firstFrame": 55,
+          "phase": "after-update"
+        },
+        "0x4f0": {
+          "records": 665,
+          "firstFrame": 56,
+          "phase": "after-update"
+        },
+        "0x518": {
+          "records": 687,
+          "firstFrame": 56,
+          "phase": "after-update"
+        },
+        "0x524": {
+          "records": 687,
+          "firstFrame": 56,
+          "phase": "after-update"
+        },
+        "0x58c": {
+          "records": 687,
+          "firstFrame": 56,
+          "phase": "after-update"
+        },
+        "0x660": {
+          "records": 687,
+          "firstFrame": 56,
+          "phase": "after-update"
+        },
+        "0x66c": {
+          "records": 687,
+          "firstFrame": 56,
+          "phase": "after-update"
+        },
+        "0x674": {
+          "records": 687,
+          "firstFrame": 56,
+          "phase": "after-update"
+        },
+        "0x6ac": {
+          "records": 284,
+          "firstFrame": 56,
+          "phase": "after-update"
+        },
+        "0x580": {
+          "records": 685,
+          "firstFrame": 57,
+          "phase": "after-update"
+        },
+        "0x670": {
+          "records": 683,
+          "firstFrame": 57,
+          "phase": "after-update"
+        },
+        "0x51c": {
+          "records": 681,
+          "firstFrame": 58,
+          "phase": "after-update"
+        },
+        "0x554": {
+          "records": 669,
+          "firstFrame": 58,
+          "phase": "after-update"
+        },
+        "0x560": {
+          "records": 677,
+          "firstFrame": 58,
+          "phase": "after-update"
+        },
+        "0x734": {
+          "records": 641,
+          "firstFrame": 58,
+          "phase": "after-update"
+        },
+        "0x738": {
+          "records": 675,
+          "firstFrame": 58,
+          "phase": "after-update"
+        },
+        "0x4c4": {
+          "records": 681,
+          "firstFrame": 59,
+          "phase": "after-update"
+        },
+        "0x4cc": {
+          "records": 681,
+          "firstFrame": 59,
+          "phase": "after-update"
+        },
+        "0x4fc": {
+          "records": 679,
+          "firstFrame": 59,
+          "phase": "after-update"
+        },
+        "0x508": {
+          "records": 679,
+          "firstFrame": 59,
+          "phase": "after-update"
+        },
+        "0x514": {
+          "records": 681,
+          "firstFrame": 59,
+          "phase": "after-update"
+        },
+        "0x520": {
+          "records": 681,
+          "firstFrame": 59,
+          "phase": "after-update"
+        },
+        "0x530": {
+          "records": 681,
+          "firstFrame": 59,
+          "phase": "after-update"
+        },
+        "0x534": {
+          "records": 681,
+          "firstFrame": 59,
+          "phase": "after-update"
+        },
+        "0x590": {
+          "records": 677,
+          "firstFrame": 59,
+          "phase": "after-update"
+        },
+        "0x594": {
+          "records": 679,
+          "firstFrame": 59,
+          "phase": "after-update"
+        },
+        "0x6a4": {
+          "records": 681,
+          "firstFrame": 59,
+          "phase": "after-update"
+        },
+        "0x570": {
+          "records": 678,
+          "firstFrame": 60,
+          "phase": "before-update"
+        },
+        "0x4e0": {
+          "records": 675,
+          "firstFrame": 60,
+          "phase": "after-update"
+        },
+        "0x564": {
+          "records": 679,
+          "firstFrame": 60,
+          "phase": "after-update"
+        },
+        "0x664": {
+          "records": 679,
+          "firstFrame": 60,
+          "phase": "after-update"
+        },
+        "0x668": {
+          "records": 679,
+          "firstFrame": 60,
+          "phase": "after-update"
+        },
+        "0x848": {
+          "records": 679,
+          "firstFrame": 60,
+          "phase": "after-update"
+        },
+        "0x84c": {
+          "records": 679,
+          "firstFrame": 60,
+          "phase": "after-update"
+        },
+        "0x850": {
+          "records": 675,
+          "firstFrame": 60,
+          "phase": "after-update"
+        },
+        "0x854": {
+          "records": 675,
+          "firstFrame": 60,
+          "phase": "after-update"
+        },
+        "0x500": {
+          "records": 667,
+          "firstFrame": 61,
+          "phase": "after-update"
+        },
+        "0x578": {
+          "records": 661,
+          "firstFrame": 61,
+          "phase": "after-update"
+        },
+        "0x57c": {
+          "records": 675,
+          "firstFrame": 61,
+          "phase": "after-update"
+        },
+        "0x574": {
+          "records": 666,
+          "firstFrame": 62,
+          "phase": "before-update"
+        },
+        "0x510": {
+          "records": 669,
+          "firstFrame": 62,
+          "phase": "after-update"
+        },
+        "0x588": {
+          "records": 673,
+          "firstFrame": 62,
+          "phase": "after-update"
+        },
+        "0x894": {
+          "records": 663,
+          "firstFrame": 62,
+          "phase": "after-update"
+        },
+        "0x50c": {
+          "records": 653,
+          "firstFrame": 67,
+          "phase": "after-update"
+        },
+        "0x584": {
+          "records": 657,
+          "firstFrame": 68,
+          "phase": "after-update"
+        },
+        "0x4c0": {
+          "records": 657,
+          "firstFrame": 69,
+          "phase": "after-update"
+        },
+        "0x4d0": {
+          "records": 657,
+          "firstFrame": 69,
+          "phase": "after-update"
+        },
+        "0x4dc": {
+          "records": 661,
+          "firstFrame": 69,
+          "phase": "after-update"
+        },
+        "0x4ec": {
+          "records": 661,
+          "firstFrame": 69,
+          "phase": "after-update"
+        },
+        "0x4f8": {
+          "records": 653,
+          "firstFrame": 73,
+          "phase": "after-update"
+        },
+        "0x56c": {
+          "records": 652,
+          "firstFrame": 74,
+          "phase": "before-update"
+        },
+        "0x504": {
+          "records": 647,
+          "firstFrame": 74,
+          "phase": "after-update"
+        },
+        "0x4e8": {
+          "records": 613,
+          "firstFrame": 75,
+          "phase": "after-update"
+        },
+        "0x54c": {
+          "records": 601,
+          "firstFrame": 76,
+          "phase": "after-update"
+        },
+        "0x550": {
+          "records": 607,
+          "firstFrame": 76,
+          "phase": "after-update"
+        },
+        "0x4f4": {
+          "records": 595,
+          "firstFrame": 87,
+          "phase": "after-update"
+        },
+        "0x73c": {
+          "records": 589,
+          "firstFrame": 93,
+          "phase": "after-update"
+        },
+        "0x6b8": {
+          "records": 609,
+          "firstFrame": 95,
+          "phase": "after-update"
+        },
+        "0x6bc": {
+          "records": 609,
+          "firstFrame": 95,
+          "phase": "after-update"
+        },
+        "0x6c0": {
+          "records": 609,
+          "firstFrame": 95,
+          "phase": "after-update"
+        },
+        "0x6c4": {
+          "records": 609,
+          "firstFrame": 95,
+          "phase": "after-update"
+        },
+        "0x6c8": {
+          "records": 609,
+          "firstFrame": 95,
+          "phase": "after-update"
+        },
+        "0x6cc": {
+          "records": 609,
+          "firstFrame": 95,
+          "phase": "after-update"
+        },
+        "0xc74": {
+          "records": 609,
+          "firstFrame": 95,
+          "phase": "after-update"
+        },
+        "0x728": {
+          "records": 193,
+          "firstFrame": 98,
+          "phase": "after-update"
+        },
+        "0x844": {
+          "records": 208,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x884": {
+          "records": 556,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x890": {
+          "records": 592,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x898": {
+          "records": 592,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x8a0": {
+          "records": 592,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x8b4": {
+          "records": 1,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x8b8": {
+          "records": 1,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x6e8": {
+          "records": 189,
+          "firstFrame": 104,
+          "phase": "after-update"
+        },
+        "0x6ec": {
+          "records": 189,
+          "firstFrame": 104,
+          "phase": "after-update"
+        },
+        "0x6f4": {
+          "records": 189,
+          "firstFrame": 104,
+          "phase": "after-update"
+        },
+        "0x700": {
+          "records": 189,
+          "firstFrame": 104,
+          "phase": "after-update"
+        },
+        "0x870": {
+          "records": 2,
+          "firstFrame": 104,
+          "phase": "after-update"
+        },
+        "0xcb8": {
+          "records": 52,
+          "firstFrame": 104,
+          "phase": "after-update"
+        },
+        "0xcbc": {
+          "records": 2,
+          "firstFrame": 104,
+          "phase": "after-update"
+        },
+        "0x624": {
+          "records": 569,
+          "firstFrame": 115,
+          "phase": "after-update"
+        },
+        "0x628": {
+          "records": 569,
+          "firstFrame": 115,
+          "phase": "after-update"
+        },
+        "0x62c": {
+          "records": 569,
+          "firstFrame": 115,
+          "phase": "after-update"
+        },
+        "0x6b0": {
+          "records": 36,
+          "firstFrame": 115,
+          "phase": "after-update"
+        },
+        "0x6b4": {
+          "records": 569,
+          "firstFrame": 115,
+          "phase": "after-update"
+        },
+        "0x730": {
+          "records": 567,
+          "firstFrame": 115,
+          "phase": "after-update"
+        },
+        "0x8bc": {
+          "records": 46,
+          "firstFrame": 115,
+          "phase": "after-update"
+        },
+        "0x14": {
+          "records": 370,
+          "firstFrame": 116,
+          "phase": "after-update"
+        },
+        "0x218": {
+          "records": 370,
+          "firstFrame": 116,
+          "phase": "after-update"
+        },
+        "0x21c": {
+          "records": 370,
+          "firstFrame": 116,
+          "phase": "after-update"
+        },
+        "0x220": {
+          "records": 370,
+          "firstFrame": 116,
+          "phase": "after-update"
+        },
+        "0x224": {
+          "records": 370,
+          "firstFrame": 116,
+          "phase": "after-update"
+        },
+        "0x228": {
+          "records": 370,
+          "firstFrame": 116,
+          "phase": "after-update"
+        },
+        "0x22c": {
+          "records": 370,
+          "firstFrame": 116,
+          "phase": "after-update"
+        },
+        "0x4bc": {
+          "records": 523,
+          "firstFrame": 118,
+          "phase": "after-update"
+        },
+        "0x8c4": {
+          "records": 16,
+          "firstFrame": 119,
+          "phase": "after-update"
+        },
+        "0x558": {
+          "records": 225,
+          "firstFrame": 120,
+          "phase": "after-update"
+        },
+        "0x55c": {
+          "records": 225,
+          "firstFrame": 120,
+          "phase": "after-update"
+        },
+        "0x694": {
+          "records": 225,
+          "firstFrame": 120,
+          "phase": "after-update"
+        },
+        "0xca4": {
+          "records": 84,
+          "firstFrame": 120,
+          "phase": "after-update"
+        },
+        "0x620": {
+          "records": 232,
+          "firstFrame": 124,
+          "phase": "after-update"
+        },
+        "0xcc0": {
+          "records": 207,
+          "firstFrame": 296,
+          "phase": "after-update"
+        },
+        "0x724": {
+          "records": 189,
+          "firstFrame": 305,
+          "phase": "after-update"
+        },
+        "0x72c": {
+          "records": 189,
+          "firstFrame": 305,
+          "phase": "after-update"
+        },
+        "0x888": {
+          "records": 189,
+          "firstFrame": 305,
+          "phase": "after-update"
+        },
+        "0x8ac": {
+          "records": 189,
+          "firstFrame": 305,
+          "phase": "after-update"
+        },
+        "0xc70": {
+          "records": 189,
+          "firstFrame": 305,
+          "phase": "after-update"
+        },
+        "0xc78": {
+          "records": 189,
+          "firstFrame": 305,
+          "phase": "after-update"
+        }
+      },
+      "differingRiderWords": {
+        "0x58": {
+          "records": 798,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x5c": {
+          "records": 798,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x60": {
+          "records": 798,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x64": {
+          "records": 798,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x68": {
+          "records": 798,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x6c": {
+          "records": 798,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0xe8": {
+          "records": 798,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0xec": {
+          "records": 798,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0xf0": {
+          "records": 798,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x154": {
+          "records": 474,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x44": {
+          "records": 678,
+          "firstFrame": 60,
+          "phase": "before-update"
+        },
+        "0x50": {
+          "records": 676,
+          "firstFrame": 61,
+          "phase": "before-update"
+        },
+        "0x48": {
+          "records": 666,
+          "firstFrame": 62,
+          "phase": "before-update"
+        },
+        "0x54": {
+          "records": 664,
+          "firstFrame": 63,
+          "phase": "before-update"
+        },
+        "0x40": {
+          "records": 652,
+          "firstFrame": 74,
+          "phase": "before-update"
+        },
+        "0x4c": {
+          "records": 650,
+          "firstFrame": 75,
+          "phase": "before-update"
+        },
+        "0x70": {
+          "records": 592,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x74": {
+          "records": 592,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x78": {
+          "records": 592,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x7c": {
+          "records": 592,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x80": {
+          "records": 592,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x84": {
+          "records": 592,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x13c": {
+          "records": 1,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x160": {
+          "records": 1,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x164": {
+          "records": 592,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x168": {
+          "records": 592,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x16c": {
+          "records": 190,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x170": {
+          "records": 1,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0xb8": {
+          "records": 590,
+          "firstFrame": 105,
+          "phase": "before-update"
+        },
+        "0xbc": {
+          "records": 590,
+          "firstFrame": 105,
+          "phase": "before-update"
+        },
+        "0xc0": {
+          "records": 590,
+          "firstFrame": 105,
+          "phase": "before-update"
+        },
+        "0xc8": {
+          "records": 590,
+          "firstFrame": 105,
+          "phase": "before-update"
+        },
+        "0xcc": {
+          "records": 590,
+          "firstFrame": 105,
+          "phase": "before-update"
+        },
+        "0xd0": {
+          "records": 590,
+          "firstFrame": 105,
+          "phase": "before-update"
+        },
+        "0xd8": {
+          "records": 590,
+          "firstFrame": 105,
+          "phase": "before-update"
+        },
+        "0xdc": {
+          "records": 590,
+          "firstFrame": 105,
+          "phase": "before-update"
+        },
+        "0xe0": {
+          "records": 590,
+          "firstFrame": 105,
+          "phase": "before-update"
+        },
+        "0xa0": {
+          "records": 560,
+          "firstFrame": 120,
+          "phase": "before-update"
+        },
+        "0xa4": {
+          "records": 560,
+          "firstFrame": 120,
+          "phase": "before-update"
+        },
+        "0xa8": {
+          "records": 560,
+          "firstFrame": 120,
+          "phase": "before-update"
+        },
+        "0xac": {
+          "records": 560,
+          "firstFrame": 120,
+          "phase": "before-update"
+        },
+        "0xb0": {
+          "records": 560,
+          "firstFrame": 120,
+          "phase": "before-update"
+        },
+        "0xb4": {
+          "records": 560,
+          "firstFrame": 120,
+          "phase": "before-update"
+        },
+        "0xf8": {
+          "records": 136,
+          "firstFrame": 120,
+          "phase": "before-update"
+        },
+        "0x138": {
+          "records": 225,
+          "firstFrame": 120,
+          "phase": "before-update"
+        },
+        "0x140": {
+          "records": 36,
+          "firstFrame": 120,
+          "phase": "before-update"
+        },
+        "0x3a4": {
+          "records": 508,
+          "firstFrame": 120,
+          "phase": "before-update"
+        },
+        "0x144": {
+          "records": 309,
+          "firstFrame": 121,
+          "phase": "before-update"
+        },
+        "0x148": {
+          "records": 376,
+          "firstFrame": 123,
+          "phase": "before-update"
+        },
+        "0x14c": {
+          "records": 214,
+          "firstFrame": 181,
+          "phase": "before-update"
+        }
+      },
+      "differingEngineWords": {
+        "0x7c": {
+          "records": 52,
+          "firstFrame": 104,
+          "phase": "after-update"
+        },
+        "0x150": {
+          "records": 2,
+          "firstFrame": 104,
+          "phase": "after-update"
+        },
+        "0x15c": {
+          "records": 52,
+          "firstFrame": 104,
+          "phase": "after-update"
+        },
+        "0x160": {
+          "records": 52,
+          "firstFrame": 104,
+          "phase": "after-update"
+        },
+        "0x154": {
+          "records": 547,
+          "firstFrame": 126,
+          "phase": "after-update"
+        },
+        "0x158": {
+          "records": 292,
+          "firstFrame": 126,
+          "phase": "after-update"
+        },
+        "0x168": {
+          "records": 12,
+          "firstFrame": 126,
+          "phase": "after-update"
+        }
+      },
+      "differingStackWordCount": 689,
+      "collision": {
+        "scope": "Observed rider collider, entries and shared pair row/column; restoration coverage is defined by each checkpoint. Full grid and other objects not captured.",
+        "differences": {
+          "state+0x1c": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 0,
+            "b": 3188984967
+          },
+          "state+0x20": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 0,
+            "b": 1044041813
+          },
+          "state+0x24": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3212836864,
+            "b": 3212376149
+          },
+          "state+0x2c": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 999166349,
+            "b": 1065133141
+          },
+          "state+0x30": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1065353076,
+            "b": 1036555850
+          },
+          "state+0x34": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 0,
+            "b": 3187894935
+          },
+          "state+0x3c": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1065353076,
+            "b": 1033052210
+          },
+          "state+0x40": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3146649997,
+            "b": 3212473279
+          },
+          "state+0x44": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 0,
+            "b": 3192315176
+          },
+          "state+0x4c": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1167719569,
+            "b": 1167985529
+          },
+          "state+0x50": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3246316307,
+            "b": 1120711329
+          },
+          "state+0x54": {
+            "records": 790,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1158673604,
+            "b": 1158662572
+          },
+          "state+0x5c": {
+            "records": 558,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1078722560,
+            "b": 1077608448
+          },
+          "state+0x60": {
+            "records": 558,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1092784128,
+            "b": 1091082496
+          },
+          "state+0x64": {
+            "records": 562,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1067551724,
+            "b": 1068124160
+          },
+          "state+0x68": {
+            "records": 562,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1076266598,
+            "b": 1074274472
+          },
+          "state+0x6c": {
+            "records": 562,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1068646348,
+            "b": 1069823306
+          },
+          "state+0x70": {
+            "records": 562,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3149924352,
+            "b": 1028583808
+          },
+          "state+0x74": {
+            "records": 562,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1081326926,
+            "b": 1082284536
+          },
+          "state+0x78": {
+            "records": 562,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3188013488,
+            "b": 3188017248
+          },
+          "state+0x7c": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1167719336,
+            "b": 1167993728
+          },
+          "state+0x80": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3242322321,
+            "b": 1120781521
+          },
+          "state+0x84": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1158673628,
+            "b": 1158660333
+          },
+          "state+0xcc": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1167742947,
+            "b": 1167768391
+          },
+          "state+0xd0": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3243186265,
+            "b": 1064478273
+          },
+          "state+0xd4": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1158680863,
+            "b": 1158676562
+          },
+          "state+0xd8": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1034944267,
+            "b": 1046900021
+          },
+          "state+0xdc": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1027686209,
+            "b": 3202258396
+          },
+          "state+0xe0": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1041904576,
+            "b": 3176233612
+          },
+          "state+0xe4": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1056234823,
+            "b": 1055528331
+          },
+          "state+0xe8": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1048997577,
+            "b": 3210878549
+          },
+          "state+0xec": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1062636232,
+            "b": 3184840131
+          },
+          "state+0x108": {
+            "records": 429,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 4241888,
+            "b": 4242208
+          },
+          "state+0x10c": {
+            "records": 429,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 4241920,
+            "b": 4242224
+          },
+          "pairRow+0x0": {
+            "records": 576,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3,
+            "b": 1
+          },
+          "pairColumn+0x0": {
+            "records": 576,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3,
+            "b": 1
+          },
+          "entries+0x4": {
+            "records": 174,
+            "frame": 1,
+            "phase": "before-update",
+            "a": 28575280,
+            "b": 28369152
+          },
+          "pairRow+0x8": {
+            "records": 348,
+            "frame": 1,
+            "phase": "before-update",
+            "a": 1,
+            "b": 2
+          },
+          "entries+0x0": {
+            "records": 8,
+            "frame": 132,
+            "phase": "before-update",
+            "a": 28457648,
+            "b": 28369152
+          },
+          "pairColumn+0xc": {
+            "records": 8,
+            "frame": 132,
+            "phase": "before-update",
+            "a": 1,
+            "b": 2
+          }
+        },
+        "firstDifferences": [
+          {
+            "field": "state+0x1c",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 0,
+            "b": 3188984967
+          },
+          {
+            "field": "state+0x20",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 0,
+            "b": 1044041813
+          },
+          {
+            "field": "state+0x24",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3212836864,
+            "b": 3212376149
+          },
+          {
+            "field": "state+0x2c",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 999166349,
+            "b": 1065133141
+          },
+          {
+            "field": "state+0x30",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1065353076,
+            "b": 1036555850
+          },
+          {
+            "field": "state+0x34",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 0,
+            "b": 3187894935
+          },
+          {
+            "field": "state+0x3c",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1065353076,
+            "b": 1033052210
+          },
+          {
+            "field": "state+0x40",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3146649997,
+            "b": 3212473279
+          },
+          {
+            "field": "state+0x44",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 0,
+            "b": 3192315176
+          },
+          {
+            "field": "state+0x4c",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1167719569,
+            "b": 1167985529
+          },
+          {
+            "field": "state+0x50",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3246316307,
+            "b": 1120711329
+          },
+          {
+            "field": "state+0x54",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1158673604,
+            "b": 1158662572
+          },
+          {
+            "field": "state+0x5c",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1078722560,
+            "b": 1077608448
+          },
+          {
+            "field": "state+0x60",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1092784128,
+            "b": 1091082496
+          },
+          {
+            "field": "state+0x64",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1067551724,
+            "b": 1068124160
+          },
+          {
+            "field": "state+0x68",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1076266598,
+            "b": 1074274472
+          },
+          {
+            "field": "state+0x6c",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1068646348,
+            "b": 1069823306
+          },
+          {
+            "field": "state+0x70",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3149924352,
+            "b": 1028583808
+          },
+          {
+            "field": "state+0x74",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1081326926,
+            "b": 1082284536
+          },
+          {
+            "field": "state+0x78",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3188013488,
+            "b": 3188017248
+          }
+        ]
+      }
+    },
+    "callback": {
+      "captureSha256": "cb60375c49a0fa0efa695f0f5f483c155a0ec227a11baf6cba8c4b1e74e90f77",
+      "checkpointBlocks": 43,
+      "firstMotionDifference": {
+        "frame": 55,
+        "phase": "before-update",
+        "fields": [
+          "angularVelocity"
+        ]
+      },
+      "firstRandomDifference": {
+        "frame": 104,
+        "phase": "after-update",
+        "a": 1449997005,
+        "b": 2644521496
+      },
+      "differingBikeWords": {
+        "0x488": {
+          "records": 724,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x48c": {
+          "records": 748,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x490": {
+          "records": 724,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x494": {
+          "records": 570,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x540": {
+          "records": 744,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x544": {
+          "records": 744,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x548": {
+          "records": 737,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x654": {
+          "records": 743,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x658": {
+          "records": 739,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x65c": {
+          "records": 739,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x8a8": {
+          "records": 132,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x528": {
+          "records": 690,
+          "firstFrame": 55,
+          "phase": "before-update"
+        },
+        "0x52c": {
+          "records": 690,
+          "firstFrame": 55,
+          "phase": "before-update"
+        },
+        "0x538": {
+          "records": 683,
+          "firstFrame": 55,
+          "phase": "before-update"
+        },
+        "0x53c": {
+          "records": 690,
+          "firstFrame": 55,
+          "phase": "before-update"
+        },
+        "0x4c8": {
+          "records": 689,
+          "firstFrame": 55,
+          "phase": "after-update"
+        },
+        "0x4d4": {
+          "records": 689,
+          "firstFrame": 55,
+          "phase": "after-update"
+        },
+        "0x4d8": {
+          "records": 629,
+          "firstFrame": 55,
+          "phase": "after-update"
+        },
+        "0x4e4": {
+          "records": 689,
+          "firstFrame": 55,
+          "phase": "after-update"
+        },
+        "0x4f0": {
+          "records": 665,
+          "firstFrame": 56,
+          "phase": "after-update"
+        },
+        "0x518": {
+          "records": 687,
+          "firstFrame": 56,
+          "phase": "after-update"
+        },
+        "0x524": {
+          "records": 687,
+          "firstFrame": 56,
+          "phase": "after-update"
+        },
+        "0x58c": {
+          "records": 687,
+          "firstFrame": 56,
+          "phase": "after-update"
+        },
+        "0x660": {
+          "records": 687,
+          "firstFrame": 56,
+          "phase": "after-update"
+        },
+        "0x66c": {
+          "records": 687,
+          "firstFrame": 56,
+          "phase": "after-update"
+        },
+        "0x674": {
+          "records": 687,
+          "firstFrame": 56,
+          "phase": "after-update"
+        },
+        "0x6ac": {
+          "records": 68,
+          "firstFrame": 56,
+          "phase": "after-update"
+        },
+        "0x580": {
+          "records": 685,
+          "firstFrame": 57,
+          "phase": "after-update"
+        },
+        "0x670": {
+          "records": 683,
+          "firstFrame": 57,
+          "phase": "after-update"
+        },
+        "0x51c": {
+          "records": 681,
+          "firstFrame": 58,
+          "phase": "after-update"
+        },
+        "0x554": {
+          "records": 669,
+          "firstFrame": 58,
+          "phase": "after-update"
+        },
+        "0x560": {
+          "records": 677,
+          "firstFrame": 58,
+          "phase": "after-update"
+        },
+        "0x734": {
+          "records": 641,
+          "firstFrame": 58,
+          "phase": "after-update"
+        },
+        "0x738": {
+          "records": 675,
+          "firstFrame": 58,
+          "phase": "after-update"
+        },
+        "0x4c4": {
+          "records": 681,
+          "firstFrame": 59,
+          "phase": "after-update"
+        },
+        "0x4cc": {
+          "records": 681,
+          "firstFrame": 59,
+          "phase": "after-update"
+        },
+        "0x4fc": {
+          "records": 679,
+          "firstFrame": 59,
+          "phase": "after-update"
+        },
+        "0x508": {
+          "records": 679,
+          "firstFrame": 59,
+          "phase": "after-update"
+        },
+        "0x514": {
+          "records": 681,
+          "firstFrame": 59,
+          "phase": "after-update"
+        },
+        "0x520": {
+          "records": 681,
+          "firstFrame": 59,
+          "phase": "after-update"
+        },
+        "0x530": {
+          "records": 681,
+          "firstFrame": 59,
+          "phase": "after-update"
+        },
+        "0x534": {
+          "records": 681,
+          "firstFrame": 59,
+          "phase": "after-update"
+        },
+        "0x590": {
+          "records": 677,
+          "firstFrame": 59,
+          "phase": "after-update"
+        },
+        "0x594": {
+          "records": 679,
+          "firstFrame": 59,
+          "phase": "after-update"
+        },
+        "0x6a4": {
+          "records": 681,
+          "firstFrame": 59,
+          "phase": "after-update"
+        },
+        "0x570": {
+          "records": 678,
+          "firstFrame": 60,
+          "phase": "before-update"
+        },
+        "0x4e0": {
+          "records": 675,
+          "firstFrame": 60,
+          "phase": "after-update"
+        },
+        "0x564": {
+          "records": 679,
+          "firstFrame": 60,
+          "phase": "after-update"
+        },
+        "0x664": {
+          "records": 679,
+          "firstFrame": 60,
+          "phase": "after-update"
+        },
+        "0x668": {
+          "records": 679,
+          "firstFrame": 60,
+          "phase": "after-update"
+        },
+        "0x848": {
+          "records": 679,
+          "firstFrame": 60,
+          "phase": "after-update"
+        },
+        "0x84c": {
+          "records": 679,
+          "firstFrame": 60,
+          "phase": "after-update"
+        },
+        "0x850": {
+          "records": 675,
+          "firstFrame": 60,
+          "phase": "after-update"
+        },
+        "0x854": {
+          "records": 675,
+          "firstFrame": 60,
+          "phase": "after-update"
+        },
+        "0x500": {
+          "records": 667,
+          "firstFrame": 61,
+          "phase": "after-update"
+        },
+        "0x578": {
+          "records": 661,
+          "firstFrame": 61,
+          "phase": "after-update"
+        },
+        "0x57c": {
+          "records": 675,
+          "firstFrame": 61,
+          "phase": "after-update"
+        },
+        "0x574": {
+          "records": 666,
+          "firstFrame": 62,
+          "phase": "before-update"
+        },
+        "0x510": {
+          "records": 669,
+          "firstFrame": 62,
+          "phase": "after-update"
+        },
+        "0x588": {
+          "records": 673,
+          "firstFrame": 62,
+          "phase": "after-update"
+        },
+        "0x894": {
+          "records": 663,
+          "firstFrame": 62,
+          "phase": "after-update"
+        },
+        "0x50c": {
+          "records": 653,
+          "firstFrame": 67,
+          "phase": "after-update"
+        },
+        "0x584": {
+          "records": 657,
+          "firstFrame": 68,
+          "phase": "after-update"
+        },
+        "0x4c0": {
+          "records": 657,
+          "firstFrame": 69,
+          "phase": "after-update"
+        },
+        "0x4d0": {
+          "records": 657,
+          "firstFrame": 69,
+          "phase": "after-update"
+        },
+        "0x4dc": {
+          "records": 661,
+          "firstFrame": 69,
+          "phase": "after-update"
+        },
+        "0x4ec": {
+          "records": 661,
+          "firstFrame": 69,
+          "phase": "after-update"
+        },
+        "0x4f8": {
+          "records": 653,
+          "firstFrame": 73,
+          "phase": "after-update"
+        },
+        "0x56c": {
+          "records": 652,
+          "firstFrame": 74,
+          "phase": "before-update"
+        },
+        "0x504": {
+          "records": 647,
+          "firstFrame": 74,
+          "phase": "after-update"
+        },
+        "0x4e8": {
+          "records": 613,
+          "firstFrame": 75,
+          "phase": "after-update"
+        },
+        "0x54c": {
+          "records": 601,
+          "firstFrame": 76,
+          "phase": "after-update"
+        },
+        "0x550": {
+          "records": 607,
+          "firstFrame": 76,
+          "phase": "after-update"
+        },
+        "0x4f4": {
+          "records": 595,
+          "firstFrame": 87,
+          "phase": "after-update"
+        },
+        "0x73c": {
+          "records": 589,
+          "firstFrame": 93,
+          "phase": "after-update"
+        },
+        "0x6b8": {
+          "records": 609,
+          "firstFrame": 95,
+          "phase": "after-update"
+        },
+        "0x6bc": {
+          "records": 609,
+          "firstFrame": 95,
+          "phase": "after-update"
+        },
+        "0x6c0": {
+          "records": 609,
+          "firstFrame": 95,
+          "phase": "after-update"
+        },
+        "0x6c4": {
+          "records": 609,
+          "firstFrame": 95,
+          "phase": "after-update"
+        },
+        "0x6c8": {
+          "records": 609,
+          "firstFrame": 95,
+          "phase": "after-update"
+        },
+        "0x6cc": {
+          "records": 609,
+          "firstFrame": 95,
+          "phase": "after-update"
+        },
+        "0xc74": {
+          "records": 609,
+          "firstFrame": 95,
+          "phase": "after-update"
+        },
+        "0x728": {
+          "records": 147,
+          "firstFrame": 98,
+          "phase": "after-update"
+        },
+        "0x844": {
+          "records": 168,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x884": {
+          "records": 548,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x890": {
+          "records": 592,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x898": {
+          "records": 592,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x8a0": {
+          "records": 592,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x8b4": {
+          "records": 1,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x8b8": {
+          "records": 1,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x6e8": {
+          "records": 143,
+          "firstFrame": 104,
+          "phase": "after-update"
+        },
+        "0x6ec": {
+          "records": 143,
+          "firstFrame": 104,
+          "phase": "after-update"
+        },
+        "0x6f4": {
+          "records": 143,
+          "firstFrame": 104,
+          "phase": "after-update"
+        },
+        "0x700": {
+          "records": 143,
+          "firstFrame": 104,
+          "phase": "after-update"
+        },
+        "0x870": {
+          "records": 2,
+          "firstFrame": 104,
+          "phase": "after-update"
+        },
+        "0xcb8": {
+          "records": 52,
+          "firstFrame": 104,
+          "phase": "after-update"
+        },
+        "0xcbc": {
+          "records": 2,
+          "firstFrame": 104,
+          "phase": "after-update"
+        },
+        "0x624": {
+          "records": 569,
+          "firstFrame": 115,
+          "phase": "after-update"
+        },
+        "0x628": {
+          "records": 569,
+          "firstFrame": 115,
+          "phase": "after-update"
+        },
+        "0x62c": {
+          "records": 569,
+          "firstFrame": 115,
+          "phase": "after-update"
+        },
+        "0x6b0": {
+          "records": 14,
+          "firstFrame": 115,
+          "phase": "after-update"
+        },
+        "0x6b4": {
+          "records": 569,
+          "firstFrame": 115,
+          "phase": "after-update"
+        },
+        "0x730": {
+          "records": 567,
+          "firstFrame": 115,
+          "phase": "after-update"
+        },
+        "0x8bc": {
+          "records": 48,
+          "firstFrame": 115,
+          "phase": "after-update"
+        },
+        "0x14": {
+          "records": 416,
+          "firstFrame": 116,
+          "phase": "after-update"
+        },
+        "0x218": {
+          "records": 416,
+          "firstFrame": 116,
+          "phase": "after-update"
+        },
+        "0x21c": {
+          "records": 416,
+          "firstFrame": 116,
+          "phase": "after-update"
+        },
+        "0x220": {
+          "records": 416,
+          "firstFrame": 116,
+          "phase": "after-update"
+        },
+        "0x224": {
+          "records": 416,
+          "firstFrame": 116,
+          "phase": "after-update"
+        },
+        "0x228": {
+          "records": 416,
+          "firstFrame": 116,
+          "phase": "after-update"
+        },
+        "0x22c": {
+          "records": 416,
+          "firstFrame": 116,
+          "phase": "after-update"
+        },
+        "0x4bc": {
+          "records": 501,
+          "firstFrame": 118,
+          "phase": "after-update"
+        },
+        "0x8c4": {
+          "records": 18,
+          "firstFrame": 119,
+          "phase": "after-update"
+        },
+        "0x558": {
+          "records": 179,
+          "firstFrame": 120,
+          "phase": "after-update"
+        },
+        "0x55c": {
+          "records": 179,
+          "firstFrame": 120,
+          "phase": "after-update"
+        },
+        "0x694": {
+          "records": 179,
+          "firstFrame": 120,
+          "phase": "after-update"
+        },
+        "0xca4": {
+          "records": 86,
+          "firstFrame": 120,
+          "phase": "after-update"
+        },
+        "0x620": {
+          "records": 200,
+          "firstFrame": 124,
+          "phase": "after-update"
+        },
+        "0xcc0": {
+          "records": 167,
+          "firstFrame": 316,
+          "phase": "after-update"
+        },
+        "0x724": {
+          "records": 143,
+          "firstFrame": 328,
+          "phase": "after-update"
+        },
+        "0x72c": {
+          "records": 143,
+          "firstFrame": 328,
+          "phase": "after-update"
+        },
+        "0x888": {
+          "records": 143,
+          "firstFrame": 328,
+          "phase": "after-update"
+        },
+        "0x8ac": {
+          "records": 143,
+          "firstFrame": 328,
+          "phase": "after-update"
+        },
+        "0xc70": {
+          "records": 143,
+          "firstFrame": 328,
+          "phase": "after-update"
+        },
+        "0xc78": {
+          "records": 143,
+          "firstFrame": 328,
+          "phase": "after-update"
+        }
+      },
+      "differingRiderWords": {
+        "0x154": {
+          "records": 468,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x44": {
+          "records": 678,
+          "firstFrame": 60,
+          "phase": "before-update"
+        },
+        "0x50": {
+          "records": 676,
+          "firstFrame": 61,
+          "phase": "before-update"
+        },
+        "0x48": {
+          "records": 666,
+          "firstFrame": 62,
+          "phase": "before-update"
+        },
+        "0x54": {
+          "records": 664,
+          "firstFrame": 63,
+          "phase": "before-update"
+        },
+        "0x40": {
+          "records": 652,
+          "firstFrame": 74,
+          "phase": "before-update"
+        },
+        "0x4c": {
+          "records": 650,
+          "firstFrame": 75,
+          "phase": "before-update"
+        },
+        "0x58": {
+          "records": 592,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x5c": {
+          "records": 592,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x60": {
+          "records": 592,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x70": {
+          "records": 592,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x74": {
+          "records": 592,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x78": {
+          "records": 592,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x7c": {
+          "records": 592,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x80": {
+          "records": 592,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x84": {
+          "records": 592,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x13c": {
+          "records": 1,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x160": {
+          "records": 1,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x16c": {
+          "records": 144,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x170": {
+          "records": 1,
+          "firstFrame": 104,
+          "phase": "before-update"
+        },
+        "0x168": {
+          "records": 591,
+          "firstFrame": 104,
+          "phase": "after-update"
+        },
+        "0xb8": {
+          "records": 590,
+          "firstFrame": 105,
+          "phase": "before-update"
+        },
+        "0xbc": {
+          "records": 590,
+          "firstFrame": 105,
+          "phase": "before-update"
+        },
+        "0xc0": {
+          "records": 590,
+          "firstFrame": 105,
+          "phase": "before-update"
+        },
+        "0xc8": {
+          "records": 590,
+          "firstFrame": 105,
+          "phase": "before-update"
+        },
+        "0xcc": {
+          "records": 590,
+          "firstFrame": 105,
+          "phase": "before-update"
+        },
+        "0xd0": {
+          "records": 590,
+          "firstFrame": 105,
+          "phase": "before-update"
+        },
+        "0xd8": {
+          "records": 590,
+          "firstFrame": 105,
+          "phase": "before-update"
+        },
+        "0xdc": {
+          "records": 590,
+          "firstFrame": 105,
+          "phase": "before-update"
+        },
+        "0xe0": {
+          "records": 590,
+          "firstFrame": 105,
+          "phase": "before-update"
+        },
+        "0xe8": {
+          "records": 590,
+          "firstFrame": 105,
+          "phase": "before-update"
+        },
+        "0xec": {
+          "records": 590,
+          "firstFrame": 105,
+          "phase": "before-update"
+        },
+        "0xf0": {
+          "records": 590,
+          "firstFrame": 105,
+          "phase": "before-update"
+        },
+        "0x64": {
+          "records": 560,
+          "firstFrame": 120,
+          "phase": "before-update"
+        },
+        "0x68": {
+          "records": 560,
+          "firstFrame": 120,
+          "phase": "before-update"
+        },
+        "0x6c": {
+          "records": 560,
+          "firstFrame": 120,
+          "phase": "before-update"
+        },
+        "0xa0": {
+          "records": 560,
+          "firstFrame": 120,
+          "phase": "before-update"
+        },
+        "0xa4": {
+          "records": 560,
+          "firstFrame": 120,
+          "phase": "before-update"
+        },
+        "0xa8": {
+          "records": 560,
+          "firstFrame": 120,
+          "phase": "before-update"
+        },
+        "0xac": {
+          "records": 560,
+          "firstFrame": 120,
+          "phase": "before-update"
+        },
+        "0xb0": {
+          "records": 560,
+          "firstFrame": 120,
+          "phase": "before-update"
+        },
+        "0xb4": {
+          "records": 560,
+          "firstFrame": 120,
+          "phase": "before-update"
+        },
+        "0xf8": {
+          "records": 136,
+          "firstFrame": 120,
+          "phase": "before-update"
+        },
+        "0x138": {
+          "records": 179,
+          "firstFrame": 120,
+          "phase": "before-update"
+        },
+        "0x140": {
+          "records": 36,
+          "firstFrame": 120,
+          "phase": "before-update"
+        },
+        "0x3a4": {
+          "records": 510,
+          "firstFrame": 120,
+          "phase": "before-update"
+        },
+        "0x144": {
+          "records": 253,
+          "firstFrame": 121,
+          "phase": "before-update"
+        },
+        "0x148": {
+          "records": 342,
+          "firstFrame": 123,
+          "phase": "before-update"
+        },
+        "0x14c": {
+          "records": 42,
+          "firstFrame": 176,
+          "phase": "before-update"
+        }
+      },
+      "differingEngineWords": {
+        "0x7c": {
+          "records": 52,
+          "firstFrame": 104,
+          "phase": "after-update"
+        },
+        "0x150": {
+          "records": 2,
+          "firstFrame": 104,
+          "phase": "after-update"
+        },
+        "0x15c": {
+          "records": 52,
+          "firstFrame": 104,
+          "phase": "after-update"
+        },
+        "0x160": {
+          "records": 52,
+          "firstFrame": 104,
+          "phase": "after-update"
+        },
+        "0x154": {
+          "records": 547,
+          "firstFrame": 126,
+          "phase": "after-update"
+        },
+        "0x158": {
+          "records": 292,
+          "firstFrame": 126,
+          "phase": "after-update"
+        },
+        "0x168": {
+          "records": 12,
+          "firstFrame": 126,
+          "phase": "after-update"
+        }
+      },
+      "differingStackWordCount": 691,
+      "collision": {
+        "scope": "Observed rider collider, entries and shared pair row/column; restoration coverage is defined by each checkpoint. Full grid and other objects not captured.",
+        "differences": {
+          "state+0x1c": {
+            "records": 690,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 0,
+            "b": 3188984967
+          },
+          "state+0x20": {
+            "records": 690,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 0,
+            "b": 1044041813
+          },
+          "state+0x24": {
+            "records": 648,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3212836864,
+            "b": 3212376149
+          },
+          "state+0x2c": {
+            "records": 682,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3166106984,
+            "b": 1065133141
+          },
+          "state+0x30": {
+            "records": 658,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1065349029,
+            "b": 1036555850
+          },
+          "state+0x34": {
+            "records": 690,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 0,
+            "b": 3187894935
+          },
+          "state+0x3c": {
+            "records": 658,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1065349029,
+            "b": 1033052210
+          },
+          "state+0x40": {
+            "records": 682,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1018623336,
+            "b": 3212473279
+          },
+          "state+0x44": {
+            "records": 690,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 0,
+            "b": 3192315176
+          },
+          "state+0x4c": {
+            "records": 654,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1167713455,
+            "b": 1167985529
+          },
+          "state+0x50": {
+            "records": 680,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3246230310,
+            "b": 1120711329
+          },
+          "state+0x54": {
+            "records": 668,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1158691689,
+            "b": 1158662572
+          },
+          "state+0x5c": {
+            "records": 556,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1078722560,
+            "b": 1077608448
+          },
+          "state+0x60": {
+            "records": 556,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1092784128,
+            "b": 1091082496
+          },
+          "state+0x64": {
+            "records": 562,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1067551724,
+            "b": 1068124160
+          },
+          "state+0x68": {
+            "records": 562,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1076266598,
+            "b": 1074274472
+          },
+          "state+0x6c": {
+            "records": 562,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1068646348,
+            "b": 1069823306
+          },
+          "state+0x70": {
+            "records": 562,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3149924352,
+            "b": 1028583808
+          },
+          "state+0x74": {
+            "records": 562,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1081326926,
+            "b": 1082284536
+          },
+          "state+0x78": {
+            "records": 562,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3188013488,
+            "b": 3188017248
+          },
+          "state+0x7c": {
+            "records": 650,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1167713014,
+            "b": 1167993728
+          },
+          "state+0x80": {
+            "records": 682,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3242240926,
+            "b": 1120781521
+          },
+          "state+0x84": {
+            "records": 670,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1158691713,
+            "b": 1158660333
+          },
+          "state+0xcc": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1167734933,
+            "b": 1167768391
+          },
+          "state+0xd0": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3245256315,
+            "b": 1064478273
+          },
+          "state+0xd4": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1158687985,
+            "b": 1158676562
+          },
+          "state+0xd8": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1019030387,
+            "b": 1046900021
+          },
+          "state+0xdc": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 992428529,
+            "b": 3202258396
+          },
+          "state+0xe0": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 994748331,
+            "b": 3176233612
+          },
+          "state+0xe4": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1065105903,
+            "b": 1055528331
+          },
+          "state+0xe8": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1038025367,
+            "b": 3210878549
+          },
+          "state+0xec": {
+            "records": 800,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1040652914,
+            "b": 3184840131
+          },
+          "pairRow+0x0": {
+            "records": 445,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3,
+            "b": 1
+          },
+          "pairColumn+0x0": {
+            "records": 445,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3,
+            "b": 1
+          },
+          "entries+0x4": {
+            "records": 132,
+            "frame": 1,
+            "phase": "before-update",
+            "a": 28575280,
+            "b": 28369152
+          },
+          "pairRow+0x8": {
+            "records": 264,
+            "frame": 1,
+            "phase": "before-update",
+            "a": 1,
+            "b": 2
+          },
+          "state+0x108": {
+            "records": 179,
+            "frame": 120,
+            "phase": "before-update",
+            "a": 4242208,
+            "b": 4241888
+          },
+          "state+0x10c": {
+            "records": 179,
+            "frame": 120,
+            "phase": "before-update",
+            "a": 4242224,
+            "b": 4241920
+          },
+          "entries+0x0": {
+            "records": 4,
+            "frame": 144,
+            "phase": "before-update",
+            "a": 28457648,
+            "b": 85506488
+          },
+          "pairColumn+0xc": {
+            "records": 4,
+            "frame": 144,
+            "phase": "before-update",
+            "a": 1,
+            "b": 2
+          }
+        },
+        "firstDifferences": [
+          {
+            "field": "state+0x1c",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 0,
+            "b": 3188984967
+          },
+          {
+            "field": "state+0x20",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 0,
+            "b": 1044041813
+          },
+          {
+            "field": "state+0x24",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3212836864,
+            "b": 3212376149
+          },
+          {
+            "field": "state+0x2c",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3166106984,
+            "b": 1065133141
+          },
+          {
+            "field": "state+0x30",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1065349029,
+            "b": 1036555850
+          },
+          {
+            "field": "state+0x34",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 0,
+            "b": 3187894935
+          },
+          {
+            "field": "state+0x3c",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1065349029,
+            "b": 1033052210
+          },
+          {
+            "field": "state+0x40",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1018623336,
+            "b": 3212473279
+          },
+          {
+            "field": "state+0x44",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 0,
+            "b": 3192315176
+          },
+          {
+            "field": "state+0x4c",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1167713455,
+            "b": 1167985529
+          },
+          {
+            "field": "state+0x50",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3246230310,
+            "b": 1120711329
+          },
+          {
+            "field": "state+0x54",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1158691689,
+            "b": 1158662572
+          },
+          {
+            "field": "state+0x5c",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1078722560,
+            "b": 1077608448
+          },
+          {
+            "field": "state+0x60",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1092784128,
+            "b": 1091082496
+          },
+          {
+            "field": "state+0x64",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1067551724,
+            "b": 1068124160
+          },
+          {
+            "field": "state+0x68",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1076266598,
+            "b": 1074274472
+          },
+          {
+            "field": "state+0x6c",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1068646348,
+            "b": 1069823306
+          },
+          {
+            "field": "state+0x70",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3149924352,
+            "b": 1028583808
+          },
+          {
+            "field": "state+0x74",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1081326926,
+            "b": 1082284536
+          },
+          {
+            "field": "state+0x78",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3188013488,
+            "b": 3188017248
+          }
+        ]
+      }
+    },
+    "pairs": {
+      "captureSha256": "f5722fdfaae473b5b0a9bacd1a89d239d1dfa249d4935ee58b7df6b8928659c4",
+      "checkpointBlocks": 103,
+      "firstMotionDifference": null,
+      "firstRandomDifference": null,
+      "differingBikeWords": {
+        "0x488": {
+          "records": 702,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x48c": {
+          "records": 704,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x490": {
+          "records": 694,
+          "firstFrame": 1,
+          "phase": "before-update"
+        },
+        "0x494": {
+          "records": 574,
+          "firstFrame": 1,
+          "phase": "before-update"
+        }
+      },
+      "differingRiderWords": {},
+      "differingEngineWords": {},
+      "differingStackWordCount": 577,
+      "collision": {
+        "scope": "Observed rider collider, entries and shared pair row/column; restoration coverage is defined by each checkpoint. Full grid and other objects not captured.",
+        "differences": {
+          "state+0x1c": {
+            "records": 2,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 0,
+            "b": 3188984967
+          },
+          "state+0x20": {
+            "records": 2,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 0,
+            "b": 1044041813
+          },
+          "state+0x24": {
+            "records": 2,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3212836864,
+            "b": 3212376149
+          },
+          "state+0x2c": {
+            "records": 2,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1013595354,
+            "b": 1065133141
+          },
+          "state+0x30": {
+            "records": 2,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1065351501,
+            "b": 1036555850
+          },
+          "state+0x34": {
+            "records": 2,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 0,
+            "b": 3187894935
+          },
+          "state+0x3c": {
+            "records": 2,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1065351501,
+            "b": 1033052210
+          },
+          "state+0x40": {
+            "records": 2,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3161079002,
+            "b": 3212473279
+          },
+          "state+0x44": {
+            "records": 2,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 0,
+            "b": 3192315176
+          },
+          "state+0x4c": {
+            "records": 2,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1167721064,
+            "b": 1167985529
+          },
+          "state+0x50": {
+            "records": 2,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3246338831,
+            "b": 1120711329
+          },
+          "state+0x54": {
+            "records": 2,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1158673388,
+            "b": 1158662572
+          },
+          "state+0x5c": {
+            "records": 2,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1078722560,
+            "b": 1077608448
+          },
+          "state+0x60": {
+            "records": 2,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1092784128,
+            "b": 1091082496
+          },
+          "state+0x64": {
+            "records": 2,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1067551724,
+            "b": 1068124160
+          },
+          "state+0x68": {
+            "records": 2,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1076266598,
+            "b": 1074274472
+          },
+          "state+0x6c": {
+            "records": 2,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1068646348,
+            "b": 1069823306
+          },
+          "state+0x70": {
+            "records": 2,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3149924352,
+            "b": 1028583808
+          },
+          "state+0x74": {
+            "records": 2,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1081326926,
+            "b": 1082284536
+          },
+          "state+0x78": {
+            "records": 2,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3188013488,
+            "b": 3188017248
+          },
+          "state+0x7c": {
+            "records": 2,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1167720909,
+            "b": 1167993728
+          },
+          "state+0x80": {
+            "records": 2,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3242343861,
+            "b": 1120781521
+          },
+          "state+0x84": {
+            "records": 2,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1158673412,
+            "b": 1158660333
+          },
+          "entries+0x0": {
+            "records": 28,
+            "frame": 38,
+            "phase": "before-update",
+            "a": 28369152,
+            "b": 28457648
+          },
+          "pairColumn+0xc": {
+            "records": 28,
+            "frame": 38,
+            "phase": "before-update",
+            "a": 2,
+            "b": 1
+          }
+        },
+        "firstDifferences": [
+          {
+            "field": "state+0x1c",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 0,
+            "b": 3188984967
+          },
+          {
+            "field": "state+0x20",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 0,
+            "b": 1044041813
+          },
+          {
+            "field": "state+0x24",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3212836864,
+            "b": 3212376149
+          },
+          {
+            "field": "state+0x2c",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1013595354,
+            "b": 1065133141
+          },
+          {
+            "field": "state+0x30",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1065351501,
+            "b": 1036555850
+          },
+          {
+            "field": "state+0x34",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 0,
+            "b": 3187894935
+          },
+          {
+            "field": "state+0x3c",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1065351501,
+            "b": 1033052210
+          },
+          {
+            "field": "state+0x40",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3161079002,
+            "b": 3212473279
+          },
+          {
+            "field": "state+0x44",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 0,
+            "b": 3192315176
+          },
+          {
+            "field": "state+0x4c",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1167721064,
+            "b": 1167985529
+          },
+          {
+            "field": "state+0x50",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3246338831,
+            "b": 1120711329
+          },
+          {
+            "field": "state+0x54",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1158673388,
+            "b": 1158662572
+          },
+          {
+            "field": "state+0x5c",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1078722560,
+            "b": 1077608448
+          },
+          {
+            "field": "state+0x60",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1092784128,
+            "b": 1091082496
+          },
+          {
+            "field": "state+0x64",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1067551724,
+            "b": 1068124160
+          },
+          {
+            "field": "state+0x68",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1076266598,
+            "b": 1074274472
+          },
+          {
+            "field": "state+0x6c",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1068646348,
+            "b": 1069823306
+          },
+          {
+            "field": "state+0x70",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3149924352,
+            "b": 1028583808
+          },
+          {
+            "field": "state+0x74",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 1081326926,
+            "b": 1082284536
+          },
+          {
+            "field": "state+0x78",
+            "records": 1,
+            "frame": 0,
+            "phase": "before-update",
+            "a": 3188013488,
+            "b": 3188017248
+          }
+        ]
+      }
+    }
+  },
+  "captureExecutableHashes": {
+    "observed": "72e34680d0076ccaee96e25eb8cf9aa864b485c26f66c138c4eaa6dab9ad5840",
+    "callback": "61561d4ddcc519f57b76c1dd4ca90f03ccc8bc619e2c3d89d24c76b56a3832cc",
+    "pairs": "a066c79a279e29baa3d4b1ba2dfd091fe209634c3e88522d733a9b32df3a6a3d"
+  },
+  "excludedCapture": {
+    "sha256": "90ffdbc6a277c6cfdf9c4d5bc983f5510636f04e45f862ea3e81f0798c0bb738",
+    "reason": "Attached mid-frame: initial record is after-update with playerFrame 0xffffffff; replaced by pairs-2 after boundary fix."
+  }
+}
