@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "de0a2b73b9264a5a195cf034cb46bbeab8c4a203506b0926082b9e40ac962879",
+  "loaderSourceSha256": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe",
+  "casesSha256": "a83de9cd9f1117f5b5379d212e267e17383e56a651ae87a5d26a912a9b0ebf70",
+  "resultsSha256": "d1446763c021bc5718ed6e9b8be9f5c986cf5c9f7cf596ca19f7d71a96a42616",
+  "cases": 32000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "outcomes": {
+    "state=0:skipPosition=0:grid=false:stopped=false": 762,
+    "state=1:skipPosition=1:grid=true:stopped=false": 3658,
+    "state=2:skipPosition=0:grid=true:stopped=false": 4571,
+    "state=0:skipPosition=1:grid=true:stopped=false": 3656,
+    "state=1:skipPosition=0:grid=true:stopped=false": 4571,
+    "state=2:skipPosition=1:grid=true:stopped=true": 914,
+    "state=0:skipPosition=0:grid=true:stopped=false": 4572,
+    "state=1:skipPosition=1:grid=false:stopped=false": 610,
+    "state=2:skipPosition=1:grid=true:stopped=false": 3657,
+    "state=2:skipPosition=0:grid=false:stopped=false": 762,
+    "state=0:skipPosition=1:grid=true:stopped=true": 915,
+    "state=0:skipPosition=1:grid=false:stopped=false": 610,
+    "state=1:skipPosition=1:grid=true:stopped=true": 914,
+    "state=1:skipPosition=0:grid=false:stopped=false": 762,
+    "state=2:skipPosition=1:grid=false:stopped=true": 153,
+    "state=2:skipPosition=1:grid=false:stopped=false": 609,
+    "state=0:skipPosition=1:grid=false:stopped=true": 152,
+    "state=1:skipPosition=1:grid=false:stopped=true": 152
+  },
+  "scope": "Connected original 0x49d900 static type 2 response: real impulse wrapper/solver, transforms, proxy sync, grid lists and inactive audio. Root transforms, preallocated entries, position-correction gate and low-speed stop. Visual effects disabled and final event naturally gated by state/secondary flag. Dynamic contacts, effects and event transition excluded."
+}
