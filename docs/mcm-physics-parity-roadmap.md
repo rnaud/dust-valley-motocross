@@ -918,3 +918,28 @@ Still open immediately before this tail: proxy matrix synchronization
 `0x42ccc0`, and their state-transition effects. The next iteration returns to
 `0x4a5bd7` when remaining >0. This validation does not execute the full iteration,
 complete contact/force generation, or establish whole-bike trajectory parity.
+
+### Proxy transform synchronization (2026-11-12)
+
+Recovered the null-reference matrix setter `0x4b6d70` and connected it to the
+original world-matrix getter `0x4b7a20(null)`, as used at `0x4ac7ee..0x4ac80b`
+and `0x4ac87e..0x4ac899`. Source world resolution and destination-parent resolution
+retain their original cache effects. A parented destination uses the original
+pointer-matrix product/rotation transpose and rounded translation difference,
+with the original scalar summation order. The copied source matrix remains
+separate from graph mutations while resolving the destination parent.
+
+40,000 original-execution cases match all 115 output words: three local/world
+matrices and cache flags plus the copied world matrix. Covers source root/child,
+destination root/source-child/shared-parent and cache combinations. Report:
+`mcm-proxy-transform-validation.json`; reproduce with
+`node scripts/mcm-reference/compare-proxy-transform-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Non-null reference matrix variants are not included in this implementation.
+
+Next collision dependency: `0x42a550` transforms object +0x70 local center into
++0x7c world center for types 0/1, then enters `0x42a6e0`. That routine checks the
+global enable at `0x4e3754`, unlinks active spatial-list entries (object +0x8c,
+count +0x90, entry stride 0x18), and dispatches types 0..4 through `0x42b67c`.
+The subsequent work includes grid insertion/allocation and cannot be represented
+by matrix copying alone. Collision dispatch `0x42ccc0`, complete main-step
+sequencing and whole-bike trajectory comparisons remain outstanding.

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "52f91ff00d58fabe130c6c5412fc35e6fb0885e88300e4f65c8bd9725aaad95d",
+  "loaderSourceSha256": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe",
+  "casesSha256": "303147a481dd13e414c70e577f017372e291184860c9887b7650576ab600c40a",
+  "resultsSha256": "a39e457536fabc97eacb51ae5eb974979d81cc7263de6cf7148eacce8a7182bd",
+  "cases": 40000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Connected original world matrix getter 0x4b7a20(null) and setter 0x4b6d70(null), as called by main-update proxy synchronization. Source root/child, target root/source-child/shared-parent, all tested cache combinations and finite matrices. Non-null reference variants, collision object update and full main-step execution excluded."
+}
