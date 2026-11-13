@@ -1170,3 +1170,8 @@ test('connected chassis probes match original terrain contacts and preserved ski
  const {evaluateChassisProbesSubstep}=await import('../scripts/mcm-reference/chassis-probes-substep-case.mjs');
  for(const {input:c,outputBits} of fixture('chassis-probes-substep-wine11.json').fixtures)assert.deepEqual(evaluateChassisProbesSubstep(c),outputBits);
 });
+
+test('connected contact response matches original crash steering, transforms and landing flags',async()=>{
+ const {evaluateContactResponseSubstep}=await import('../scripts/mcm-reference/contact-response-substep-case.mjs');
+ for(const {input:c,outputBits} of fixture('contact-response-substep-wine11.json').fixtures)assert.deepEqual(evaluateContactResponseSubstep(c),outputBits);
+});
