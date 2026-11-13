@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "8072dce0f10b003039a6d1052b66e435d1d1889c8ae9f8b96e6594314c611384",
+  "loaderSourceSha256": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe",
+  "casesSha256": "0fcd03783a43892ac624c3b98129f47fe33ebf3a0e0883c6b2b4e1c01438ee5b",
+  "resultsSha256": "60891c98bda3a204a41233a3cbd83b7c5b71dd2482d48939ce17e05838be6837",
+  "cases": 32162,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "outcomes": {
+    "selected=0,accepted=0": 10112,
+    "selected=3,accepted=0": 536,
+    "selected=5,accepted=1": 2656,
+    "selected=4,accepted=1": 2665,
+    "selected=8,accepted=0": 512,
+    "selected=7,accepted=1": 2641,
+    "selected=3,accepted=1": 2600,
+    "selected=2,accepted=0": 539,
+    "selected=6,accepted=1": 2611,
+    "selected=8,accepted=1": 2568,
+    "selected=4,accepted=0": 504,
+    "selected=2,accepted=1": 2668,
+    "selected=7,accepted=0": 554,
+    "selected=5,accepted=0": 513,
+    "selected=6,accepted=0": 483
+  },
+  "scope": "Connected original 0x459e90 iterator and 0x4a16d0..0x4a1847 selection, atan2 angle, single wrap and acceptance gate. The accepted path is marked and exits before orientation, state changes or animation. Finite float32 positions and headings; no full rider-update claim."
+}

@@ -769,3 +769,16 @@ test('nearby bike selection and iterator match original execution',async()=>{
  }
  assert.equal(selectedIds.size,8);
 });
+
+test('connected nearby interaction angle and acceptance match original float bits',async()=>{
+ const {nextMcmBike,evaluateMcmNearbyInteraction}=await import('../src/physics/mcm/nearby-bike.js');
+ const {floatBits}=await import('../src/physics/mcm/math.js');
+ const outcomes=new Set();
+ for(const {input:c,outputBits} of fixture('nearby-interaction-wine11.json').fixtures){
+  const world={...c,player:c.bikes[0],players:c.players.map(i=>c.bikes[i]??null),others:c.othersPresent?c.others.map(i=>c.bikes[i]??null):null};
+  const next=nextMcmBike(world,c.cursor),r=evaluateMcmNearbyInteraction(world,c.bikes[0],c.heading,c.previousAngle);
+  assert.deepEqual([c.bikes.indexOf(next.bike)+1,next.cursor,c.bikes.indexOf(r.bike)+1,floatBits(r.angle),+r.accepted],outputBits);
+  outcomes.add(`${outputBits[2]}:${outputBits[4]}`);
+ }
+ assert.equal(outcomes.size,15);
+});
