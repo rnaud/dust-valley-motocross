@@ -1270,3 +1270,8 @@ test('connected wheel and body transforms match original rotations, aliases and 
  const {evaluateMotionTransformSubstep}=await import('../scripts/mcm-reference/motion-transform-substep-case.mjs');
  for(const [i,{input:c,outputBits}] of fixture('motion-transform-substep-wine11.json').fixtures.entries()){const actual=evaluateMotionTransformSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
+
+test('connected controller handoff and crash orientation match original transitions, aliases and normal-axis rotation',async()=>{
+ const {evaluateControllerHandoffSubstep}=await import('../scripts/mcm-reference/controller-handoff-substep-case.mjs');
+ for(const [i,{input:c,outputBits}] of fixture('controller-handoff-substep-wine11.json').fixtures.entries()){const actual=evaluateControllerHandoffSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});
