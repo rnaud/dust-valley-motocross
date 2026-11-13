@@ -997,3 +997,21 @@ test('single-body collision impulse matches original velocity, angular response 
  assert.deepEqual([...[...r.angularVelocity,...r.velocity,r.impulse,...r.transform.world].map(floatBits),r.transform.cacheValid],outputBits);
  }
 });
+
+test('paired-body collision impulse matches both original bodies and caches',async()=>{
+ const {applyMcmPairedCollisionImpulse}=await import('../src/physics/mcm/collision-pair-impulse.js');
+ const {floatBits}=await import('../src/physics/mcm/math.js');
+ for(const {input:c,outputBits} of fixture('collision-pair-impulse-wine11.json').fixtures){
+ const r=structuredClone(c);applyMcmPairedCollisionImpulse(r);
+ assert.deepEqual([...[...r.a.angularVelocity,...r.a.velocity,...r.b.angularVelocity,...r.b.velocity,r.impulse].map(floatBits),...r.a.transform.world.map(floatBits),r.a.transform.cacheValid,...r.b.transform.world.map(floatBits),r.b.transform.cacheValid],outputBits);
+ }
+});
+
+test('bike collision wrapper matches original state selection, local lever and world angular refresh',async()=>{
+ const {applyMcmBikeCollisionImpulse}=await import('../src/physics/mcm/bike-collision-impulse.js');
+ const {floatBits}=await import('../src/physics/mcm/math.js');
+ for(const {input:c,outputBits} of fixture('bike-collision-impulse-wine11.json').fixtures){
+ const r=structuredClone(c);applyMcmBikeCollisionImpulse(r,r);
+ assert.deepEqual([...[...r.angularVelocity,...r.velocity,...r.worldAngularVelocity,...r.field654,...r.transform.world].map(floatBits),r.transform.cacheValid],outputBits);
+ }
+});

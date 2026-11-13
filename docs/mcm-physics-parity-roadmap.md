@@ -1131,3 +1131,32 @@ to `0x427110`. Dynamic response instead calls paired-body solver `0x45b6b0`.
 The response ends with collision/proxy transform synchronization, grid update,
 and possible event wrapper `0x4a4b60`. These wrappers and paired-body solver
 remain to be connected and validated; this milestone alone is not full parity.
+
+### Paired-body impulses and bike impulse wrapper (2026-11-12)
+
+Recovered `0x45b6b0`, including relative contact velocity, both bodies' rotated
+inertia contributions, effective mass, impulse, and linear/angular updates.
+The original uses an unstored impulse intermediate for A's linear update, then
+the stored float for angular and B updates. A null B velocity destination skips
+both B output updates but still uses B mass/inertia and resolves its transform.
+40,000 original-execution cases match all 47 output words with zero differences,
+including both linear/angular velocities, impulse and both transform caches.
+
+Connected bike wrapper `0x49d7f0` to the recovered single-body solver. State
+selects restitution/inertia/linear-scale rules; the local lever is copied even
+when a type-3 separating contact skips solving. Other types refresh world
+angular velocity and invoke an optional audio notification adapter. A further
+40,000 cases execute the real original wrapper, solver, transforms and audio
+routine with a nonmatching listener (no playback). All 29 outputs match. Audio
+playback side effects are outside this physics validation.
+
+Reports: `mcm-collision-pair-impulse-validation.json` and
+`mcm-bike-collision-impulse-validation.json`. Reproduce via matching
+`compare-collision-pair-impulse-oracle.mjs` /
+`compare-bike-collision-impulse-oracle.mjs` with pinned executable and new output
+directory. Input coverage uses finite supplied states, positive inverse mass
+and inertia, full 3D root transforms, and zero/nonzero relative motion.
+
+The main collision response `0x49d900`, primary/secondary callback gates, tag
+transfer, and final event/grid integration still require recovery/connection.
+Complete original-v-port trajectories and full physics parity remain unproven.
