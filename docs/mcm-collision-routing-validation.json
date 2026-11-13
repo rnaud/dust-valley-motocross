@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "980be7ea47d6536d1475556a1e1d6ca407bda518e4ce5165865d3c731bb737d1",
+  "loaderSourceSha256": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe",
+  "casesSha256": "63c5ce48cb367ae29eca393b56e95a6798391ab7c1ffb706934508f4560e70ae",
+  "resultsSha256": "07a65d70a2cb653c8f244ca3a1bd83845c3c8961f7821326ed2fbad3ee889b45",
+  "cases": 32000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "outcomes": {
+    "callbacks=0:hit=false": 31518,
+    "callbacks=0:hit=true": 120,
+    "callbacks=1:hit=true": 243,
+    "callbacks=2:hit=true": 112,
+    "callbacks=3:hit=true": 5,
+    "callbacks=4:hit=true": 2
+  },
+  "scope": "Connected original 0x42ccc0 dispatch, 0x42b870 candidate pair preparation, 0x42ca00 pair state gate and real type 0/type 0 primitive 0x42c0e0. Four objects, repeated owners/cells, enable flags, protected pair states, hit depth/contact copies and ordered observational callbacks. Type routing covers sphere and ellipsoid contacts plus original no-hit combinations, type 4 as first object, and out-of-range types. Line/ellipsoid primitives and mutating gameplay callbacks excluded."
+}

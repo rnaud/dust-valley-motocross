@@ -1,3 +1,4 @@
+import {testMcmEllipsoidPair} from './collision-ellipsoid.js';
 import {mcmSqrt} from './math.js';
 const f=Math.fround;
 // Original 0x42b870. Pair table uses a fixed stride of 60 in memory.
@@ -17,7 +18,7 @@ export function testMcmSpherePair(manager,a,b){
  if(!(radius*radius>distance))return false;
  manager.depth=f((a.radius-mcmSqrt(distance))+b.radius);return true;
 }
-export function testMcmCollisionPair(manager,aId,bId,testPrimitive){
+export function testMcmCollisionPair(manager,aId,bId,testPrimitive=testMcmCollisionPrimitive){
  manager.currentA=aId;manager.currentB=bId;
  if(manager.pairs[aId][bId]!==2)return false;
  const hit=testPrimitive(manager,manager.objects[aId],manager.objects[bId]);
@@ -25,7 +26,7 @@ export function testMcmCollisionPair(manager,aId,bId,testPrimitive){
  return hit;
 }
 // Original 0x42ccc0. Callbacks can mutate state, so traverse the live lists.
-export function dispatchMcmCollisions(manager,id,testPrimitive){
+export function dispatchMcmCollisions(manager,id,testPrimitive=testMcmCollisionPrimitive){
  if(!manager.objects[id].enabled||!manager.enabled)return;
  prepareMcmCollisionPairs(manager,id);
  for(let i=0;i<manager.objects[id].entries.length;i++){
@@ -40,4 +41,13 @@ export function dispatchMcmCollisions(manager,id,testPrimitive){
    b=manager.objects[otherId];b.onSecondary?.(b);
   }
  }
+}
+
+// Original 0x42ca00 type routing. Explicitly reject unfinished real primitives;
+// the other no-hit branches are intentional in the original executable.
+export function testMcmCollisionPrimitive(manager,a,b){
+ if(a.type===0&&b.type===0)return testMcmSpherePair(manager,a,b);
+ if(a.type===1&&b.type===1)return testMcmEllipsoidPair(manager,a,b);
+ if((a.type===1&&(b.type===3||b.type===4))||(a.type===3&&b.type===1))throw new Error('MCM line/ellipsoid collision is not recovered yet');
+ return false;
 }
