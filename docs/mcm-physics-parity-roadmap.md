@@ -3490,12 +3490,16 @@ scratch, input callbacks and animation-record limitations still apply.
 The original terminal loop branch now continues through `0x4ad07a`, immediately
 before the subsequent rider update. The port resolves the final body world
 transform, converts retained velocity to local space, divides the local Z change
-by the original frame delta, selects the filter interval, and commits filter value,
-`field850` and previous local velocity `field854`. This uses frame timing, including
-zero delta, independently of the final substep or carry-consumption timestep.
+by the stored frame interval, selects the filter interval, and commits filter value,
+`field850` and previous local velocity `field854`. Stack slot `0x64` holds the
+incoming frame delta plus prior carry; the scheduler substitutes the nominal
+step for its zero-delta/no-whole-step fallback. The supplied `frameDelta` corpus
+field represents that stored interval, independently of the final substep or
+carry-consumption timestep. Zero stored interval is an additional exceptional
+input, not evidence that the ordinary zero-delta fallback uses zero.
 The real post-loop entry also clears the `field8c0` flag.
 
-The connected corpus supplies frame delta and filter state before native execution
+The connected corpus supplies the stored frame interval and filter state before native execution
 and matches all 8,277 observed words in 17,508 cases on ARM and x64, retaining
 all previous loop observations. It
 covers one through four substeps, shorter/equal/longer filter intervals, root and
