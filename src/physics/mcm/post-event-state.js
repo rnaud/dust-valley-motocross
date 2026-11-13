@@ -1,4 +1,5 @@
-import {mcmAdd as add,mcmMultiply as mul,mcmSubtract as sub} from './x87-arithmetic.js';
+import {rotateMcmWorldVector} from './collision-impulse.js';
+import {mcmAdd as add,mcmSubtract as sub} from './x87-arithmetic.js';
 import {floatBits} from './math.js';
 import {resolveMcmWorldMatrix} from './world-transform.js';
 
@@ -7,11 +8,7 @@ import {resolveMcmWorldMatrix} from './world-transform.js';
 export function updateMcmPostEventState(c){
  const f=Math.fround,angularVelocity=new Float64Array(c.angularVelocity);
  if((floatBits(c.speed)|0)<0x3f800000&&c.both)angularVelocity[1]=0;
- const m=resolveMcmWorldMatrix(c.node),[x,y,z]=angularVelocity;
- const worldAngularVelocity=new Float64Array(3);
- worldAngularVelocity[0]=f(add(add(mul(m[0],x),mul(m[8],z)),mul(m[4],y)));
- worldAngularVelocity[1]=f(add(mul(m[9],z),add(mul(m[5],y),mul(m[1],x))));
- worldAngularVelocity[2]=f(add(add(mul(m[10],z),mul(m[6],y)),mul(m[2],x)));
+ const worldAngularVelocity=rotateMcmWorldVector(resolveMcmWorldMatrix(c.node),angularVelocity);
  let awardCalled=false;
  let field714=c.field714,field870=c.field870,timer=c.timer,score=c.score;
  if(field714&&!c.fieldbfc&&field870){

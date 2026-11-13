@@ -4238,3 +4238,33 @@ Validation: all 17,941 retained cases match on ARM64 and x64 with zero
 exceptions and zero changed prior native traces. The 341 archived fixtures pass
 in fresh processes on both architectures. All 298 repository tests and the
 production build pass. See [machine-readable controls/event evidence](mcm-reset-next-event-validation.json).
+
+### Retained next-frame rider, collision dispatch and substep finish
+
+The continuation now runs the first executed second-frame substep through the
+original rider helper, post-event state, collision grid synchronization and
+static-wall dispatch, ending at 0x4ac94b. It retains the real remaining-step
+count and timing carry; it does not force the frame to finish. Animation-frame
+pointers are normalized to their actual frame index after the prior frame's
+animation advance. No bike, animation or collision state is reseeded at this
+boundary. Prior native checkpoints remain byte-for-byte unchanged.
+
+Case 2825 exposed a two-ULP world-angular-velocity mismatch caused by a different
+addition order in the recovered 0x4b85c0 transform. The original Y result sums
+`(m[5]*y + m[9]*z) + m[1]*x`; large terms nearly cancel in this case. The shared
+world-vector helper now follows the original instruction order for all three
+coordinates, and the post-event path uses that same helper.
+
+The 17,941-case corpus reaches this boundary in 10,896 cases, including seven
+actual static-wall callbacks and 988 timing-carry transitions. The other cases
+stop at explicitly recorded controller, no-iteration or original reset-cycle
+boundaries. There are 586 saved fixtures, including the cancellation case,
+rider/trick branches and collision/timing outcomes. Delayed awards are not
+reached in this second-frame corpus. Full machine-readable results are in
+[mcm-reset-next-finish-validation.json](mcm-reset-next-finish-validation.json).
+
+This still covers only the first executed substep of the second frame. Its
+remaining iterations and frame-end tail, long original-asset acceleration and
+release histories, dynamic-bike collisions, AI/scripted controllers and full
+playable-preview integration remain open. The preview remains a hybrid using
+recovered engine/suspension helpers with Cannon chassis dynamics.
