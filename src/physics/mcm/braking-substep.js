@@ -25,7 +25,11 @@ export function applyMcmBrakes(c){
   s.magnitude=limited.magnitude;s.force=limited.force;c.speedCopy=limited.remaining;
   c.force=c.force.map((v,i)=>f(add(v,s.force[i])));
   const a=arm,b=s.force;
-  c.offset=[sub(mul(b[2],a[1]),mul(b[1],a[2])),sub(mul(a[2],b[0]),mul(b[2],a[0])),sub(mul(b[1],a[0]),mul(a[1],b[0]))].map(f);
+  // Typed stores prevent V8 array initialization from canonicalizing the first NaN sign.
+  c.offset=new Float64Array(3);
+  c.offset[0]=f(sub(mul(b[2],a[1]),mul(b[1],a[2])));
+  c.offset[1]=f(sub(mul(a[2],b[0]),mul(b[2],a[0])));
+  c.offset[2]=f(sub(mul(b[1],a[0]),mul(a[1],b[0])));
   c.totalTorque=c.totalTorque.map((v,i)=>f(add(c.offset[i],v)));
  };
  if(c.frontContact&&nonzero(c.frontMotion.forwardMagnitude))apply(c.brakes.front,c.tangent,c.frontLoad.arm,c.frontMotion.forwardMagnitude,c.rearContact,1);
