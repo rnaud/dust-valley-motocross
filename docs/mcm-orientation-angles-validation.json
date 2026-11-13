@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "da40743460dc9297dfb9d96535f3d2d18b527f6865ba1b833461ee03de828c8c",
+  "loaderSourceSha256": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe",
+  "casesSha256": "dafdb6facee2399df6da013ae5fa9e6f284e0c98a1a07e028c055a796678fb04",
+  "resultsSha256": "b9bb5aec62a496df0d4c78446a9924f6968598f7fe6a2c11977b39259a486cbe",
+  "cases": 40000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "outcomes": {
+    "rollZero=true:vertical=false": 3110,
+    "rollZero=false:vertical=false": 32159,
+    "rollZero=true:vertical=true": 4731
+  },
+  "scope": "Original 0x43f870 orientation angle extraction, all six output floats. Finite supplied forward/up vectors, degenerate zero vectors, near-vertical branches and wrap correction. Original CRT initialized for acos domain handling. Full post-step sequencing and whole-bike trajectories remain excluded."
+}
