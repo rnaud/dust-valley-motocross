@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import {floatBits} from '../src/physics/mcm/math.js';
 import {gunzipSync,brotliDecompressSync} from 'node:zlib';
 import {decodeBikeRecord} from '../scripts/mcm-reference/decode-bike.mjs';
 import {compareBikeReplay} from '../scripts/mcm-reference/compare-bike.mjs';
@@ -1357,4 +1358,12 @@ test('connected static collision dispatch matches callbacks, event transitions a
  const corpus=fixture('collision-dispatch-substep-wine11.json.br');
  for(const gate of ['present=0',':skip=1:',':enabled=0:',':manager=0:',':callbacks=0:',':callbacks=1:prior=0:state=1:remaining=1',':callbacks=1:prior=0:state=0',':callbacks=1:prior=2:state=2'])assert.ok(Object.keys(corpus.source.dispatchOutcomes).some(k=>k.includes(gate)),gate);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){const actual=evaluateCollisionDispatchSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});
+
+test('connected substep finish matches original remainder scheduling and final orientation',async()=>{
+ const {evaluateFinishedSubstep}=await import('../scripts/mcm-reference/finished-substep-case.mjs');
+ const corpus=fixture('finished-substep-wine11.json.br');
+ for(const gate of ['remaining=0:',':dtChanged=true:',':dtChanged=false:',':forwardInvalid=true',':forwardInvalid=false'])assert.ok(Object.keys(corpus.source.finishOutcomes).some(k=>k.includes(gate)),gate);
+ for(const bits of [0,0x38d1b716,0x38d1b717,0x38d1b718,0x3f000000,0xbf000000])assert.ok(corpus.fixtures.some(({input:c})=>floatBits(c.normalEventJoin.delay)===bits),`carry ${bits.toString(16)}`);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){const actual=evaluateFinishedSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });

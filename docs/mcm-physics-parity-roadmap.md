@@ -2736,3 +2736,25 @@ This connected corpus covers static-wall callbacks. Dynamic bike/rider collision
 callbacks, the scheduler/orientation tail, entry wiring and complete
 acceleration/throttle-release trajectories still need connected validation.
 Full physics parity remains unproven.
+
+### Connected scheduler and orientation finish
+
+The continuous ordinary prefix now reaches `0x4ac94b`, immediately before the
+loop-back branch. It includes the remaining-substep decrement, carry threshold,
+remainder timestep/inverse-timestep replacement, and final forward/up, angle
+and trigonometric-cache refresh. All 931 captured words match across 40,326
+original executions. Explicit carry cases exercise zero, negative carry, the
+exact threshold `0x38d1b717`, and its adjacent float32 values.
+
+The larger connected state exposed 3,595 orientation differences in the initial
+run. Original x87 C3 guards treat unordered normalization results like zero and
+inspect the raw square root before storing float32. Matching those guards and
+arithmetic order left nine yaw NaN differences; original CRT acos preserves an
+incoming quiet NaN, which the recovered helper now does explicitly. Regressions
+include cases 3, 388, 8439, 9506, 14065, 16975, 21146, 21922, 25608 and 38509.
+
+Report: `mcm-finished-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-finished-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Dynamic bike/rider collision callbacks, entry/loop-back wiring and complete
+acceleration/throttle-release trajectories still need connected validation.
+Reaching this synthetic substep boundary does not establish whole-bike parity.
