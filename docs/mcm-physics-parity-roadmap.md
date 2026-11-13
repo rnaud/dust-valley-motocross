@@ -1999,3 +1999,25 @@ The original suspension/transform callees execute directly with pinned
 executable and Wine D3DRM hashes. Later front/rear force calculations, no-wheel
 response, complete integration and whole-bike acceleration/release parity
 remain unfinished.
+
+### Connected front load preparation (2026-11-12)
+
+Extended continuous ordinary execution through `0x4a7717`, retaining the earlier
+no-wheel/rear-only observation exits. When both wheels contact, the original
+steering helper changes linear velocity and turn radius, then the caller scales
+its turn angle, constructs the front contact arm, projects angular velocity onto
+the contact normal, and crosses that projection with the arm. This cross product
+writes stack `0x450`; the earlier contact direction at `0x45c` stays intact.
+Shared force is scaled by the recovered rear-weight field as in the executable.
+Front-only contact instead uses the full force, clears its designated scratch,
+and inverse-rotates the contact-to-body offset into the local arm field.
+
+All 40,000 original-execution cases match all 345 output words with zero
+differences, including updated linear velocity, radius/turn, arm, projected
+angular vector, cross product, force and transform-cache side effects alongside
+prior outputs. Report: `mcm-front-load-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-front-load-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Original steering/transform callees run directly; no-wheel/rear-only exits are
+observation boundaries, not implemented downstream response. Remaining wheel
+force calculations, no-wheel response, full-loop integration and whole-bike
+acceleration/release trajectory parity remain unfinished.

@@ -1185,3 +1185,8 @@ test('connected front suspension matches original reference transforms, travel a
  const {evaluateFrontSuspensionSubstep}=await import('../scripts/mcm-reference/front-suspension-substep-case.mjs');
  for(const {input:c,outputBits} of fixture('front-suspension-substep-wine11.json').fixtures)assert.deepEqual(evaluateFrontSuspensionSubstep(c),outputBits);
 });
+
+test('connected front load matches original steering correction, contact arm and shared force',async()=>{
+ const {evaluateFrontLoadSubstep}=await import('../scripts/mcm-reference/front-load-substep-case.mjs');
+ for(const {input:c,outputBits} of fixture('front-load-substep-wine11.json').fixtures)assert.deepEqual(evaluateFrontLoadSubstep(c),outputBits);
+});
