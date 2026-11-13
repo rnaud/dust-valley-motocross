@@ -3616,3 +3616,27 @@ Trick/nearby animation updates and the recovery-animation branch remain open,
 as does connecting this frame-end call to the retained post-loop physics state.
 Actual frame entry/return, longer histories, dynamic bike/rider collisions and
 end-to-end acceleration/throttle-release comparisons remain required for parity.
+
+### Persistent frame-end trick animation (`0x4af7cf..0x4af8fb`)
+
+`trick-frame-rider.js` recovers the nonnegative trick-index branch of `0x4af710`.
+It preserves the original short-circuit button polling (6, then 7 only if needed),
+increments the trick elapsed time, applies the pinned per-trick two-frame hold
+windows, counts down AI hold time and advances rider animation before bike
+animation. Both signs of zero release the timer gate. Expiring an AI timer leaves
+the current call paused; subsequent calls can advance the animation.
+
+The native harness enters the real `0x4af710` routine and executes its actual
+input gate/aggregator and animation callees through return. Only device responses
+are supplied. Four consecutive calls retain bike/rider animation objects, source
+records and transform graphs. All 20,000 cases (80,000 calls) match all 1,076
+observed words, including control timers, queried action order, animation state,
+bounds, source children, and six transform nodes/cache flags. Coverage spans all
+16 trick indices, hold-window boundaries, AI/secondary-control gates, alternating
+button responses, stopped/looping records and active transition blending.
+Hashes and coverage are in `mcm-trick-frame-rider-validation.json`.
+
+The corpus uses valid finite synthetic animation assets. Nearby interaction and
+recovery branches, connection to retained post-loop physics state, complete
+frame entry/return, longer histories, dynamic collisions and whole-bike
+acceleration/throttle-release trajectory parity remain required.
