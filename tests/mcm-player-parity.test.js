@@ -2009,3 +2009,24 @@ test('retained next-frame rider, collisions and finish match original carried st
   assert.deepEqual(actual.tail,outputBits,`next finish tail ${caseIndex}`);
  }
 });
+
+test('retained second frame completes every scheduled and carry substep against original execution',async()=>{
+ const {evaluateResetNextLoop}=await import('../scripts/mcm-reference/reset-next-loop-case.mjs');
+ const corpus=fixture('reset-next-loop-wine11.json.br');
+ assert.equal(corpus.source.mismatchCount,0);
+ assert.equal(corpus.source.exceptionCount,0);
+ assert.equal(corpus.source.priorTraceChangedCases,0);
+ assert.equal(corpus.source.priorTraceComparedCases,17941);
+ for(const count of [0,1,2,3,4,5,6,7,9,10,11])assert.ok(corpus.source.loopCoverage[count]);
+ for(const {caseIndex,input,prefixBits,outputBits} of corpus.fixtures){
+  const actual=evaluateResetNextLoop(input);
+  assert.equal(actual.tail.length,35681);
+  assert.equal(actual.finishReached,actual.loopCount>0);
+  assert.deepEqual(actual.prefix,prefixBits,`next loop prefix ${caseIndex}`);
+  assert.deepEqual(actual.tail,outputBits,`next loop tail ${caseIndex}`);
+  if(actual.loopCount){
+   const finish=actual.loopCount===1?13502:14001+(actual.loopCount-2)*2168+1670;
+   assert.equal(actual.tail[finish+493],0,`remaining substeps ${caseIndex}`);
+  }
+ }
+});
