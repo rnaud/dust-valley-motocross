@@ -1015,3 +1015,19 @@ neighbors, matching sentinel/tail owners and disabled updates.
 Report: `mcm-collision-line-grid-validation.json`; reproduce with
 `node scripts/mcm-reference/compare-collision-line-grid-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
 Type 4, collision dispatch, main-step integration and whole-bike parity remain open.
+
+### Type 4 collision grid branch (2026-11-12)
+
+Traced the separately compiled type 4 branch (`0x42b00d..0x42b673`), including
+both endpoint insertions and both axis traversals. Its observable behavior matches
+the type 3 traversal, including the tail-excluding owner test and X-origin use
+in Z traversal. Dispatch now shares the recovered implementation for types 3/4.
+
+The original type 4 branch was executed independently for the same 16,000 cases.
+All 1,236 output words per case match, and its result SHA256 is identical to the
+original type 3 run. The regression test therefore checks both types against the
+same captured fixture without duplicating it. Separate original source/report:
+`collision-type4-grid-oracle.c`, `mcm-collision-type4-grid-validation.json`.
+Reproduce with
+`node scripts/mcm-reference/compare-collision-type4-grid-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Collision dispatch and complete simulation integration remain unfinished.

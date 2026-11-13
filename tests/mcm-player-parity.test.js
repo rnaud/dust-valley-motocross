@@ -915,12 +915,12 @@ test('collision entry allocation matches original initialized state and links',a
  assert.ok(allocated>0);assert.ok(skipped>0);
 });
 
-test('type 3 collision line traversal matches original ordered lists',async()=>{
+test('type 3/4 collision line traversal matches original ordered lists',async()=>{
  const {updateMcmCollisionGrid}=await import('../src/physics/mcm/collision-grid.js');
- for(const {input:c,outputBits} of fixture('collision-line-grid-wine11.json').fixtures){
+ for(const type of [3,4])for(const {input:c,outputBits} of fixture('collision-line-grid-wine11.json').fixtures){
  const cells=Array.from({length:65},(_,k)=>({owner:(k+c.headerSeed)%7===0?123:900}));
  cells.forEach((cell,k)=>{let tail=cell;for(let j=0;j<c.markers;j++){const e={owner:(k+j+c.ownerSeed)%3===0?123:500+j,other:77+j,active:2,previous:tail};tail.next=e;tail=e;}});
- const object={type:3,owner:123,start:c.start,end:c.end,entries:null};updateMcmCollisionGrid(object,{...c,cells},c.enabled);
+ const object={type,owner:123,start:c.start,end:c.end,entries:null};updateMcmCollisionGrid(object,{...c,cells},c.enabled);
  const expected=[];let inserted=0;
  for(const cell of cells){const words=[];let previous=cell;for(let e=cell.next;e;e=e.next){if(e.previous!==previous)throw new Error('Broken previous');words.push(e.owner,e.other,e.active);if(e.active===1)inserted++;previous=e;}expected.push(words.length/3,...words,...Array(18-words.length).fill(0));}
  expected.push(0);

@@ -1,6 +1,6 @@
 import {floatBits} from './math.js';
 const f=Math.fround;
-// Original type 3 branch 0x42a9a0..0x42b00d, after common entry unlinking.
+// Original type 3/4 branches 0x42a9a0..0x42b673, after common entry unlinking.
 export function insertMcmCollisionLine(object,grid){
  const n=grid.dimension,size=grid.cellSize;
  const ox=f(grid.centerX-(n*.5)*size),oz=f(grid.centerZ-(n*.5)*size);
