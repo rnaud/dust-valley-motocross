@@ -2495,3 +2495,24 @@ Report: `mcm-normal-control-substep-validation.json`. Reproduce with
 Next are normal-state timers/orientation and alignment, then collision/tail and
 entry connections. Whole-bike acceleration/throttle-release trajectory parity
 remains unproven.
+
+### Connected normal-state timer and control rotation
+
+The continuous original branch now reaches `0x4ac17b`, following normal
+controls with timer accumulation, phase/sign transitions, angular-Z updates,
+control-vector normalization and pivot rotation about the local balance center.
+Earlier suspension/state gates preserve the original skipped scratch angle.
+Body mutation and descendant cache invalidation follow the existing node graph.
+
+The pinned Wine 11 original matches all 573 captured words in 40,000 cases
+(zero differences). Coverage includes phases 0 through 3, zero/nonzero angles,
+all prior contact branches, and aliased transform nodes. The standalone helper
+also preserves the original unordered sign comparison and cap selection, and
+uses the unchecked inverse-square-root lookup behind the original guards.
+The regression corpus is stored as compressed JSON.
+
+Report: `mcm-normal-rotation-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-normal-rotation-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+The next connection is the real terrain/contact retest at `0x4ac17b`, then
+normal-state alignment and collision/tail/entry integration. Complete-bike
+acceleration and throttle-release trajectory parity remains unproven.
