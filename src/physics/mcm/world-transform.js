@@ -25,11 +25,11 @@ export function composeMcmWorldMatrix(parent, local) {
 
 // Original 0x4b8720, using the resolved world matrix at node+0xc4.
 export function inverseRotateMcmVector(matrix, vector) {
-  return [
-    Math.fround(add(add(mul(matrix[1],vector[1]),mul(matrix[2],vector[2])),mul(matrix[0],vector[0]))),
-    Math.fround(add(add(mul(matrix[6],vector[2]),mul(matrix[5],vector[1])),mul(matrix[4],vector[0]))),
-    Math.fround(add(add(mul(matrix[9],vector[1]),mul(matrix[10],vector[2])),mul(matrix[8],vector[0]))),
-  ];
+  const result=new Float64Array(3);
+  result[0]=Math.fround(add(add(mul(matrix[1],vector[1]),mul(matrix[2],vector[2])),mul(matrix[0],vector[0])));
+  result[1]=Math.fround(add(add(mul(matrix[6],vector[2]),mul(matrix[5],vector[1])),mul(matrix[4],vector[0])));
+  result[2]=Math.fround(add(add(mul(matrix[9],vector[1]),mul(matrix[10],vector[2])),mul(matrix[8],vector[0])));
+  return result;
 }
 
 // Original node+0x104 is a valid-cache flag; node+0x108 points to its parent.

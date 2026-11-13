@@ -14,10 +14,10 @@ import {continueMcmResetLoopRider} from '../../src/physics/mcm/reset-loop-rider.
 import {resetLoopRiderWords} from './reset-loop-rider-case.mjs';
 import {continueMcmResetLoopFinish} from '../../src/physics/mcm/reset-loop-finish.js';
 import {resetLoopFinishWords} from './reset-loop-finish-case.mjs';
-export function evaluateResetThirdFinish(input){
+export function evaluateResetThirdFinish(input,observe){
  let tail=Array(1849).fill(0);
  const words=evaluateResetThirdContact(input,(c,{looped})=>{
-  if(!looped)return;
+  if(!looped){observe?.(c,{looped:false});return;}
   tail=[];
   continueMcmResetLoopResponse(c);tail.push(...resetLoopResponseWords(c));
   continueMcmResetLoopTireForces(c);tail.push(...resetLoopTireForcesWords(c));
@@ -27,6 +27,6 @@ export function evaluateResetThirdFinish(input){
   continueMcmResetLoopRider(c);tail.push(...resetLoopRiderWords(c));
   const b=c.bike,s=c.loopRider;
   const nearby=[b.field824>>>0,floatBits(b.field82c),floatBits(b.field830),floatBits(b.field834),s.nearby===undefined?+!!b.field838:+!!s.nearby,...s.riderBounds.map(floatBits)];
-  continueMcmResetLoopFinish(c);tail.push(...resetLoopFinishWords(c),...nearby);
+  continueMcmResetLoopFinish(c);tail.push(...resetLoopFinishWords(c),...nearby);observe?.(c,{looped:true});
  });return [...words,...tail];
 }

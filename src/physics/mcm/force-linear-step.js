@@ -1,4 +1,4 @@
-import {mcmMultiply as mul} from './x87-arithmetic.js';
+import {mcmMultiply as mul,mcmSubtract as sub} from './x87-arithmetic.js';
 import {floatBits} from './math.js';
 import {integrateMcmLinear} from './integrate-linear.js';
 
@@ -10,7 +10,7 @@ export function updateMcmForceLinear(c) {
   let scratch540=[...c.scratch540],fallback=0;
   if(c.both && signed(c.field738)>0x40e00000 && signed(c.fieldcc)>=0x38d1b717 && signed(c.fieldc8)<0x3e800000){
     const a=c.axis584,b=c.direction4ec;
-    scratch540=[f(a[1]*b[2]-b[1]*a[2]),f(b[0]*a[2]-b[2]*a[0]),f(b[1]*a[0]-b[0]*a[1])];
+    scratch540=new Float64Array(3);scratch540[0]=f(sub(mul(a[1],b[2]),mul(b[1],a[2])));scratch540[1]=f(sub(mul(b[0],a[2]),mul(b[2],a[0])));scratch540[2]=f(sub(mul(b[1],a[0]),mul(b[0],a[1])));
     const [x,y,z]=scratch540,length=f(Math.sqrt(f((x*x+y*y)+z*z)));
     if(signed(length)<0x3ef57742){
       const angle=f(Math.asin(length));

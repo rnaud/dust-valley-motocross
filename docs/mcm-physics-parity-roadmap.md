@@ -3458,3 +3458,29 @@ animation tests do not establish full live animation-history parity. Further
 iterations, actual frame entry/post-loop completion, dynamic bike/rider collisions,
 whole-bike acceleration/release trajectories and playable integration remain.
 Initial synthetic-state and supplied wheel-query scratch limitations still apply.
+
+### Retained-state loop exhaustion
+
+The native harness now follows every scheduled loop-back in this corpus through
+its terminal branch at `0x4ac95a`. All 8,130 observed words match in 17,508 cases:
+7,436 finish after one substep, 5,271 after two, 3,693 after three and 1,108 after
+four. The fourth iteration executes the same engine, wheel-contact, force,
+integration, rider and collision routines against retained state. The harness
+fails if a fifth iteration is required; the port does not cap runtime scheduling.
+
+This revealed unordered wheel-penetration selection and normal-equality branches,
+unconditional inverse-square-root lookups in target-roll calculation, mixed-sign
+NaN propagation through contact levers and torque, and NaN canonicalization during
+matrix transposition. The fixes preserve the original branch and arithmetic
+semantics, including earlier connected observations, rather than dropping inputs
+that overflow after repeated integration. Regression fixtures cover all four
+observed iteration counts and require an exhausted fourth iteration.
+
+Report: `mcm-reset-loop-completion-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-loop-completion-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+
+This validates loop exhaustion for the synthetic reset corpus, not full frames or
+whole-bike physics parity. Actual frame entry and the post-loop tail, longer
+runtime histories, dynamic bike/rider collisions, repeatable acceleration/release
+trajectory comparison and playable integration remain. Supplied wheel-query
+scratch, input callbacks and animation-record limitations still apply.

@@ -3,12 +3,13 @@ import {queryMcmTerrainNormal} from './terrain-normal.js';
 import {resolveMcmWorldMatrix} from './world-transform.js';
 import {rotateMcmWorldVector} from './collision-impulse.js';
 import {mcmInverseSqrtLookup} from './inverse-sqrt.js';
+import {mcmAdd as add,mcmSubtract as sub,mcmMultiply as mul} from './x87-arithmetic.js';
 const f=Math.fround;
-const cross=(a,b)=>[f(a[1]*b[2]-b[1]*a[2]),f(a[2]*b[0]-b[2]*a[0]),f(a[0]*b[1]-b[0]*a[1])];
+const cross=(a,b)=>{const r=[.1,.1,.1];r[0]=f(sub(mul(a[1],b[2]),mul(b[1],a[2])));r[1]=f(sub(mul(a[2],b[0]),mul(b[2],a[0])));r[2]=f(sub(mul(a[0],b[1]),mul(b[0],a[1])));return r;};
 const normalize=(v,squared)=>{
  // Original FCOM zero test also selects the zero vector when unordered.
  if(squared===0||Number.isNaN(squared))return [0,0,0];
- const inverse=mcmInverseSqrtLookup(f(squared));return v.map(x=>f(x*inverse));
+ const inverse=mcmInverseSqrtLookup(f(squared));return v.map(x=>f(mul(x,inverse)));
 };
 // Original 0x4a1450. A null up vector uses the node's rotated world-up axis.
 export function buildMcmWheelContactAxis({node,forward,up}){
@@ -32,8 +33,8 @@ export function prepareMcmWheelContactFrame(c){
  c.tangent=tangent;c.normal=cross(tangent,p[8]);
  const n=c.normal,t=p[4];
  if((n[1]*t[1]+n[0]*t[0])+t[2]*n[2]>0){c.normal=n.map(x=>f(-x));p[8]=p[8].map(x=>f(-x));}
- c.offset=c.normal.map(x=>f(c.radius*x));
- p[6]=p[0].map((x,i)=>f(x+c.offset[i]));p[2]=[...p[6]];
+ c.offset=c.normal.map(x=>f(mul(c.radius,x)));
+ p[6]=p[0].map((x,i)=>f(add(x,c.offset[i])));p[2]=[...p[6]];
  sampleResult=sample(p[2],c.resampleNormal);p[2]=sampleResult.point;
  return {forward,resampleNormal:sampleResult.normal};
 }
@@ -49,11 +50,11 @@ export function prepareMcmWheelContactPair(c){
  c.rearTangent=tangent;c.normal=cross(tangent,p[9]);
  const n=c.normal,t=p[5];
  if((n[1]*t[1]+n[0]*t[0])+t[2]*n[2]>0){c.normal=n.map(x=>f(-x));p[9]=p[9].map(x=>f(-x));}
- c.offset=c.normal.map(x=>f(c.rearRadius*x));
- p[7]=p[1].map((x,i)=>f(x+c.offset[i]));p[3]=[...p[7]];
+ c.offset=c.normal.map(x=>f(mul(c.rearRadius,x)));
+ p[7]=p[1].map((x,i)=>f(add(x,c.offset[i])));p[3]=[...p[7]];
  const rearResampleNormal=queryMcmTerrainNormal({...c.terrain,point:p[3],normal:c.rearResampleNormal});
  p[3]=queryMcmTerrainHeight({...c.terrain,point:p[3]});
- c.heights=[f(p[2][1]-p[6][1]),f(p[3][1]-p[7][1])];
+ c.heights=new Float64Array(2);c.heights[0]=f(sub(p[2][1],p[6][1]));c.heights[1]=f(sub(p[3][1],p[7][1]));
  return {...result,rearResampleNormal};
 }
 
@@ -76,10 +77,10 @@ export function prepareMcmWheelContactProbes(c){
  const result=prepareMcmWheelContactPair(c),p=c.points;
  const heading=rotateMcmContactHeading(c.heading);
  const side=direction=>{const v=cross(direction,[0,1,0]);return normalize(v,(v[1]*v[1]+v[2]*v[2])+v[0]*v[0]);};
- c.normal=p[1].map((x,i)=>f(x-c.rearRadius*heading[i]));
- const rearSide=side(heading),rear=p[1].map((_,i)=>f(c.normal[i]+(c.rearRadius*c.sinRoll)*rearSide[i]));
- c.normal=p[0].map((x,i)=>f(x+c.radius*c.tangent[i]));
- const frontSide=side(c.tangent),front=p[0].map((_,i)=>f(c.normal[i]+(c.radius*c.sinRoll)*frontSide[i]));
+ c.normal=p[1].map((x,i)=>f(sub(x,mul(c.rearRadius,heading[i]))));
+ const rearSide=side(heading),rear=p[1].map((_,i)=>f(add(c.normal[i],mul(mul(c.rearRadius,c.sinRoll),rearSide[i]))));
+ c.normal=p[0].map((x,i)=>f(add(x,mul(c.radius,c.tangent[i]))));
+ const frontSide=side(c.tangent),front=p[0].map((_,i)=>f(add(c.normal[i],mul(mul(c.radius,c.sinRoll),frontSide[i]))));
  const points=[front,rear],normals=c.probeNormals.map((normal,i)=>queryMcmTerrainNormal({...c.terrain,point:points[i],normal}));
  return {...result,probePoints:points.map(point=>queryMcmTerrainHeight({...c.terrain,point})),probeNormals:normals};
 }
@@ -96,16 +97,17 @@ export function queryMcmWheelContacts(c){
  const contacts=tangents.map((t,i)=>{
   c.normal=cross(t,p[8+i]);const n=c.normal,s=result.probeNormals[i];
   if((n[0]*s[0]+n[1]*s[1])+n[2]*s[2]>0)c.normal=n.map(x=>f(-x));
-  c.offset=c.normal.map(x=>f(x*(i?c.rearRadius:c.radius)));
-  return p[i].map((x,j)=>f(x+c.offset[j]));
+  c.offset=c.normal.map(x=>f(mul(x,i?c.rearRadius:c.radius)));
+  return p[i].map((x,j)=>f(add(x,c.offset[j])));
  });
  const normals=c.refinedNormals.map((normal,i)=>queryMcmTerrainNormal({...c.terrain,point:contacts[i],normal}));
  const surfaces=contacts.map(point=>queryMcmTerrainHeight({...c.terrain,point}));
- const same=(a,b)=>a.every((x,i)=>x===b[i]);
+ // FCOM C3 treats unordered components as equal at this branch.
+ const same=(a,b)=>a.every((x,i)=>x===b[i]||Number.isNaN(x)||Number.isNaN(b[i]));
  const selected=[false,false];
  for(let i=0;i<2;i++){
-  const depth=f(surfaces[i][1]-contacts[i][1]),key=i?'rearTangent':'tangent';
-  if(c.heights[i]<depth){
+  const depth=f(sub(surfaces[i][1],contacts[i][1])),key=i?'rearTangent':'tangent';
+  if(!(c.heights[i]>=depth)){
    selected[i]=true;p[6+i]=contacts[i];p[2+i]=surfaces[i];c.heights[i]=depth;p[4+i]=[...normals[i]];
    c[key]=same(result.probeNormals[i],normals[i])?tangents[i]:tangent(normals[i],p[8+i],i?c.bikeForward:result.forward);
   }else{

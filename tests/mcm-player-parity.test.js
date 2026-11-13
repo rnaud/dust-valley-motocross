@@ -1597,3 +1597,18 @@ test('third persistent substep completes forces, motion, rider interaction and s
   assert.deepEqual(actual,outputBits,`reset/third-finish fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
  }
 });
+
+
+test('retained reset state exhausts the captured loop through up to four complete substeps',async()=>{
+ const {evaluateResetLoopCompletion}=await import('../scripts/mcm-reference/reset-loop-completion-case.mjs');
+ const corpus=fixture('reset-loop-completion-wine11.json.br'),outcomes=Object.keys(corpus.source.completionOutcomes);
+ assert.equal(corpus.source.totalDifferences,0);
+ for(const n of [1,2,3,4])assert.ok(outcomes.some(k=>k.includes(`iterations=${n}:`)),`iteration count ${n}`);
+ assert.ok(outcomes.every(k=>k.endsWith(':remaining=0')));
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){
+  const actual=evaluateResetLoopCompletion(c);
+  assert.equal(actual.length,8130);
+  assert.equal(actual[8114],0);
+  assert.deepEqual(actual,outputBits,`reset/loop-completion fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
+ }
+});
