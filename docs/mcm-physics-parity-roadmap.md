@@ -2293,3 +2293,29 @@ Report: `mcm-single-contact-force-substep-validation.json`. Reproduce with
 Both-wheel force assembly, the alternate crash branch, subsequent integration,
 complete-loop wiring, and whole-bike acceleration / throttle-release trajectory
 parity remain unfinished.
+
+### Connected both-wheel force and torque assembly (2026-11-12)
+
+Extended both-wheel ordinary execution through `0x4aaa55`, sharing the existing
+single-wheel/airborne boundary. Crashed chassis-contact execution still exits
+at `0x4ab426`. The both-wheel branch projects each suspension force with real
+`0x4ad430`, scales it by target-roll cosine and adds the contact load before
+storing each component. This retains the different store order from the single-
+wheel branches. It adds the normal forces, accumulates both loads, applies rear
+then front pitch clips to body-local torque and the shared counter, adds drive
+force/torque, and copies the force-reference local arm into the correction arm.
+
+All 40,000 cases match across 527 output words with zero bit differences.
+The capture includes both normal-force vectors and projection temporaries,
+as well as all preceding connected state. Expanded finite-input cases exposed
+mixed-sign canonical NaN propagation in paired force addition and impulse
+scaling/velocity updates. Those operations now use recovered x87 arithmetic;
+the saved fixtures retain the angular-velocity regression. Arbitrary external
+NaN payloads remain outside this corpus. Original projection, torque, transform
+and drive-torque callees execute directly.
+
+Report: `mcm-paired-contact-force-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-paired-contact-force-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Contact correction and integration, the alternate crash branch, full-loop
+wiring, and whole-bike acceleration / throttle-release trajectory parity remain
+unfinished.
