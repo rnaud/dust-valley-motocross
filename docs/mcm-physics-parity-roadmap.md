@@ -968,3 +968,27 @@ new cells. Report: `mcm-collision-grid-validation.json`; reproduce with
 Scope uses existing four-entry storage. Allocation, types 3/4, collision dispatch,
 main-update integration and complete world checkpoints/trajectories remain open.
 The original routine was executed without patched callees for these cases.
+
+### Collision entry allocation (2026-11-12)
+
+Extended type 0/1 grid updates to allocate four entries when object +0x8c is null.
+The original initializes previous/next, owner, auxiliary and active fields, then
+inserts unique corner cells. It leaves cell-index fields uninitialized for corners
+that have never been inserted. The JS port represents those with absent cell
+properties rather than assigning a fictitious initial cell. Disabled updates and
+types 2/invalid do not allocate entries.
+
+32,162 cases match 223 output words with the original CRT allocator running under
+Wine, without an allocation stub. The harness initializes the original CRT heap
+and thread state and keeps allocated blocks until process exit. It checks entry
+count, initialized entry metadata, world center, and all observable cell/neighbor
+links. Fresh inactive cell-index words alone are normalized to zero in both
+comparison outputs because the original leaves them undefined. Existing-entry
+cell indices remain fully compared. Includes fresh and existing entry storage,
+empty/no-allocation outcomes and directed cell boundaries.
+Report: `mcm-collision-grid-allocation-validation.json`; reproduce with
+`node scripts/mcm-reference/compare-collision-grid-allocation-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+
+Types 3/4 have separate spatial insertion paths and remain open, along with
+collision dispatch and integration into complete original-versus-port trajectories.
+This allocation validation does not claim memory-allocator implementation parity.
