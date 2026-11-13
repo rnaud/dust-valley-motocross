@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "25915f74d3305247b85eb47774ad8da365a193368f41e3a28563972669286a02",
+  "loaderSourceSha256": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe",
+  "casesSha256": "bf4bc831ac36cbe1cb16acc47dd08538cf3e8a4143475eca9d68b83bd43d6142",
+  "resultsSha256": "886487a003e369f5646637316f5d6143c0f01f8b2ab511f58e1017840cce0807",
+  "cases": 32000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "outcomes": {
+    "callbacks=0:hit=false": 17029,
+    "callbacks=0:hit=true": 2965,
+    "callbacks=2:hit=true": 3674,
+    "callbacks=1:hit=true": 6095,
+    "callbacks=4:hit=true": 755,
+    "callbacks=3:hit=true": 1262,
+    "callbacks=5:hit=true": 158,
+    "callbacks=6:hit=true": 62
+  },
+  "scope": "Connected original 0x42ccc0 dispatch, 0x42b870 candidate pair preparation, 0x42ca00 pair state gate and real type 0/type 0 primitive 0x42c0e0. Four objects, repeated owners/cells, enable flags, protected pair states, hit depth/contact copies and ordered observational callbacks. Other primitive types and mutating gameplay callbacks excluded."
+}
