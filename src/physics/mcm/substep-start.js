@@ -6,6 +6,12 @@ import {mcmAdd as add,mcmSubtract as sub,mcmMultiply as mul,mcmDivide as div} fr
 const f=Math.fround;
 const filter=(state,target,dt)=>f(add(state.value,mul(sub(target,state.value),div(Math.min(state.duration,dt),state.duration))));
 
+// Original normal-state brake ramp; one increment per engine substep.
+export function updateMcmBrakeInput(brake,pressed){
+ if(pressed)return (floatBits(brake)|0)<0x3f800000?Math.min(1,f(brake+f(.2))):brake;
+ return (floatBits(brake)|0)>0?Math.max(0,f(brake-.5)):brake;
+}
+
 // Original 0x4a5bd7..0x4a5e27, including real engine update ordering.
 export function updateMcmSubstepStart(c){
  const {engine}=c,queries=[];
@@ -19,10 +25,9 @@ export function updateMcmSubstepStart(c){
   if(floatBits(engine.shiftTimer)>0x80000000)engine.shiftTimer=0;
  }
  if(!c.state844){
-  if(query(5)||c.aiBrake>0){
-   engine.released=1;
-   if((floatBits(c.brake)|0)<0x3f800000)c.brake=Math.min(1,f(c.brake+f(.2)));
-  }else if((floatBits(c.brake)|0)>0)c.brake=Math.max(0,f(c.brake-.5));
+  const braking=query(5)||c.aiBrake>0;
+  if(braking)engine.released=1;
+  c.brake=updateMcmBrakeInput(c.brake,braking);
  }else if(!c.rider13c&&!c.rider140){
   c.field694=f(-c.field684);c.mass=c.alternateMass;c.inverseMass=c.alternateInverseMass;
  }
