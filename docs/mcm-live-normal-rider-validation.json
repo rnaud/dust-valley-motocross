@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "captureSources": {
+    "capture-bike.c": "f73e7f64c9731d3f1c031079b09afc51e5c7f9e48d959a6d32ed7b413e7f60e5",
+    "capture-animation-assets.c": "d434679ac72da7772a6658b64e0596c1576a6792e3f74982e1249cc6ecc9fd6a",
+    "live-normal-rider-oracle.c": "311517ef2e1470c5c38ba24f7f177e2159a8f955f593f98094df4aed82abe14b",
+    "oracle.c": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe"
+  },
+  "checkpointSha256": "4f78f3a8d23626b61df8a65f926f077941d46d8ba3106581a1ed81b7bc9c53f9",
+  "animationSha256": "1d8f2f2fec9d571828efaf26bed1fbe324606aa59afc283c7397033c0313f73a",
+  "captureSha256": "7d527c66a0a1ce96e1d829140d02094c09ab06b521a5393cb03099d90f0cbd1c",
+  "oracleInputSha256": "d3988e1e079fa4e269e99cb9628eb993cfede6c2d96e89e304e8a80419c8c37b",
+  "oracleOutputSha256": "641b0b6205a5a268bd529a39149c98545bfc04cead5c72a7b9357928cd95b8d1",
+  "normalRider": {
+    "scope": "One original normal frame-rider update from a shared live checkpoint. All captured blocks compared, including unchanged bytes. Not complete bike-frame or trajectory parity.",
+    "captureId": "0000010c3db91420",
+    "blocks": 8821,
+    "comparedWords": 110036,
+    "changedWords": 22,
+    "differences": 0,
+    "firstDifferences": []
+  },
+  "replay": {
+    "framesPerPass": 400,
+    "comparedBoundaryPairs": 800,
+    "firstMotionDifference": null,
+    "differingBikeWords": {
+      "0x488": {
+        "records": 730,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x48c": {
+        "records": 738,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x490": {
+        "records": 730,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x494": {
+        "records": 56,
+        "firstFrame": 1,
+        "phase": "before-update"
+      }
+    },
+    "differingEngineWords": {},
+    "differingRiderWords": {}
+  },
+  "engine": {
+    "scope": "Retained engine-entry state initialized from captured memory; original chassis inputs supplied each frame. Not whole-bike parity.",
+    "frames": 800,
+    "comparedStores": 14400,
+    "comparedRandomStates": 1600,
+    "differences": 0,
+    "firstDifferences": [],
+    "passes": [
+      {
+        "pass": 0,
+        "frames": 400,
+        "randomCalls": 4,
+        "randomState": 1449997005
+      },
+      {
+        "pass": 1,
+        "frames": 400,
+        "randomCalls": 4,
+        "randomState": 1449997005
+      }
+    ],
+    "unexplainedBikeWords": [
+      "0x488",
+      "0x48c",
+      "0x490",
+      "0x494"
+    ]
+  }
+}
