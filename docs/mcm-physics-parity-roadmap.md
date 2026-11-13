@@ -2464,3 +2464,34 @@ Report: `mcm-controller-handoff-substep-validation.json`. Reproduce with
 Normal-state controls from `0x4abb30`, collision/tail connection, complete-loop
 entry and whole-bike acceleration/throttle-release trajectory validation remain.
 This synthetic connected-state evidence does not establish full physics parity.
+
+### Connected normal-state airborne controls (2026-11-13)
+
+Extended the normal branch from `0x4abb30` through `0x4abef9`, preserving
+its early exits at `0x4ac64a` and `0x4ac1f7`. Crashed execution still exits
+at `0x4ac6cd`. The connected stage now applies airborne pitch/yaw input,
+lean-disable behavior, conditional brake/engine pitch adjustments, velocity
+normalization/redirection/rescaling, and angular damping. It reads the selected
+forward component's cached world basis directly, matching the original's lack
+of a world-cache refresh at this point.
+
+All 40,000 cases match across 572 output words with zero bit differences.
+An observation hook at `0x4abd6e` records actual entry into velocity
+redirection, then reproduces the displaced instructions and resumes original
+execution. The corpus includes 46 such executions. Independent special-control
+and frozen flags prevent accidental correlation from excluding moving-bike
+redirection. Captures add the control vector and redirection flag while checking
+updated scratch vectors, velocity, speed and angular velocity.
+
+Initial differences exposed zero-speed normalization and generated exceptional
+arithmetic. Recovered x87 multiply/divide/add semantics and the original
+zero/unordered speed check now apply. Typed angular stores preserve NaN signs
+across JS array transitions. Cases 5 and 28 are explicitly retained alongside
+earlier regressions. The new fixture is losslessly gzip-compressed; the test
+loader supports both existing JSON and compressed JSON fixtures.
+
+Report: `mcm-normal-control-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-normal-control-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Next are normal-state timers/orientation and alignment, then collision/tail and
+entry connections. Whole-bike acceleration/throttle-release trajectory parity
+remains unproven.
