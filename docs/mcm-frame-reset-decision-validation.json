@@ -1,0 +1,64 @@
+{
+  "arm64": {
+    "scope": "Isolated original pre-loop reset decision 0x4b0610 and rider cleanup 0x40fbb0; initialized inputs, rider visual object absent",
+    "cases": 8000,
+    "branches": {
+      "forced-position": 471,
+      "rider-inactive": 1539,
+      "button": 943,
+      "boundary": 517,
+      "elapsed": 1508,
+      "crash-active": 1480,
+      "continue": 1172,
+      "crash-expired": 370
+    },
+    "boundarySides": {
+      "1": 53,
+      "2": 90,
+      "3": 125,
+      "4": 249
+    },
+    "mismatchCount": 0,
+    "mismatches": [],
+    "architecture": "arm64",
+    "node": "v24.22.2",
+    "exeSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+    "inputSha256": "b15ae352e9951f34784a865bc1322531029b1f8ef9fdcffdbd65b0042d9dd1b1",
+    "outputSha256": "d6a703c1cf9260604456a2dfcef802b00f3dfe59c03d86c097558e6784bc59a6",
+    "limitations": [
+      "Rider visual reparent/callback restoration not connected",
+      "Not continuous-frame trajectory evidence"
+    ]
+  },
+  "x64": {
+    "scope": "Isolated original pre-loop reset decision 0x4b0610 and rider cleanup 0x40fbb0; initialized inputs, rider visual object absent",
+    "cases": 8000,
+    "branches": {
+      "forced-position": 471,
+      "rider-inactive": 1539,
+      "button": 943,
+      "boundary": 517,
+      "elapsed": 1508,
+      "crash-active": 1480,
+      "continue": 1172,
+      "crash-expired": 370
+    },
+    "boundarySides": {
+      "1": 53,
+      "2": 90,
+      "3": 125,
+      "4": 249
+    },
+    "mismatchCount": 0,
+    "mismatches": [],
+    "architecture": "x64",
+    "node": "v22.23.5",
+    "exeSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+    "inputSha256": "b15ae352e9951f34784a865bc1322531029b1f8ef9fdcffdbd65b0042d9dd1b1",
+    "outputSha256": "d6a703c1cf9260604456a2dfcef802b00f3dfe59c03d86c097558e6784bc59a6",
+    "limitations": [
+      "Rider visual reparent/callback restoration not connected",
+      "Not continuous-frame trajectory evidence"
+    ]
+  }
+}

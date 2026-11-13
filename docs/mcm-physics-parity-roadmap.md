@@ -3983,3 +3983,40 @@ executes in 11,398 player/crash cases; 6,543 AI/scripted cases retain their earl
 pending boundaries. The separate 6,000-case routine comparison also matches on
 both architectures. Regression fixtures retain 21 connected cases and all
 6,000 compact routine inputs; both pass cold on ARM64 and x64.
+
+### Retained next-frame reset decision
+
+The original call at `0x4a5993` now executes `0x4b0610` in the retained
+comparison harness. The recovered implementation checks forced repositioning,
+elapsed reset conditions, the reset button, world boundaries, crash countdown,
+and rider activity. Physical rider cleanup follows `0x40fbb0`; a present visual
+object still requires its original reparent/callback restoration and is not
+covered by this milestone.
+
+The adapter initializes previously unobserved rider fields with the original
+harness's zeroed allocation before the first reset. It observes those fields
+again immediately before the next-frame decision, then compares its return code,
+bike state, rider cleanup and all four transform nodes. No bike or rider state
+is reseeded at the frame boundary. Reset-button input alternates before execution;
+all previously recorded native observations must remain byte-identical.
+
+The isolated 8,000-case comparison covers all eight decision branches and all
+four world boundaries, including signed zeros and NaNs. ARM64 and x64 both match.
+The retained corpus does not establish coverage of every isolated branch, and
+AI/scripted controller cases still stop before those controller calls. The next
+boundary is after the reset result is stored at `0x4a5998`, before terrain checks
+and the next physics loop. This is not whole-bike trajectory parity.
+
+```sh
+node scripts/mcm-reference/compare-reset-next-reset.mjs /path/to/mcm.exe /path/to/next-steering-corpus /path/to/new-output-directory
+node scripts/mcm-reference/compare-frame-reset-decision.mjs /path/to/mcm.exe /path/to/separate-output-directory
+```
+
+Validation: all 17,941 retained cases match all 19,948 observed words on ARM64
+and x64, with zero exceptions and zero changed prior native traces. The decision
+executes in 11,398 cases: 8,023 active crashes, 2,775 manual resets and 600 normal
+continuations; 6,543 cases remain at AI/scripted boundaries. The new regression
+fixtures pass cold on both architectures. Case 14101 additionally guards x87 NaN
+signs during pivot-translation stores and subsequent matrix copying. Full tests
+and the production build pass. See `mcm-reset-next-reset-validation.json` and
+`mcm-frame-reset-decision-validation.json`.

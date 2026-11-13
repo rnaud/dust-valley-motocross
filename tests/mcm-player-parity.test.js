@@ -1855,3 +1855,28 @@ test('retained player steering setup preserves earlier frame observations',async
   assert.deepEqual(actual.tail,outputBits,`next steering tail ${caseIndex}`);
  }
 });
+
+test('frame reset decision matches original reset, boundary and crash branches',async()=>{
+ const {evaluateFrameResetDecision}=await import('../scripts/mcm-reference/frame-reset-decision-case.mjs');
+ const corpus=fixture('frame-reset-decision-wine11.json.br');
+ assert.equal(corpus.source.mismatchCount,0);
+ for(const branch of ['forced-position','elapsed','button','boundary','continue','crash-active','crash-expired','rider-inactive'])assert.ok(corpus.source.branches[branch]);
+ for(const side of [1,2,3,4])assert.ok(corpus.source.boundarySides[side]);
+ for(const {input,outputBits} of corpus.fixtures)assert.deepEqual(evaluateFrameResetDecision(input).words,outputBits);
+});
+
+test('retained next-frame reset decision preserves prior execution and rider state',async()=>{
+ const {evaluateResetNextReset}=await import('../scripts/mcm-reference/reset-next-reset-case.mjs');
+ const corpus=fixture('reset-next-reset-wine11.json.br');
+ assert.equal(corpus.source.mismatchCount,0);
+ assert.equal(corpus.source.exceptionCount,0);
+ assert.equal(corpus.source.priorTraceChangedCases,0);
+ assert.equal(corpus.source.priorTraceComparedCases,17941);
+ for(const branch of ['continue','crash-active','button','pending'])assert.ok(corpus.source.resetBranches[branch]);
+ for(const {caseIndex,input,prefixBits,outputBits} of corpus.fixtures){
+  const actual=evaluateResetNextReset(input);
+  assert.equal(actual.tail.length,11671);
+  assert.deepEqual(actual.prefix,prefixBits,`next reset prefix ${caseIndex}`);
+  assert.deepEqual(actual.tail,outputBits,`next reset tail ${caseIndex}`);
+ }
+});
