@@ -1716,3 +1716,36 @@ with captured inputs and deterministic outputs; their internal logic is not
 claimed validated by this report. Recovering these selectors and connecting the
 main-loop dispatch through the complete reset remain pending. Whole-loop force
 integration and acceleration/release trajectory parity are still unfinished.
+
+### Reset nearby-bike avoidance and course adjustment (2026-11-12)
+
+Recovered the complete `0x4adb10` helper. It finds the nearest eligible bike in
+original enumeration order, uses the original approximate square root, and
+repeats position adjustments until clearance is sufficient. Repeated encounters
+with the same bike use a different displacement. Vertical/zero horizontal
+heading falls back to world forward when avoidance is enabled. Bike position
+is updated during avoidance; later course-limit changes affect the supplied
+reset position without copying it back to bike position in this helper.
+
+Mode 3 applies width-scaled limits and geometric terrain-normal checks in X
+then Z order, followed by the conditional unnormalized heading toward the stored
+respawn point. Comparisons retain the original unrounded intermediate values,
+including the Z-distance product and width-scaled boundary thresholds.
+
+All 840 output words match in 16,384 cases: zero differences. These include the
+full bike allocation, reset position/heading, and neighboring-bike positions and
+eligibility flags. The original executes real `0x459e90` enumeration, square-root
+lookup, terrain lookup and face-normal callees, with no patched helper calls.
+Inputs cover one/three primary bikes, zero to four additional bikes, disabled
+enumeration, skipped neighbors, both clearance thresholds, null/general/vertical
+headings, mode and setting variants, and independently varied flat/steep terrain.
+The 284 retained fixtures cover branch combinations plus periodic samples.
+
+Report: `mcm-reset-course-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-course-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+The harness runs original startup initializers, including `0x412910` for the
+terrain default normal; omitting it during development changed boundary results.
+Inputs use valid level-two synthetic terrain, finite state and positive course
+width. The main selection's integration with this helper, terrain selector
+`0x4ae0b0`, complete main-loop forces and acceleration/release trajectory parity
+remain unfinished.
