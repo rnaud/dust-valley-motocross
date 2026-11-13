@@ -3098,3 +3098,34 @@ Reports: `mcm-reset-post-state-validation.json` and
 The collision dispatcher and scheduler are the remaining reset-tail connections.
 Shared engine/reset entry, persistent frame loops, dynamic collisions, complete
 acceleration/release trajectories and playable integration remain unproven.
+
+### Reset state connected through static collision dispatch
+
+The continuous reset comparison now executes collision dispatch through
+`0x4ac89e`, including the real `0x42ccc0` live-grid/pair traversal, horizontal
+wall primitive, `0x49e490` primary callback, `0x49d900` static response, collision
+impulse and event wrapper. All 1,898 captured words match in 16,400 executions.
+There are 362 real wall callbacks, including 16 normal-to-crashed transitions.
+
+The grid now carries valid owner IDs resolving to the bike and wall objects.
+Both enabled flags, preserved pair suppression (3), hits/misses, normal/crashed
+incoming states and callback-induced event transitions are required outcomes.
+Pair tables, contact scratch, both objects' contact vectors, callback counts and
+pre-dispatch state/angular observations are compared with the full prior state.
+Pre-dispatch angular observation retains rider pitch-floor coverage even when
+the subsequent impulse changes angular velocity.
+
+Walls are initial environment inputs placed near/far from the predicted prefix
+position; every original run still executes the complete prefix without state
+replacement. Sixteen additional initial-state scenarios set a deceleration
+threshold crossed by the wall response. Native execution independently verifies
+that the collision creates the event, sets one remaining step, and clears carry.
+The same event commit/setup helpers serve reset and callback paths. Optional
+particle/audio systems are disabled in the supplied environment; physics callees
+are not stubbed.
+
+Report: `mcm-reset-collision-dispatch-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-collision-dispatch-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+This is the static-wall connection. Dynamic bike/rider collision callbacks,
+scheduler completion, shared engine/reset entry, persistent frames, complete
+acceleration/release trajectories and playable integration remain unproven.

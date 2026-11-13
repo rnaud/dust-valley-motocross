@@ -12,8 +12,13 @@ export function updateMcmResetEventDecision(c){
  p.bikeUp=b.up;p.cooldownFlag=b.field8ac;p.normalControl={flag820:b.field820};
  p.leanDisabled=b.field710;p.field714=b.field714;
  applyMcmSubstepEventDecision(p);
+ commitMcmResetEventDecision(c);
+ return {...result,randomCalls:result.randomCalls+s.randomCalls};
+}
+
+export function commitMcmResetEventDecision(c){
+ const b=c.bike,p=c.contactPhase,s=p.normalEventDecision;
  b.velocity=p.velocity;b.angularVelocity=[...p.chassisResponse.angularXY,p.field53c];
  b.field710=p.leanDisabled;b.field714=p.field714;
  b.field8b8=s.eventKind;b.field8b4=p.controllerHandoff.kind;b.field8b0=s.otherPresent?b.field8b0:0;
- return {...result,randomCalls:result.randomCalls+s.randomCalls};
 }
