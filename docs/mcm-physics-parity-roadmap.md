@@ -1356,3 +1356,35 @@ random draws, and a nontriggering second-bike event timing state. The loop
 backedge to earlier force/contact work, persistent full-step state adaptation,
 remaining update-end work and full acceleration/release trajectories are still
 required before claiming complete parity.
+
+### Connected substep start and analog engine input (2026-11-12)
+
+Recovered and connected `0x4a5bd7..0x4a5e27`: shift-timer decrement/clamp,
+brake input/ramp, engine release flag, crashed-state mass substitution,
+digital or analog throttle, automatic shifts, previous-speed refresh, vertical
+acceleration filtering and low-speed/nonfinite velocity stop. Automatic shifts
+read the old saved speed before this section overwrites it with current speed.
+Brake and throttle queries retain their original order and gating.
+
+The analog path uses the engine's stored filter duration, preserves the filter
+value separately from the .2 dead-zone/1.0-clamped demand, and compares the raw
+input against the original double .05 release threshold. The vertical filter
+uses the stored duration and the supplied inverse timestep, then saves vertical
+velocity before the low-speed stop clears the velocity vector. Brake ramp
+increments are per substep, rather than multiplied by dt.
+
+40,000 original-execution cases match 33 words each with zero differences.
+The original sequence runs real input gate/aggregator, brake clamps, both
+throttle paths, gear helper, acceleration filter and finite-speed check. Only
+the primary device response and CRT shift draw are supplied. Cases include
+states 0/1/2, rider flags, AI/secondary input gates, timer expiry, shifts both
+ways, old/current speed differences, analog dead-zone/saturation inputs,
+filter durations above/below dt, and speeds around float32 .001. Fixtures retain
+all observed branch outcomes and check device poll order and RNG call count.
+
+Report: `mcm-substep-start-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-substep-start-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Inputs are finite with positive filter durations and the captured five-gear
+parameter table. Arbitrary device/POV layouts remain covered separately, not
+by this connected run. Contact generation and full loop/state integration are
+still required before comparing whole-bike acceleration/release trajectories.
