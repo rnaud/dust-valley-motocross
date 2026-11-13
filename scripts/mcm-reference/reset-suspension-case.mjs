@@ -8,9 +8,9 @@ export function resetSuspensionScratch(p){
   ...m.linear,...m.combined,m.speed,t.alignment,t.perpendicular,t.magnitude,...t.force,...t.direction,
   ...s.displacement,...s.suspensionVelocity,s.compression,s.travel,s.contactLimited,s.active];
 }
-export function evaluateResetSuspension(input){
+export function evaluateResetSuspension(input,step=updateMcmResetSuspension){
  let p;
- const words=evaluateResetFrontSuspension(input,c=>{const result=updateMcmResetSuspension(c);p=c.contactPhase;return result;});
+ const words=evaluateResetFrontSuspension(input,c=>{const result=step(c);p=c.contactPhase;return result;});
  const scratch=resetSuspensionScratch(p);
  return [...words,...scratch.slice(0,42).map(floatBits),scratch[42]>>>0,scratch[43]>>>0];
 }

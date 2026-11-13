@@ -1405,3 +1405,11 @@ test('reset output feeds balance weights, front tire loading and both suspension
  for(const gate of ['neutralLean=true','neutralLean=false',':filterStep=short:',':filterStep=equal:',':filterStep=long:',':front=1:rear=0:',':front=0:rear=1:',':frontLimited=0:',':frontLimited=1:',':rearLimited=0:',':rearLimited=1:',':weighted=true',':weighted=false'])assert.ok(Object.keys(corpus.source.balanceSuspensionOutcomes).some(k=>k.includes(gate)),gate);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetSuspension(c),outputBits,`reset/suspension fixture ${i}`);
 });
+
+test('reset output flows through rear traction, combined forces and chassis impulse',async()=>{
+ const {evaluateResetChassisImpulse}=await import('../scripts/mcm-reference/reset-chassis-impulse-case.mjs');
+ const corpus=fixture('reset-chassis-impulse-wine11.json.br');
+ for(const gate of ['enabled=0:','enabled=1:count=2:','enabled=1:count=3:',':angularChanged=true',':angularChanged=false'])assert.ok(Object.keys(corpus.source.chassisOutcomes).some(k=>k.includes(gate)),gate);
+ for(const gate of ['rear=1:driveZero=true:maxSpeedPositive=true','rear=1:driveZero=true:maxSpeedPositive=false','rear=0:driveZero=false',':factorNegative=true',':factorNegative=false'])assert.ok(Object.keys(corpus.source.tractionOutcomes).some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetChassisImpulse(c),outputBits,`reset/impulse fixture ${i}`);
+});
