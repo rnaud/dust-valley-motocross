@@ -1,10 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import {gunzipSync} from 'node:zlib';
 import {decodeBikeRecord} from '../scripts/mcm-reference/decode-bike.mjs';
 import {compareBikeReplay} from '../scripts/mcm-reference/compare-bike.mjs';
 import {compareThrottle} from '../scripts/mcm-reference/compare-throttle.mjs';
-const fixture = name => JSON.parse(fs.readFileSync(new URL(`./fixtures/mcm/${name}`, import.meta.url)));
+const fixture = name => {const data=fs.readFileSync(new URL(`./fixtures/mcm/${name}`, import.meta.url));return JSON.parse(name.endsWith('.gz')?gunzipSync(data):data);};
 
 test('original player snapshots identify local control and acceleration/release state', () => {
   const states = fixture('player-state-wine11.json').records.map(decodeBikeRecord);
@@ -1274,4 +1275,10 @@ test('connected wheel and body transforms match original rotations, aliases and 
 test('connected controller handoff and crash orientation match original transitions, aliases and normal-axis rotation',async()=>{
  const {evaluateControllerHandoffSubstep}=await import('../scripts/mcm-reference/controller-handoff-substep-case.mjs');
  for(const [i,{input:c,outputBits}] of fixture('controller-handoff-substep-wine11.json').fixtures.entries()){const actual=evaluateControllerHandoffSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});
+
+
+test('connected normal controls match original airborne input, velocity redirection and angular damping',async()=>{
+ const {evaluateNormalControlSubstep}=await import('../scripts/mcm-reference/normal-control-substep-case.mjs');
+ for(const [i,{input:c,outputBits}] of fixture('normal-control-substep-wine11.json.gz').fixtures.entries()){const actual=evaluateNormalControlSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
