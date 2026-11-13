@@ -745,3 +745,21 @@ responses at `0x452670`, `0x453cd0` and `0x454760` are supplied, with action/opt
 arguments checked by the oracle. Fixtures include every observed result/poll-count
 combination. Device mapping and acquisition remain external; connection into the
 complete rider update and full-step trajectory evidence are still required.
+
+### Nearby-bike selection (2026-11-12)
+
+Recovered the original bike iterator (`0x459e90`) and the connected nearby-bike
+selection prefix (`0x4a16d0..0x4a17ba`). Selection excludes self and disabled
+candidates, terminates on null list entries, and preserves the original mixed
+float32/double distance calculation and comparison against the rounded best.
+The iterator preserves its cursor when globally disabled and resets it at the
+original end boundary, including the single-player special case.
+
+Validation: 32,000 deterministic cases executed against the pinned PE under Wine,
+with zero differences in iterator result/cursor and selected-bike identity.
+The harness exits immediately after the original stores the selected bike;
+angle, orientation, animation and full rider-update parity remain outstanding.
+Report: `mcm-nearby-bike-validation.json`; reproduce with
+`node scripts/mcm-reference/compare-nearby-bike-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+This is another dependency for the remaining interaction branch, not whole-bike
+trajectory parity. The playable preview still uses the hybrid Cannon chassis.

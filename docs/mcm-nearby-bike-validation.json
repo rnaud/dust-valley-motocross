@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "52e5b39a58176b36041639ead726748ad907772545c59e97fff3fcb4b48162a0",
+  "loaderSourceSha256": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe",
+  "casesSha256": "12d83df5057c1c4cd37639b6d82d4ccef17d559d4d103c2f04cf837544089fd3",
+  "resultsSha256": "966edaca41f7dbd7d85cebbef59c0516e8fa9890fb25f5edc41c1d4e77441dcc",
+  "cases": 32000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "outcomes": {
+    "selected=0": 10061,
+    "selected=5": 3164,
+    "selected=4": 3015,
+    "selected=3": 3115,
+    "selected=6": 3090,
+    "selected=2": 3045,
+    "selected=8": 3255,
+    "selected=7": 3255
+  },
+  "scope": "Original 0x459e90 bike iterator and connected 0x4a16d0..0x4a17ba nearest-bike selection. Disabled world/candidates, self exclusion, local/multiple players, optional AI list, null entries, cursor termination, float32 positions and equal-position ties. Selection exits before angle, orientation and animation changes; those and full rider update remain excluded."
+}
