@@ -129,6 +129,18 @@ play or another executable version. Opponent, camera and world state are not
 restored. The initial checkpoint is the current bike state, not an automatic
 race restart.
 
+Set `MCM_CHECKPOINT` to a new Windows-path JSON file to export the initial
+partial checkpoint alongside a scripted capture. The export contains the bike
+address and each saved block's address, byte length and hexadecimal bytes; it
+does not follow additional pointers or expand the restore set. Existing files
+are never overwritten. These are session-specific memory blocks, not a portable
+save or a complete input to the recovered simulation.
+
+The capture stops after 30 seconds without a player-bike record, including while
+menu RNG calls keep producing debugger events. It restores breakpoint bytes and
+clears any pending single-step flag before detaching. A timeout is a failed
+capture, not evidence of parity; enter a riding event before capturing.
+
 ```sh
 WINEPREFIX=/absolute/new-reference/prefix MCM_SCRIPTED=1 WINEDEBUG=-all \
   wine /tmp/capture-bike.exe WINDOWS_PID 'Z:\tmp\replay.jsonl' 1600 > /tmp/replay.log 2>&1
