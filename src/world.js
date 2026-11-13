@@ -1,4 +1,5 @@
 import * as C from 'cannon-es';
+import {createMcmPreviewAir,stepMcmPreviewAir} from './mcm-preview-air.js';
 import {SandSurface} from './sand-physics.js';
 import {createMcmPreviewEngine,stepMcmPreviewEngine} from './mcm-preview.js';
 import {mcmPreviewContactForces,mcmPreviewSteering} from './mcm-preview-contact.js';
@@ -76,7 +77,7 @@ export function createState(options={}) {
   const p=options.spawn ?? start;
   sand?.follow(p.x,p.z,world);
   const yaw=options.spawn?.yaw ?? (options.flat?0:Math.atan2(start.tx,start.tz));
-  const chassis=new C.Body({mass:MCM_HANDLING.mass,linearDamping:options.physicsMode==='mcm-preview'?0:.015,angularDamping:.15});
+  const chassis=new C.Body({mass:MCM_HANDLING.mass,linearDamping:options.physicsMode==='mcm-preview'?0:.015,angularDamping:options.physicsMode==='mcm-preview'?0:.15});
   chassis.addShape(new C.Box(new C.Vec3(.28,.32,.72)));
   // Rider mass sits above the small collision box; include it in rotational inertia.
   const inertiaScale=MCM_HANDLING.mass/150;
@@ -92,6 +93,7 @@ export function createState(options={}) {
   vehicle.recoveredPreview=options.physicsMode==='mcm-preview';
   vehicle.addToWorld(world);
   const s={x:p.x,z:p.z,y:chassis.position.y-.5,yaw:0,speed:0,vy:0,pitch:0,roll:0,air:false,airtime:0,boost:100,steer:0,throttle:0,contacts:0,crashed:false,crashTime:0,slip:0,compression:[0,0],gear:1,rpm:1200,quaternion:{x:0,y:0,z:0,w:1},wheelTransforms:[],landingRecovery:0,wheelContacts:[],balanceRoll:0,tireLoads:[0,0],wheelOmega:[0,0],slipRatio:[0,0],engine:options.physicsMode==='mcm-preview'?createMcmPreviewEngine():createDrivetrain(),physicsMode:options.physicsMode==='mcm-preview'?'mcm-preview':'classic',requestedLean:0};
+  s.recoveredAir=s.physicsMode==='mcm-preview'?createMcmPreviewAir():null;
   s.recoveredAcceleration=[0,0,0];
   s.recoveredBalance=s.physicsMode==='mcm-preview'?createMcmPreviewBalance():null;
   world.addEventListener('preStep',()=>{
@@ -108,7 +110,7 @@ export function createState(options={}) {
   sync(s);return s;
 }
 function sync(s){const {chassis:b,vehicle:v}=s.physics;const f=b.quaternion.vmult(new C.Vec3(0,0,1)),up=b.quaternion.vmult(new C.Vec3(0,1,0));s.x=b.position.x;s.y=b.position.y-.5;s.z=b.position.z;s.yaw=Math.atan2(f.x,f.z);s.pitch=Math.asin(Math.max(-1,Math.min(1,f.y)));s.roll=Math.atan2(-up.x*Math.cos(s.yaw)+up.z*Math.sin(s.yaw),up.y);s.speed=Math.hypot(b.velocity.x,b.velocity.z);s.vy=b.velocity.y;s.yawRate=b.angularVelocity.y+(s.recoveredTurnRate||0);s.gear=s.engine.gear;s.rpm=Math.round(s.engine.rpm);s.quaternion={...b.quaternion};s.wheelTransforms=v.wheelInfos.map((w,i)=>{v.updateWheelTransform(i);return {position:{...w.worldTransform.position},quaternion:{...w.worldTransform.quaternion},direction:{...w.directionWorld}};});s.compression=v.wheelInfos.map(w=>Math.max(0,1-w.suspensionLength/.55));}
-export function resetBike(s,x,z,yaw){const {chassis:b,height}=s.physics;s.physics.sand?.resetContacts();s.physics.sand?.follow(x,z,s.physics.world);b.position.set(x,height(x,z)+1.2,z);b.quaternion.setFromEuler(0,yaw,0);b.velocity.setZero();b.angularVelocity.setZero();b.force.setZero();b.torque.setZero();s.crashed=false;s.crashTime=0;s.recoveredContact=null;s.recoveredTurnRate=0;s.recoveredAcceleration=[0,0,0];s.recoveredBalance=s.physicsMode==='mcm-preview'?createMcmPreviewBalance():null;s.physics.vehicle.recoveredMassShares=[.5,.5];s.airtime=0;s.landingRecovery=0;s.wheelContacts=[];s.throttle=0;s.steer=0;s.balanceRoll=0;s.tireLoads=[0,0];s.engine=s.physicsMode==='mcm-preview'?createMcmPreviewEngine():createDrivetrain();s.requestedLean=0;s.wheelOmega=[0,0];s.slipRatio=[0,0];s.contacts=0;s.air=false;for(const w of s.physics.vehicle.wheelInfos){w.isInContact=false;w.raycastResult.reset();w.suspensionForce=0;}b.wakeUp();sync(s);}
+export function resetBike(s,x,z,yaw){const {chassis:b,height}=s.physics;s.physics.sand?.resetContacts();s.physics.sand?.follow(x,z,s.physics.world);b.position.set(x,height(x,z)+1.2,z);b.quaternion.setFromEuler(0,yaw,0);b.velocity.setZero();b.angularVelocity.setZero();b.force.setZero();b.torque.setZero();s.crashed=false;s.crashTime=0;s.recoveredContact=null;s.recoveredTurnRate=0;s.recoveredAcceleration=[0,0,0];s.recoveredAir=s.physicsMode==='mcm-preview'?createMcmPreviewAir():null;s.recoveredBalance=s.physicsMode==='mcm-preview'?createMcmPreviewBalance():null;s.physics.vehicle.recoveredMassShares=[.5,.5];s.airtime=0;s.landingRecovery=0;s.wheelContacts=[];s.throttle=0;s.steer=0;s.balanceRoll=0;s.tireLoads=[0,0];s.engine=s.physicsMode==='mcm-preview'?createMcmPreviewEngine():createDrivetrain();s.requestedLean=0;s.wheelOmega=[0,0];s.slipRatio=[0,0];s.contacts=0;s.air=false;for(const w of s.physics.vehicle.wheelInfos){w.isInContact=false;w.raycastResult.reset();w.suspensionForce=0;}b.wakeUp();sync(s);}
 export function stepBike(s,input,dt) {
   const {world,chassis:b,vehicle:v}=s.physics;
   s.physics.sand?.follow(b.position.x,b.position.z,world);
@@ -281,7 +283,7 @@ export function stepBike(s,input,dt) {
        if(gap<.4)b.applyForce(new C.Vec3(0,Math.max(0,.4-gap)*support*900,0),footPoint);
       }
 
-    }else{
+    }else if(s.physicsMode!=='mcm-preview'){
       // Rider weight shift and wheel reaction torque rotate the bike, not its velocity.
       const lean=leanInput;
       const targetPitch=lean*.8+(gas-brake)*.06;
@@ -300,6 +302,19 @@ export function stepBike(s,input,dt) {
   for(const wheel of v.wheelInfos)wheel.directionLocal.copy(suspensionDown);
   const previousAir=s.airtime,impact=-b.velocity.y;
   world.step(dt);
+  if(s.physicsMode==='mcm-preview'&&!s.crashed){
+    const air=stepMcmPreviewAir(s.recoveredAir,{position:b.position.toArray(),quaternion:b.quaternion,
+      velocity:b.velocity.toArray(),angularVelocity:b.angularVelocity.toArray(),
+      frontContact:v.wheelInfos[1].isInContact,rearContact:v.wheelInfos[0].isInContact,
+      chassisContact:world.contacts.some(c=>c.bi===b||c.bj===b),lean:leanInput,steer:steerInput,
+      brake,engineLevel:s.engine.recovered.state,dt});
+    if(air.active){
+      b.velocity.set(...air.velocity);b.angularVelocity.set(...air.angularVelocity);
+      if(air.applied){
+        b.quaternion.copy(air.quaternion);b.position.set(...air.position);b.updateInertiaWorld();b.aabbNeedsUpdate=true;
+      }
+    }
+  }
   if(s.physics.sand){
     s.physics.sand.deform(v.wheelInfos.map((wheel,i)=>wheel.isInContact&&wheel.raycastResult.body?.sandSurface===s.physics.sand?{
       x:wheel.raycastResult.hitPointWorld.x,z:wheel.raycastResult.hitPointWorld.z,

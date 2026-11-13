@@ -4624,3 +4624,43 @@ preview chassis/contact integration or establish healthy live riding parity.
 Validation: all 316 tests and the production build pass. Production preview
 browser checks pass for selection, acceleration, steering, throttle release,
 pause/photo/reset, classic fallback and mobile layout.
+
+
+### Playable preview: recovered airborne control and rotation
+
+The MCM preview now calls `updateMcmContactResponse` for normal takeoff/landing
+state and `updateMcmStateZeroControlRotation` for airborne input, angular damping,
+roll phase/timer progression and control rotation. It replaces the preview's
+custom airborne pitch, roll and yaw torques. The original 0.9 angular damping
+runs in the recovered stage; Cannon's additional passive angular damping is
+removed for the preview. Classic handling retains its existing controller.
+
+The adapter converts Cannon world angular velocity to original local components,
+uses `extractMcmOrientationAngles` for the original bank sign (opposite the UI's
+bank convention), then converts the updated local angular velocity back to world
+space. Takeoff captures the roll accumulator/sign and starts phase one; landing
+clears the timer through the original contact-response branch. State persists
+between steps and is recreated on reset. Wheel and chassis contacts gate air
+control, and the stage runs after Cannon motion integration. The menu description
+now includes recovered airborne controls.
+
+PDM defaults were checked against the existing captured player state: +730 is
+0.5; +710, +820, +6fc, +c68 and +c6c/+c70/+c74/+c78 are zero. Animation-dependent
+trick/controller flags are not invented by the adapter. The preview body origin
+substitutes for the original local balance reference; terrain contacts, Cannon
+motion/ collision integration and matrix-to-quaternion conversion remain adapted.
+Current orientation/contact samples are supplied by that adapter, rather than a
+complete original frame context. Ground stabilization and crash/recovery remain
+unfinished, so this is not a whole-bike parity claim.
+
+Validation: the full 318-test suite passed before adding the final jump test;
+all 14 preview tests, including that additional test, pass. The production build
+and browser checks pass for selection, acceleration, steering, release,
+pause/photo/reset, classic fallback and mobile layout. Four x64 native-fixture
+checks pass for state-zero controls/rotation and connected airborne updates.
+Integration tests cover the captured defaults, local-axis behavior at different
+headings, both input signs, bank correction sign, chassis-contact gating,
+takeoff/landing state, reset and absence of artificial throttle pitch torque.
+The ten-second preview starter-line test completes three substantial jumps and
+lands without crashing, retaining more than 15 m/s through each landing.
+Fresh original-game telemetry is still blocked by the locked desktop.
