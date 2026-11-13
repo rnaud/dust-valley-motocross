@@ -1302,3 +1302,28 @@ results and CRT draws remain supplied boundaries. This suite uses one static
 line and one bike, root bike transforms, no bounds children, inactive audio and
 no visual effects. Dynamic multi-bike dispatch, persistent event state across
 full steps, tag reset internals and complete trajectory parity remain open.
+
+### Two-bike dispatch with ordered gameplay responses (2026-11-12)
+
+Bound the recovered primary/secondary callbacks to live collision objects.
+Each callback resolves the other bike from the current contact, so a primary
+response's velocity, crash state, transform and grid mutations are visible to
+the secondary response. Both responses share the same pair table and grid.
+
+32,000 original-execution cases match 473 output words each with zero
+differences. The original main-step collision section runs real ellipsoid
+contact generation, both ordered callbacks, paired impulse solvers, proxy/grid
+updates and first-bike crash/rider transitions. Secondary responses run for
+all three initial states, including the second bike's real final event call in
+a supplied nontriggering timing state. Outputs cover both bikes' motion,
+transforms, contact vectors, both sets of grid entries, pair table, first-bike
+event state and remaining/carry time. A disabled third grid owner also verifies
+that traversal ignores disabled objects.
+
+Report: `mcm-bike-pair-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-bike-pair-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Both collision bodies use type-1 ellipsoid primitives and class-0 bike responses;
+rider-class dispatch is not included here. A triggered second-bike event,
+tag reset internals, persistent event adaptation across complete steps and
+whole-bike acceleration/release trajectories remain outstanding. This does
+not establish complete physics parity.

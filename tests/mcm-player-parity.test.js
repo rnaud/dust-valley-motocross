@@ -1045,3 +1045,8 @@ test('main-step collision phase matches original live dispatch, response, event 
  const {evaluateCollisionSubstep}=await import('../scripts/mcm-reference/collision-substep-case.mjs');
  for(const {input:c,outputBits} of fixture('collision-substep-wine11.json').fixtures)assert.deepEqual(evaluateCollisionSubstep(c),outputBits);
 });
+
+test('two-bike collision substep matches original ordered responses and shared grid mutations',async()=>{
+ const {evaluateBikePairSubstep}=await import('../scripts/mcm-reference/bike-pair-substep-case.mjs');
+ for(const {input:c,outputBits} of fixture('bike-pair-substep-wine11.json').fixtures)assert.deepEqual(evaluateBikePairSubstep(c),outputBits);
+});
