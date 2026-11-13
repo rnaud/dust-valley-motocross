@@ -1015,3 +1015,8 @@ test('bike collision wrapper matches original state selection, local lever and w
  assert.deepEqual([...[...r.angularVelocity,...r.velocity,...r.worldAngularVelocity,...r.field654,...r.transform.world].map(floatBits),r.transform.cacheValid],outputBits);
  }
 });
+
+test('connected static collision response matches original bike, proxy and grid mutations',async()=>{
+ const {evaluateStaticCollision}=await import('../scripts/mcm-reference/static-collision-response-case.mjs');
+ for(const {input:c,outputBits} of fixture('static-collision-response-wine11.json').fixtures)assert.deepEqual(evaluateStaticCollision(c),outputBits);
+});

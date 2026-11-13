@@ -1160,3 +1160,26 @@ and inertia, full 3D root transforms, and zero/nonzero relative motion.
 The main collision response `0x49d900`, primary/secondary callback gates, tag
 transfer, and final event/grid integration still require recovery/connection.
 Complete original-v-port trajectories and full physics parity remain unproven.
+
+### Connected static collision response (2026-11-12)
+
+Connected `0x49d900` type 2 through position correction, world/local lever
+calculation, scaled contact-point angular velocity, real bike impulse wrapper,
+speed refresh and low-speed stop, collision matrix/proxy synchronization, and
+grid unlink/reinsertion. Preserves two ordering details: position correction
+does not rewrite the source transform, and stopping angular Y does not redo the
+earlier world-angular refresh.
+
+32,000 original-execution cases match 179 output words each with zero
+differences. The original response executes its real impulse solver, transform
+helpers, grid update and inactive audio routine. Coverage includes state 0/1/2,
+position-correction suppression, stop/nonstop, cached/uncached root transforms,
+proxy synchronization and enabled/disabled grids with preexisting list entries.
+Report: `mcm-static-collision-response-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-static-collision-response-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+
+Visual effects are disabled in the original fixtures. State/secondary flags
+naturally suppress the final event transition; the port requires an explicit
+transition adapter if that gate is entered. These effect/event boundaries,
+dynamic contact types, primary/secondary callback gates, and full main-step
+integration remain outstanding. No full whole-bike parity claim is made.
