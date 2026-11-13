@@ -1125,3 +1125,8 @@ test('main reset selection matches original mode branches, normalization and hel
  const {evaluateResetSelection}=await import('../scripts/mcm-reference/reset-selection-case.mjs');
  for(const {input:c,outputBits} of fixture('reset-selection-wine11.json').fixtures)assert.deepEqual(evaluateResetSelection(c),outputBits);
 });
+
+test('reset course helper matches original nearby-bike avoidance, terrain limits and heading changes',async()=>{
+ const {evaluateResetCourse}=await import('../scripts/mcm-reference/reset-course-case.mjs');
+ for(const {input:c,outputBits} of fixture('reset-course-wine11.json').fixtures)assert.deepEqual(evaluateResetCourse(c),outputBits);
+});
