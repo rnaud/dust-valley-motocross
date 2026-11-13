@@ -816,3 +816,16 @@ test('complete nearby interaction matches original state and animation mutations
  }
  assert.equal(outcomes.size,24);
 });
+
+test('rider control flow matches original dispatch, pose and blend',async()=>{
+ const {updateMcmRider}=await import('../src/physics/mcm/rider-update.js');
+ const {floatBits,bitsFloat}=await import('../src/physics/mcm/math.js');
+ const outcomes=new Set();
+ for(const {input:c,controlBits,outputBits} of fixture('rider-update-wine11.json').fixtures){
+  c.control=bitsFloat(controlBits);const queries=[];let nearby=0,trick=0,reset=0;
+  const r=updateMcmRider(c,{query(action){queries.push(action);return c.buttons[[9,6,7].indexOf(action)];},nearby(){nearby++;},trick(r,index){trick=index+1;},resetOrientation(){reset++;}});
+  assert.deepEqual([...[r.blend,r.positivePeak,r.negativePeak,...r.envelope].map(floatBits),r.pose>>>0,floatBits(r.weight),r.nextPose>>>0,floatBits(r.secondaryWeight),r.enabled,r.fieldb4c,queries.length,...queries,...Array(3-queries.length).fill(0),nearby,trick,reset],outputBits);
+  outcomes.add(`${nearby}:${trick}:${reset}`);
+ }
+ assert.equal(outcomes.size,19);
+});
