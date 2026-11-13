@@ -1487,3 +1487,11 @@ test('engine input and filters remain connected through reset and completed subs
  assert.equal(Object.entries(corpus.source.dispatchOutcomes).filter(([k])=>k.endsWith('eventChanged=true')).reduce((n,[,v])=>n+v,0),16);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetEngineEntry(c),outputBits,`engine/reset fixture ${i}`);
 });
+
+test('reset loop-back preserves live bike, engine and filters into the next engine update',async()=>{
+ const {evaluateResetLoopEntry}=await import('../scripts/mcm-reference/reset-loop-entry-case.mjs');
+ const corpus=fixture('reset-loop-entry-wine11.json.br');
+ for(const gate of ['looped=0:remaining=0:','looped=1:remaining=1:','looped=1:remaining=2:',':carryConsumed=true:',':carryConsumed=false:',':state=0:',':state=1:',':polls=5,4:',':stopped=true:',':stopped=false:',':filterChanged=true'])assert.ok(Object.keys(corpus.source.loopOutcomes).some(k=>k.includes(gate)),gate);
+ assert.equal(Object.entries(corpus.source.loopOutcomes).filter(([k])=>k.startsWith('looped=1:')).reduce((n,[,v])=>n+v,0),8964);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetLoopEntry(c),outputBits,`reset/loop-entry fixture ${i}`);
+});
