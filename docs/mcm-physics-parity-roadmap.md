@@ -3535,3 +3535,31 @@ This is a branch-level validation with synthetic animation assets. Normal-state
 animation progression, trick/nearby frame updates, connection to the retained
 post-loop corpus, actual frame entry/return, longer histories, dynamic bike/rider
 collisions and complete acceleration/throttle-release trajectories remain open.
+
+### Persistent animation advancement (`0x42e890`)
+
+`animation-advance.js` recovers the animation advancement called by frame-end
+trick/recovery paths. It retains fractional time, advances/wraps linked frames,
+stops non-looping records, tracks current/displayed/previous frames, updates live
+bounds, and blends child axes and positions during transitions. The blend clock
+uses the accumulated interval (incoming delta plus old animation remainder), as
+the original does. The z-axis blend product retains x87 precision until addition;
+x/y products are stored as binary32 first. The mirrored bike callback
+`0x44f960` remaps components and reflects x using temporary axes, leaving source
+records unchanged; its position-enabled check uses the original component index.
+
+The native oracle calls the complete original routine four times per case without
+resetting state between calls. All 552 observed words across 40,000 cases match:
+animation timing and flags, frame/record identity, live bounds, transform graphs,
+cache flags and original/current child axes. Cases exercise looping/non-looping
+and stopped records, positive/zero/negative deltas, 1–8 frames, normal/mirrored
+callbacks, and ongoing/completed blends with absent or present child lists.
+Both bike and rider-proxy vtables dispatch to the same recovered normal and
+mirrored child routines; both object types are exercised by the oracle.
+Source/input/output hashes are in `mcm-animation-advance-validation.json`.
+
+The corpus uses valid synthetic bike animation assets and positive frame rates.
+The two/four-record blend routines `0x430b70`/`0x431250`,
+connection to the frame-end rider state machine, complete frame entry/return,
+dynamic bike/rider collisions and whole-bike acceleration/release trajectories
+still require implementation and original-execution validation.

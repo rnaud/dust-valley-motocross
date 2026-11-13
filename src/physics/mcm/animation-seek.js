@@ -10,6 +10,17 @@ export function applyMcmAnimationChild(body,components,record){
  else setMcmRelativeChildOrientation(component.node,body,record.forward,record.up);
  if(component.positionEnabled)setMcmPositionRelativeTo(component.node,body,record.position);
 }
+// Original 0x44f960, vtable+0x18: remap the component and reflect x. Unlike
+// the normal callback it normalizes temporary axes, preserving the source record.
+export function applyMcmMirroredAnimationChild(body,components,remap,record){
+ const index=record.componentIndex&255,component=components[remap[index]];
+ if(!component)throw new RangeError('Unknown mirrored animation component');
+ const forward=[-record.forward[0],record.forward[1],record.forward[2]];
+ const up=[-record.up[0],record.up[1],record.up[2]];
+ if(record.local)setMcmLocalChildOrientation(component.node,forward,up);
+ else setMcmRelativeChildOrientation(component.node,body,forward,up);
+ if(components[index].positionEnabled)setMcmPositionRelativeTo(component.node,body,[-record.position[0],record.position[1],record.position[2]]);
+}
 const nearestEven=x=>{
  const lo=Math.floor(x),part=x-lo;
  return part<.5?lo:part>.5?lo+1:lo%2===0?lo:lo+1;
