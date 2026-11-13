@@ -1,3 +1,4 @@
+import {testMcmHorizontalLinePair,testMcmSpatialLinePair} from './collision-line.js';
 import {testMcmEllipsoidPair} from './collision-ellipsoid.js';
 import {mcmSqrt} from './math.js';
 const f=Math.fround;
@@ -43,11 +44,13 @@ export function dispatchMcmCollisions(manager,id,testPrimitive=testMcmCollisionP
  }
 }
 
-// Original 0x42ca00 type routing. Explicitly reject unfinished real primitives;
-// the other no-hit branches are intentional in the original executable.
+// Original 0x42ca00 type routing, including asymmetric type 4 behavior.
+// Swapped calls restore the current-object pointers before dispatch callbacks.
 export function testMcmCollisionPrimitive(manager,a,b){
  if(a.type===0&&b.type===0)return testMcmSpherePair(manager,a,b);
  if(a.type===1&&b.type===1)return testMcmEllipsoidPair(manager,a,b);
- if((a.type===1&&(b.type===3||b.type===4))||(a.type===3&&b.type===1))throw new Error('MCM line/ellipsoid collision is not recovered yet');
+ if(a.type===3&&b.type===1)return testMcmHorizontalLinePair(manager,a,b);
+ if(a.type===1&&b.type===3)return testMcmHorizontalLinePair(manager,b,a);
+ if(a.type===1&&b.type===4)return testMcmSpatialLinePair(manager,b,a);
  return false;
 }
