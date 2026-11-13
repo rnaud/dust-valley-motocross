@@ -1090,3 +1090,8 @@ test('bike reset matches original complete allocation writes, optional component
  const {evaluateBikeReset}=await import('../scripts/mcm-reference/bike-reset-case.mjs');
  for(const {input:c,outputBits} of fixture('bike-reset-wine11.json').fixtures)assert.deepEqual(evaluateBikeReset(c),outputBits);
 });
+
+test('connected reset pose matches original vertical fallback, shared axes and transform graph mutations',async()=>{
+ const {evaluateResetPose}=await import('../scripts/mcm-reference/reset-pose-case.mjs');
+ for(const {input:c,outputBits} of fixture('reset-pose-wine11.json').fixtures)assert.deepEqual(evaluateResetPose(c),outputBits);
+});
