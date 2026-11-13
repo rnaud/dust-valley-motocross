@@ -2711,3 +2711,28 @@ Report: `mcm-collision-sync-substep-validation.json`. Reproduce with
 `node scripts/mcm-reference/compare-collision-sync-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
 Collision callbacks, scheduler/entry wiring and whole-bike acceleration/release
 trajectories remain to be connected and validated. This is not full parity.
+
+### Connected static collision dispatch
+
+The continuous prefix reaches `0x4ac89e`, executing the original grid dispatcher,
+static-wall primary callback, impulse response and collision-triggered event
+setup. All 917 captured words match across 40,320 original executions. An
+observation hook counts real primary-callback entries; another captures the
+pre-dispatch bike state. Required coverage includes a new collision-triggered
+crash with the remaining-substep reset, callbacks without a new crash, existing
+crash states, absent objects and skip/object/manager dispatch gates.
+
+The recovered normal and collision paths now share event-decision and setup
+helpers while retaining the live transform graph and cumulative external-input
+counts. The connected corpus exposed an overly strict inverse-square-root input
+check in line collision and an unordered projection clamp: the original uses
+its unchecked lookup and clamps an unordered projection to zero. Cases 23474
+and 28987 are explicit regressions; 64 variants of the observed crash case vary
+line direction, radius, dispatch gates and the pair cache.
+
+Report: `mcm-collision-dispatch-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-collision-dispatch-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+This connected corpus covers static-wall callbacks. Dynamic bike/rider collision
+callbacks, the scheduler/orientation tail, entry wiring and complete
+acceleration/throttle-release trajectories still need connected validation.
+Full physics parity remains unproven.

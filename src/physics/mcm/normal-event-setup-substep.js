@@ -9,10 +9,15 @@ const f=Math.fround;
 
 // Original event wrapper through its return, before the main loop's join.
 export function updateMcmNormalEventSetupSubstep(c){
- const result=updateMcmNormalEventDecisionSubstep(c),d=c.normalEventDecision,s=c.normalEventSetup;
+ const result=updateMcmNormalEventDecisionSubstep(c);
  if(c.state844)return result;
+ applyMcmSubstepEventSetup(c);
+ return result;
+}
+export function applyMcmSubstepEventSetup(c){
+ const d=c.normalEventDecision,s=c.normalEventSetup;
  c.state844=d.triggered;
- if(!d.triggered)return result;
+ if(!d.triggered)return;
  s.envelope=[0,f(mul(c.linearIntegration.field8cc,21)),1,-1];
  if(c.normalControl.flag820){
   const axes=alignMcmEventRootOrientation(c.nodes[s.sourceIndex],c.bodyNode);
@@ -31,5 +36,5 @@ export function updateMcmNormalEventSetupSubstep(c){
  const rider=startMcmRiderEvent({kind:d.eventKind,records:s.records,randomValues:s.randomValues,velocity:c.velocity});
  Object.assign(s,{previousVelocity:rider.previousVelocity,selected:rider.selected,active16c:rider.active16c});c.controllerHandoff.flag13c=rider.active13c;c.contactCorrection.controller170=rider.kind;
  d.randomCalls+=rider.randomCalls;s.resource=d.eventKind===2?s.alternateResource:s.normalResource;
- return result;
+
 }

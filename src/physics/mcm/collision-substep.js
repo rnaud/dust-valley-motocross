@@ -6,8 +6,11 @@ import {dispatchMcmCollisions} from './collision-dispatch.js';
 // Original 0x4ac7c4..0x4ac89e. The dispatcher traverses live grid entries;
 // callbacks may update the same bike, proxy, grid and event state in place.
 export function updateMcmCollisionSubstep(c){
- const {bike,collision,manager}=c;
  synchronizeMcmCollisionState(c);
+ dispatchMcmCollisionState(c);
+}
+export function dispatchMcmCollisionState(c){
+ const {bike,collision,manager}=c;
  if(!collision)return;
  if(bike.field8a8){bike.field8a8=0;return;}
  const previousState=bike.state844;

@@ -1,8 +1,9 @@
 import {mcmSqrt} from './math.js';
-import {mcmInverseSqrt} from './inverse-sqrt.js';
+import {mcmInverseSqrtLookup as mcmInverseSqrt} from './inverse-sqrt.js';
 const f=Math.fround;
 const scale=(v,s)=>v.map(x=>f(x*s));
-const clampProjection=t=>t<0?0:Math.min(1,f(t));
+// x87 C0 also selects zero for an unordered projection.
+const clampProjection=t=>!(t>=0)?0:Math.min(1,f(t));
 // Original 0x42c1b0: horizontal line with a directed perpendicular response.
 // Contact position is written even on broad-phase miss; D8 also on narrow miss.
 export function testMcmHorizontalLinePair(manager,line,body){

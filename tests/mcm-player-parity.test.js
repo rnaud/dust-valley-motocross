@@ -1351,3 +1351,10 @@ test('connected collision synchronization matches original proxy transforms and 
  for(const gate of ['present=0','present=1:grid=0','present=1:grid=1',':parent=true',':parent=false',':type=0',':type=1'])assert.ok(Object.keys(corpus.source.syncOutcomes).some(k=>k.includes(gate)),gate);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){const actual=evaluateCollisionSyncSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
+
+test('connected static collision dispatch matches callbacks, event transitions and substep reset',async()=>{
+ const {evaluateCollisionDispatchSubstep}=await import('../scripts/mcm-reference/collision-dispatch-substep-case.mjs');
+ const corpus=fixture('collision-dispatch-substep-wine11.json.br');
+ for(const gate of ['present=0',':skip=1:',':enabled=0:',':manager=0:',':callbacks=0:',':callbacks=1:prior=0:state=1:remaining=1',':callbacks=1:prior=0:state=0',':callbacks=1:prior=2:state=2'])assert.ok(Object.keys(corpus.source.dispatchOutcomes).some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){const actual=evaluateCollisionDispatchSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});
