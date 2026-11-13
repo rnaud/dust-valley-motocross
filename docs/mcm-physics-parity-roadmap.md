@@ -2049,3 +2049,29 @@ Report: `mcm-front-velocity-substep-validation.json`. Reproduce with
 Original projection, lookup, steering, terrain, transform and tire callees run
 directly. Remaining contact-force processing, rear-only/no-wheel response,
 full-loop integration and whole-bike acceleration/release parity are unfinished.
+
+### Connected rear-only entry, rotating suspension and drive (2026-11-12)
+
+Extended ordinary execution through `0x4a7c6c`. Rear-only contact now executes
+its real front-response clearing block at `0x4a7ad6`, then joins both-wheel
+contact for rear suspension and drive force. No-wheel/front-only paths are
+observed at their downstream branch entries. Rear response consumes recovered
+wheel axis, lever, normal and height, updates travel and wheel contact position,
+and rotates the suspension mount with descendant-cache invalidation. Degenerate
+contact geometry and skipped responses preserve the original transform behavior.
+The suspension helper reports whether rotation actually occurred so an already
+invalid parent does not cause spurious invalidation on a skipped rotation.
+
+The rear drive call uses the updated substep speed and rear tangent, executing
+released/local/AI branches with synthetic fifteen-entry engine tables. All
+40,000 cases match 382 output words with zero differences, including previous
+front outputs, rear suspension state and drive scalar/vector. The original
+component fields are limit `+54`, divisor `+4c`, limit angle `+48`, prior travel
+`+58` and prior height `+5c`; the oracle supplies these independently.
+
+Report: `mcm-rear-suspension-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-rear-suspension-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Original terrain, transform, suspension and engine callees run directly with
+pinned executable/DLL checks and both lookup initializers. Remaining rear tire
+and contact-force processing, no-wheel response, full-loop integration and
+whole-bike acceleration/release trajectory parity remain unfinished.

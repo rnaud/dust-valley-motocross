@@ -18,5 +18,5 @@ export function updateMcmRotatingSuspension(c) {
   const ratio=(c.previousTravel-travel)/(travel*dt);
   const velocity=displacement.map(v=>f(v*ratio));
   return {travel,displacement,velocity,matrix,previousTravel:travel,limited,
-    increasing:+(c.previousTravel<=travel),cacheValid};
+    increasing:+(c.previousTravel<=travel),cacheValid,rotationApplied:Number.isFinite(angle)};
 }
