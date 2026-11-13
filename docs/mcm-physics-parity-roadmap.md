@@ -1948,3 +1948,27 @@ Pinned executable/Wine DLL checks, real terrain/transform callees and supplied
 scratch/observation boundaries remain as before. This completes another shared
 response block, not the force assembly, full main-loop integration or whole-bike
 acceleration/release trajectory comparison; those remain unfinished.
+
+### Connected takeoff, rider weight and force reference (2026-11-12)
+
+Extended continuous ordinary execution through `0x4a7221`. On takeoff, the
+original captures position/velocity, updates airborne state and clears the
+landing latch. Rider lean drives a bounded-time filter; the active branch uses
+the unrounded filter result for mass-weighted front/rear distribution, while
+the inactive branch sets equal weights and relaxes the filter toward 0.5.
+Grounded state shifts the force reference along normalized horizontal rear
+contact tangent; airborne state resolves its reference transform instead.
+
+All 40,000 cases match across 307 output words with zero differences. Cases
+include signed-zero lean, enabled/disabled lean, filter durations below/equal/
+above timestep, takeoff transitions, mount/node aliasing, and prior contact,
+crash, geometry and transform state. An overflowing parent transform exposed
+host-dependent NaN signs: the recovered world-matrix stores now preserve the
+original x87 negative indefinite value. A selected original-execution fixture
+retains the failure case; arbitrary input NaN payloads are outside this corpus.
+
+Report: `mcm-contact-balance-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-contact-balance-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Executable/DLL pinning and observation boundaries remain unchanged. Filter
+durations and masses are finite positive values. Remaining force assembly,
+full-loop integration and whole-bike acceleration/release parity are unfinished.
