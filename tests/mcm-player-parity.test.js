@@ -1100,3 +1100,13 @@ test('connected reset terrain alignment matches original support selection and w
  const {evaluateResetTerrain}=await import('../scripts/mcm-reference/reset-terrain-case.mjs');
  for(const {input:c,outputBits} of fixture('reset-terrain-wine11.json').fixtures)assert.deepEqual(evaluateResetTerrain(c),outputBits);
 });
+
+test('alternate reset contact query matches original orientation extraction and complete wheel contacts',async()=>{
+ const {evaluateResetContacts}=await import('../scripts/mcm-reference/reset-contacts-case.mjs');
+ for(const {input:c,outputBits} of fixture('reset-contacts-wine11.json').fixtures)assert.deepEqual(evaluateResetContacts(c),outputBits);
+});
+
+test('alternate final contact correction matches original refreshed angles and wheel/reference positions',async()=>{
+ const {evaluateResetContactFinish}=await import('../scripts/mcm-reference/reset-contact-finish-case.mjs');
+ for(const {input:c,outputBits} of fixture('reset-contact-finish-wine11.json').fixtures)assert.deepEqual(evaluateResetContactFinish(c),outputBits);
+});
