@@ -1115,3 +1115,8 @@ test('alternate reset bounds update matches original ordered child callbacks and
  const {evaluateResetBounds}=await import('../scripts/mcm-reference/reset-bounds-case.mjs');
  for(const {input:c,outputBits} of fixture('reset-bounds-wine11.json').fixtures)assert.deepEqual(evaluateResetBounds(c),outputBits);
 });
+
+test('complete alternate reset matches original proxy, collision grid, saved position and final flags',async()=>{
+ const {evaluateResetFull}=await import('../scripts/mcm-reference/reset-full-case.mjs');
+ for(const {input:c,outputBits} of fixture('reset-full-wine11.json').fixtures)assert.deepEqual(evaluateResetFull(c),outputBits);
+});
