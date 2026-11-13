@@ -1225,3 +1225,8 @@ test('connected chassis contacts match original merging, contact velocity and pe
  const {evaluateChassisContactSubstep}=await import('../scripts/mcm-reference/chassis-contact-substep-case.mjs');
  for(const [i,{input:c,outputBits}] of fixture('chassis-contact-substep-wine11.json').fixtures.entries()){const actual=evaluateChassisContactSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
+
+test('connected chassis response matches original contact-count angular response and crash damping',async()=>{
+ const {evaluateChassisResponseSubstep}=await import('../scripts/mcm-reference/chassis-response-substep-case.mjs');
+ for(const [i,{input:c,outputBits}] of fixture('chassis-response-substep-wine11.json').fixtures.entries()){const actual=evaluateChassisResponseSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});
