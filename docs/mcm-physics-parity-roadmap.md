@@ -866,3 +866,30 @@ accepts adapter callbacks that mutate its result state. Next, wire the already
 recovered transitions and real graph resets into those adapters and validate the
 connected original function without these transition substitutions. Full
 whole-bike trajectories and the hybrid-preview replacement remain unfinished.
+
+### Connected full rider update (2026-11-12)
+
+Connected the recovered `0x4aecb0` control flow to real input gating/aggregation,
+nearby interaction, trick startup, orientation reset, ordered bounds callbacks,
+bike/rider animation selectors, pose selection and blend. The new original oracle
+calls the full function normally and does not substitute its transition/reset
+routines. Its only executed substitution is the device response at `0x452670`;
+query arguments and order are recorded. Both original animation vtables remain
+in use. The port's `updateMcmRiderStep` composes those same recovered paths and
+returns their graph mutations together with rider state.
+
+48,000 cases, 234 compared words per case, zero differences. Coverage includes all
+16 trick indices, accepted nearby interactions, rejected/no-candidate nearby calls,
+early exits, orientation resets, pose/blend branches and input-query order.
+Fixtures preserve every observed animation/active/query outcome, signed-zero
+controls, and signed-zero angular state. Report: `mcm-rider-step-validation.json`.
+Reproduce with
+`node scripts/mcm-reference/compare-rider-step-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+
+Scope remains supplied finite state, a root target with source root/child,
+nested/sibling components shared by bike and rider, and synthetic animation
+records. Independent rider graphs, live animation assets and live state adapters
+are not proved by this run. Whole-bike contact/force completion, deterministic
+world checkpoints, original-versus-port trajectories and replacing the hybrid
+preview chassis remain unfinished. This closes the transition-substitution gap
+from the preceding rider-control validation, not the full physics objective.
