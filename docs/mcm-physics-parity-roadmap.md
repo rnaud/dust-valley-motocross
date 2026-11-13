@@ -4087,3 +4087,50 @@ executes in 10,948 cases; 450 stop at the iteration gate and 6,543 remain pendin
 at AI/scripted controller boundaries. All 105 regression fixtures pass cold on
 both architectures. All 294 tests and the production build pass. See
 `mcm-reset-next-engine-validation.json` and `reset-next-engine-wine11.json.br`.
+
+### Retained next-frame contacts and resets
+
+The new comparison continues from engine entry through `0x4a5e27..0x4a64dc`,
+including suspension transform preparation, ordinary wheel contacts and the
+manual-reset path. Component rotation consumes the steering rate computed by
+the next frame. Reset state, engine state, mutable child records and transforms
+are carried through the original reset helpers.
+
+This exposed original nontermination on synthetic NaN positions: the reset
+avoidance routine accepts unordered distances, then repeats an identical state.
+The native observer records a repeated position/heading/nearest-bike/flag tuple
+and unwinds the harness; it does not patch the original into a successful reset.
+The JavaScript observer reports the same explicit `original-nonterminating`
+branch. A separate watchdog reports stalled instruction pointers if execution
+fails to reach an observed boundary. These cases must remain separate from
+completed contact/reset comparisons.
+
+The recovered normalization follows the original unchecked lookup where the
+original has no finite-value guard. Its target-heading equality check also
+recognizes unordered x87 comparisons. Typed intermediate stores preserve NaN
+signs through local and relative child orientation.
+
+The course upper-bound test also uses the original unordered comparison behavior:
+NaN bike coordinates take the upper clamp. Case 4149 guards the resulting reset
+pose and downstream contact/transform state.
+
+Validation: all 17,941 input cases match their observations on ARM64 and x64,
+with zero exceptions and zero changed prior native traces. Of these, 8,193 reach
+ordinary contacts, 2,703 complete resets, 52 match a nonterminating original
+avoidance cycle, 450 stop at the iteration gate and 6,543 retain AI/scripted
+pending boundaries. Nontermination is not a completed reset or trajectory.
+The 112 retained regression cases pass cold on both architectures. The observer
+compares 20,428 words per case, with explicit status and normalized placeholders
+for boundaries not reached. Next-frame forces, integration and collision remain
+open, as does connecting the completed pipeline to browser preview.
+
+```sh
+node scripts/mcm-reference/compare-reset-next-contact.mjs /path/to/mcm.exe /path/to/next-engine-corpus /path/to/new-output-directory
+```
+
+See `mcm-reset-next-contact-validation.json` and
+`reset-next-contact-wine11.json.br`. Subsequent reset random draws are supplied
+from the initialized CRT draw; this is deterministic external input, not a claim
+of the original application's complete random-stream parity.
+
+Validation gates: all 295 tests and the production build pass.

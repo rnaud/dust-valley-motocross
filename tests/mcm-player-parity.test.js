@@ -1912,3 +1912,19 @@ test('retained next-frame engine uses carried timing, input and filter state',as
   assert.deepEqual(actual.tail,outputBits,`next engine tail ${caseIndex}`);
  }
 });
+
+test('retained next-frame contacts distinguish completed resets from original avoidance cycles',async()=>{
+ const {evaluateResetNextContact}=await import('../scripts/mcm-reference/reset-next-contact-case.mjs');
+ const corpus=fixture('reset-next-contact-wine11.json.br');
+ assert.equal(corpus.source.mismatchCount,0);
+ assert.equal(corpus.source.exceptionCount,0);
+ assert.equal(corpus.source.priorTraceChangedCases,0);
+ assert.equal(corpus.source.priorTraceComparedCases,17941);
+ for(const branch of ['ordinary','reset','original-nonterminating','no-iterations','pending'])assert.ok(corpus.source.contactBranches[branch]);
+ for(const {caseIndex,input,prefixBits,outputBits} of corpus.fixtures){
+  const actual=evaluateResetNextContact(input);
+  assert.equal(actual.tail.length,12151);
+  assert.deepEqual(actual.prefix,prefixBits,`next contact prefix ${caseIndex}`);
+  assert.deepEqual(actual.tail,outputBits,`next contact tail ${caseIndex}`);
+ }
+});
