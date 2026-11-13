@@ -2589,3 +2589,25 @@ This corpus uses an empty bounds-child callback list; callbacks remain covered
 standalone and must still be connected to this prefix. Caller joins and trick
 handling, collision/tail integration, entry wiring and whole-bike acceleration/
 throttle-release trajectories remain incomplete.
+
+### Connected event child-transform callbacks
+
+Event orientation reset now dispatches the bounds-child records in original
+list order, using the real player vtable callback in the reference. Two attached
+components participate in the same transform graph as the preceding physics,
+including earlier invalidation and nested component parents. The recovered
+callback applies each record's local or relative orientation and position,
+retaining record-vector mutations and untouched/skipped state.
+
+All 704 captured words match in 40,000 pinned-original executions. Coverage
+includes zero through three callbacks, repeated component selection, alternating
+local/relative records, flat/nested components, and event/no-event paths.
+Case 25608 exposed a NaN-sign difference in pointer-argument matrix composition;
+that matrix product now uses recovered x87 multiply/add semantics and the case
+is explicitly retained in the compressed regression corpus.
+
+Report: `mcm-normal-event-children-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-normal-event-children-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Next are the caller's post-event joins and trick handling, then collision/tail
+and entry integration. Full whole-bike acceleration/throttle-release trajectory
+parity remains unproven.
