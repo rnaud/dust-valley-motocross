@@ -1080,3 +1080,8 @@ test('complete wheel contact query matches original probe corrections and penetr
  const {evaluateWheelContacts}=await import('../scripts/mcm-reference/wheel-contacts-case.mjs');
  for(const {input:c,outputBits} of fixture('wheel-contacts-wine11.json').fixtures)assert.deepEqual(evaluateWheelContacts(c),outputBits);
 });
+
+test('main-substep wheel query matches original ordered transform reads and complete contacts',async()=>{
+ const {evaluateSubstepWheelQuery}=await import('../scripts/mcm-reference/substep-wheel-query-case.mjs');
+ for(const {input:c,outputBits} of fixture('substep-wheel-query-wine11.json').fixtures)assert.deepEqual(evaluateSubstepWheelQuery(c),outputBits);
+});
