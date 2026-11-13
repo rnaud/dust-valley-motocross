@@ -7,7 +7,9 @@ import {inverseRotateMcmVector} from './world-transform.js';
 export function accumulateMcmPairedForceTorque(c) {
   const f=Math.fround;
   const cross=(a,b)=>[f(a[1]*b[2]-b[1]*a[2]),f(b[0]*a[2]-b[2]*a[0]),f(b[1]*a[0]-b[0]*a[1])];
-  const totalForce=c.totalForce.map((v,i)=>f(add(f(add(v,c.force2ac[i])),c.force2b8[i])));
+  // Typed stores preserve the first NaN sign across V8 array transitions.
+  const totalForce=new Float64Array(3);
+  for(let i=0;i<3;i++)totalForce[i]=f(add(f(add(c.totalForce[i],c.force2ac[i])),c.force2b8[i]));
   const first=inverseRotateMcmVector(c.matrix,cross(c.arm3c0,c.force2b8));
   let counter=c.counter>>>0;
   if(floatBits(first[0])>0x80000000){
