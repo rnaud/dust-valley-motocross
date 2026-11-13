@@ -1614,7 +1614,7 @@ test('retained reset state exhausts the captured loop through up to four complet
 });
 
 
-test('post-loop frame acceleration uses retained velocity and the original frame delta',async()=>{
+test('post-loop frame acceleration uses retained velocity and the stored frame interval',async()=>{
  const {evaluateResetPostFilter}=await import('../scripts/mcm-reference/reset-post-filter-case.mjs');
  const corpus=fixture('reset-post-filter-wine11.json.br'),outcomes=Object.keys(corpus.source.postFilterOutcomes);
  assert.equal(corpus.source.totalDifferences,0);

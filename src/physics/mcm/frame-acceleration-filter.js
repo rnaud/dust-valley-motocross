@@ -4,8 +4,9 @@ import {mcmAdd as add,mcmSubtract as sub,mcmMultiply as mul,mcmDivide as div} fr
 // Original 0x4ac95a..0x4ac968, before optional visual-effect processing.
 export function beginMcmPostLoop(c){c.bike.field8c0=0;}
 
-// Original 0x4acfd8..0x4ad078. This filter uses the original frame delta,
-// not the final substep's timestep or its carry-consumption interval.
+// Original 0x4acfd8..0x4ad078. frameDelta denotes the stored interval at
+// stack+0x64: incoming delta plus prior carry, or the nominal step on the
+// scheduler's zero-delta/no-whole-step fallback. It is not the final substep dt.
 export function updateMcmFrameAcceleration(c){
  const b=c.bike,{filter,frameDelta}=c.frameTail,f=Math.fround;
  b.offset=inverseRotateMcmVector(resolveMcmWorldMatrix(c.bodyNode),b.velocity);
