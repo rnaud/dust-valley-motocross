@@ -4422,3 +4422,27 @@ The current original-game session has no allocated bike candidates and produced
 zero player records. No new normal acceleration/release comparison is claimed.
 Entering a live riding event, exporting its state and integrating original
 terrain/assets into the recovered runner remain the next requirements.
+
+### Playable preview: recovered tire-force and contact-limit helpers
+
+MCM preview now replaces the custom tire curve with `calculateMcmTireForce`
+(front `0x4b1870`, rear `0x4b1960`) and limits friction and braking through
+`limitMcmContactForce` (`0x4ad310`). The adapter converts SI wheel velocities,
+loads and allocated mass to original units before the helper calls. Coefficients
+6, float32(0.15) and brake force 175 come from PDM bike fields +0x5b0, +0x5b4 and
++0x5e8 in the checked-in `player-state-wine11.json` capture. The classic handling
+path retains its existing tire curve.
+
+This is incremental playable integration, not whole-bike parity. Cannon still
+supplies contact geometry, filtered load shares, steering/balance and chassis
+integration. The adapter allocates the stopping budget per wheel; the original
+shares one budget across both contacts and their torques. The original dynamic
+rear traction scaling and complete contact preparation remain to be connected.
+Sand resistance remains an additional preview surface effect. No original live
+acceleration/release match is claimed by the preview tests.
+
+Validation: all 306 repository tests and the production build pass. Browser
+checks pass for preview acceleration, steering, throttle release, pause/photo,
+reset, classic-mode switching and mobile layout. Focused tests cover original
+pure rolling/lateral force coefficients, forward/reverse low-speed stopping,
+zero-contact force, and braking versus coasting on hardpack and deformable sand.
