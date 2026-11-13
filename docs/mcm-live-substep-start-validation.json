@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "sourceHashes": {
+    "live-substep-start-oracle.c": "e6fd20f201e68c558eb0041ad0a2922fcc18447d267e11ba488dd120e62e003f",
+    "live-normal-rider-oracle.c": "91b0c306f9b88161eaa1bff91d7428abc1c83386382bc603c4d5f1e923a8299a",
+    "oracle.c": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe",
+    "live-substep-start.mjs": "88f36103fc4e25fdb4f198ab5cd2a6b4beacb1be71d527d4323fcf447ae5ae2c",
+    "compare-live-substep-start.mjs": "69cd90fe17836e375e73b13c28147ae166a255741aa37afeb0bf1a59d5d0a1c3"
+  },
+  "inputSha256": "d3988e1e079fa4e269e99cb9628eb993cfede6c2d96e89e304e8a80419c8c37b",
+  "outputSha256": "482556bc6de2c7c0cc013f190dd54bd09c9b2b5ef94a75047420ecb23425b1fa",
+  "fixtureSha256": "71c5cc1f4552bc8d1f0a41659871f8553e5e8f65f3dce7037e9c6a06e99fff27",
+  "validation": {
+    "scope": "One original engine-entry through contact-transform preparation slice, initialized from captured idle state with explicit released controls. No terrain/contact-solver or full-frame parity claim.",
+    "captureId": "0000010c3db91420",
+    "blocks": 8821,
+    "comparedWords": 110036,
+    "changedWords": 16,
+    "differences": 0,
+    "firstDifferences": [],
+    "queries": [
+      {
+        "action": 5,
+        "device": 0
+      },
+      {
+        "action": 4,
+        "device": 0
+      }
+    ],
+    "randomCalls": 0
+  },
+  "x64ReportIdentical": true,
+  "normalRiderOracleOutputUnchanged": true
+}

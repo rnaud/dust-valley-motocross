@@ -3,6 +3,12 @@
 #define main unused_helper_main
 #include "oracle.c"
 #undef main
+#ifndef LIVE_SETUP
+#define LIVE_SETUP() ((void)0)
+#endif
+#ifndef LIVE_UPDATE
+#define LIVE_UPDATE(b) ((void (__attribute__((thiscall)) *)(void*,float))0x200af710)(b,.02f)
+#endif
 static uint32_t pages[10000],page_count;
 static void reserve_page(uint32_t page){
  for(uint32_t i=0;i<page_count;i++)if(pages[i]==page)return;
@@ -11,7 +17,7 @@ static void reserve_page(uint32_t page){
 }
 int main(int argc,char**argv){
  if(argc!=4)return 2;
- map_image(argv[1]);((void (__cdecl *)(void))0x20001720)();
+ map_image(argv[1]);((void (__cdecl *)(void))0x20001720)();LIVE_SETUP();
  FILE*in=fopen(argv[2],"rb"),*out=fopen(argv[3],"wb");if(!in||!out)fail("open");
  uint32_t owner,count;if(fread(&owner,4,1,in)!=1||fread(&count,4,1,in)!=1||!count||count>100000)fail("header");
  uint32_t*addresses=calloc(count,4),*sizes=calloc(count,4);if(!addresses||!sizes)fail("alloc");
@@ -24,7 +30,7 @@ int main(int argc,char**argv){
  if(*(uint32_t*)b!=0x4d9a94||*(uint32_t*)proxy!=0x4d7b14||*(uint32_t*)(b+0x844)||*(uint32_t*)(b+0x710)||*(uint32_t*)(b+0xbfc)==2)fail("normal state");
  *(uint32_t*)b=0x200d9a94;*(uint32_t*)proxy=0x200d7b14;
  unsigned short cw=0x027f;__asm__ volatile("fninit; fldcw %0"::"m"(cw));
- typedef void (__attribute__((thiscall)) *Update)(void*,float);((Update)0x200af710)(b,.02f);
+ LIVE_UPDATE(b);
  *(uint32_t*)b=0x4d9a94;*(uint32_t*)proxy=0x4d7b14;
  for(uint32_t i=0;i<count;i++)if(fwrite((void*)(uintptr_t)addresses[i],sizes[i],1,out)!=1)fail("output");
  if(fclose(out))fail("close");
