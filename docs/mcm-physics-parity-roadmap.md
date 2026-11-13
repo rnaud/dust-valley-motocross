@@ -787,3 +787,28 @@ It normalizes orientation using the existing local/relative helpers, but only
 sets relative position when component table entry +0x38 is nonzero. The interaction
 seeks rider record bike+0x778 and bike record +0x790 at fraction .5. Validate these
 callbacks and the rider proxy's actual vtable before claiming the complete helper.
+
+### Connected animation seek and bike child callbacks (2026-11-12)
+
+Recovered `0x430ab0` frame selection, bounds copying and linked child dispatch,
+connected to the real bike vtable callback `0x44f8b0`. The callback mutates record
+axes, selects local versus relative orientation and applies position only when
+component +0x38 is nonzero. The port keeps the original nearest-even conversion
+and float32 intermediate when choosing the frame. Other animation state is
+preserved; this is not the animation reset behavior of `0x430a20`.
+
+40,000 original-execution cases produced zero differences across 119 output words:
+three local/world matrices and cache flags, both child records' mutated axes,
+selected frame/record identity and bounds. Cases cover 1–8 frames, five fractions
+including the interaction's .5, empty/one/two-child lists, both orientation branches,
+both position flags, component indices, and body/external parents. Ordered child
+cases target the same component so prior mutation and cache invalidation matter.
+Report: `mcm-animation-seek-validation.json`; reproduce with
+`node scripts/mcm-reference/compare-animation-seek-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+The initial harness mismatch was an input adapter error (parent flag offset), fixed
+before the successful runs; no original routines were replaced or patched here.
+
+Still required: identify the rider proxy's actual callback table, integrate both
+animation seeks with nearby interaction orientation/state updates, then connect
+the full rider update. Whole-bike parity remains unproven and the playable preview
+continues to use its hybrid chassis.

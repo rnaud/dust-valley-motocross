@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "1873cf1a4e2115e6b612f85e6651a340c98d6372df76bb61bbab393af6fcd083",
+  "loaderSourceSha256": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe",
+  "casesSha256": "5319d67d3c29f5709da5b512b9606a3a014b7fcaefb0ef9fb324a64fe6a4b3a6",
+  "resultsSha256": "c8b42463274e37cc8c10bafc185b25c012a608753f60f0eeda91ffd9df09f52b",
+  "cases": 40000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "scope": "Original animation seek 0x430ab0 and real bike callback 0x44f8b0, both local/relative orientation branches and conditional position updates. Frame counts 1..8, fractions 0/.25/.5/.75/1, childless, single-child and ordered two-child frames, component lookup, parent graphs and cache combinations. Finite nondegenerate axes; longer child lists, rider proxy vtable and complete interaction integration remain excluded."
+}
