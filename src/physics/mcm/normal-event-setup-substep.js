@@ -1,3 +1,5 @@
+import {applyMcmLocalChildTransform} from './local-child-transform.js';
+import {applyMcmRelativeChildTransform} from './relative-child-transform.js';
 import {updateMcmNormalEventDecisionSubstep} from './normal-event-decision-substep.js';
 import {alignMcmEventRootOrientation} from './event-orientation.js';
 import {startMcmRiderEvent} from './rider-event.js';
@@ -14,7 +16,12 @@ export function updateMcmNormalEventSetupSubstep(c){
  s.envelope=[0,f(mul(c.linearIntegration.field8cc,21)),1,-1];
  if(c.normalControl.flag820){
   const axes=alignMcmEventRootOrientation(c.nodes[s.sourceIndex],c.bodyNode);
-  c.offset=axes.forward;c.normal=axes.up;s.liveBoundsMin=[...s.boundsMin];s.liveBoundsMax=[...s.boundsMax];c.normalControl.flag820=0;
+  c.offset=axes.forward;c.normal=axes.up;s.liveBoundsMin=[...s.boundsMin];s.liveBoundsMax=[...s.boundsMax];
+  for(const record of (s.boundsChildren||[]).slice(0,s.childCount)){
+   const node=s.children[record.componentIndex];
+   (record.local?applyMcmLocalChildTransform:applyMcmRelativeChildTransform)(c.bodyNode,node,record);
+  }
+  c.normalControl.flag820=0;
  }
  s.direction=[c.bikeForward[0],0,c.bikeForward[2]];d.animation=0;c.leanDisabled=0;c.field714=0;
  s.inverted=+(floatBits(c.bikeUp[1])>0x80000000);s.field890=c.heading;
