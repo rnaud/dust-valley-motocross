@@ -1,6 +1,7 @@
 import {floatBits} from './math.js';
 import {mcmInverseSqrtLookup as mcmInverseSqrt} from './inverse-sqrt.js';
 import {updateMcmContactSubstep} from './contact-substep.js';
+import {mcmAdd as add,mcmSubtract as sub,mcmMultiply as mul} from './x87-arithmetic.js';
 const f=Math.fround;
 
 // Original shared force preparation 0x4a64dc..0x4a663d. Both signed zeros
@@ -16,8 +17,8 @@ export function prepareMcmContactForces(c){
  }
  const a=c.bikeForward,b=c.rearTangent;
  c.rearAlignment=Math.abs(f((a[1]*b[1]+a[0]*b[0])+a[2]*b[2]));
- const delta=c.points[6].map((v,i)=>f(v-c.points[7][i])),[x,y,z]=delta;
- const inverse=mcmInverseSqrt(f((y*y+z*z)+x*x));c.contactDirection=delta.map(v=>f(v*inverse));
+ const delta=c.points[6].map((v,i)=>f(sub(v,c.points[7][i]))),[x,y,z]=delta;
+ const inverse=mcmInverseSqrt(f(add(add(mul(y,y),mul(z,z)),mul(x,x))));c.contactDirection=delta.map(v=>f(mul(v,inverse)));
 }
 
 export function updateMcmContactForceSubstep(c){

@@ -1,7 +1,7 @@
 import {updateMcmFrontSuspensionSubstep} from './front-suspension-substep.js';
 import {updateMcmSteeringVelocity} from './steering-velocity.js';
 import {resolveMcmWorldMatrix,inverseRotateMcmVector} from './world-transform.js';
-import {mcmSubtract as sub,mcmMultiply as mul} from './x87-arithmetic.js';
+import {mcmAdd as add,mcmSubtract as sub,mcmMultiply as mul} from './x87-arithmetic.js';
 const f=Math.fround;
 
 // Original 0x4a73e2..0x4a7717. Rear contact selects steering correction,
@@ -15,16 +15,16 @@ export function prepareMcmFrontLoad(c){
    field560:c.forwardSpeed,field564:c.speed,dt:c.dt,field620:c.steeringFlag});
   c.velocity=r.velocity;c.offset=r.temporary;s.radius=r.radius;s.turnAngle=r.turnAngle;
   c.field6b0=f(r.turnAngle*c.turnScale);
-  s.arm=c.points[6].map((v,i)=>f(v-c.balanceCenter[i]));
+  s.arm=c.points[6].map((v,i)=>f(sub(v,c.balanceCenter[i])));
   const a=c.angularVelocity,n=c.points[4];
-  const projection=(a[2]*n[2]+a[0]*n[0])+a[1]*n[1];
-  c.offset=n.map(v=>f(v*projection));
+  const projection=add(add(mul(a[2],n[2]),mul(a[0],n[0])),mul(a[1],n[1]));
+  c.offset=n.map(v=>f(mul(v,projection)));
   const b=s.arm,d=c.offset;
   s.angularCross=new Float64Array(3);s.angularCross[0]=f(sub(mul(d[1],b[2]),mul(d[2],b[1])));s.angularCross[1]=f(sub(mul(d[2],b[0]),mul(d[0],b[2])));s.angularCross[2]=f(sub(mul(d[0],b[1]),mul(d[1],b[0])));
-  s.force=c.force.map(v=>f(c.rearWeight*v));
+  s.force=c.force.map(v=>f(mul(c.rearWeight,v)));
  }else{
-  s.arm=c.points[6].map((v,i)=>f(v-c.balanceCenter[i]));
-  c.offset=c.points[6].map((v,i)=>f(v-c.bodyPosition[i]));
+  s.arm=c.points[6].map((v,i)=>f(sub(v,c.balanceCenter[i])));
+  c.offset=c.points[6].map((v,i)=>f(sub(v,c.bodyPosition[i])));
   s.angularCross=[0,0,0];s.scratch354=[0,0,0];s.force=[...c.force];
   s.localArm=inverseRotateMcmVector(resolveMcmWorldMatrix(c.bodyNode),c.offset);
  }

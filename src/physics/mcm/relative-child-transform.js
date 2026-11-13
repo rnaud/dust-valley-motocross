@@ -9,7 +9,8 @@ const normalize=([x,y,z])=>{
  const inverse=f(mcmInverseSqrt(f((y*y+z*z)+x*x)));
  return [f(x*inverse),f(y*inverse),f(z*inverse)];
 };
-const transposeRotation=m=>{const r=[...m];for(const [a,b] of [[1,4],[2,8],[6,9]])[r[a],r[b]]=[r[b],r[a]];return r;};
+// Preserve NaN signs while retaining the mutable array matrix contract.
+const transposeRotation=m=>{const r=new Array(16).fill(.1),indices=[0,4,8,3,1,5,9,7,2,6,10,11,12,13,14,15];for(let i=0;i<16;i++)r[i]=Math.fround(m[indices[i]]);return r;};
 
 // Original 0x4b7270 with orthogonalization disabled, as used by 0x44fa70.
 // Mutates both axes, preserving the entry's binary32 normalization stores.

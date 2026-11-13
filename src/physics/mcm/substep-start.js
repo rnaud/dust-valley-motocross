@@ -2,8 +2,9 @@ import {floatBits} from './math.js';
 import {updateMcmDigitalThrottleUnchecked as updateMcmDigitalThrottle} from './throttle.js';
 import {updateMcmGears} from './gears.js';
 import {queryMcmBikeInput} from './bike-input.js';
+import {mcmAdd as add,mcmSubtract as sub,mcmMultiply as mul,mcmDivide as div} from './x87-arithmetic.js';
 const f=Math.fround;
-const filter=(state,target,dt)=>f(state.value+(target-state.value)*(Math.min(state.duration,dt)/state.duration));
+const filter=(state,target,dt)=>f(add(state.value,mul(sub(target,state.value),div(Math.min(state.duration,dt),state.duration))));
 
 // Original 0x4a5bd7..0x4a5e27, including real engine update ordering.
 export function updateMcmSubstepStart(c){
@@ -37,7 +38,7 @@ export function updateMcmSubstepStart(c){
  // Automatic shifts use the previous saved speed, before the refresh below.
  const gears=updateMcmGears({...engine,speed:c.previousSpeed});Object.assign(engine,gears);
  c.previousSpeed=c.speed;
- const acceleration=f((c.velocity[1]-c.previousY)*c.inverseDt);
+ const acceleration=f(mul(sub(c.velocity[1],c.previousY),c.inverseDt));
  c.accelerationFilter.value=filter(c.accelerationFilter,acceleration,c.dt);
  c.filteredAcceleration=c.accelerationFilter.value;c.previousY=c.velocity[1];
  if((floatBits(c.previousSpeed)|0)<0x3a83126f||!Number.isFinite(c.previousSpeed)){

@@ -3,6 +3,7 @@ import {mcmInverseSqrtLookup as mcmInverseSqrt} from './inverse-sqrt.js';
 import {calculateMcmTireForce} from './tire-force.js';
 import {resolveMcmWorldMatrix,inverseRotateMcmVector} from './world-transform.js';
 import {updateMcmRearMotionSubstep} from './rear-motion-substep.js';
+import {mcmAdd as add,mcmSubtract as sub,mcmMultiply as mul} from './x87-arithmetic.js';
 const f=Math.fround;
 
 // Original 0x4a8216..0x4a8634: rear traction scaling, shared arm and tire force.
@@ -26,8 +27,8 @@ export function updateMcmRearTire(c){
  }
  s[1]=f(1-s[0]);
  if(c.bothContact){
-  if((floatBits(s[0])|0)<0x3f666666)c.offset=c.points[6].map((v,i)=>f(v-c.bodyPosition[i]));
-  else c.offset=c.points[6].map((v,i)=>f((c.points[7][i]-v)*.5+v-c.bodyPosition[i]));
+  if((floatBits(s[0])|0)<0x3f666666)c.offset=c.points[6].map((v,i)=>f(sub(v,c.bodyPosition[i])));
+  else c.offset=c.points[6].map((v,i)=>f(sub(add(mul(sub(c.points[7][i],v),.5),v),c.bodyPosition[i])));
   c.frontLoad.localArm=inverseRotateMcmVector(resolveMcmWorldMatrix(c.bodyNode),c.offset);
  }
  if((floatBits(c.rearMotion.speed)|0)>0x3a83126f){
