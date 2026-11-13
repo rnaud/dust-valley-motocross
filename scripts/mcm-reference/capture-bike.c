@@ -23,7 +23,7 @@ static const unsigned lengths[] = {6, 6, 2, 3};
 static BYTE saved[4];
 static int armed[4];
 static HANDLE process;
-static int scripted;
+static int scripted, capture_stack;
 static DWORD player_frame, requested_throttle, pass, random_state=12345;
 static int player_active;
 
@@ -62,8 +62,10 @@ static int checkpoint(DWORD bike,int restore) {
     static const DWORD slots[][2]={{0x874,0x3ac},{0x8d8,0x44},{0x8dc,0x50},{0x8e0,0x50},{0x8e4,0x60},{0x8e8,0x60},{0x8ec,0x60},{0x8f0,0x1f0},{0x8f8,0x10},{0x8fc,0x10},{0x900,0x10},{0x904,0x10}};
     if(!save_block(bike,0xcc8))return 0;
     for(unsigned i=0;i<sizeof slots/sizeof slots[0];i++){DWORD ptr;if(!read_memory(bike+slots[i][0],&ptr,4))return 0;if(ptr&&!save_block(ptr,slots[i][1]))return 0;}
-    DWORD proxy,vtable,engine,filter;
-    return save_components(bike)&&read_memory(bike+0xc8c,&proxy,4)&&
+    DWORD proxy,vtable,engine,filter,contact_component,contact_node;
+    return save_components(bike)&&read_memory(bike+0x8ec,&contact_component,4)&&
+        read_memory(contact_component+0x50,&contact_node,4)&&contact_node&&save_tree(contact_node)&&
+        read_memory(bike+0xc8c,&proxy,4)&&
         read_memory(proxy,&vtable,4)&&vtable==0x4d7b14&&save_block(proxy,0x438)&&save_components(proxy)&&
         read_memory(bike+0x8f0,&engine,4)&&read_memory(engine+4,&filter,4)&&save_block(filter,0x10);
 }
@@ -105,7 +107,7 @@ static void write_byte(DWORD address, BYTE value) {
 
 static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CONTEXT *context) {
     DWORD frame, carry, nominal, cap, dt, steps, engine, transform, rider;
-    unsigned char matrix[64], rider_state[0x3ac];
+    unsigned char matrix[64], rider_state[0x3ac], frame_stack[0xc00];
     unsigned char engine_state[0x16c];
     unsigned char object[0xcc8];
     if (!read_memory(context->Esi, object, sizeof object) ||
@@ -121,6 +123,7 @@ static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CON
         !read_memory(engine, engine_state, sizeof engine_state) ||
         !read_memory(context->Esi + 0x434, &transform, 4) ||
         !read_memory(transform + 0x84, matrix, sizeof matrix)) return 0;
+    if(capture_stack&&!read_memory(context->Esp,frame_stack,sizeof frame_stack))return 0;
     fprintf(out, "{\"phase\":\"%s\",\"sequence\":%lu,\"bike\":\"%08lx\","
                  "\"thread\":%lu,\"cw\":%lu,\"frameBits\":%lu,\"carryBits\":%lu,"
                  "\"nominalBits\":%lu,\"cap\":%lu,\"dtBits\":%lu,\"steps\":%lu,\"stateHex\":\"",
@@ -133,7 +136,13 @@ static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CON
     for (unsigned i = 0; i < sizeof matrix; i++) fprintf(out, "%02x", matrix[i]);
     fprintf(out,"\",\"riderAddress\":\"%08lx\",\"riderHex\":\"",rider);
     for(unsigned i=0;i<sizeof rider_state;i++)fprintf(out,"%02x",rider_state[i]);
-    fprintf(out, "\",\"scripted\":%s,\"playerFrame\":%lu,\"requestedThrottle\":%lu,\"pass\":%lu,\"randomState\":%lu}\n", scripted ? "true" : "false", player_frame - 1, requested_throttle,pass,random_state);
+    fprintf(out,"\"");
+    if(capture_stack){
+        fprintf(out,",\"stackAddress\":\"%08lx\",\"stackHex\":\"",context->Esp);
+        for(unsigned i=0;i<sizeof frame_stack;i++)fprintf(out,"%02x",frame_stack[i]);
+        fprintf(out,"\"");
+    }
+    fprintf(out, ",\"scripted\":%s,\"playerFrame\":%lu,\"requestedThrottle\":%lu,\"pass\":%lu,\"randomState\":%lu}\n", scripted ? "true" : "false", player_frame - 1, requested_throttle,pass,random_state);
     return !ferror(out);
 }
 
@@ -143,6 +152,7 @@ int main(int argc, char **argv) {
         return 2;
     }
     scripted = getenv("MCM_SCRIPTED") != NULL;
+    capture_stack = getenv("MCM_STACK") != NULL;
     DWORD pid = strtoul(argv[1], NULL, 0), limit = strtoul(argv[3], NULL, 0);
     if (!pid || limit < 2 || limit > 10000 || (limit & 1)) return 2;
     FILE *out = fopen(argv[2], "wx");
