@@ -37,3 +37,12 @@ export function secondaryMcmCollision(c){
  else if(bike.state844===2)return;
  bike.field8a8=1;primaryMcmCollision(c);
 }
+
+// Bind the original callback pair to a live dispatcher object. Resolve the
+// other bike at call time: the primary response may have changed its state.
+export function bindMcmBikeCollisionCallbacks(c){
+ const context=()=>({...c,other:c.collision.other.bike,collisionType:c.collision.other.collisionClass});
+ c.collision.bike=c.bike;
+ c.collision.onPrimary=()=>primaryMcmCollision(context());
+ c.collision.onSecondary=()=>secondaryMcmCollision(context());
+}
