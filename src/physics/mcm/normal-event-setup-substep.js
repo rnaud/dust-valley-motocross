@@ -33,7 +33,7 @@ export function applyMcmSubstepEventSetup(c){
  if(d.eventKind===1&&(floatBits(c.chassisResponse.angularXY[0])|0)<0x3fc8f5c3)c.chassisResponse.angularXY[0]=f(1.57);
  c.controllerHandoff.velocity=[...c.velocity];
  const angular=new Float64Array(3);angular[0]=f(mul(c.chassisResponse.angularXY[0],.75));angular[1]=f(mul(c.chassisResponse.angularXY[1],.75));angular[2]=f(mul(c.field53c,.75));c.controllerHandoff.angularVelocity=angular;
- const rider=startMcmRiderEvent({kind:d.eventKind,records:s.records,randomValues:s.randomValues,velocity:c.velocity});
+ const rider=startMcmRiderEvent({kind:d.eventKind,records:s.records,randomValues:s.randomValues,drawRandom:s.drawRandom,velocity:c.velocity});
  Object.assign(s,{previousVelocity:rider.previousVelocity,selected:rider.selected,active16c:rider.active16c});c.controllerHandoff.flag13c=rider.active13c;c.contactCorrection.controller170=rider.kind;
  d.randomCalls+=rider.randomCalls;s.resource=d.eventKind===2?s.alternateResource:s.normalResource;
 

@@ -4547,3 +4547,43 @@ verify the captured profile, forward/back/neutral filter behavior, airborne
 reference state, projected load source, suspension mass-share response and reset.
 The existing deformable-sand acceleration checks pass without relaxing their
 expectations.
+
+
+### Retained histories: continuous original CRT random state
+
+The recovered runner can now share one `createMcmRandom` stream across engine
+shifts, bike resets, launch events and rider record selection using
+`connectMcmRandom`. Consumers draw only inside the original executed branches;
+shift delays and empty rider groups do not advance the stream. Captured individual
+draws remain supported for the existing boundary fixtures. The stream belongs to
+the application thread and can be shared across bike contexts, rather than being
+implicitly reseeded by a frame or reset.
+
+`MCM_HISTORY_SEED=12345` enables continuous draws in the retained-history capture.
+The native oracle supplies a thread-data pointer and jumps to original
+`0x4bf195`, executing the pinned executable's random arithmetic, state store and
+return through `0x4bf1be`. It bypasses only the TLS lookup at `0x4bf190`; it does
+not replace the generator with a second implementation of the recurrence.
+The seed is installed once after the existing retained-frame setup, before the
+400-frame history. A sidecar records original state and cumulative draw count
+at every frame, and both native captures must match byte-for-byte.
+
+Four 400-frame histories match on ARM64 and x64: engine outputs, all executed
+substep finishes, frame returns, and CRT state/count. Native draw totals are
+10, 2, 2 and 10. They include shifts separated across acceleration/release and
+rider-event draws; earlier setup traces remain byte-identical. The checked-in
+`retained-random-wine11.json.br` fixture and `mcm-retained-random-validation.json`
+report preserve this evidence. The original fixed-draw history tests remain.
+
+This removes the repeated-draw limitation for these retained histories. Their
+initial states/assets are still synthetic, with crash/overflow trajectories;
+they do not establish healthy live acceleration parity. Application activity
+outside the retained bike, including other consumers of the same thread's CRT
+stream, is not simulated. Fresh original-game telemetry still requires the
+locked desktop to be unlocked. Preview chassis/contact integration and the other
+previously recorded whole-simulation gaps remain open.
+
+Validation: all 315 tests and the production build pass. ARM64 and x64 native
+comparisons each report zero mismatches across 1,600 frames. The preview menu
+now accurately lists recovered traction and rider weight balance while retaining
+the warning about adapted terrain contacts, chassis and rider stabilization.

@@ -2083,3 +2083,24 @@ test('four 400-frame retained throttle/release histories match repeatable origin
   assert.equal(count,HISTORY_FRAMES);
  }
 });
+
+
+test('retained histories share the original CRT stream across shifts and rider events',async()=>{
+ const {evaluateRetainedHistory,HISTORY_FRAMES}=await import('../scripts/mcm-reference/retained-history-case.mjs');
+ const corpus=fixture('retained-random-wine11.json.br');
+ assert.equal(corpus.source.mismatchCount,0);assert.equal(corpus.source.repeated,true);
+ assert.equal(corpus.source.frames,1600);assert.equal(corpus.source.priorTraceChangedCases,0);
+ assert.equal(corpus.source.schedule.randomSeed,12345);
+ for(const {caseIndex,input,frames} of corpus.fixtures){
+  let count=0;
+  evaluateRetainedHistory(input,(actual,{frame,random})=>{
+   assert.equal(actual.frame.status,'returned',`random history status ${caseIndex}/${frame}`);
+   assert.deepEqual({state:random.state,calls:random.calls},frames[frame].random,`CRT state/count ${caseIndex}/${frame}`);
+   assert.deepEqual(actual.engines,frames[frame].engines,`random engine ${caseIndex}/${frame}`);
+   assert.deepEqual(actual.finishes,frames[frame].finishes,`random substeps ${caseIndex}/${frame}`);
+   assert.deepEqual(actual.output,frames[frame].output,`random return ${caseIndex}/${frame}`);
+   count++;
+  },{randomSeed:corpus.source.schedule.randomSeed});
+  assert.equal(count,HISTORY_FRAMES);
+ }
+});
