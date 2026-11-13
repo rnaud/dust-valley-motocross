@@ -1220,3 +1220,8 @@ test('connected braking matches original shared force budget, torque and airborn
  const {evaluateBrakingSubstep}=await import('../scripts/mcm-reference/braking-substep-case.mjs');
  for(const [i,{input:c,outputBits}] of fixture('braking-substep-wine11.json').fixtures.entries()){const actual=evaluateBrakingSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
+
+test('connected chassis contacts match original merging, contact velocity and penetration correction',async()=>{
+ const {evaluateChassisContactSubstep}=await import('../scripts/mcm-reference/chassis-contact-substep-case.mjs');
+ for(const [i,{input:c,outputBits}] of fixture('chassis-contact-substep-wine11.json').fixtures.entries()){const actual=evaluateChassisContactSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});
