@@ -2974,3 +2974,26 @@ Report: `mcm-reset-alignment-validation.json`. Reproduce with
 Remaining: reset event/rider/common updates, collision dispatch and scheduler;
 shared engine/reset entry and persistent frame loops; dynamic collisions; full
 acceleration and throttle-release trajectory agreement and playable integration.
+
+### Reset alignment connected to the event decision
+
+The continuous reset comparison now executes the normal/limited event-call
+setup and the real `0x4a4b60` wrapper through its `0x4a4d70` decision callee,
+ending at `0x4a4baa` before the wrapper commits state844 and initializes the
+rider. All 1,835 captured words match in 16,384 original executions.
+
+Required outcomes include launch (reason 12), roll (5), front-contact pitch (7),
+upright threshold (6), deceleration (4), and no event. Both suppression states,
+input queried/skipped, and limited/unlimited entry paths are represented. The
+input-query callback supplies the external input result; the original grounded
+gate still prevents the airborne input event. Random draw order remains one
+reset/shift-threshold draw followed by two launch draws when reached. The
+resulting launch linear/angular velocities and total/per-event call counts are
+compared, with no intermediate physics state replacement.
+
+Report: `mcm-reset-event-decision-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-event-decision-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Event setup/rider updates, common tail, collisions and scheduler remain to be
+connected on this reset path. Shared engine entry, persistent multi-frame
+execution, dynamic collisions, complete acceleration/release trajectories and
+playable integration remain unproven.
