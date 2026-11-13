@@ -2540,3 +2540,26 @@ Report: `mcm-normal-alignment-substep-validation.json`. Reproduce with
 Next are the bike-event transition calls and subsequent branch joins, then
 collision/tail and entry integration. Full acceleration/throttle-release
 trajectory parity is still unproven.
+
+### Connected normal-branch event decision
+
+All three normal-state routes now execute their original call to `0x4a4b60`
+and its real decision callee `0x4a4d70`, stopping at `0x4a4baa` before event
+setup. Already-crashed states retain the existing `0x4ac6cd` exit. Decisions
+consume the preceding simulation's current position, velocity, angular rates,
+contacts, suspension/cooldown flags, steering state and speed. Only external
+input and CRT random queries are supplied by the harness.
+
+The pinned original matches all 584 captured words in 40,000 executions,
+including 4,752 triggered events. Coverage explicitly requires triggered
+reasons 1, 2, 4, 5, 6, 7, 8, 9 and 12, plus input/random callbacks and skipped
+crashed states. Reason 10 is unreachable from these call sites because their
+argument 9 is zero; its standalone coverage remains separate. Rider input and
+high-counter seeds are independent of lean-disabled and forced-crash seeds.
+
+Report: `mcm-normal-event-decision-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-normal-event-decision-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+This boundary captures the decision return value before the caller stores
+`bike+0x844`; it does not claim event setup or rider initialization is connected.
+Those mutations, the caller's remaining branches, collision/tail and entry
+integration remain ahead of complete acceleration/throttle-release trajectories.

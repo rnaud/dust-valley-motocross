@@ -1296,3 +1296,11 @@ test('connected grounded alignment matches original limits, world caches and piv
  for(const gate of ['active=false','active=true:mask=0','active=true:mask=1:both=1','active=true:mask=1:both=0','active=true:mask=2','active=true:mask=3',':cache=1'])assert.ok(Object.keys(corpus.source.alignmentOutcomes).some(k=>k.includes(gate)),gate);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){const actual=evaluateNormalAlignmentSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
+
+
+test('connected normal event decisions match original triggers and preserve skipped crash state',async()=>{
+ const {evaluateNormalEventDecisionSubstep}=await import('../scripts/mcm-reference/normal-event-decision-substep-case.mjs');
+ const corpus=fixture('normal-event-decision-substep-wine11.json.gz');
+ for(const reason of [1,2,4,5,6,7,8,9,12])assert.ok(Object.keys(corpus.source.eventOutcomes).some(k=>k.includes('triggered=1:')&&k.includes(`:reason=${reason}:`)),`reason ${reason}`);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){const actual=evaluateNormalEventDecisionSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});
