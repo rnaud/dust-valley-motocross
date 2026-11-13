@@ -3357,3 +3357,30 @@ values remain supplied at their call boundary. Full second-pass rider/post-state
 execution, collision synchronization/dispatch, scheduler completion, repeated
 frames, whole-bike acceleration/release comparisons and playable integration
 remain outstanding. Earlier synthetic-state and wheel-query limitations apply.
+
+### Persistent second substep through the rider body
+
+The second iteration now executes the actual `0x4aecb0` rider body and reaches
+`0x4ac6cd`. All 3,496 captured words match in 17,500 original executions. The
+corpus adds 1,100 initial-state variants of cases observed to reach rider input,
+covering all 16 directional trick selections, both trick buttons and the alternate
+`+c68` flag branch. It includes 4,838 rider calls, 1,051 three-button query
+sequences, 418 trick selections and 697 enabled airborne pose results.
+
+The shared rider routine now commits enabled/lean/alternate-control state as well
+as pose weights, blend peaks and effect history. Second-pass input polling uses
+the recovered bike-input gate. Directional tricks call the recovered transition
+and both animation selectors; the native harness executes those original bodies,
+with animation records and device responses supplied before initial execution.
+The appended observations capture flags, pose/blend state, both animation objects,
+normal/offset/bounds vectors, all four transform caches and query order. Earlier
+stage observations remain snapshots taken before continuing the same live state.
+
+Report: `mcm-reset-loop-rider-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-loop-rider-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Reset clears the initial enabled state, so nearby interaction and orientation
+reset are not reached in this second rider invocation; their isolated recovery
+does not yet establish persistent multi-frame parity. Second-pass post-state,
+collision synchronization/dispatch and scheduler completion, repeated frames,
+whole-bike acceleration/release comparisons and playable integration remain
+outstanding. Earlier synthetic-state and supplied wheel-query limitations apply.

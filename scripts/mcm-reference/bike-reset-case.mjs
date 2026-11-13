@@ -7,6 +7,7 @@ export function evaluateBikeReset(input,apply=resetMcmBikeState){
  const vectors={velocity:0x510,acceleration:0x51c,worldAngularVelocity:0x528,angularVelocity:0x534,axis624:0x624,localLever:0x654};
  for(const [key,offset] of Object.entries(vectors))b[key]=vec(offset/4);
  const c={bike:b,randomValue:input.randomValue};
+ if(input.loopRider)c.loopRider={...structuredClone(input.loopRider),bikeAnimation:[4,0x10,0x14,0x30,0x2c].map(offset=>words[offset/4]),riderAnimation:[0,0,0,0,0],queries:[],trickIndex:-1};
  if(input.mask&1)c.front={limited:read(818+0x4c/4)};
  if(input.mask&2)c.rear={limited:read(842+0x4c/4)};
  if(input.mask&4)c.component8e4={limit:read(866+0x48/4),field58:read(866+0x58/4),value:vec(866+0x4c/4),field5c:read(866+0x5c/4)};
