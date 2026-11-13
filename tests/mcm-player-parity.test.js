@@ -1980,3 +1980,32 @@ test('retained next-frame controls and events preserve the crash bypass and supp
   assert.deepEqual(actual.tail,outputBits,`next event tail ${caseIndex}`);
  }
 });
+
+test('world angular rotation retains the original cancellation order',async()=>{
+ const {rotateMcmWorldVector}=await import('../src/physics/mcm/collision-impulse.js');
+ const m=Array(16).fill(0);
+ m[1]=-0.7322028279304504;m[5]=0.6763883829116821;m[9]=0.079861119389534;
+ const result=rotateMcmWorldVector(m,[9757560,10581852,-161890.21875]);
+ // Original next-frame case 2825, bike+0x52c: (m[5]*y + m[9]*z) + m[1]*x.
+ assert.equal(floatBits(result[1]),993072616);
+});
+
+test('retained next-frame rider, collisions and finish match original carried state',async()=>{
+ const {evaluateResetNextFinish}=await import('../scripts/mcm-reference/reset-next-finish-case.mjs');
+ const corpus=fixture('reset-next-finish-wine11.json.br');
+ assert.equal(corpus.source.mismatchCount,0);
+ assert.equal(corpus.source.exceptionCount,0);
+ assert.equal(corpus.source.priorTraceChangedCases,0);
+ assert.equal(corpus.source.priorTraceComparedCases,17941);
+ const coverage=Object.entries(corpus.source.finishCoverage);
+ assert.equal(coverage.filter(([key])=>key.startsWith('callbacks=1:')).reduce((n,[,count])=>n+count,0),7);
+ assert.equal(coverage.filter(([key])=>key.includes('carryConsumed=true')).reduce((n,[,count])=>n+count,0),988);
+ assert.ok(corpus.fixtures.some(c=>c.caseIndex===2825));
+ for(const {caseIndex,input,prefixBits,outputBits} of corpus.fixtures){
+  const actual=evaluateResetNextFinish(input);
+  assert.equal(actual.finishReached,['ordinary','reset'].includes(actual.contactBranch));
+  assert.equal(actual.tail.length,14000);
+  assert.deepEqual(actual.prefix,prefixBits,`next finish prefix ${caseIndex}`);
+  assert.deepEqual(actual.tail,outputBits,`next finish tail ${caseIndex}`);
+ }
+});

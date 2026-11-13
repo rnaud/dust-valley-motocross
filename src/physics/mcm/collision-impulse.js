@@ -5,7 +5,11 @@ import {inverseRotateMcmVector,resolveMcmWorldMatrix} from './world-transform.js
 const f=Math.fround;
 // Original 0x4b85c0, including its sum order.
 export function rotateMcmWorldVector(m,[x,y,z]){
- return [f(add(add(mul(m[0],x),mul(m[8],z)),mul(m[4],y))),f(add(add(mul(m[5],y),mul(m[1],x)),mul(m[9],z))),f(add(add(mul(m[10],z),mul(m[2],x)),mul(m[6],y)))];
+ const result=new Float64Array(3);
+ result[0]=f(add(add(mul(m[0],x),mul(m[8],z)),mul(m[4],y)));
+ result[1]=f(add(add(mul(m[5],y),mul(m[9],z)),mul(m[1],x)));
+ result[2]=f(add(add(mul(m[10],z),mul(m[2],x)),mul(m[6],y)));
+ return result;
 }
 // Original 0x45b3c0. Mutates velocity, angular velocity, impulse, and transform cache.
 export function applyMcmCollisionImpulse(c){
