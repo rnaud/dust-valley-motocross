@@ -10,9 +10,14 @@ const f=Math.fround,bits=floatBits,signed=v=>bits(v)|0,sign=v=>bits(v)>0x8000000
 // local pivot mutations occur in original order, including aliased nodes.
 export function updateMcmNormalAlignmentSubstep(c){
  const result=updateMcmNormalRotationSubstep(c);
- if(c.state844||c.frontSuspension.contactLimited||c.rearSuspension.contactLimited||c.field4bc)return result;
+ alignMcmSubstepGroundContact(c);
+ return result;
+}
+
+export function alignMcmSubstepGroundContact(c){
+ if(c.state844||c.frontSuspension.contactLimited||c.rearSuspension.contactLimited||c.field4bc)return;
  const s=c.normalAlignment,mask=c.contactCorrection.mask;
- if(!mask){c.field6b0=0;return result;}
+ if(!mask){c.field6b0=0;return;}
  const rotate=(axis,angle)=>{c.bodyNode.local=rotateMcmTransformAtPivot(c.bodyNode.local,c.frontLoad.localArm,axis,angle);invalidateMcmTransform(c.bodyNode);};
  if(mask===1){
   if(c.bothContact&&(signed(c.chassisContact.absTurn)>=0x38d1b717||Math.abs(c.linearIntegration.rotation)>f(.0001))){
@@ -37,5 +42,5 @@ export function updateMcmNormalAlignmentSubstep(c){
    if(s.local.some(v=>Math.abs(v)>f(.001)))rotate(s.local,c.contactCorrection.angle);
   }
  }
- return result;
+ return;
 }

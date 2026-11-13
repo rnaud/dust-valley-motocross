@@ -1420,3 +1420,10 @@ test('reset forces integrate angular/linear motion and update the live transform
  for(const gate of ['mask=1:','mask=2:',':counter=true:',':counter=false:',':moving=true:',':largeAngle=true:',':largeAngle=false:',':zeroAngle=true:',':zeroAngle=false:',':bodyWheelAlias=true:',':bodyWheelAlias=false:',':wheelAlias=true',':wheelAlias=false'])assert.ok(Object.keys(corpus.source.motionOutcomes).some(k=>k.includes(gate)),gate);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetMotionTransform(c),outputBits,`reset/motion fixture ${i}`);
 });
+
+test('reset motion follows grounded alignment and limited-contact gates from the original',async()=>{
+ const {evaluateResetAlignment}=await import('../scripts/mcm-reference/reset-alignment-case.mjs');
+ const corpus=fixture('reset-alignment-wine11.json.br');
+ for(const gate of ['limited=true:', 'limited=false:', ':mask=1:', ':mask=2:', ':localChanged=true:', ':localChanged=false:'])assert.ok(Object.keys(corpus.source.alignmentOutcomes).some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetAlignment(c),outputBits,`reset/alignment fixture ${i}`);
+});

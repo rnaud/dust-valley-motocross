@@ -2952,3 +2952,25 @@ updates, collision dispatch and scheduler completion. Engine entry preceding
 reset, dynamic collisions, frame-loop persistence and complete acceleration /
 throttle-release trajectories remain unproven. This is synthetic single-substep
 evidence, not full gameplay parity.
+
+### Reset motion connected through grounded alignment
+
+The continuous original comparison now reaches the event-call boundaries at
+`0x4ac5c5` and `0x4ac64a`, starting at shared preparation `0x4a5e27`.
+All 1,832 captured words match across 16,384 original executions. The reset
+clears state844 and establishes ground contact; the original therefore selects
+grounded alignment or the limited-contact bypass. Both gates, both contact
+masks, and changed/preserved alignment scratch are required corpus outcomes.
+No force, motion or transform state is replaced between stages.
+
+The ordinary and reset paths share the same grounded-alignment implementation.
+The comparison includes the resulting bike roll target/correction, angular
+state, transform caches and local alignment vector. Original controller and
+airborne branches are naturally skipped here; their independent ordinary-path
+coverage does not establish reset-to-event or multi-frame parity.
+
+Report: `mcm-reset-alignment-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-alignment-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Remaining: reset event/rider/common updates, collision dispatch and scheduler;
+shared engine/reset entry and persistent frame loops; dynamic collisions; full
+acceleration and throttle-release trajectory agreement and playable integration.
