@@ -3250,3 +3250,28 @@ The second suspension/tire-force/integration pass, complete frame execution,
 dynamic bike/rider collision callbacks, end-to-end acceleration/release
 trajectories and playable integration remain outstanding. The earlier
 wheel-query scratch and synthetic-state scope limitations still apply.
+
+### Persistent second substep through suspension and tire forces
+
+The second iteration now reaches `0x4a8be0` with zero differences across 2,690
+captured words in 16,400 original executions. The second pass consumes live
+balance-filter history, suspension travel/displacement and previous heights,
+engine throttle/gear state, contact geometry, velocity and the scheduled dt.
+It executes balance and weight transfer, both suspension responses, steering
+velocity correction, front/rear tire forces, rear drive and traction scaling,
+force/torque accumulation and braking. All four wheel-contact combinations,
+airborne/grounded balance state and zero/nonzero drive are required outcomes.
+
+The common suspension and tire stages can now run without re-executing reset.
+Their state bridge exposes front axis/scale/limit and rear limit/angle/divisor,
+using the original offsets (`rear +54` limit, `+4c` divisor). Both-wheel steering
+commits changed velocity, turn rate and radius back to the bike. Drive uses the
+current gear ratio and the captured original engine torque curve, seeded once
+before native execution. No bike or suspension history is reseeded at loop-back.
+
+Report: `mcm-reset-loop-tire-forces-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-loop-tire-forces-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Second-pass chassis impulse/integration, later control/event handling, full
+frame execution, dynamic bike/rider collisions, end-to-end acceleration/release
+trajectories and playable integration remain outstanding. The synthetic-state
+and supplied wheel-query scratch limitations from earlier stages still apply.

@@ -1510,3 +1510,10 @@ test('persistent reset loop state reaches second force preparation and chassis c
  for(const gate of ['looped=1:front=0:rear=0:','looped=1:front=1:rear=0:','looped=1:front=0:rear=1:','looped=1:front=1:rear=1:',':frontProbe=0:',':frontProbe=1:',':frontProbe=2:',':bodyProbe=0:',':bodyProbe=1:'])assert.ok(Object.keys(corpus.source.nextResponseOutcomes).some(k=>k.includes(gate)),gate);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetLoopResponse(c),outputBits,`reset/loop-response fixture ${i}`);
 });
+
+test('persistent second substep matches original suspension, drive, tire forces and braking',async()=>{
+ const {evaluateResetLoopTireForces}=await import('../scripts/mcm-reference/reset-loop-tire-forces-case.mjs');
+ const corpus=fixture('reset-loop-tire-forces-wine11.json.br');
+ for(const gate of ['looped=1:front=0:rear=0:','looped=1:front=1:rear=0:','looped=1:front=0:rear=1:','looped=1:front=1:rear=1:',':airborne=1:',':airborne=0:',':driveZero=true:',':driveZero=false:'])assert.ok(Object.keys(corpus.source.nextTireOutcomes).some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetLoopTireForces(c),outputBits,`reset/loop-tire fixture ${i}`);
+});
