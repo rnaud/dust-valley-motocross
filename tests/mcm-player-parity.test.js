@@ -1572,3 +1572,15 @@ test('persistent second substep completes post-state, live collision dispatch an
   assert.deepEqual(actual,outputBits,`reset/loop-finish fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
  }
 });
+
+
+test('second loop-back preserves live state into third engine and ordinary wheel contact',async()=>{
+ const {evaluateResetThirdContact}=await import('../scripts/mcm-reference/reset-third-contact-case.mjs');
+ const corpus=fixture('reset-third-contact-wine11.json.br'),outcomes=Object.keys(corpus.source.thirdContactOutcomes);
+ for(const gate of ['looped=0:', 'looped=1:frontPositive=true:rearPositive=true:', 'looped=1:frontPositive=true:rearPositive=false:', 'looped=1:frontPositive=false:rearPositive=true:', 'looped=1:frontPositive=false:rearPositive=false:', ':nonfinitePoint=true:', ':axisZero=true', ':axisZero=false'])assert.ok(outcomes.some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){
+  const actual=evaluateResetThirdContact(c);
+  assert.equal(actual.length,4213);
+  assert.deepEqual(actual,outputBits,`reset/third-contact fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
+ }
+});
