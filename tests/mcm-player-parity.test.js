@@ -2064,3 +2064,22 @@ test('reusable retained frame runner preserves original substep finishes and act
   assert.deepEqual(actual.output,expected.output,`runner return ${caseIndex}`);
  }
 });
+
+test('four 400-frame retained throttle/release histories match repeatable original execution',async()=>{
+ const {evaluateRetainedHistory,HISTORY_FRAMES}=await import('../scripts/mcm-reference/retained-history-case.mjs');
+ const corpus=fixture('retained-history-wine11.json.br');
+ assert.equal(corpus.source.mismatchCount,0);assert.equal(corpus.source.repeated,true);
+ assert.equal(corpus.source.frames,1600);assert.equal(corpus.source.priorTraceChangedCases,0);
+ for(const {caseIndex,input,frames} of corpus.fixtures){
+  let count=0;
+  evaluateRetainedHistory(input,(actual,{frame,pressed})=>{
+   assert.equal(actual.frame.status,'returned',`history status ${caseIndex}/${frame}`);
+   assert.equal(pressed,frame>=50&&frame<200);
+   assert.deepEqual(actual.engines,frames[frame].engines,`history engine ${caseIndex}/${frame}`);
+   assert.deepEqual(actual.finishes,frames[frame].finishes,`history substeps ${caseIndex}/${frame}`);
+   assert.deepEqual(actual.output,frames[frame].output,`history return ${caseIndex}/${frame}`);
+   count++;
+  });
+  assert.equal(count,HISTORY_FRAMES);
+ }
+});
