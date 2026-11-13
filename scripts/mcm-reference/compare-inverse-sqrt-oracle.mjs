@@ -16,7 +16,8 @@ const compiler = process.env.MCM_CC || 'i686-w64-mingw32-gcc';
 const wine = process.env.MCM_WINE || '/Applications/Wine Stable.app/Contents/Resources/wine/bin/wine';
 const run = (command,args,options={}) => {const r=spawnSync(command,args,{encoding:'utf8',...options});if(r.error||r.status!==0)throw new Error(`${command}: ${r.error||r.stderr||r.status}`);};
 run(compiler,['-O0','-Wall','-Wextra','-Werror','-Wl,--image-base,0x10000000','-Wl,--disable-dynamicbase',source,'-o',join(output,'oracle.exe')]);
-const cases=[];
+const cases=[0x80000000];
+for(let m=0;m<64;m++)for(const edge of [0,1,0x1ffff])cases.push((m<<17)|edge);
 for(let e=1;e<255;e++)for(let m=0;m<64;m++)for(const edge of [0,1,0x1ffff])cases.push((e<<23)|(m<<17)|edge);
 let seed=12345;
 for(let i=0;i<10000;i++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;cases.push(0x00800000+(seed%0x7f000000));}
@@ -29,7 +30,7 @@ let totalDifferences=0;const firstDifferences=[],fixtures=[];
 for(let i=0;i<cases.length;i++) {
  const expected=Buffer.alloc(8);expected.writeDoubleLE(mcmInverseSqrt(bitsFloat(cases[i])));const actual=results.subarray(i*8,i*8+8);
  if(!actual.equals(expected)){totalDifferences++;if(firstDifferences.length<10)firstDifferences.push({case:i,inputBits:cases[i],actual:actual.toString('hex'),expected:expected.toString('hex')});}
- if(i%131===0)fixtures.push({inputBits:cases[i],outputHex:actual.toString('hex')});
+ if(i<193||i%131===0)fixtures.push({inputBits:cases[i],outputHex:actual.toString('hex')});
 }
-const report={schemaVersion:1,executableSha256:exeHash,oracleSourceSha256:hash(fs.readFileSync(source)),loaderSourceSha256:hash(fs.readFileSync(join(dirname(source),'oracle.c'))),casesSha256:hash(input),resultsSha256:hash(results),cases:cases.length,controlWord:0x027f,totalDifferences,firstDifferences,scope:'Original inverse-square-root table initialization and helper; positive normal float32 inputs, binary64 returned intermediate'};
+const report={schemaVersion:1,executableSha256:exeHash,oracleSourceSha256:hash(fs.readFileSync(source)),loaderSourceSha256:hash(fs.readFileSync(join(dirname(source),'oracle.c'))),casesSha256:hash(input),resultsSha256:hash(results),cases:cases.length,controlWord:0x027f,totalDifferences,firstDifferences,scope:'Original inverse-square-root table initialization and helper; nonnegative finite float32 inputs including signed zero and subnormal seed boundaries, binary64 returned intermediate'};
 fs.writeFileSync(join(output,'report.json'),JSON.stringify(report,null,2)+'\n');fs.writeFileSync(join(output,'fixtures.json'),JSON.stringify({source:report,fixtures})+'\n');console.log(JSON.stringify(report,null,2));if(totalDifferences)process.exitCode=1;

@@ -1459,3 +1459,41 @@ Report: `mcm-wheel-contact-pair-validation.json`. Reproduce with
 Pitch-dependent contact corrections and the rest of `0x4a0130` remain pending.
 The two-wheel query is not yet connected to a recovered full substep, so this
 does not establish whole-bike acceleration/release trajectory parity.
+
+### Complete wheel-contact query and penetration selection (2026-11-12)
+
+Recovered the remaining `0x4a0130` sequence through its return: heading/roll
+probe points, both additional terrain samples, refined contact frames and
+radius offsets, final samples, greater-penetration selection, and conditional
+normal/tangent replacement (including helper `0x4a15a0`). The shared scratch
+normal/offset fields preserve the final rear refinement even when the earlier
+contact wins. Finite float32 pitch cannot equal the original double pi/2
+comparison constant, so finite inputs always use its heading-based probe path.
+
+The original calls imported `D3DRMVectorRotate`. The reference game uses Wine
+11's D3DRM DLL, SHA-256
+`7edb1ed218aececbb44f4d92d5b0880f0ff1777dc525e555140f987015d8be1a`.
+The oracle loads that real helper, copies the loaded DLL to temporary output,
+and verifies its hash before accepting results. The port preserves the DLL's
+float32 quaternion multiplication and normalization, rather than substituting
+a direct sine/cosine rotation. This is runtime-specific evidence; it does not
+validate arbitrary Windows D3DRM versions.
+
+40,000 continuous original-execution cases match all 110 output words with
+zero differences. Coverage includes all four front/rear penetration selections
+combined with all four normal-change combinations, hierarchy/cache cases,
+parallel axes, flat/zero normals, identity/full-3D transforms, heading values
+at zero and float32 multiples of pi/2, and roll values at zero and +/-1.
+Fixtures retain every observed outcome combination and deterministic samples.
+Report: `mcm-wheel-contacts-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-wheel-contacts-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+
+Zero-normal cases exposed an overly restrictive inverse-square-root guard.
+The original lookup returns a finite estimate for zero and subnormal inputs;
+these now execute the same lookup instead of throwing. Independent validation
+matches 58,961 binary64 outputs, including signed zero and all subnormal seed
+boundaries. Updated report: `mcm-inverse-sqrt-validation.json`.
+
+Scope remains finite supplied state, synthetic terrain, and the pinned runtime.
+Main-substep contact-query dispatch, force assembly and whole-loop integration
+are still required before full acceleration/release trajectory parity is proven.
