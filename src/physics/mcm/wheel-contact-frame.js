@@ -114,3 +114,12 @@ export function queryMcmWheelContacts(c){
  }
  return {...result,probePoints:surfaces,refinedNormals:normals,refinedTangents:tangents,selected};
 }
+
+// Ordinary main-substep branch 0x4a63d2..0x4a647a. Resolve rear first: either
+// wheel can share a node or ancestor with the front contact-frame transform.
+export function queryMcmSubstepWheelContacts(c){
+ c.field6b0=0;
+ c.points[1]=resolveMcmWorldMatrix(c.rearNode).slice(12,15);
+ c.points[0]=resolveMcmWorldMatrix(c.frontNode).slice(12,15);
+ return queryMcmWheelContacts(c);
+}

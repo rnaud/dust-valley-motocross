@@ -1497,3 +1497,25 @@ boundaries. Updated report: `mcm-inverse-sqrt-validation.json`.
 Scope remains finite supplied state, synthetic terrain, and the pinned runtime.
 Main-substep contact-query dispatch, force assembly and whole-loop integration
 are still required before full acceleration/release trajectory parity is proven.
+
+### Ordinary main-substep wheel-query connection (2026-11-12)
+
+Connected `0x4a63d2..0x4a647a`: clear bike+0x6b0, resolve the rear wheel's
+world position, then the front wheel's world position, and execute the complete
+wheel-contact query. Original stack argument locations and bike+0x590/+0x594
+height outputs are captured at the main routine boundary. The real transform
+and contact helpers run continuously inside this sequence.
+
+40,000 original-execution cases match 210 output words with zero differences.
+Four-node parent graphs cover all 16 front/rear node pairings, including wheels
+sharing each other or the contact-frame node, cached/uncached query transforms
+independently for each pairing and terrain mode, and ancestor/cache propagation.
+Outputs include complete contact results and scratch, every node's local/world
+matrices and cache flag, and the cleared field. Leaf-only synthetic terrain is
+scaled to keep transformed wheel positions within its allocated tile.
+
+Report: `mcm-substep-wheel-query-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-substep-wheel-query-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+This connects the ordinary query branch only. The alternate settings-dependent
+branch, common work after the query and force/whole-loop integration remain
+pending; this does not establish full acceleration/release trajectory parity.
