@@ -1686,3 +1686,18 @@ test('normal frame-end rider poses and crash animation match original entry thro
   assert.deepEqual(actual,outputBits,`normal/frame-rider fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
  }
 });
+
+test('frame-end trick holds and releases retain original input and animation state across calls',async()=>{
+ const {evaluateTrickFrameRider}=await import('../scripts/mcm-reference/trick-frame-rider-case.mjs');
+ const corpus=fixture('trick-frame-rider-wine11.json.br'),outcomes=Object.keys(corpus.source.outcomes);
+ assert.equal(corpus.source.totalDifferences,0);
+ for(let animation=0;animation<16;animation++)assert.ok(outcomes.some(k=>k.startsWith(`animation=${animation}:`)),`trick ${animation}`);
+ for(const gate of [':ai=0:', ':ai=1:', ':secondary=0:', ':secondary=1:', ':loop=0:', ':loop=1:', ':queries=0:', ':queries=1:', ':queries=2:', ':frameUnchanged=true:', ':frameUnchanged=false:', ':stopped=0', ':stopped=1'])assert.ok(outcomes.some(k=>k.includes(gate)),gate);
+ assert.ok(corpus.fixtures.some(({input:c})=>c.holdTimeBits===0x80000000));
+ assert.ok(corpus.fixtures.some(({input:c,outputBits:w})=>c.ai&&c.holdTime>0&&w[265]===0&&w[201]===c.initialFrame&&w[470]!==c.initialFrame),'AI timer expiry resumes animation on a later call');
+ for(const [i,{input,outputBits}] of corpus.fixtures.entries()){
+  const actual=evaluateTrickFrameRider(input);
+  assert.equal(actual.length,1076);
+  assert.deepEqual(actual,outputBits,`trick/frame-rider fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
+ }
+});
