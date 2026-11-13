@@ -25,6 +25,6 @@ export function startMcmNearbyInteraction(c){
 export function seekMcmInteractionAnimations(r,rider,bikeRecord,riderRecord,positionFlags){
  const components=r.components.map((node,i)=>({node,positionEnabled:positionFlags[i]}));
  const callback=child=>applyMcmAnimationChild(r.target,components,child);
- seekMcmAnimation(rider,riderRecord,.5,callback);
+ seekMcmAnimation(rider,riderRecord,.5,child=>applyMcmAnimationChild(rider.target||r.target,components,child));
  seekMcmAnimation(r,bikeRecord,.5,callback);
 }

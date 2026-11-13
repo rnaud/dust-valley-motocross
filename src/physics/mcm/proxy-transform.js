@@ -1,3 +1,4 @@
+import {mcmAdd as add,mcmSubtract as sub,mcmMultiply as mul} from './x87-arithmetic.js';
 import {resolveMcmWorldMatrix} from './world-transform.js';
 import {multiplyMcmMatrixPointers} from './matrix-pointer-product.js';
 import {invalidateMcmTransform} from './event-orientation.js';
@@ -9,11 +10,11 @@ export function setMcmWorldMatrix(node,matrix){
  if(!node.parent)node.local=[...matrix];
  else{
   const p=resolveMcmWorldMatrix(node.parent);
-  const x=f(matrix[12]-p[12]),y=f(matrix[13]-p[13]),z=f(matrix[14]-p[14]);
+  const x=f(sub(matrix[12],p[12])),y=f(sub(matrix[13],p[13])),z=f(sub(matrix[14],p[14]));
   node.local=transposeRotation(multiplyMcmMatrixPointers(transposeRotation(matrix),p));
-  node.local[12]=f((p[2]*z+p[1]*y)+p[0]*x);
-  node.local[13]=f((p[6]*z+p[5]*y)+p[4]*x);
-  node.local[14]=f(p[8]*x+(p[10]*z+p[9]*y));
+  node.local[12]=f(add(add(mul(p[2],z),mul(p[1],y)),mul(p[0],x)));
+  node.local[13]=f(add(add(mul(p[6],z),mul(p[5],y)),mul(p[4],x)));
+  node.local[14]=f(add(mul(p[8],x),add(mul(p[10],z),mul(p[9],y))));
  }
  invalidateMcmTransform(node);
 }

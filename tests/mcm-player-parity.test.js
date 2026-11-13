@@ -1344,3 +1344,10 @@ test('connected post-event state matches original world angular velocity, awards
  for(const gate of ['award=0:','award=1:suppress=0:scoreChanged=true','award=1:suppress=1:scoreChanged=false',':timerZero=false',':yawZero=true',':parented=true',':parented=false'])assert.ok(Object.keys(corpus.source.postOutcomes).some(k=>k.includes(gate)),gate);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){const actual=evaluatePostStateSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
+
+test('connected collision synchronization matches original proxy transforms and live grid links',async()=>{
+ const {evaluateCollisionSyncSubstep}=await import('../scripts/mcm-reference/collision-sync-substep-case.mjs');
+ const corpus=fixture('collision-sync-substep-wine11.json.br');
+ for(const gate of ['present=0','present=1:grid=0','present=1:grid=1',':parent=true',':parent=false',':type=0',':type=1'])assert.ok(Object.keys(corpus.source.syncOutcomes).some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){const actual=evaluateCollisionSyncSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});

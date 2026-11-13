@@ -1,3 +1,4 @@
+import {mcmAdd as add,mcmMultiply as mul} from './x87-arithmetic.js';
 import {insertMcmCollisionLine} from './collision-line-grid.js';
 const f=Math.fround;
 // Original 0x42a550 followed by 0x42a6e0, types 0/1.
@@ -5,7 +6,10 @@ const f=Math.fround;
 export function updateMcmCollisionGrid(object,grid,enabled){
  if(object.type===0||object.type===1){
   const m=object.matrix,[x,y,z]=object.localCenter;
-  object.worldCenter=[f(((m[4]*y+m[0]*x)+m[8]*z)+m[12]),f(((m[9]*z+m[5]*y)+m[1]*x)+m[13]),f(((m[2]*x+m[10]*z)+m[6]*y)+m[14])];
+  object.worldCenter=new Float64Array(3);
+  object.worldCenter[0]=f(add(add(add(mul(m[4],y),mul(m[0],x)),mul(m[8],z)),m[12]));
+  object.worldCenter[1]=f(add(add(add(mul(m[9],z),mul(m[5],y)),mul(m[1],x)),m[13]));
+  object.worldCenter[2]=f(add(add(add(mul(m[2],x),mul(m[10],z)),mul(m[6],y)),m[14]));
  }
  if(!enabled)return;
  for(const entry of object.entries||[]){
