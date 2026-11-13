@@ -3806,3 +3806,42 @@ that position-restore pairing must be connected before repeated-frame parity
 can be claimed. Longer histories, original asset/state integration, present
 visual effects, dynamic collisions, acceleration/release trajectory comparisons
 and playable integration also remain open.
+
+### Retained frame return into next-frame entry
+
+The connected harness now calls the original `0x4a52c0` after the previous
+frame executes its real epilogue and `ret 4`. It preserves the bike, timing
+carry, animation objects, and transform graph. The next-frame observation at
+`0x4a5566` follows position restoration and scheduler setup, before recovery
+and input processing. The new helper `beginMcmFrame` mirrors that boundary.
+
+All 17,648 retained cases match 19,525 observed words per case, with zero
+exceptions. The prior 8,277-word physics prefix and 11,097-word frame-return
+trace remain unchanged, apart from the deliberately initialized iteration-cap
+word in the prefix. The added 151 words cover scheduler scratch, old/new carry,
+raw delta, per-bike nominal step and cap, position/saved position, and all four
+transform/cache states. The initial iteration caps are 1/2/4/10 and the next
+raw deltas include both signed zeros, 1/120, .02, .04, .25, and 1 seconds.
+No state is reseeded between the frame return and next entry.
+
+The source arithmetic corpus includes negative retained timing carry. The
+original scheduler processes these as signed counts; the connected helper
+preserves that observation. This does not establish those synthetic negative
+counts as valid ordinary gameplay inputs. The existing fixed-step public API
+retains its previous input validation. The native harness restores the original
+settings-load instruction at `0x4a5552`, undoing the older isolated scheduler
+harness's early-exit patch before making the real frame-entry call.
+
+Evidence: `mcm-reset-next-entry-validation.json` and 602 regression fixtures in
+`tests/fixtures/mcm/reset-next-entry-wine11.json.br`.
+
+```sh
+node scripts/mcm-reference/compare-reset-next-entry.mjs /path/to/mcm.exe /path/to/frame-return-corpus /path/to/new-output-directory
+```
+
+Use `--replay` for another architecture. The preceding native corpus is
+required to verify unchanged prior observations. This boundary still exits
+before next-frame recovery/input handling and subsequent substeps. Connecting
+those paths, longer histories, original assets/terrain, present visual effects,
+dynamic collisions, whole-bike acceleration/release comparisons, and playable
+integration remain necessary for full parity.
