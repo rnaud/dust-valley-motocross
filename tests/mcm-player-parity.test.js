@@ -1427,3 +1427,10 @@ test('reset motion follows grounded alignment and limited-contact gates from the
  for(const gate of ['limited=true:', 'limited=false:', ':mask=1:', ':mask=2:', ':localChanged=true:', ':localChanged=false:'])assert.ok(Object.keys(corpus.source.alignmentOutcomes).some(k=>k.includes(gate)),gate);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetAlignment(c),outputBits,`reset/alignment fixture ${i}`);
 });
+
+test('reset alignment reaches original launch, suppression and crash event decisions',async()=>{
+ const {evaluateResetEventDecision}=await import('../scripts/mcm-reference/reset-event-decision-case.mjs');
+ const corpus=fixture('reset-event-decision-wine11.json.br');
+ for(const gate of ['triggered=0:', 'triggered=1:', ':reason=12:', ':reason=4:', ':reason=5:', ':reason=6:', ':reason=7:', ':inputCalls=0:', ':inputCalls=1:', ':randomCalls=0:', ':randomCalls=2:', ':suppressed=true:', ':suppressed=false:', ':limited=true', ':limited=false'])assert.ok(Object.keys(corpus.source.eventOutcomes).some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetEventDecision(c),outputBits,`reset/event fixture ${i}`);
+});
