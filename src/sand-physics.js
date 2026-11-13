@@ -15,9 +15,11 @@ export class SandSurface {
   const tx=Math.floor(ix/64),tz=Math.floor(iz/64),tile=this.soil.get(key(tx,tz));
   return this.baseHeight(ix*.25,iz*.25)+(tile?.delta[(iz-tz*64)*64+ix-tx*64]??0);
  }
- height(x,z){
+ displacementAt(x,z){return this.sample(x,z,(ix,iz)=>this.node(ix,iz)-this.baseHeight(ix*.25,iz*.25));}
+ height(x,z){return this.sample(x,z,(ix,iz)=>this.node(ix,iz));}
+ sample(x,z,node){
   const gx=x/.25,gz=-z/.25,ix=Math.floor(gx),iz=Math.floor(gz),u=gx-ix,v=gz-iz;
-  const a=this.node(ix,-iz),b=this.node(ix+1,-iz),c=this.node(ix,-iz-1),d=this.node(ix+1,-iz-1);
+  const a=node(ix,-iz),b=node(ix+1,-iz),c=node(ix,-iz-1),d=node(ix+1,-iz-1);
   return u+v<=1?a+(b-a)*u+(c-a)*v:d+(c-d)*(1-u)+(b-d)*(1-v);
  }
  compaction(x,z){
@@ -40,7 +42,8 @@ export class SandSurface {
   for(let ix=Math.floor((x-.4)/.25);ix<=Math.ceil((x+.4)/.25);ix++)for(let iz=Math.floor((z-.4)/.25);iz<=Math.ceil((z+.4)/.25);iz++){
    const r=Math.hypot(ix*.25-x,iz*.25-z)/.4;if(r>=1)continue;
    const {tile,index}=this.cell(ix,iz),weight=(1-r*r)**2,old=tile.delta[index],depth=Math.max(0,-old);
-   const amount=Math.max(0,target*weight-depth)*(1-Math.exp(-dt*pressure*5));
+   // Settle within a rolling tire's short contact time; slow settling hid ruts at riding speed.
+   const amount=Math.max(0,target*weight-depth)*(1-Math.exp(-dt*pressure*35));
    if(amount<1e-8)continue;
    tile.delta[index]=clamp(old-amount,-.14,.045);tile.compaction[index]=clamp(tile.compaction[index]+amount*5,0,1);
    removed+=amount;this.mark(ix,iz);
