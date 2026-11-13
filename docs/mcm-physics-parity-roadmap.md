@@ -1183,3 +1183,29 @@ naturally suppress the final event transition; the port requires an explicit
 transition adapter if that gate is entered. These effect/event boundaries,
 dynamic contact types, primary/secondary callback gates, and full main-step
 integration remain outstanding. No full whole-bike parity claim is made.
+
+### Connected dynamic collision response (2026-11-12)
+
+Connected original `0x49d900` types 0/1 through bike/rider mass and inertia
+selection, heading-dependent contact velocity scaling, position correction,
+paired impulse, local lever/world angular refresh, speed, proxy and grid updates.
+Preserves the original callback ordering: this response updates only its own
+bike, leaving the other body's velocities for its separate response callback.
+Rider contacts select primary or alternate rider motion when the other bike is
+in a nonzero state. The signed heading wrap and floating-point store boundaries
+are preserved.
+
+32,000 original-execution cases match 263 output words each with zero
+differences. Coverage includes all 144 combinations of contact type, both bikes'
+state 0/1/2, position correction gate, and both independent rider flags, plus
+cached/uncached full 3D root transforms and enabled/disabled linked-list grids.
+The original executes its real paired solver, transforms, grid updates and
+inactive audio routine. Retained fixtures include every state/flag combination.
+Report: `mcm-dynamic-collision-response-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-dynamic-collision-response-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+
+Visual effects and final event transitions remain suppressed in this validation;
+the port requires an explicit event adapter when the final transition gate is
+entered. Primary/secondary callback gates, tag transfer, event integration,
+full main-step orchestration and complete original-v-port trajectories remain
+outstanding. This is not evidence of complete whole-bike parity.
