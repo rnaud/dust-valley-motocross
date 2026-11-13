@@ -1215,3 +1215,8 @@ test('connected tire accumulation matches original aliased force limiting and to
  const {evaluateTireAccumulationSubstep}=await import('../scripts/mcm-reference/tire-accumulation-substep-case.mjs');
  for(const [i,{input:c,outputBits}] of fixture('tire-accumulation-substep-wine11.json').fixtures.entries()){const actual=evaluateTireAccumulationSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
+
+test('connected braking matches original shared force budget, torque and airborne cleanup',async()=>{
+ const {evaluateBrakingSubstep}=await import('../scripts/mcm-reference/braking-substep-case.mjs');
+ for(const [i,{input:c,outputBits}] of fixture('braking-substep-wine11.json').fixtures.entries()){const actual=evaluateBrakingSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});

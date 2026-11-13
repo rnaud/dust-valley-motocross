@@ -2148,3 +2148,27 @@ Report: `mcm-tire-accumulation-substep-validation.json`. Reproduce with
 No-wheel execution remains observed at its branch entry. Subsequent braking,
 contact-force processing, no-wheel response, full-loop integration and whole-bike
 acceleration/release trajectory parity remain unfinished.
+
+### Connected braking and airborne suspension cleanup (2026-11-12)
+
+Extended continuous ordinary execution through `0x4a8be0`, including the real
+no-wheel cleanup branch previously observed at its entry. Front and rear brakes
+consume the velocity-change budget remaining after tire friction, in that order.
+The original gates front braking on forward contact speed but rear braking on
+combined contact speed. Rear brake magnitude includes the traction factor;
+both-wheel contact halves each requested forward-speed change. Force vectors
+retain the original unrounded first component and rounded remaining components,
+and each limited force adds its contact-arm torque to the shared accumulator.
+Crash state skips braking. Airborne cleanup clears suspension activity, travel,
+compression and front displacement history while preserving unrelated scratch.
+
+All 40,000 cases match across 440 output words with zero differences. The corpus
+includes signed-zero and nonzero brake inputs, crash and airborne states,
+front-only/rear-only/both-wheel contact, reversed direction, zero timesteps and
+canonical NaNs generated from finite state. Original braking, limiting and cross
+product callees execute directly; only entry scratch and final observation
+boundaries are supplied. Report: `mcm-braking-substep-validation.json`.
+Reproduce with
+`node scripts/mcm-reference/compare-braking-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Subsequent force assembly, full-loop integration and whole-bike acceleration /
+throttle-release trajectory parity remain unfinished.
