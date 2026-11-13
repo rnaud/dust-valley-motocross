@@ -1797,3 +1797,19 @@ test('retained frame return enters the original next-frame scheduler without res
   assert.deepEqual(actual.tail,outputBits,`next entry tail ${caseIndex}`);
  }
 });
+
+test('retained next-frame recovery matches original animation and bounds transitions',async()=>{
+ const {evaluateResetNextRecovery}=await import('../scripts/mcm-reference/reset-next-recovery-case.mjs');
+ const corpus=fixture('reset-next-recovery-wine11.json.br');
+ assert.equal(corpus.source.mismatchCount,0);
+ assert.equal(corpus.source.exceptionCount,0);
+ assert.equal(corpus.source.priorTraceChangedCases,0);
+ for(const branch of ['bypass','animate','restore'])assert.ok(corpus.source.entryRecovery[branch]);
+ for(const {caseIndex,input,prefixBits,outputBits} of corpus.fixtures){
+  const actual=evaluateResetNextRecovery(input);
+  assert.equal(actual.tail.length,11476);
+  assert.equal(actual.tail[11475],0);
+  assert.deepEqual(actual.prefix,prefixBits,`next recovery prefix ${caseIndex}`);
+  assert.deepEqual(actual.tail,outputBits,`next recovery tail ${caseIndex}`);
+ }
+});
