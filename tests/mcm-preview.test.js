@@ -27,7 +27,12 @@ test('forks and swingarm terminate at moving wheel axles through steering and tr
 });
 
 test('recovered preview contact resists rolling and lateral motion without reversing it',async()=>{
- const {mcmPreviewTireForces}=await import('../src/mcm-preview-contact.js');
+ const {mcmPreviewContactForces}=await import('../src/mcm-preview-contact.js');
+ const mcmPreviewTireForces=({longSpeed,sideSpeed,load,mass,front,dt,brake})=>{
+  const velocity=[sideSpeed,0,longSpeed],wheel={velocity,axis:[0,0,1],arm:[0,0,0],load};
+  const r=mcmPreviewContactForces({[front?'front':'rear']:load>0?wheel:null,velocity,mass,dt,brake});
+  return {longitudinal:r.force[2],lateral:r.force[0]};
+ };
  for(const front of [false,true]){
   const rolling=mcmPreviewTireForces({longSpeed:20,sideSpeed:0,load:900,mass:90,front,dt:.02});
   assert.ok(Math.abs(rolling.longitudinal+135)<.001);
@@ -58,5 +63,42 @@ test('preview braking shortens rollout and steering remains finite on hardpack a
    return distance;
   };
   assert.ok(run(true)<run(false));
+ }
+});
+
+test('preview contacts share one stopping budget and accumulate the original combined moment',async()=>{
+ const {mcmPreviewContactForces}=await import('../src/mcm-preview-contact.js');
+ const velocity=[2,0,10],wheel=arm=>({velocity,axis:[0,0,1],arm,load:900});
+ const pair={front:wheel([0,-.5,1]),rear:wheel([0,-.5,-1]),velocity,mass:180,dt:.02};
+ const unloaded=mcmPreviewContactForces({...pair,front:{...pair.front,load:0},rear:null,brake:true});
+ assert.ok(unloaded.force[2]<0); // A contact flag, not spring load, gates original braking.
+ const r=mcmPreviewContactForces(pair);
+ assert.ok(Math.abs(r.torque[0]+r.force[2])<.001);
+ assert.ok(Math.abs(r.torque[2]-r.force[0])<.001);
+ assert.ok(Math.abs(r.torque[1])<.001);
+ for(const sign of [-1,1])for(const speed of [.001,.1,1]){
+  const v=[0,0,sign*speed],w={velocity:v,axis:[0,0,1],arm:[0,0,0],load:90000};
+  const result=mcmPreviewContactForces({front:w,rear:{...w},velocity:v,mass:180,dt:.02,brake:true});
+  assert.ok(result.remainingSpeed>=-1e-6);
+  assert.ok(Math.hypot(...result.force)<=180*speed/.02+1e-3);
+  assert.ok(sign*(v[2]+result.force[2]/180*.02)>=-1e-6);
+ }
+});
+
+test('recovered steering correction turns both ways and preserves speed',async()=>{
+ const {mcmPreviewSteering}=await import('../src/mcm-preview-contact.js');
+ for(const angle of [-.03,.03]){
+  const result=mcmPreviewSteering({velocity:[0,0,10],axis:[-Math.cos(angle),0,Math.sin(angle)],referenceAxis:[-1,0,0],angle,forwardSpeed:10,dt:.02});
+  assert.ok(Math.sign(result.turnAngle)===Math.sign(angle));
+  assert.ok(Math.sign(result.velocity[0])===Math.sign(angle));
+  assert.ok(Math.abs(Math.hypot(...result.velocity)-10)<1e-5);
+ }
+ for(const steer of [-.5,.5]){
+  const s=createState({sand:true,flat:true,height:()=>0,physicsMode:'mcm-preview'});
+  for(let i=0;i<200;i++)stepBike(s,{gas:true},.02);
+  let turn=0;
+  for(let i=0;i<150;i++){const before=s.yaw;stepBike(s,{gas:true,steer},.02);turn+=Math.atan2(Math.sin(s.yaw-before),Math.cos(s.yaw-before));}
+  assert.ok(turn*steer<-.2);assert.equal(s.crashed,false);
+  resetBike(s,0,0,0);assert.equal(s.recoveredTurnRate,0);assert.equal(s.recoveredContact,null);
  }
 });
