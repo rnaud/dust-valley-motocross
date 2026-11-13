@@ -17,7 +17,12 @@ function exceptionalInversePoint(m,[x,y,z]){
  const tx=f(-add(add(mul(m[14],m[2]),mul(m[1],m[13])),mul(m[12],m[0])));
  const ty=f(-add(add(mul(m[14],m[6]),mul(m[4],m[12])),mul(m[13],m[5])));
  const tz=f(-add(add(mul(m[8],m[12]),mul(m[14],m[10])),mul(m[9],m[13])));
- return [f(add(add(add(mul(y,m[1]),mul(z,m[2])),mul(x,m[0])),tx)),f(add(add(add(mul(m[6],z),mul(m[5],y)),mul(m[4],x)),ty)),f(add(add(add(mul(m[9],y),mul(m[10],z)),mul(m[8],x)),tz))];
+ // Typed stores preserve NaN sign when V8 optimizes array construction.
+ const result=new Float64Array(3);
+ result[0]=f(add(add(add(mul(y,m[1]),mul(z,m[2])),mul(x,m[0])),tx));
+ result[1]=f(add(add(add(mul(m[6],z),mul(m[5],y)),mul(m[4],x)),ty));
+ result[2]=f(add(add(add(mul(m[9],y),mul(m[10],z)),mul(m[8],x)),tz));
+ return result;
 }
 
 

@@ -2021,3 +2021,31 @@ Original steering/transform callees run directly; no-wheel/rear-only exits are
 observation boundaries, not implemented downstream response. Remaining wheel
 force calculations, no-wheel response, full-loop integration and whole-bike
 acceleration/release trajectory parity remain unfinished.
+
+### Connected front contact velocity and tire force (2026-11-12)
+
+Extended continuous ordinary execution through `0x4a7b27`, with no-wheel and
+rear-only branches still observed before downstream execution. The front path
+projects velocity off the contact normal, normalizes with the original inverse
+square-root lookup and float32 scale store, updates front-only travel direction
+and forward speed, and combines linear contact velocity with its angular term.
+Contact speed uses the original approximate square-root lookup. Signed-bit
+speed gates preserve distinct low-speed branches and untouched scratch fields.
+The connected front tire helper now consumes that contact direction/load and
+writes alignment, perpendicular factor, force magnitude and force vector.
+
+All 40,000 cases match across 369 output words with zero differences, including
+exact/adjacent 0.001 speed thresholds, signed zeros, front-only/both-wheel
+contact, low-speed force clearing and preserved skipped state. The extended
+oracle invokes both original lookup-table initializers. Its adapter also makes
+local/world matrix arrays independent, matching their distinct original memory
+ranges even when a synthetic input reused the same JavaScript array.
+Exceptional inverse-point results use typed storage to preserve NaN signs
+under V8 optimization; this was verified by the full warmed regression suite
+as well as another 40,000-case original-execution run.
+
+Report: `mcm-front-velocity-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-front-velocity-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Original projection, lookup, steering, terrain, transform and tire callees run
+directly. Remaining contact-force processing, rear-only/no-wheel response,
+full-loop integration and whole-bike acceleration/release parity are unfinished.

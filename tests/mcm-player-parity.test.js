@@ -1190,3 +1190,8 @@ test('connected front load matches original steering correction, contact arm and
  const {evaluateFrontLoadSubstep}=await import('../scripts/mcm-reference/front-load-substep-case.mjs');
  for(const {input:c,outputBits} of fixture('front-load-substep-wine11.json').fixtures)assert.deepEqual(evaluateFrontLoadSubstep(c),outputBits);
 });
+
+test('connected front velocity and tire force match original speed gates, projection and friction',async()=>{
+ const {evaluateFrontVelocitySubstep}=await import('../scripts/mcm-reference/front-velocity-substep-case.mjs');
+ for(const [i,{input:c,outputBits}] of fixture('front-velocity-substep-wine11.json').fixtures.entries()){const actual=evaluateFrontVelocitySubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});
