@@ -3226,3 +3226,27 @@ Report: `mcm-reset-loop-contact-validation.json`. Reproduce with
 The second force/integration pass, full frame completion, dynamic bike/rider
 collision callbacks, end-to-end acceleration/release trajectories and playable
 integration remain outstanding. Full physics parity remains unproven.
+
+### Persistent second substep through force preparation and chassis response
+
+The continuous native path now reaches `0x4a6eac` on its second iteration.
+All 2,358 captured words match in 16,400 executions, including the 8,964 cases
+that continue after the first reset substep. The shared force/contact stage is
+now callable without rerunning reset or wheel sampling. It consumes the live
+second-pass contacts, updated speed, velocity, orientation and controls.
+
+New observations cover contact masks, drag/base force, target roll/cosine,
+contact direction and levers, chassis samples/depths, contact flags and response
+scratch, plus the transform caches after geometry/probe queries. All four wheel
+contact combinations, front-probe outcomes 0/1/2 and both body-probe outcomes
+are required. Integer fields `+8c4` and `+c6c` are now decoded and serialized as
+raw integer words by the shared reset adapter; previously their untouched bits
+round-tripped through floats, which concealed the representation error until
+this direct second-response observation.
+
+Report: `mcm-reset-loop-response-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-loop-response-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+The second suspension/tire-force/integration pass, complete frame execution,
+dynamic bike/rider collision callbacks, end-to-end acceleration/release
+trajectories and playable integration remain outstanding. The earlier
+wheel-query scratch and synthetic-state scope limitations still apply.
