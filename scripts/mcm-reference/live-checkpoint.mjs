@@ -32,3 +32,24 @@ export function loadLiveEngine(checkpoint){
   released:u(0x150),shiftThreshold:f(0x154),gear:u(0x158),rpmDemand:f(0x15c),state:f(0x160),shiftTimer:f(0x168),
   analogFilter:{value:m.f32(filterAddress),duration:m.f32(filterAddress+4)},randomScale:1/32768},memory:m};
 }
+
+// Original 0x3ac-byte rider controller, allocated at 0x4a3a6b. Six
+// 0x5c-byte event records contain capacities 5, 5 and 10, not three equal
+// five-entry groups. Resource addresses are retained; assets are not invented.
+export function loadLiveRider(checkpoint){
+ const memory=checkpointMemory(checkpoint),bike=checkpoint.bikeAddress;
+ if(memory.u32(bike)!==0x4d9a94)throw Error('Unsupported bike vtable');
+ const address=memory.u32(bike+0x874),bytes=memory.read(address,0x3ac);
+ const u=o=>bytes.readUInt32LE(o),i=o=>bytes.readInt32LE(o),f=o=>bytes.readFloatLE(o),vec=o=>[f(o),f(o+4),f(o+8)];
+ if(u(0x15c)!==bike)throw Error('Rider owner differs from checkpoint bike');
+ const records=Array.from({length:6},(_,kind)=>[0,0x18,0x30].map((offset,group)=>{
+  const start=0x174+kind*0x5c+offset,count=u(start),capacity=[5,5,10][group];
+  if(count>capacity)throw Error('Rider event count exceeds captured allocation');
+  return Array.from({length:count},(_,j)=>u(start+4+j*4));
+ }));
+ const rider={previousVelocity:vec(0x58),velocity:vec(0x70),angularVelocity:vec(0x7c),
+  fieldf8:f(0xf8),field138:u(0x138),flag13c:u(0x13c),field140:u(0x140),field144:u(0x144),field154:i(0x154),
+  selected:[u(0x160),u(0x164),u(0x168)],active16c:u(0x16c),kind:i(0x170),visualPresent:!!u(0x34)};
+ return {address,rider,records,visualAddress:u(0x34),
+  unresolvedAnimationRecords:[...new Set([...records.flat(2),...rider.selected].filter(Boolean))]};
+}

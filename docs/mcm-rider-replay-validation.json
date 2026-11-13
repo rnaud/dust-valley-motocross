@@ -1,0 +1,894 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-13",
+  "scope": "Original-versus-original local replay with rider controller captured/restored; whole-world and recovered chassis parity remain unverified.",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "captureSourceSha256": "7b7180919b4bfaf090d5637c0503105229601e891d0d38ac312915bb0ae8d4b2",
+  "captureSha256": "a9ceae4979f61a48b0309a2b89d777781e0c47174ef79c0b2aff5d8a5e18fb06",
+  "checkpointSha256": "7ba5369ba60c766bbb3b4280ac9dbebc7b7ea797436ea0443e2dd83d6e54df9f",
+  "fixtureSha256": "326db34bf311e29b2115f2aa6ffaeeec76f6391aed886210cbf90db41b2cec70",
+  "checkpointBlocks": 22,
+  "normalStateRecords": 1600,
+  "framesPerPass": 400,
+  "comparedBoundaryPairs": 800,
+  "firstMotionDifference": null,
+  "differingBikeWords": {
+    "0x488": {
+      "records": 674,
+      "firstFrame": 1,
+      "phase": "before-update"
+    },
+    "0x48c": {
+      "records": 664,
+      "firstFrame": 1,
+      "phase": "before-update"
+    },
+    "0x490": {
+      "records": 664,
+      "firstFrame": 1,
+      "phase": "before-update"
+    },
+    "0x494": {
+      "records": 38,
+      "firstFrame": 1,
+      "phase": "before-update"
+    }
+  },
+  "differingEngineWords": {},
+  "differingRiderWords": {},
+  "samples": [
+    {
+      "sequence": 1,
+      "phase": "after-update",
+      "bike": "051c89f8",
+      "name": "PDM",
+      "controller": "local-input",
+      "positionFeet": [
+        2227.71630859375,
+        44.61524963378906,
+        2310.361083984375
+      ],
+      "velocityFeetPerSecond": [
+        0,
+        0.0000532580706931185,
+        0
+      ],
+      "angularVelocity": [
+        -0.002678368240594864,
+        0,
+        0
+      ],
+      "accelerationFeetPerSecondSquared": [
+        0,
+        0.002662903629243374,
+        0
+      ],
+      "transformMatrixBits": [
+        0,
+        0,
+        3212836864,
+        0,
+        3171572019,
+        1065343705,
+        0,
+        0,
+        1065343705,
+        1024088371,
+        0,
+        0,
+        1158364022,
+        1110603268,
+        1158702535,
+        1065353216
+      ],
+      "transformMatrix": [
+        0,
+        0,
+        -1,
+        0,
+        -0.03377647325396538,
+        0.9994331002235413,
+        0,
+        0,
+        0.9994331002235413,
+        0.03377647325396538,
+        0,
+        0,
+        2227.71630859375,
+        44.61524963378906,
+        2310.361083984375,
+        1
+      ],
+      "speedMetresPerSecond": 0.00001623305994726252,
+      "gearIndex": 0,
+      "throttleState": 0,
+      "rpmDemand": 0,
+      "shiftThreshold": 6934.70458984375,
+      "shiftTimer": 0,
+      "throttleReleased": 1,
+      "suppliedFrameDelta": 0.019999999552965164,
+      "playerFrame": 0,
+      "requestedThrottle": 0,
+      "scripted": true,
+      "pass": 0
+    },
+    {
+      "sequence": 99,
+      "phase": "after-update",
+      "bike": "051c89f8",
+      "name": "PDM",
+      "controller": "local-input",
+      "positionFeet": [
+        2227.71630859375,
+        44.6152229309082,
+        2310.361083984375
+      ],
+      "velocityFeetPerSecond": [
+        0,
+        -0.0003128517419099808,
+        0
+      ],
+      "angularVelocity": [
+        -0.003192936535924673,
+        0,
+        0
+      ],
+      "accelerationFeetPerSecondSquared": [
+        0,
+        -0.01564258709549904,
+        0
+      ],
+      "transformMatrixBits": [
+        0,
+        0,
+        3212836864,
+        0,
+        3171599075,
+        1065343648,
+        0,
+        0,
+        1065343648,
+        1024115427,
+        0,
+        0,
+        1158364022,
+        1110603261,
+        1158702535,
+        1065353216
+      ],
+      "transformMatrix": [
+        0,
+        0,
+        -1,
+        0,
+        -0.03387726470828056,
+        0.9994297027587891,
+        0,
+        0,
+        0.9994297027587891,
+        0.03387726470828056,
+        0,
+        0,
+        2227.71630859375,
+        44.6152229309082,
+        2310.361083984375,
+        1
+      ],
+      "speedMetresPerSecond": 0.00009535721093416215,
+      "gearIndex": 0,
+      "throttleState": 0,
+      "rpmDemand": 0,
+      "shiftThreshold": 6934.70458984375,
+      "shiftTimer": 0,
+      "throttleReleased": 1,
+      "suppliedFrameDelta": 0.019999999552965164,
+      "playerFrame": 49,
+      "requestedThrottle": 0,
+      "scripted": true,
+      "pass": 0
+    },
+    {
+      "sequence": 101,
+      "phase": "after-update",
+      "bike": "051c89f8",
+      "name": "PDM",
+      "controller": "local-input",
+      "positionFeet": [
+        2227.72998046875,
+        44.61522674560547,
+        2310.361083984375
+      ],
+      "velocityFeetPerSecond": [
+        0.6811239719390869,
+        0.00022137886844575405,
+        0
+      ],
+      "angularVelocity": [
+        -0.0031242019031196833,
+        0,
+        0
+      ],
+      "accelerationFeetPerSecondSquared": [
+        34.05619812011719,
+        0.01106894388794899,
+        0
+      ],
+      "transformMatrixBits": [
+        0,
+        0,
+        3212836864,
+        0,
+        3171599075,
+        1065343648,
+        0,
+        0,
+        1065343648,
+        1024115427,
+        0,
+        0,
+        1158364078,
+        1110603262,
+        1158702535,
+        1065353216
+      ],
+      "transformMatrix": [
+        0,
+        0,
+        -1,
+        0,
+        -0.03387726470828056,
+        0.9994297027587891,
+        0,
+        0,
+        0.9994297027587891,
+        0.03387726470828056,
+        0,
+        0,
+        2227.72998046875,
+        44.61522674560547,
+        2310.361083984375,
+        1
+      ],
+      "speedMetresPerSecond": 0.20760659761260133,
+      "gearIndex": 0,
+      "throttleState": 0.019999999552965164,
+      "rpmDemand": 205,
+      "shiftThreshold": 6934.70458984375,
+      "shiftTimer": 0,
+      "throttleReleased": 0,
+      "suppliedFrameDelta": 0.019999999552965164,
+      "playerFrame": 50,
+      "requestedThrottle": 1,
+      "scripted": true,
+      "pass": 0
+    },
+    {
+      "sequence": 201,
+      "phase": "after-update",
+      "bike": "051c89f8",
+      "name": "PDM",
+      "controller": "local-input",
+      "positionFeet": [
+        2251.219482421875,
+        44.61726379394531,
+        2310.361083984375
+      ],
+      "velocityFeetPerSecond": [
+        43.51576232910156,
+        0.000595326186157763,
+        0
+      ],
+      "angularVelocity": [
+        0,
+        0,
+        0
+      ],
+      "accelerationFeetPerSecondSquared": [
+        40.12873840332031,
+        -0.02235625870525837,
+        0
+      ],
+      "transformMatrixBits": [
+        0,
+        0,
+        3212836864,
+        0,
+        3170235858,
+        1065345719,
+        0,
+        0,
+        1065345719,
+        1022752210,
+        0,
+        0,
+        1158460291,
+        1110603796,
+        1158702535,
+        1065353216
+      ],
+      "transformMatrix": [
+        0,
+        0,
+        -1,
+        0,
+        -0.030024442821741104,
+        0.9995531439781189,
+        0,
+        0,
+        0.9995531439781189,
+        0.030024442821741104,
+        0,
+        0,
+        2251.219482421875,
+        44.61726379394531,
+        2310.361083984375,
+        1
+      ],
+      "speedMetresPerSecond": 13.263604359151374,
+      "gearIndex": 2,
+      "throttleState": 0.8514435291290283,
+      "rpmDemand": 8727.2958984375,
+      "shiftThreshold": 7016.9677734375,
+      "shiftTimer": 0,
+      "throttleReleased": 0,
+      "suppliedFrameDelta": 0.019999999552965164,
+      "playerFrame": 100,
+      "requestedThrottle": 1,
+      "scripted": true,
+      "pass": 0
+    },
+    {
+      "sequence": 301,
+      "phase": "after-update",
+      "bike": "051c89f8",
+      "name": "PDM",
+      "controller": "local-input",
+      "positionFeet": [
+        2305.32421875,
+        44.59512710571289,
+        2310.361083984375
+      ],
+      "velocityFeetPerSecond": [
+        61.344356536865234,
+        -2.2290868759155273,
+        0
+      ],
+      "angularVelocity": [
+        -0.02062656730413437,
+        0,
+        0
+      ],
+      "accelerationFeetPerSecondSquared": [
+        14.016878128051758,
+        -38.471351623535156,
+        0
+      ],
+      "transformMatrixBits": [
+        0,
+        0,
+        3212836864,
+        0,
+        3174882068,
+        1065335441,
+        0,
+        0,
+        1065335441,
+        1027398420,
+        0,
+        0,
+        1158681904,
+        1110597993,
+        1158702535,
+        1065353216
+      ],
+      "transformMatrix": [
+        0,
+        0,
+        -1,
+        0,
+        -0.04610736668109894,
+        0.9989405274391174,
+        0,
+        0,
+        0.9989405274391174,
+        0.04610736668109894,
+        0,
+        0,
+        2305.32421875,
+        44.59512710571289,
+        2310.361083984375,
+        1
+      ],
+      "speedMetresPerSecond": 18.71010003986191,
+      "gearIndex": 3,
+      "throttleState": 1,
+      "rpmDemand": 10250,
+      "shiftThreshold": 7057.4404296875,
+      "shiftTimer": 0,
+      "throttleReleased": 0,
+      "suppliedFrameDelta": 0.019999999552965164,
+      "playerFrame": 150,
+      "requestedThrottle": 1,
+      "scripted": true,
+      "pass": 0
+    },
+    {
+      "sequence": 399,
+      "phase": "after-update",
+      "bike": "051c89f8",
+      "name": "PDM",
+      "controller": "local-input",
+      "positionFeet": [
+        2371.548583984375,
+        44.511741638183594,
+        2310.361083984375
+      ],
+      "velocityFeetPerSecond": [
+        73.01188659667969,
+        0.004025664180517197,
+        0
+      ],
+      "angularVelocity": [
+        0.004491420928388834,
+        0,
+        0
+      ],
+      "accelerationFeetPerSecondSquared": [
+        10.403210639953613,
+        0.008225278928875923,
+        0
+      ],
+      "transformMatrixBits": [
+        0,
+        0,
+        3212836864,
+        0,
+        3169731265,
+        1065346187,
+        0,
+        0,
+        1065346187,
+        1022247617,
+        0,
+        0,
+        1158953159,
+        1110576134,
+        1158702535,
+        1065353216
+      ],
+      "transformMatrix": [
+        0,
+        0,
+        -1,
+        0,
+        -0.029084565117955208,
+        0.9995810389518738,
+        0,
+        0,
+        0.9995810389518738,
+        0.029084565117955208,
+        0,
+        0,
+        2371.548583984375,
+        44.511741638183594,
+        2310.361083984375,
+        1
+      ],
+      "speedMetresPerSecond": 22.254023068495204,
+      "gearIndex": 3,
+      "throttleState": 1,
+      "rpmDemand": 10250,
+      "shiftThreshold": 7057.4404296875,
+      "shiftTimer": 0,
+      "throttleReleased": 0,
+      "suppliedFrameDelta": 0.019999999552965164,
+      "playerFrame": 199,
+      "requestedThrottle": 1,
+      "scripted": true,
+      "pass": 0
+    },
+    {
+      "sequence": 401,
+      "phase": "after-update",
+      "bike": "051c89f8",
+      "name": "PDM",
+      "controller": "local-input",
+      "positionFeet": [
+        2373.006591796875,
+        44.51179885864258,
+        2310.361083984375
+      ],
+      "velocityFeetPerSecond": [
+        72.89696502685547,
+        0.0034484146162867546,
+        0
+      ],
+      "angularVelocity": [
+        0.005251993890851736,
+        0,
+        0
+      ],
+      "accelerationFeetPerSecondSquared": [
+        -5.7461018562316895,
+        -0.028862478211522102,
+        0
+      ],
+      "transformMatrixBits": [
+        0,
+        0,
+        3212836864,
+        0,
+        3169674896,
+        1065346238,
+        0,
+        0,
+        1065346238,
+        1022191248,
+        0,
+        0,
+        1158959131,
+        1110576149,
+        1158702535,
+        1065353216
+      ],
+      "transformMatrix": [
+        0,
+        0,
+        -1,
+        0,
+        -0.028979569673538208,
+        0.9995840787887573,
+        0,
+        0,
+        0.9995840787887573,
+        0.028979569673538208,
+        0,
+        0,
+        2373.006591796875,
+        44.51179885864258,
+        2310.361083984375,
+        1
+      ],
+      "speedMetresPerSecond": 22.21899496504631,
+      "gearIndex": 3,
+      "throttleState": 0.9599999785423279,
+      "rpmDemand": 9840,
+      "shiftThreshold": 7057.4404296875,
+      "shiftTimer": 0,
+      "throttleReleased": 1,
+      "suppliedFrameDelta": 0.019999999552965164,
+      "playerFrame": 200,
+      "requestedThrottle": 0,
+      "scripted": true,
+      "pass": 0
+    },
+    {
+      "sequence": 449,
+      "phase": "after-update",
+      "bike": "051c89f8",
+      "name": "PDM",
+      "controller": "local-input",
+      "positionFeet": [
+        2407.31298828125,
+        44.51258087158203,
+        2310.361083984375
+      ],
+      "velocityFeetPerSecond": [
+        70.16405487060547,
+        0.0006116399308666587,
+        0
+      ],
+      "angularVelocity": [
+        0,
+        0,
+        0
+      ],
+      "accelerationFeetPerSecondSquared": [
+        -5.653662204742432,
+        0.009762362577021122,
+        0
+      ],
+      "transformMatrixBits": [
+        0,
+        0,
+        3212836864,
+        0,
+        3169560358,
+        1065346342,
+        0,
+        0,
+        1065346342,
+        1022076710,
+        0,
+        0,
+        1159099650,
+        1110576354,
+        1158702535,
+        1065353216
+      ],
+      "transformMatrix": [
+        0,
+        0,
+        -1,
+        0,
+        -0.028766226023435593,
+        0.999590277671814,
+        0,
+        0,
+        0.999590277671814,
+        0.028766226023435593,
+        0,
+        0,
+        2407.31298828125,
+        44.51258087158203,
+        2310.361083984375,
+        1
+      ],
+      "speedMetresPerSecond": 21.386003925373117,
+      "gearIndex": 3,
+      "throttleState": 0,
+      "rpmDemand": 0,
+      "shiftThreshold": 7057.4404296875,
+      "shiftTimer": 0,
+      "throttleReleased": 1,
+      "suppliedFrameDelta": 0.019999999552965164,
+      "playerFrame": 224,
+      "requestedThrottle": 0,
+      "scripted": true,
+      "pass": 0
+    },
+    {
+      "sequence": 451,
+      "phase": "after-update",
+      "bike": "051c89f8",
+      "name": "PDM",
+      "controller": "local-input",
+      "positionFeet": [
+        2408.7138671875,
+        44.51259231567383,
+        2310.361083984375
+      ],
+      "velocityFeetPerSecond": [
+        70.04994201660156,
+        0.000520482484716922,
+        0
+      ],
+      "angularVelocity": [
+        0,
+        0,
+        0
+      ],
+      "accelerationFeetPerSecondSquared": [
+        -5.705554485321045,
+        -0.004557871725410223,
+        0
+      ],
+      "transformMatrixBits": [
+        0,
+        0,
+        3212836864,
+        0,
+        3169560358,
+        1065346342,
+        0,
+        0,
+        1065346342,
+        1022076710,
+        0,
+        0,
+        1159105388,
+        1110576357,
+        1158702535,
+        1065353216
+      ],
+      "transformMatrix": [
+        0,
+        0,
+        -1,
+        0,
+        -0.028766226023435593,
+        0.999590277671814,
+        0,
+        0,
+        0.999590277671814,
+        0.028766226023435593,
+        0,
+        0,
+        2408.7138671875,
+        44.51259231567383,
+        2310.361083984375,
+        1
+      ],
+      "speedMetresPerSecond": 21.35122232724953,
+      "gearIndex": 3,
+      "throttleState": 0,
+      "rpmDemand": 0,
+      "shiftThreshold": 7057.4404296875,
+      "shiftTimer": 0,
+      "throttleReleased": 1,
+      "suppliedFrameDelta": 0.019999999552965164,
+      "playerFrame": 225,
+      "requestedThrottle": 0,
+      "scripted": true,
+      "pass": 0
+    },
+    {
+      "sequence": 601,
+      "phase": "after-update",
+      "bike": "051c89f8",
+      "name": "PDM",
+      "controller": "local-input",
+      "positionFeet": [
+        2507.3974609375,
+        44.5126953125,
+        2310.361083984375
+      ],
+      "velocityFeetPerSecond": [
+        61.68846893310547,
+        -0.00003920041490346193,
+        0
+      ],
+      "angularVelocity": [
+        -0.00100311532150954,
+        0,
+        0
+      ],
+      "accelerationFeetPerSecondSquared": [
+        -5.484216213226318,
+        -0.00019289369811303914,
+        0
+      ],
+      "transformMatrixBits": [
+        0,
+        0,
+        3212836864,
+        0,
+        3169560358,
+        1065346342,
+        0,
+        0,
+        1065346342,
+        1022076710,
+        0,
+        0,
+        1159509596,
+        1110576384,
+        1158702535,
+        1065353216
+      ],
+      "transformMatrix": [
+        0,
+        0,
+        -1,
+        0,
+        -0.028766226023435593,
+        0.999590277671814,
+        0,
+        0,
+        0.999590277671814,
+        0.028766226023435593,
+        0,
+        0,
+        2507.3974609375,
+        44.5126953125,
+        2310.361083984375,
+        1
+      ],
+      "speedMetresPerSecond": 18.802645330814343,
+      "gearIndex": 3,
+      "throttleState": 0,
+      "rpmDemand": 0,
+      "shiftThreshold": 7057.4404296875,
+      "shiftTimer": 0,
+      "throttleReleased": 1,
+      "suppliedFrameDelta": 0.019999999552965164,
+      "playerFrame": 300,
+      "requestedThrottle": 0,
+      "scripted": true,
+      "pass": 0
+    },
+    {
+      "sequence": 799,
+      "phase": "after-update",
+      "bike": "051c89f8",
+      "name": "PDM",
+      "controller": "local-input",
+      "positionFeet": [
+        2618.849853515625,
+        44.512474060058594,
+        2310.361083984375
+      ],
+      "velocityFeetPerSecond": [
+        51.05683135986328,
+        -0.00008015692583285272,
+        0
+      ],
+      "angularVelocity": [
+        -0.0038042610976845026,
+        0,
+        0
+      ],
+      "accelerationFeetPerSecondSquared": [
+        -5.277032375335693,
+        -0.014994755387306213,
+        0
+      ],
+      "transformMatrixBits": [
+        0,
+        0,
+        3212836864,
+        0,
+        3169778420,
+        1065346144,
+        0,
+        0,
+        1065346144,
+        1022294772,
+        0,
+        0,
+        1159966105,
+        1110576326,
+        1158702535,
+        1065353216
+      ],
+      "transformMatrix": [
+        0,
+        0,
+        -1,
+        0,
+        -0.029172398149967194,
+        0.9995784759521484,
+        0,
+        0,
+        0.9995784759521484,
+        0.029172398149967194,
+        0,
+        0,
+        2618.849853515625,
+        44.512474060058594,
+        2310.361083984375,
+        1
+      ],
+      "speedMetresPerSecond": 15.562122198505506,
+      "gearIndex": 2,
+      "throttleState": 0,
+      "rpmDemand": 0,
+      "shiftThreshold": 7035.0400390625,
+      "shiftTimer": 0,
+      "throttleReleased": 1,
+      "suppliedFrameDelta": 0.019999999552965164,
+      "playerFrame": 399,
+      "requestedThrottle": 0,
+      "scripted": true,
+      "pass": 0
+    }
+  ],
+  "engineValidation": {
+    "scope": "Retained engine-entry state initialized from captured memory; original chassis inputs supplied each frame. Not whole-bike parity.",
+    "frames": 800,
+    "comparedStores": 14400,
+    "comparedRandomStates": 1600,
+    "differences": 0,
+    "firstDifferences": [],
+    "passes": [
+      {
+        "pass": 0,
+        "frames": 400,
+        "randomCalls": 4,
+        "randomState": 1449997005
+      },
+      {
+        "pass": 1,
+        "frames": 400,
+        "randomCalls": 4,
+        "randomState": 1449997005
+      }
+    ],
+    "unexplainedBikeWords": [
+      "0x488",
+      "0x48c",
+      "0x490",
+      "0x494"
+    ]
+  }
+}
