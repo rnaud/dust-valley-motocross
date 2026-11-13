@@ -1,15 +1,36 @@
 import {resolveMcmWorldMatrix} from './world-transform.js';
 import {invalidateMcmTransform} from './event-orientation.js';
+import {bitsFloat,floatBits} from './math.js';
 const f=Math.fround;
+// x87 invalid arithmetic yields negative indefinite. For equal NaN payloads,
+// mixed signs propagate the positive value. This path handles overflowed state.
+const indefinite=bitsFloat(0xffc00000),positiveNaN=bitsFloat(0x7fc00000);
+function exceptional(a,b,operation){
+ if(Number.isNaN(a)||Number.isNaN(b))return (Number.isNaN(a)&&!(floatBits(a)>>>31))||(Number.isNaN(b)&&!(floatBits(b)>>>31))?positiveNaN:indefinite;
+ const value=operation(a,b);return Number.isNaN(value)?indefinite:value;
+}
+const mul=(a,b)=>exceptional(a,b,(x,y)=>x*y),add=(a,b)=>exceptional(a,b,(x,y)=>x+y);
+function exceptionalPoint(m,[x,y,z]){
+ return [0,1,2].map(i=>f(add(add(add(mul(m[8+i],z),mul(m[i],x)),mul(m[4+i],y)),m[12+i])));
+}
+function exceptionalInversePoint(m,[x,y,z]){
+ const tx=f(-add(add(mul(m[14],m[2]),mul(m[1],m[13])),mul(m[12],m[0])));
+ const ty=f(-add(add(mul(m[14],m[6]),mul(m[4],m[12])),mul(m[13],m[5])));
+ const tz=f(-add(add(mul(m[8],m[12]),mul(m[14],m[10])),mul(m[9],m[13])));
+ return [f(add(add(add(mul(y,m[1]),mul(z,m[2])),mul(x,m[0])),tx)),f(add(add(add(mul(m[6],z),mul(m[5],y)),mul(m[4],x)),ty)),f(add(add(add(mul(m[9],y),mul(m[10],z)),mul(m[8],x)),tz))];
+}
+
 
 // Original 0x4b8660, including its x87 addition order.
 export function transformMcmPoint(m,[x,y,z]){
+ if(!m.every(Number.isFinite)||![x,y,z].every(Number.isFinite))return exceptionalPoint(m,[x,y,z]);
  return [f(((m[8]*z+m[0]*x)+m[4]*y)+m[12]),f(((m[9]*z+m[1]*x)+m[5]*y)+m[13]),f(((m[10]*z+m[2]*x)+m[6]*y)+m[14])];
 }
 // Original 0x4b8810: transpose rotation, store inverse translation as float32,
 // then transform the point. This is the original rigid inverse, not a general
 // matrix inverse for scaled/sheared transforms.
 export function inverseTransformMcmPoint(m,[x,y,z]){
+ if(!m.every(Number.isFinite)||![x,y,z].every(Number.isFinite))return exceptionalInversePoint(m,[x,y,z]);
  const tx=f(-((m[14]*m[2]+m[1]*m[13])+m[12]*m[0]));
  const ty=f(-((m[14]*m[6]+m[4]*m[12])+m[13]*m[5]));
  const tz=f(-((m[8]*m[12]+m[14]*m[10])+m[9]*m[13]));

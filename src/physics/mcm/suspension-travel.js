@@ -1,4 +1,4 @@
-import {floatBits} from './math.js';
+import {floatBits,bitsFloat} from './math.js';
 
 // Original 0x49e900: component travel limiting and displacement-derived
 // suspension velocity. Transform output assumes an isolated root node.
@@ -19,7 +19,8 @@ export function updateMcmSuspensionTravel(c) {
   const numerator=delta[2]*z+(delta[1]*y+delta[0]*x);
   const denominator=(z*z+(x*x+y*y))*dt;
   const ratio=numerator/denominator;
-  const velocity=displacement.map(v=>f(-(v*ratio)));
+  // x87 invalid arithmetic produces negative indefinite before FCHS.
+  const velocity=displacement.map(v=>{const product=v*ratio;return f(-(Number.isNaN(product)?bitsFloat(0xffc00000):product));});
   return {travel,displacement,componentDisplacement,velocity,translation,
     previousDisplacement:[...componentDisplacement],previousTravel:travel,
     limited,increasing:+(c.previousTravel<=travel),cacheValid:0};

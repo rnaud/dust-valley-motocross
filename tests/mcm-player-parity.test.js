@@ -1180,3 +1180,8 @@ test('connected balance matches original takeoff state, weight filtering and for
  const {evaluateContactBalanceSubstep}=await import('../scripts/mcm-reference/contact-balance-substep-case.mjs');
  for(const {input:c,outputBits} of fixture('contact-balance-substep-wine11.json').fixtures)assert.deepEqual(evaluateContactBalanceSubstep(c),outputBits);
 });
+
+test('connected front suspension matches original reference transforms, travel and descendant caches',async()=>{
+ const {evaluateFrontSuspensionSubstep}=await import('../scripts/mcm-reference/front-suspension-substep-case.mjs');
+ for(const {input:c,outputBits} of fixture('front-suspension-substep-wine11.json').fixtures)assert.deepEqual(evaluateFrontSuspensionSubstep(c),outputBits);
+});
