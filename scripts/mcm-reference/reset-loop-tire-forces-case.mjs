@@ -3,10 +3,10 @@ import {continueMcmResetLoopTireForces} from '../../src/physics/mcm/reset-loop-t
 import {resetSuspensionScratch} from './reset-suspension-case.mjs';
 import {resetTireScratch} from './reset-tire-forces-case.mjs';
 import {floatBits} from '../../src/physics/mcm/math.js';
-export function evaluateResetLoopTireForces(input){
- let tail=Array(332).fill(0);
+export function evaluateResetLoopTireForces(input,observe){
+ let state,continued=false,tail=Array(332).fill(0);
  const words=evaluateResetLoopResponse(input,(c,{looped})=>{
-  if(!looped)return;
+  state=c;continued=looped;if(!looped)return;
   continueMcmResetLoopTireForces(c);const b=c.bike,p=c.contactPhase,s=p.frontSuspension;
   tail=[floatBits(p.balanceFilter[0]),...Array.from(p.balanceScratch,floatBits),...Array.from(p.balanceGeometryScratch,floatBits),...Array.from(s.displacement,floatBits),...Array.from(s.velocity,floatBits),floatBits(s.compression),floatBits(s.travel),s.contactLimited>>>0,s.active>>>0];
   const scratch=resetSuspensionScratch(p);tail.push(...scratch.slice(0,42).map(floatBits),scratch[42]>>>0,scratch[43]>>>0,...resetTireScratch(p).map(floatBits));
@@ -15,5 +15,5 @@ export function evaluateResetLoopTireForces(input){
   tail.push(floatBits(c.component8e4.field5c),c.suspension.front.limited>>>0,floatBits(c.component8e8.field58),c.suspension.rear.limited>>>0);
   for(const n of c.bounds.components)tail.push(...Array.from(n.local,floatBits),...Array.from(n.world,floatBits),n.cacheValid);
   tail.push(...c.points.flatMap(v=>Array.from(v,floatBits)));
- });return [...words,...tail];
+ });const output=[...words,...tail];observe?.(state,{looped:continued});return output;
 }

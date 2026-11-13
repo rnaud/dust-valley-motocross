@@ -12,7 +12,9 @@ export function rotateMcmTransform(matrix, axis, angle) {
 // 0x4b8070: move to the transformed pivot, rotate, then move back.
 // Each translation uses its own original addition order and float32 stores.
 export function rotateMcmTransformAtPivot(matrix, pivot, axis, angle) {
-  const p = pivot, m = [...matrix];
+  // Indexed typed stores preserve NaN signs when the x64 JIT updates the copy.
+  const p = pivot, m = new Float64Array(16);
+  for(let i=0;i<16;i++)m[i]=matrix[i];
   m[12] = Math.fround(add(add(add(mul(m[8],p[2]),mul(m[0],p[0])),mul(m[4],p[1])),m[12]));
   m[13] = Math.fround(add(add(add(mul(m[9],p[2]),mul(m[5],p[1])),mul(m[1],p[0])),m[13]));
   m[14] = Math.fround(add(add(add(mul(m[10],p[2]),mul(m[6],p[1])),mul(m[2],p[0])),m[14]));
