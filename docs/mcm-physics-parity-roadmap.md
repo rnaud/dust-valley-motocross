@@ -2373,3 +2373,29 @@ This is synthetic connected-state validation, not full trajectory parity.
 Linear integration, subsequent orientation/position updates, the alternate
 crash branch, complete-loop wiring and repeatable whole-bike acceleration /
 throttle-release comparisons remain unfinished.
+
+### Connected linear integration and steering correction (2026-11-13)
+
+Extended continuous execution through `0x4ab49e`. The ordinary branch now
+converts assembled force into acceleration and delta velocity, computes the
+two-wheel steering fallback and drive/lean correction, updates correction
+decay/counter state, and integrates velocity, speed and position. Crashed
+chassis contact joins at the real `0x4ab426` boundary and now executes position
+integration too. Frozen bikes clear velocity and speed without moving position.
+Later orientation and wheel updates remain outside this capture.
+
+All 40,000 cases match across 548 output words with zero bit differences.
+Captured state includes linear acceleration, delta velocity, steering angle,
+decay, counter and selected rotation, in addition to all earlier fields and
+the updated velocity/position/speed. Explicit coverage requires drive steering,
+the fallback gate, and frozen/moving execution for ordinary and crashed
+chassis-contact paths. Connecting the speed calculation exposed the original
+x87 C3 check: both zero and unordered squared speed store zero before sqrt.
+Recovered multiply/add semantics retain generated exceptional values.
+
+Report: `mcm-linear-integration-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-linear-integration-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+The full-loop entry, remaining orientation/wheel updates and later branches
+still need connecting. Whole-bike acceleration/throttle-release trajectory
+parity remains unproven; this synthetic connected-state comparison does not
+establish 100% physics parity.
