@@ -1639,3 +1639,15 @@ test('frame-end crash animation matches original lean selection and live child t
   assert.deepEqual(actual,outputBits,`crash/frame-animation fixture ${i}`);
  }
 });
+
+test('animation advancement retains timing, frames and blended/mirrored transforms across calls',async()=>{
+ const {evaluateAnimationAdvance}=await import('../scripts/mcm-reference/animation-advance-case.mjs');
+ const corpus=fixture('animation-advance-wine11.json.br'),outcomes=Object.keys(corpus.source.outcomes);
+ assert.equal(corpus.source.totalDifferences,0);
+ for(const gate of ['riderProxy=0:', 'riderProxy=1:', 'stopped=0:', 'stopped=1:', ':loop=0:', ':loop=1:', ':blend=0:', ':blend=1:', ':mirror=0:', ':mirror=1:', ':ended=0:', ':ended=1:', ':blendEnded=true', ':blendEnded=false'])assert.ok(outcomes.some(k=>k.includes(gate)),gate);
+ for(const [i,{input,outputBits}] of corpus.fixtures.entries()){
+  const actual=evaluateAnimationAdvance(input);
+  assert.equal(actual.length,552);
+  assert.deepEqual(actual,outputBits,`animation/advance fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
+ }
+});
