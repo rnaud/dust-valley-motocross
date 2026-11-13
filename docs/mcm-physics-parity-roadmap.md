@@ -3937,3 +3937,49 @@ ARM64 and x64. Input boundaries include 10,758 crash, 640 player, 2,954 AI-pendi
 3,589 scripted-pending cases. Coverage includes 554 cubic and 3,675 linear
 input paths, both analog-enable states, and 293 completed-trick releases. The
 selected regression corpus contains 789 cases, including the cold-x64 NaN case.
+
+### Retained steering rate and longitudinal input-rate setup
+
+Player-ready cases now continue from `0x4a57c0` to `0x4a5993`, before the call
+to the pre-loop reset/recovery helper `0x4b0610`. Crash cases continue from
+`0x4a58c8` through the same input-history update. AI and scripted cases still
+stop at their explicitly pending controller calls; no later state is fabricated.
+
+The recovered block selects the direct component limit for pose 9 or reduces it
+using the original square-root lookup. It computes the steering error, applies
+the original deadzone, and divides by scheduled step time plus eligible timing
+carry. It also computes the rate of longitudinal input change. The gated,
+capped result at stack `+0x190` supplies extra rear suspension stiffness in the
+later substep; the harness calls this observation `burst`. The previous-input
+word `+0x700` is then updated. The added observations capture all inputs and
+results of these calculations, including the derivative when computed.
+
+No initial bike state, assets, or external input is changed relative to the
+source input corpus. All preceding physics, rider, return, scheduler, recovery,
+and input observations must remain byte-for-byte identical, including the
+inherited non-looping trick variants.
+
+The retained corpus does not reach pose 9's direct limit or a nonzero burst.
+A separate isolated harness executes the same original instruction block with
+6,000 initialized routine inputs. It covers 1,500 direct-limit cases, 4,500
+reduced-limit cases, 471 deadzone cases, 720 nonzero bursts, 495 capped bursts,
+2,400 signed-zero raw deltas, and 1,200 included-carry cases. This is routine
+branch evidence, not a claim that those branches were reached continuously.
+
+```sh
+node scripts/mcm-reference/compare-reset-next-steering.mjs /path/to/mcm.exe /path/to/next-input-corpus /path/to/new-output-directory
+node scripts/mcm-reference/compare-frame-steering.mjs /path/to/mcm.exe /path/to/separate-output-directory
+```
+
+Both support `--replay`. See `mcm-reset-next-steering-validation.json`,
+`mcm-frame-steering-validation.json`, and the matching compressed fixtures.
+The pending AI/scripted controllers, pre-loop reset/recovery helper, terrain
+checks and next substeps remain open, along with longer whole-bike histories,
+original-world integration and playable integration.
+
+Validation: all 17,941 retained cases match all 19,793 observations on ARM64
+and x64 with zero exceptions and zero changed prior traces. The new setup block
+executes in 11,398 player/crash cases; 6,543 AI/scripted cases retain their earlier
+pending boundaries. The separate 6,000-case routine comparison also matches on
+both architectures. Regression fixtures retain 21 connected cases and all
+6,000 compact routine inputs; both pass cold on ARM64 and x64.

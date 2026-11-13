@@ -1,0 +1,37 @@
+{
+  "scope": "Isolated original steering and longitudinal input-rate routine 0x4a57c0..0x4a5993; initialized routine inputs, not continuous-frame evidence",
+  "cases": 6000,
+  "coverage": {
+    "directLimit": 1500,
+    "reducedLimit": 4500,
+    "deadzone": 471,
+    "nonzeroRate": 5529,
+    "burst": 720,
+    "cappedBurst": 495,
+    "zeroDelta": 2400,
+    "carryIncluded": 1200
+  },
+  "mismatchCount": 0,
+  "mismatches": [],
+  "architecture": "arm64",
+  "node": "v24.22.2",
+  "exeSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "inputSha256": "0c85bb1931e78ff35d51eacc1d8f37424806bf04af263984477730d2f0135434",
+  "outputSha256": "e4547adf45f94382244bdcb007536c5f6d9ac269d767fcadb554b636e60683f4",
+  "crossArchitectureReplay": {
+    "architecture": "x64",
+    "node": "v22.23.5",
+    "cases": 6000,
+    "mismatchCount": 0,
+    "inputSha256": "0c85bb1931e78ff35d51eacc1d8f37424806bf04af263984477730d2f0135434",
+    "outputSha256": "e4547adf45f94382244bdcb007536c5f6d9ac269d767fcadb554b636e60683f4"
+  },
+  "regression": {
+    "fixtures": 6000,
+    "coldArm64": "pass",
+    "coldX64": "pass",
+    "fullSuiteTests": 290,
+    "fullSuiteFailures": 0,
+    "productionBuild": "pass"
+  }
+}
