@@ -1,11 +1,12 @@
 import {queryMcmTerrainHeight} from './terrain-height.js';
 import {queryMcmTerrainFaceNormal} from './terrain-face-normal.js';
-import {mcmInverseSqrt} from './inverse-sqrt.js';
+import {mcmInverseSqrtLookup as mcmInverseSqrt} from './inverse-sqrt.js';
 import {adjustMcmResetCourse,avoidMcmResetBikes} from './reset-course.js';
 const f=Math.fround;
 const normalize=v=>{
  const [x,y,z]=v,squared=(y*y+z*z)+x*x;
- if(squared===0)return [0,0,0];
+ // The original x87 equality flag is also set for an unordered comparison.
+ if(squared===0||Number.isNaN(squared))return [0,0,0];
  const inverse=mcmInverseSqrt(f(squared));return v.map(n=>f(n*inverse));
 };
 
