@@ -4160,3 +4160,43 @@ responses; no exceptions or changed prior native traces. The 119 archived
 fixtures pass in fresh ARM64/x64 test processes, and case 9956 also matches when
 run first. All 296 repository tests and the production build pass. See
 [machine-readable response evidence](mcm-reset-next-response-validation.json).
+
+### Retained next-frame suspension, tire forces and motion
+
+The connected comparison now continues from contact response through
+`0x4a6eac..0x4ab7fd`: weight balance, front/rear suspension, tire and brake
+forces, chassis contact response, force/torque assembly, angular and linear
+integration, and wheel/body transforms. It observes 332 tire/suspension words
+and 273 motion words without replacing the carried state. The frame's computed
+extra suspension stiffness is passed from steering setup into force assembly.
+
+The native chassis-observer enable flag is cleared at entry to this stage;
+its retained contact count and the game's stack/state remain unchanged.
+Original reset cycles and pending controller/iteration branches do not enter
+motion integration.
+
+Case 10664 exercises exceptional balance-center offset arithmetic. Case 5312
+exposes nonfinite rear-contact cross products: the x87 NaN sign determines the
+original signed-bit branch, so changing it to a positive NaN incorrectly selects
+a finite distance and produces infinities downstream. The recovered geometry
+now uses the original exceptional arithmetic, and typed contact-lever and
+penetration-offset stores preserve the result through chassis response.
+
+This milestone ends before second-frame controls, events, collisions and the
+remaining substeps. Original-asset histories and complete acceleration/release
+trajectory parity, AI/scripted controllers and integration into playable preview
+remain outstanding.
+
+The expanded fixture selection also retains the horizontal-line contact store
+from case 227. Typed storage preserves its NaN sign in fresh and partially warmed
+execution. All four wheel-contact combinations and crashed/normal chassis paths
+are represented. Computed extra suspension stiffness is zero in these retained
+histories; nonzero steering-burst calculation is validated separately, and its
+connected force effect still needs a retained execution case.
+
+Validation: all 17,941 retained cases match on ARM64 and x64, with zero
+exceptions and zero changed prior native traces. 10,896 cases execute the new
+motion stage; 7,045 retain the explicit pending, iteration-gate or original-cycle
+outcomes. The 236 archived fixtures pass in fresh processes on both architectures,
+and all 297 repository tests and the production build pass. See
+[machine-readable motion evidence](mcm-reset-next-motion-validation.json).

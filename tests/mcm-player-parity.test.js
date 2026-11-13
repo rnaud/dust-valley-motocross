@@ -1945,3 +1945,20 @@ test('retained next-frame contact response consumes the component limit and comp
   assert.deepEqual(actual.tail,outputBits,`next response tail ${caseIndex}`);
  }
 });
+
+test('retained next-frame suspension, tire forces and motion consume the carried state',async()=>{
+ const {evaluateResetNextMotion}=await import('../scripts/mcm-reference/reset-next-motion-case.mjs');
+ const corpus=fixture('reset-next-motion-wine11.json.br');
+ assert.equal(corpus.source.mismatchCount,0);
+ assert.equal(corpus.source.exceptionCount,0);
+ assert.equal(corpus.source.priorTraceChangedCases,0);
+ assert.equal(corpus.source.priorTraceComparedCases,17941);
+ assert.equal(corpus.source.motionReachedCases,10896);
+ for(const {caseIndex,input,prefixBits,outputBits} of corpus.fixtures){
+  const actual=evaluateResetNextMotion(input);
+  assert.equal(actual.motionReached,['ordinary','reset'].includes(actual.contactBranch));
+  assert.equal(actual.tail.length,12958);
+  assert.deepEqual(actual.prefix,prefixBits,`next motion prefix ${caseIndex}`);
+  assert.deepEqual(actual.tail,outputBits,`next motion tail ${caseIndex}`);
+ }
+});

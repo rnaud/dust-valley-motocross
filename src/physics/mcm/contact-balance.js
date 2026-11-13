@@ -2,6 +2,7 @@ import {resolveMcmWorldMatrix} from './world-transform.js';
 import {floatBits} from './math.js';
 import {mcmInverseSqrtLookup as mcmInverseSqrt} from './inverse-sqrt.js';
 import {updateMcmContactResponseSubstep} from './contact-response.js';
+import {mcmAdd as add,mcmMultiply as mul} from './x87-arithmetic.js';
 const f=Math.fround;
 
 // Original 0x4a6eac..0x4a7054. The filter result is stored as float32 but
@@ -35,9 +36,9 @@ export function updateMcmBalanceCenter(c){
  const direction=(squared===0||Number.isNaN(squared))?[0,0,0]:[f(x*inverse),0,f(z*inverse)];
  c.balanceGeometryScratch.splice(0,3,...direction);
  const scale=(c.supportDepth+3)*(c.rearWeight-.5);
- const offset=direction.map(v=>f(v*scale));
+ const offset=direction.map(v=>f(mul(v,scale)));
  c.balanceGeometryScratch.splice(4,6,...offset,...offset);
- c.balanceCenter=c.balanceCenter.map((v,i)=>f(v+offset[i]));
+ c.balanceCenter=c.balanceCenter.map((v,i)=>f(add(v,offset[i])));
  c.balanceGeometryScratch.splice(10,3,...c.balanceCenter);
 }
 export function updateMcmContactBalanceSubstep(c){
