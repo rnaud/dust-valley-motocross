@@ -1,0 +1,28 @@
+import {updateMcmNormalEventDecisionSubstep} from './normal-event-decision-substep.js';
+import {alignMcmEventRootOrientation} from './event-orientation.js';
+import {startMcmRiderEvent} from './rider-event.js';
+import {floatBits} from './math.js';
+import {mcmMultiply as mul} from './x87-arithmetic.js';
+const f=Math.fround;
+
+// Original event wrapper through its return, before the main loop's join.
+export function updateMcmNormalEventSetupSubstep(c){
+ const result=updateMcmNormalEventDecisionSubstep(c),d=c.normalEventDecision,s=c.normalEventSetup;
+ if(c.state844)return result;
+ c.state844=d.triggered;
+ if(!d.triggered)return result;
+ s.envelope=[0,f(mul(c.linearIntegration.field8cc,21)),1,-1];
+ if(c.normalControl.flag820){
+  const axes=alignMcmEventRootOrientation(c.nodes[s.sourceIndex],c.bodyNode);
+  c.offset=axes.forward;c.normal=axes.up;s.liveBoundsMin=[...s.boundsMin];s.liveBoundsMax=[...s.boundsMax];c.normalControl.flag820=0;
+ }
+ s.direction=[c.bikeForward[0],0,c.bikeForward[2]];d.animation=0;c.leanDisabled=0;c.field714=0;
+ s.inverted=+(floatBits(c.bikeUp[1])>0x80000000);s.field890=c.heading;
+ if(d.eventKind===1&&(floatBits(c.chassisResponse.angularXY[0])|0)<0x3fc8f5c3)c.chassisResponse.angularXY[0]=f(1.57);
+ c.controllerHandoff.velocity=[...c.velocity];
+ const angular=new Float64Array(3);angular[0]=f(mul(c.chassisResponse.angularXY[0],.75));angular[1]=f(mul(c.chassisResponse.angularXY[1],.75));angular[2]=f(mul(c.field53c,.75));c.controllerHandoff.angularVelocity=angular;
+ const rider=startMcmRiderEvent({kind:d.eventKind,records:s.records,randomValues:s.randomValues,velocity:c.velocity});
+ Object.assign(s,{previousVelocity:rider.previousVelocity,selected:rider.selected,active16c:rider.active16c});c.controllerHandoff.flag13c=rider.active13c;c.contactCorrection.controller170=rider.kind;
+ d.randomCalls+=rider.randomCalls;s.resource=d.eventKind===2?s.alternateResource:s.normalResource;
+ return result;
+}

@@ -1304,3 +1304,11 @@ test('connected normal event decisions match original triggers and preserve skip
  for(const reason of [1,2,4,5,6,7,8,9,12])assert.ok(Object.keys(corpus.source.eventOutcomes).some(k=>k.includes('triggered=1:')&&k.includes(`:reason=${reason}:`)),`reason ${reason}`);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){const actual=evaluateNormalEventDecisionSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
+
+
+test('connected event setup matches original orientation reset, rider state and random selections',async()=>{
+ const {evaluateNormalEventSetupSubstep}=await import('../scripts/mcm-reference/normal-event-setup-substep-case.mjs');
+ const corpus=fixture('normal-event-setup-substep-wine11.json.gz');
+ for(const gate of ['triggered=0','triggered=1:reset=false','triggered=1:reset=true:parented=false','triggered=1:reset=true:parented=true',':sourceAlias=true:',':kind=2:',':draws=5'])assert.ok(Object.keys(corpus.source.setupOutcomes).some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){const actual=evaluateNormalEventSetupSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});

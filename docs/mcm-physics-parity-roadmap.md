@@ -2563,3 +2563,29 @@ This boundary captures the decision return value before the caller stores
 `bike+0x844`; it does not claim event setup or rider initialization is connected.
 Those mutations, the caller's remaining branches, collision/tail and entry
 integration remain ahead of complete acceleration/throttle-release trajectories.
+
+### Connected event setup and rider initialization
+
+The normal-state calls now return from the original `0x4a4b60` wrapper at
+`0x4ac1b2`, `0x4ac5fc`, or `0x4ac681`. The connected model commits the event
+state, updates its envelope, optionally resets body orientation and bounds,
+clears animation/lean flags, applies the event angular minimum, and initializes
+the rider controller with original random-selection ordering and resource IDs.
+The orientation source is the same node used by earlier normal controls.
+Parented target bodies and aliased source/target nodes are covered.
+
+All 611 captured words match in 40,000 pinned-original executions. Regression
+coverage includes event/no-event paths, orientation reset with root and parented
+targets, source aliases, alternate resources, empty/nonempty first rider groups,
+and launch-plus-rider random calls. The existing event orientation helper now
+supports parented targets and recovered exceptional cross-product arithmetic.
+Signed-zero headings are retained explicitly in fixture inputs. Event decision
+and setup captures encode fields before concatenation, avoiding host-array NaN
+sign canonicalization.
+
+Report: `mcm-normal-event-setup-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-normal-event-setup-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+This corpus uses an empty bounds-child callback list; callbacks remain covered
+standalone and must still be connected to this prefix. Caller joins and trick
+handling, collision/tail integration, entry wiring and whole-bike acceleration/
+throttle-release trajectories remain incomplete.
