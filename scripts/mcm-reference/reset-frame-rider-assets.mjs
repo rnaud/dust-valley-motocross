@@ -9,7 +9,7 @@ export function initializeResetFrameRiderAssets(c,input){
    return {index:j,token:j,firstChild:child,boundsMin:[0,1,2].map(k=>f((id+j+k)*.25)),boundsMax:[3,4,5].map(k=>f((id+j+k)*.25))};
   });
   for(let j=0;j<count-1;j++)frames[j].next=frames[j+1];
-  return {token,firstFrame:frames[0],frameCount:count,loop:1,fps:30};
+  return {token,firstFrame:frames[0],frameCount:count,loop:id>=21?(input.frameRider.trickLoop??1):1,fps:30};
  };
  const records=Array.from({length:21},(_,i)=>record(8,i,100+i));
  const tricks=Array.from({length:2},(_,o)=>Array.from({length:16},(_,i)=>record(32,o*16+i+21,i+1)));
