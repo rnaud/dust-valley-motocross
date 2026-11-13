@@ -1471,3 +1471,11 @@ test('reset state reaches real wall dispatch, impulse and collision-induced even
  assert.equal(corpus.source.transitionCases,16);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetCollisionDispatch(c),outputBits,`reset/collision dispatch fixture ${i}`);
 });
+
+test('reset path completes substep scheduling and orientation refresh against original execution',async()=>{
+ const {evaluateResetFinishedSubstep}=await import('../scripts/mcm-reference/reset-finished-substep-case.mjs');
+ const corpus=fixture('reset-finished-substep-wine11.json.br');
+ for(const gate of ['before=1:','before=2:','before=3:',':after=0:',':after=1:',':after=2:',':carryConsumed=true:',':carryConsumed=false:',':dtChanged=true:',':dtChanged=false:'])assert.ok(Object.keys(corpus.source.finishOutcomes).some(k=>k.includes(gate)),gate);
+ assert.equal(corpus.source.transitionCases,16);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetFinishedSubstep(c),outputBits,`reset/finished substep fixture ${i}`);
+});

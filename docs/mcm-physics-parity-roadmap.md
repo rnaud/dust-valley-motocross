@@ -3129,3 +3129,24 @@ Report: `mcm-reset-collision-dispatch-validation.json`. Reproduce with
 This is the static-wall connection. Dynamic bike/rider collision callbacks,
 scheduler completion, shared engine/reset entry, persistent frames, complete
 acceleration/release trajectories and playable integration remain unproven.
+
+### Reset path connected through substep completion
+
+The continuous original reset path now reaches `0x4ac94b`, immediately before
+loop-back. All 1,902 captured words match in 16,400 executions, including the 16
+collision-induced crash cases from the preceding milestone. The original
+scheduler decrements remaining steps and consumes positive carry only when the
+count reaches zero. The corpus includes 2,227 carry-consuming executions and
+all remaining-step outcomes (0, 1, 2). Orientation refresh runs from the live
+body transform after collision dispatch, preserving aliases and node caches.
+
+The recovered path uses the same scheduler/orientation helper as the ordinary
+path. The native harness observes pre-scheduler carry/count without replacing
+state, then executes the real scheduler and orientation callees. This milestone
+stops before loop-back; it does not establish persistent-frame parity.
+
+Report: `mcm-reset-finished-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-finished-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Shared engine/reset entry, repeated substeps and frame completion, dynamic
+bike/rider callbacks, complete acceleration/release trajectories, and playable
+integration remain outstanding.
