@@ -25,6 +25,11 @@ const nearestEven=x=>{
  const lo=Math.floor(x),part=x-lo;
  return part<.5?lo:part>.5?lo+1:lo%2===0?lo:lo+1;
 };
+// Original 0x430a20. In particular, the old fractional time is retained.
+export function startMcmAnimation(object,record){
+ object.stopped=0;object.record=record;object.frame=record.firstFrame;
+ object.field30=0;object.blending=0;
+}
 // Original 0x430ab0. Retains other animation state, unlike 0x430a20.
 // Callback is supplied because the original dispatches through the object's vtable.
 export function seekMcmAnimation(object,record,fraction,applyChild){

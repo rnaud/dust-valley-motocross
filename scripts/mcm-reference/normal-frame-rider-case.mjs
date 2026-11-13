@@ -1,6 +1,5 @@
 import {applyMcmAnimationChild} from '../../src/physics/mcm/animation-seek.js';
-import {updateMcmNormalFrameRider} from '../../src/physics/mcm/normal-frame-rider.js';
-import {updateMcmCrashFrameAnimation} from '../../src/physics/mcm/crash-frame-animation.js';
+import {updateMcmFrameRider} from '../../src/physics/mcm/frame-rider.js';
 import {floatBits,bitsFloat} from '../../src/physics/mcm/math.js';
 const f=Math.fround;
 export function evaluateNormalFrameRider(c){
@@ -32,9 +31,7 @@ export function evaluateNormalFrameRider(c){
  const objects=[0,1].map(o=>({record:records[0],frame:records[0].firstFrame,boundsMin:[100+o*10,101+o*10,102+o*10],boundsMax:[103+o*10,104+o*10,105+o*10]}));
  const b={pose:c.pose,weight:c.weight,nextPose:c.nextPose,fraction:c.fraction,secondaryWeight:c.secondaryWeight,enabled:c.enabled,speed:c.speedBits===undefined?c.speed:bitsFloat(c.speedBits)};
  const applyBike=child=>applyMcmAnimationChild(nodes[1],tables[0],child),applyRider=child=>applyMcmAnimationChild(nodes[4],tables[1],child);
- if(c.state){
-  const crash={secondaryControl:c.secondaryControl,field730:b.fraction};
-  updateMcmCrashFrameAnimation(crash,c.angle,objects[0],records[16],applyBike);b.fraction=crash.field730;
- }else updateMcmNormalFrameRider({bike:b,records,bikeAnimation:objects[0],riderAnimation:objects[1],applyBike,applyRider,bodyNode:nodes[1],riderBodyNode:nodes[4]});
+ Object.assign(b,{state:c.state,field710:0,fieldbfc:c.fieldbfc,secondaryControl:c.secondaryControl});
+ updateMcmFrameRider({bike:b,records,bikeAnimation:objects[0],riderAnimation:objects[1],applyBike,applyRider,bodyNode:nodes[1],riderBodyNode:nodes[4],leanAngle:c.angle},c.delta);
  return [...nodes.flatMap(n=>[...[...n.local,...n.world].map(floatBits),n.cacheValid]),b.pose>>>0,floatBits(b.weight),b.nextPose>>>0,floatBits(b.fraction),floatBits(b.secondaryWeight),b.enabled>>>0,floatBits(b.speed),c.state>>>0,c.fieldbfc>>>0,...objects.flatMap(o=>[records.indexOf(o.record),o.frame.index,...[...o.boundsMin,...o.boundsMax].map(floatBits)]),...children.flatMap(child=>[...child.forward,...child.up,...child.position].map(floatBits))];
 }

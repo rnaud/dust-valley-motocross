@@ -1,5 +1,5 @@
 import {applyMcmAnimationChild} from '../../src/physics/mcm/animation-seek.js';
-import {updateMcmTrickFrameRider} from '../../src/physics/mcm/trick-frame-rider.js';
+import {updateMcmFrameRider} from '../../src/physics/mcm/frame-rider.js';
 import {queryMcmBikeInput} from '../../src/physics/mcm/bike-input.js';
 import {floatBits,bitsFloat} from '../../src/physics/mcm/math.js';
 const f=Math.fround;
@@ -29,12 +29,12 @@ export function evaluateTrickFrameRider(c){
    stopped:(c.stoppedMask>>r)&1,remainder:c.remainder,blendFrame:frames[1],blendTime:c.blendTime,blendDuration:c.blendDuration,blending:(c.blendingMask>>r)&1,
    boundsMin:[100+r*10,101+r*10,102+r*10],boundsMax:[103+r*10,104+r*10,105+r*10]});
  }
- const b={ai:c.ai,secondaryControl:c.secondaryControl,animation:c.animation,elapsed:c.elapsed,holdTime:bitsFloat(c.holdTimeBits)};
+ const b={state:0,field710:1,fieldbfc:0,ai:c.ai,secondaryControl:c.secondaryControl,animation:c.animation,elapsed:c.elapsed,holdTime:bitsFloat(c.holdTimeBits)};
  const applyBike=child=>applyMcmAnimationChild(nodes[1],tables[0],child),applyRider=child=>applyMcmAnimationChild(nodes[4],tables[1],child);
  const output=[];
  for(let step=0;step<4;step++){
   const queries=[];
-  updateMcmTrickFrameRider({bike:b,bikeAnimation:objects[0],riderAnimation:objects[1],applyBike,applyRider,query(action){
+  updateMcmFrameRider({bike:b,bikeAnimation:objects[0],riderAnimation:objects[1],applyBike,applyRider,query(action){
    const result=queryMcmBikeInput({ai:b.ai,secondaryControl:b.secondaryControl,povPresent:0,presentMask:1,action,option:0,responses:[(c.buttons>>(step*2+action-6))&1,0,0,0,0,0]});
    if(result.polled.length)queries.push(action);return result.value;
   }},c.delta);

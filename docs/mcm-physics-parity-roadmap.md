@@ -3640,3 +3640,34 @@ The corpus uses valid finite synthetic animation assets. Nearby interaction and
 recovery branches, connection to retained post-loop physics state, complete
 frame entry/return, longer histories, dynamic collisions and whole-bike
 acceleration/throttle-release trajectory parity remain required.
+
+### Complete frame-end rider dispatch, nearby interaction and recovery
+
+`frame-rider.js` now dispatches all branches of `0x4af710`: crash, normal pose,
+nonnegative trick, negative-byte nearby interaction and recovery (`fieldbfc=2`).
+It receives the raw incoming frame delta, distinct from the carry-inclusive
+interval used by the post-loop acceleration filter. The existing normal/crash
+and trick adapters now exercise this shared entry point too.
+
+`nearby-frame-rider.js` recovers signed lean/progress handling, target-angle
+tracking and single-step wrapping, angle clamps, hold and return phases, and
+both animation seeks. The call that clears the interaction flag still seeks the
+interaction poses; the next call takes the normal-pose path. All 6,000 cases of
+four retained calls match 13,016 observed words per case, including the later
+normal-pose transitions and all source child records. See
+`mcm-nearby-frame-rider-validation.json`.
+
+`recovery-frame-rider.js` connects original animation advancement, record restart,
+orientation restoration, bounds-child dispatch and return to normal posing.
+`startMcmAnimation` preserves fractional animation time, matching `0x430a20`.
+All 4,000 cases of four retained calls match 13,076 observed words per case,
+including animation timing, six transform nodes, orientation scratch and source
+child mutations. See `mcm-recovery-frame-rider-validation.json`.
+
+Together with the prior normal/crash and trick corpora, the shared dispatch is
+replayed over 42,000 cases / 132,000 calls against original execution. These
+corpora use valid finite synthetic state/assets and stationary nearby targets.
+They validate the frame-end routine's branches, not a complete physics frame.
+Connection to retained post-loop state, actual frame entry/return, longer
+histories, dynamic collisions, whole-bike acceleration/throttle-release parity
+and playable recovered simulation integration remain open.
