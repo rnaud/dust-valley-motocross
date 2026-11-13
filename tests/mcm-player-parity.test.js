@@ -1055,3 +1055,8 @@ test('connected substep tail matches original post-event, collision, scheduling 
  const {evaluateSubstepTail}=await import('../scripts/mcm-reference/substep-tail-case.mjs');
  for(const {input:c,outputBits} of fixture('substep-tail-wine11.json').fixtures)assert.deepEqual(evaluateSubstepTail(c),outputBits);
 });
+
+test('connected substep start matches original throttle, brake, gears, input polling and acceleration filter',async()=>{
+ const {evaluateSubstepStart}=await import('../scripts/mcm-reference/substep-start-case.mjs');
+ for(const {input:c,outputBits} of fixture('substep-start-wine11.json').fixtures)assert.deepEqual(evaluateSubstepStart(c),outputBits);
+});
