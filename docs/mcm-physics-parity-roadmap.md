@@ -2869,3 +2869,31 @@ Reset output has reached common contact response; its continuation through
 balance/suspension, tire/chassis forces, integration and substep completion is
 still outstanding. Engine entry preceding reset, dynamic collisions, repeated
 frames and complete acceleration/throttle-release parity remain unproven.
+
+### Reset output connected through balance and both suspension branches
+
+The connected reset comparison now reaches the rear drive-force boundary
+`0x4a7c46` or front-only join `0x4a8602`, with the no-contact exit also observed
+at `0x4a8b6e`. It continues from common preparation at `0x4a5e27` through reset,
+contact response, rider balance filtering, wheel weights, balance-center offset,
+front suspension, front load/velocity/tire response and rear suspension.
+All 1,680 captured words match in 16,384 original executions.
+
+Coverage requires neutral/nonzero rider lean, filter durations below/equal/above
+the timestep, equal/non-equal weight distribution, both reset wheel-contact
+outcomes and chassis-limited/unlimited suspension outcomes. Reset itself leaves
+one wheel at zero penetration and the other at -0.01, so these executions validate
+the naturally reached suspension reset/skip branches, not arbitrary active
+compression. Active compression remains covered by the separate ordinary-path
+corpus; consecutive steps after reset still require integration and validation.
+
+Mutable balance-center, local lever, suspension history, contact depths and
+control fields are written back to the reset context. The comparison observes
+skipped scratch fields as well as newly calculated loads and motion fields.
+
+Report: `mcm-reset-suspension-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-suspension-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Rear drive/loading, force accumulation, motion integration and substep completion
+still need to be connected to this reset path. Engine entry preceding reset,
+dynamic collisions, repeated frames and complete acceleration/throttle-release
+parity remain unproven.

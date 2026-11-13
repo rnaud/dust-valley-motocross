@@ -1398,3 +1398,10 @@ test('reset output feeds common force preparation, contact geometry and chassis 
  for(const gate of ['contacts=1,0:','contacts=0,1:',':probed=true',':probed=false',':frontProbe=0:',':frontProbe=1:',':frontProbe=2:',':bodyProbe=0:',':bodyProbe=1:',':frontMountBodyAlias=true',':frontMountBodyAlias=false'])assert.ok(Object.keys(corpus.source.contactOutcomes).some(k=>k.includes(gate)),gate);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetContactResponse(c),outputBits,`reset/contact fixture ${i}`);
 });
+
+test('reset output feeds balance weights, front tire loading and both suspension branches',async()=>{
+ const {evaluateResetSuspension}=await import('../scripts/mcm-reference/reset-suspension-case.mjs');
+ const corpus=fixture('reset-suspension-wine11.json.br');
+ for(const gate of ['neutralLean=true','neutralLean=false',':filterStep=short:',':filterStep=equal:',':filterStep=long:',':front=1:rear=0:',':front=0:rear=1:',':frontLimited=0:',':frontLimited=1:',':rearLimited=0:',':rearLimited=1:',':weighted=true',':weighted=false'])assert.ok(Object.keys(corpus.source.balanceSuspensionOutcomes).some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetSuspension(c),outputBits,`reset/suspension fixture ${i}`);
+});
