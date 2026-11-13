@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "scope": "Two non-atomic read-only observations of normal-frame animation dependencies. Not whole-bike parity or checkpoint integration.",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "captureSourceSha256": "b9af5dacc101f39cf78489c01592f2f1645737faebfa6dfadcdca84fa8271070",
+  "observationSha256": [
+    "2a1122dda5947f434fbcab4ec394323259f7e494f85d99c7b4fc12204d994f8d",
+    "2a1122dda5947f434fbcab4ec394323259f7e494f85d99c7b4fc12204d994f8d"
+  ],
+  "records": 21,
+  "frames": 662,
+  "children": 8097,
+  "blocks": 8780,
+  "changedBlocks": 0,
+  "firstChangedBlocks": [],
+  "frameCounts": [
+    30,
+    30,
+    30,
+    30,
+    30,
+    30,
+    30,
+    30,
+    30,
+    30,
+    30,
+    30,
+    30,
+    30,
+    21,
+    80,
+    30,
+    30,
+    30,
+    30,
+    21
+  ],
+  "recoveredSeekTraversal": {
+    "seeks": 662,
+    "childVisits": 8097,
+    "componentIndices": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "scope": "Traversal only; original pose application and resulting transforms not compared."
+  }
+}

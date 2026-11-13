@@ -671,3 +671,31 @@ on this expanded fixture, with original chassis inputs supplied each frame.
 This is still a partial original-versus-original replay plus conditional engine
 validation, not recovered whole-bike trajectory parity. Event selection with the
 live eight-choice tables still needs native execution validation.
+
+## Normal-frame animation dependencies
+
+The read-only `capture-animation-assets.c` tool follows the 21 normal-frame
+records at player bike `+0x740`. It captures record headers (`0x78` bytes), linked
+frames (`0x34`) and linked pose entries (`0x30`). Frame count/first frame are at
+record `+0x6c/+0x68`; loop and FPS are at `+0x70/+0x74`. Frame child/next pointers
+are at `+0xc/+0x18`; child next is at `+0x2c`. These layouts are also exercised by
+the original-execution animation seek/advance oracles.
+
+Two reads from the running original produced identical bytes for all 8,780
+blocks: 21 records, 662 frames and 8,097 pose entries. The normal records mostly
+have 30 frames at 15 FPS, with two 21-frame records and an 80-frame, 30 FPS record.
+[Observation report](mcm-live-animation-validation.json) records hashes and scope.
+Raw animation assets remain in the local reference archive under
+`player-validation/live-animation-2026-11-13/`, outside the repository.
+
+`live-animation-assets.mjs` loads these bytes into the linked records consumed
+by recovered seek/blend/advance helpers, preserving shared identity. It rejects
+missing pointers, inconsistent frame counts/indexes, cycles, overlapping blocks
+and unreferenced data. The capture requires only read access to the game and
+never attaches a debugger or restores memory.
+
+These are **non-atomic observations**, not a replacement checkpoint. Matching
+reads do not establish that pose entries cannot mutate. Before running a complete
+recovered frame, capture the animation objects, component graphs and dependencies
+at the same boundary as the bike, then load them together. The normal animation
+table also does not replace the separate crash/event rider resource table.
