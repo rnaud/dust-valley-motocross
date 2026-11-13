@@ -2241,3 +2241,29 @@ Report: `mcm-chassis-impulse-substep-validation.json`. Reproduce with
 `node scripts/mcm-reference/compare-chassis-impulse-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
 Remaining force assembly, full-loop integration, and whole-bike acceleration /
 throttle-release trajectory parity are still unfinished.
+
+### Connected suspension force assembly and low-speed lean gate (2026-11-12)
+
+Extended continuous ordinary execution through `0x4a9d5c`; crashed bikes with
+chassis contact exit at the original alternate branch `0x4ab426`. Before force
+assembly, both-wheel low-speed contact can clear local angular X according to
+forward/tangent slope, alignment thresholds and the rider-lean bit sign. Each
+active suspension passes its displacement, velocity, travel, weight share and
+spring/damping coefficients into real `0x4b11e0`. Inactive suspension clears
+force while preserving damping scratch. Airborne execution restores the local
+arm from the balance center and clears displacement/travel history.
+
+All 40,000 cases match across 490 output words with zero bit differences.
+Connected zero-timestep state required the unchecked original square-root table
+lookup, including nonfinite bit patterns, and x87 exceptional arithmetic in
+spring/damping operations. The checked `mcmSqrt` API retains its existing input
+domain; suspension uses the recovered unchecked lookup. This corpus also caught
+a warm-up-dependent V8 NaN-sign change in the first braking cross-product array
+element; explicit typed stores now preserve that sign. Saved original fixtures
+cover the new outputs and retain all preceding connected state.
+
+Report: `mcm-suspension-force-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-suspension-force-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Subsequent force/torque combination, the alternate crash branch, full-loop
+integration, and whole-bike acceleration / throttle-release trajectory parity
+remain unfinished.

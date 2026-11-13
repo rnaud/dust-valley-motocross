@@ -13,3 +13,4 @@ function calculate(a,b,operation){
 export const mcmAdd=(a,b)=>calculate(a,b,(x,y)=>x+y);
 export const mcmSubtract=(a,b)=>calculate(a,b,(x,y)=>x-y);
 export const mcmMultiply=(a,b)=>calculate(a,b,(x,y)=>x*y);
+export const mcmDivide=(a,b)=>calculate(a,b,(x,y)=>x/y);
