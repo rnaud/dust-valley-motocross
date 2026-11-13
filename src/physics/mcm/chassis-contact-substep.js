@@ -38,15 +38,14 @@ export function resolveMcmChassisContacts(c){
  c.offset=c.normal.map((v,i)=>f(sub(v,c.bodyPosition[i])));
  const m=resolveMcmWorldMatrix(c.bodyNode),v=c.offset;
  // Preserve x87 exceptional arithmetic as well as the transpose-product order.
- c.frontLoad.localArm=[
-  f(add(add(mul(m[1],v[1]),mul(m[2],v[2])),mul(m[0],v[0]))),
-  f(add(add(mul(m[6],v[2]),mul(m[5],v[1])),mul(m[4],v[0]))),
-  f(add(add(mul(m[9],v[1]),mul(m[10],v[2])),mul(m[8],v[0]))),
- ];
+ c.frontLoad.localArm=new Float64Array(3);
+ c.frontLoad.localArm[0]=f(add(add(mul(m[1],v[1]),mul(m[2],v[2])),mul(m[0],v[0])));
+ c.frontLoad.localArm[1]=f(add(add(mul(m[6],v[2]),mul(m[5],v[1])),mul(m[4],v[0])));
+ c.frontLoad.localArm[2]=f(add(add(mul(m[9],v[1]),mul(m[10],v[2])),mul(m[8],v[0])));
  c.offset=c.angularVelocity.map((v,i)=>f(mul(v,s.coefficients[i])));
  const a=c.offset,b=s.arm;
  s.velocity=[sub(mul(b[2],a[1]),mul(b[1],a[2])),sub(mul(a[2],b[0]),mul(b[2],a[0])),sub(mul(b[1],a[0]),mul(a[1],b[0]))].map((v,i)=>f(add(c.velocity[i],f(v))));
- c.offset=[0,depth,0];
+ c.offset=new Float64Array(3);c.offset[1]=depth;
  const n=s.normal,projection=add(add(mul(n[1],depth),mul(0,n[0])),mul(n[2],0));
  c.normal=n.map(v=>f(mul(v,projection)));
  c.bodyPosition=c.bodyPosition.map((v,i)=>f(add(v,c.normal[i])));
