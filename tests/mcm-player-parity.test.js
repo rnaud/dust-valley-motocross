@@ -1195,3 +1195,8 @@ test('connected front velocity and tire force match original speed gates, projec
  const {evaluateFrontVelocitySubstep}=await import('../scripts/mcm-reference/front-velocity-substep-case.mjs');
  for(const [i,{input:c,outputBits}] of fixture('front-velocity-substep-wine11.json').fixtures.entries()){const actual=evaluateFrontVelocitySubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
+
+test('connected rear suspension and drive match original rear-only entry, rotation and force',async()=>{
+ const {evaluateRearSuspensionSubstep}=await import('../scripts/mcm-reference/rear-suspension-substep-case.mjs');
+ for(const [i,{input:c,outputBits}] of fixture('rear-suspension-substep-wine11.json').fixtures.entries()){const actual=evaluateRearSuspensionSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});
