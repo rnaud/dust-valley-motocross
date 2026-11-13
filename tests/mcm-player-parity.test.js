@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {gunzipSync} from 'node:zlib';
+import {gunzipSync,brotliDecompressSync} from 'node:zlib';
 import {decodeBikeRecord} from '../scripts/mcm-reference/decode-bike.mjs';
 import {compareBikeReplay} from '../scripts/mcm-reference/compare-bike.mjs';
 import {compareThrottle} from '../scripts/mcm-reference/compare-throttle.mjs';
-const fixture = name => {const data=fs.readFileSync(new URL(`./fixtures/mcm/${name}`, import.meta.url));return JSON.parse(name.endsWith('.gz')?gunzipSync(data):data);};
+const fixture = name => {const data=fs.readFileSync(new URL(`./fixtures/mcm/${name}`, import.meta.url));return JSON.parse(name.endsWith('.gz')?gunzipSync(data):name.endsWith('.br')?brotliDecompressSync(data):data);};
 
 test('original player snapshots identify local control and acceleration/release state', () => {
   const states = fixture('player-state-wine11.json').records.map(decodeBikeRecord);
@@ -1335,4 +1335,12 @@ test('connected rider body matches original pose, blend, input, trick and nearby
  const corpus=fixture('normal-rider-substep-wine11.json.gz');
  for(const gate of ['called=0:','called=1:queries=0,0,0','called=1:queries=9,6,7',':animation=255:nearby=1',':animation=1:',':poseChanged=true:',':flags=16:flag=1',':flags=16:flag=2'])assert.ok(Object.keys(corpus.source.riderOutcomes).some(k=>k.includes(gate)),gate);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){const actual=evaluateNormalRiderSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});
+
+
+test('connected post-event state matches original world angular velocity, awards and suspension history',async()=>{
+ const {evaluatePostStateSubstep}=await import('../scripts/mcm-reference/post-state-substep-case.mjs');
+ const corpus=fixture('post-state-substep-wine11.json.br');
+ for(const gate of ['award=0:','award=1:suppress=0:scoreChanged=true','award=1:suppress=1:scoreChanged=false',':timerZero=false',':yawZero=true',':parented=true',':parented=false'])assert.ok(Object.keys(corpus.source.postOutcomes).some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){const actual=evaluatePostStateSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
