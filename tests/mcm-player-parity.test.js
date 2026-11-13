@@ -1479,3 +1479,11 @@ test('reset path completes substep scheduling and orientation refresh against or
  assert.equal(corpus.source.transitionCases,16);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetFinishedSubstep(c),outputBits,`reset/finished substep fixture ${i}`);
 });
+
+test('engine input and filters remain connected through reset and completed substep',async()=>{
+ const {evaluateResetEngineEntry}=await import('../scripts/mcm-reference/reset-engine-entry-case.mjs');
+ const corpus=fixture('reset-engine-entry-wine11.json.br');
+ for(const gate of ['analog=true:','analog=false:',':state=0:',':state=1:',':state=2:',':shift=-1:',':shift=1:',':polls=5,4:',':stopped=true',':stopped=false'])assert.ok(Object.keys(corpus.source.engineOutcomes).some(k=>k.includes(gate)),gate);
+ assert.equal(Object.entries(corpus.source.dispatchOutcomes).filter(([k])=>k.endsWith('eventChanged=true')).reduce((n,[,v])=>n+v,0),16);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetEngineEntry(c),outputBits,`engine/reset fixture ${i}`);
+});
