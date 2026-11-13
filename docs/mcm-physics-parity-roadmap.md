@@ -2846,3 +2846,26 @@ This connects common preparation to reset, but the reset-produced state still
 needs to flow into the complete downstream force/collision/finish path. Engine
 entry preceding reset, dynamic collisions, frame loops and full acceleration /
 throttle-release trajectories remain unproven.
+
+### Reset output connected to common contact and force preparation
+
+The reset comparison now continues from `0x4a5e27` through `0x4a6eac`.
+Reset-produced wheel positions, contact depths, tangent/normal vectors, body
+orientation and cleared bike state flow into force initialization, target roll,
+mount/contact geometry, chassis probes and contact response. It does not rerun
+the ordinary wheel-query branch. Both chassis control flags and mutable bike
+fields are carried back into the reset context for subsequent integration.
+
+All 1,608 captured words match in 16,384 original executions. Coverage requires
+both reset contact combinations, skipped/executed chassis probes, front probe
+outcomes 0/1/2, body contact 0/1 and shared/distinct front mount/body nodes. The
+new observation captures forces, alignment, lever arms, chassis world/surface /
+normal vectors, depths and remaining-substep state, alongside the complete
+reset memory and graph observations.
+
+Report: `mcm-reset-contact-response-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-contact-response-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Reset output has reached common contact response; its continuation through
+balance/suspension, tire/chassis forces, integration and substep completion is
+still outstanding. Engine entry preceding reset, dynamic collisions, repeated
+frames and complete acceleration/throttle-release parity remain unproven.

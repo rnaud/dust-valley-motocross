@@ -1391,3 +1391,10 @@ test('common suspension preparation feeds the original complete reset branch',as
  for(const gate of ['frontRearAlias=true','frontRearAlias=false',':bodyAlias=true',':bodyAlias=false',':referenceAlias=true',':referenceAlias=false',':parented=true',':parented=false',':mode=0:',':mode=1:',':mode=2:',':mode=3:',':mode=4:',':mode=-1:'])assert.ok(Object.keys(corpus.source.preparationOutcomes).some(k=>k.includes(gate)),gate);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluatePreparedResetSubstep(c),outputBits,`reset fixture ${i}`);
 });
+
+test('reset output feeds common force preparation, contact geometry and chassis response',async()=>{
+ const {evaluateResetContactResponse}=await import('../scripts/mcm-reference/reset-contact-response-case.mjs');
+ const corpus=fixture('reset-contact-response-wine11.json.br');
+ for(const gate of ['contacts=1,0:','contacts=0,1:',':probed=true',':probed=false',':frontProbe=0:',':frontProbe=1:',':frontProbe=2:',':bodyProbe=0:',':bodyProbe=1:',':frontMountBodyAlias=true',':frontMountBodyAlias=false'])assert.ok(Object.keys(corpus.source.contactOutcomes).some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetContactResponse(c),outputBits,`reset/contact fixture ${i}`);
+});
