@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "832a75f23fabcbcbf547a39a9b0a5d7ca6dae9c8d2968ee1a2b5021f831a70ce",
+  "loaderSourceSha256": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe",
+  "casesSha256": "3601246fc303db565b70974739a01368534edb9a6eb285783c571337d40bf88a",
+  "resultsSha256": "eaab1f43fbc98f023cc4891f7f44200ae020113deae3eeef168833e142b93002",
+  "cases": 40000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "outcomes": {
+    "4:0": 16880,
+    "3:0": 14615,
+    "3:1": 5385,
+    "4:1": 3120
+  },
+  "scope": "Original horizontal and spatial line/ellipsoid routines 0x42c1b0 and 0x42c5b0, real math helpers. Positive extents, nondegenerate segments and finite distinct contacts, arbitrary 3D rotations. Hit/miss and all contact mutations, including writes before rejection. Whole-bike integration excluded."
+}

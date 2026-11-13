@@ -1072,3 +1072,32 @@ pinned executable path, and fresh output directory.
 Line/ellipsoid contacts, mutating gameplay callbacks, connected main-step
 integration and end-to-end original-v-port whole-bike trajectories remain open.
 These checks do not establish full physics parity.
+
+### Line contacts and complete collision type routing (2026-11-12)
+
+Recovered horizontal line/ellipsoid `0x42c1b0` and spatial segment/ellipsoid
+`0x42c5b0`, including projection clamps, distinct broad-phase radius rules,
+oriented extent support, depth, and writes that occur before a rejected contact.
+The horizontal response follows a directed line perpendicular; the spatial
+response follows separation. Both preserve the original untouched other-object
+normal field rather than synthesizing a symmetrical result.
+
+40,000 original-execution cases match every hit flag and all thirteen contact
+state words with zero differences: horizontal 5,385 hits / 14,615 misses; spatial
+3,120 hits / 16,880 misses. Positive extents, nondegenerate segments, finite
+nonzero separation and full 3D rotations are covered. Degenerate/zero separation
+remains outside the math-helper contract and this validation.
+
+Connected all type routes in `collision-dispatch.js`. Another 32,000 cases match
+all 66 outputs using original dispatcher and actual primitives, with every pair
+of types -1 through 5 exercised. Hit/miss coverage includes both horizontal
+argument orders and the original asymmetric spatial route (1/4; 4/1 is no hit).
+Reports: `mcm-collision-line-validation.json`,
+`mcm-collision-routing-full-validation.json`; reproduce with corresponding
+`compare-collision-line-oracle.mjs` / `compare-collision-routing-full-oracle.mjs`
+and the pinned executable plus fresh output directory.
+
+All primitive type routes are implemented for the validated finite domain.
+Gameplay-mutating collision callbacks, complete main-step integration and
+original-v-port whole-bike trajectories remain unfinished; full parity is not
+yet established.
