@@ -1040,3 +1040,8 @@ test('collision response through final event matches original physics, transform
  const {evaluateCollisionEvent}=await import('../scripts/mcm-reference/collision-event-case.mjs');
  for(const {input:c,outputBits} of fixture('collision-event-wine11.json').fixtures)assert.deepEqual(evaluateCollisionEvent(c),outputBits);
 });
+
+test('main-step collision phase matches original live dispatch, response, event and remainder mutations',async()=>{
+ const {evaluateCollisionSubstep}=await import('../scripts/mcm-reference/collision-substep-case.mjs');
+ for(const {input:c,outputBits} of fixture('collision-substep-wine11.json').fixtures)assert.deepEqual(evaluateCollisionSubstep(c),outputBits);
+});

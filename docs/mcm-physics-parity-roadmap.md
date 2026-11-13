@@ -1273,3 +1273,32 @@ Full dispatcher traversal with mutating gameplay callbacks, persistent event
 state adaptation in the full main step, tag reset internals and complete
 original-v-port trajectories remain outstanding. Full physics parity is not
 yet established.
+
+### Main-step collision phase with live gameplay callback (2026-11-12)
+
+Recovered `0x4ac7c4..0x4ac89e`: clears the collision's previous other-object
+pointer, synchronizes world/proxy matrices, refreshes grid membership, and
+enters the real dispatcher unless the secondary-contact flag suppresses it.
+Suppression clears that flag after synchronization. Missing collision objects
+still synchronize the proxy but leave the flag and other state alone. A
+state-zero to nonzero transition during dispatch sets remaining substeps to
+one and clears carry time; an already-crashed bike does not take that branch.
+
+32,000 cases match 409 output words each with zero differences. The original
+section executes real transform/grid helpers, live dispatcher traversal,
+horizontal-line contact generation, primary bike callback, static impulse and
+final crash/rider event. Its callback updates the same grid being traversed;
+contact pointers, pair table, scratch contacts, grid links, bike/proxy state,
+event/rider state, remaining substeps and carry all match. Inputs cover missing
+objects, enabled/disabled objects/manager/grid, pair exclusion, broad-phase
+misses, contact hits, both suppression flags and initial states 0/1/2.
+Suppression varies independently of event scenarios.
+
+Report: `mcm-collision-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-collision-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+The harness enters/exits the original section using its real stack/register
+layout; it does not replace the dispatcher or gameplay callback. Input-query
+results and CRT draws remain supplied boundaries. This suite uses one static
+line and one bike, root bike transforms, no bounds children, inactive audio and
+no visual effects. Dynamic multi-bike dispatch, persistent event state across
+full steps, tag reset internals and complete trajectory parity remain open.
