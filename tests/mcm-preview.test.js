@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createState,stepBike,resetBike} from '../src/world.js';
+import {createState,stepBike,resetBike,freeTerrain} from '../src/world.js';
 import {mcmPreviewSuspension} from '../src/mcm-preview.js';
 import {Vector3,Quaternion} from 'three';
 import {bikeLinkagePoints,fitBikeLink} from '../src/bike-linkage.js';
@@ -175,4 +175,67 @@ test('rider balance reaches tire loads and spring mass shares and clears on rese
  assert.ok(s.tireLoads[1]>s.tireLoads[0]);
  assert.deepEqual(s.physics.vehicle.recoveredMassShares,[s.recoveredBalance.rearShare,s.recoveredBalance.frontShare]);
  resetBike(s,0,0,0);assert.deepEqual(s.physics.vehicle.recoveredMassShares,[.5,.5]);assert.equal(s.recoveredBalance.balanceFilter[0],.5);assert.deepEqual(s.recoveredBalance.offset,[0,0,0]);
+});
+
+test('recovered air controls preserve local axes, takeoff phase and landing/reset state',async()=>{
+ const {createMcmPreviewAir,stepMcmPreviewAir}=await import('../src/mcm-preview-air.js');
+ const {bitsFloat}=await import('../src/physics/mcm/math.js');
+ const input={position:[0,20,0],quaternion:new Quaternion(),velocity:[0,0,20],angularVelocity:[1,2,3],dt:.02};
+ const fs=await import('node:fs');
+ const record=JSON.parse(fs.readFileSync(new URL('./fixtures/mcm/player-state-wine11.json',import.meta.url))).records[0];
+ const native=Buffer.from(record.stateHex,'hex'),defaults=createMcmPreviewAir();
+ for(const field of ['710','820','6fc','c68','c6c','c70','c74','c78'])assert.equal(defaults[`field${field}`],native.readUInt32LE(parseInt(field,16)));
+ assert.equal(defaults.field730,native.readFloatLE(0x730));
+ const c=createMcmPreviewAir(),r=stepMcmPreviewAir(c,input);
+ assert.equal(r.active,true);assert.equal(r.applied,false);
+ assert.equal(c.fieldc78,1);assert.equal(c.fieldc70,1);
+ assert.equal(bitsFloat(c.fieldc6c),Math.fround(.02));
+ assert.equal(r.localAngularVelocity[0],Math.fround(Math.fround(.9)));
+ assert.equal(r.localAngularVelocity[1],Math.fround(2*Math.fround(.9)));
+ const yaw=new Quaternion().setFromAxisAngle(new Vector3(0,1,0),1.2);
+ const rotated=stepMcmPreviewAir(createMcmPreviewAir(),{...input,quaternion:yaw,
+  velocity:new Vector3(...input.velocity).applyQuaternion(yaw).toArray(),
+  angularVelocity:new Vector3(...input.angularVelocity).applyQuaternion(yaw).toArray()});
+ for(let i=0;i<3;i++)assert.ok(Math.abs(rotated.localAngularVelocity[i]-r.localAngularVelocity[i])<1e-5);
+ const landed=stepMcmPreviewAir(c,{...input,frontContact:true});
+ assert.equal(landed.active,false);assert.equal(c.fieldc6c,0);assert.equal(c.field870,1);
+ stepMcmPreviewAir(c,input);assert.equal(c.fieldc78,1);assert.equal(c.field870,0);
+ const chassis=stepMcmPreviewAir(createMcmPreviewAir(),{...input,chassisContact:true});
+ assert.equal(chassis.active,false);
+ const banked=new Quaternion().setFromAxisAngle(new Vector3(0,0,1),.3);
+ const bank=stepMcmPreviewAir(createMcmPreviewAir(),{...input,angularVelocity:[0,0,0],quaternion:banked});
+ assert.ok(bank.roll<0);assert.ok(bank.localAngularVelocity[2]<0,'original bank sign drives return toward upright');
+});
+
+test('preview airborne lean and steering use recovered rotation without custom throttle torque',()=>{
+ const fly=(input,yaw=0)=>{
+  const s=createState({sand:false,flat:true,height:()=>0,physicsMode:'mcm-preview'});
+  resetBike(s,0,0,yaw);s.physics.chassis.position.y=30;
+  for(let i=0;i<20;i++)stepBike(s,input,.02);
+  return s;
+ };
+ const neutral=fly({}),gas=fly({gas:true}),back=fly({leanBack:true}),forward=fly({leanForward:true});
+ assert.equal(neutral.contacts,0);assert.equal(gas.contacts,0);
+ assert.equal(gas.pitch,neutral.pitch);assert.equal(gas.yaw,neutral.yaw);
+ assert.ok(back.pitch>.25);assert.ok(forward.pitch<-.25);
+ assert.ok(Math.abs(back.pitch+forward.pitch)<1e-5);
+ const right=fly({steer:.5}),left=fly({steer:-.5});
+ assert.ok(right.yaw<-.03);assert.ok(left.yaw>.03);
+ assert.ok(Math.abs(right.yaw+left.yaw)<1e-5);
+ const sideways=fly({leanBack:true},Math.PI/2);
+ assert.ok(Math.abs(sideways.pitch-back.pitch)<1e-5,'lean rotates about bike-local pitch at every heading');
+ assert.ok(back.recoveredAir.fieldc6c!==0);resetBike(back,0,0,0);
+ for(const key of ['field4bc','fieldc6c','fieldc70','fieldc74','fieldc78'])assert.equal(back.recoveredAir[key],0);
+});
+
+
+test('preview rides the starter jumps and lands with recovered airborne controls',()=>{
+ const s=createState({sand:false,height:freeTerrain,spawn:{x:0,z:0,yaw:0},physicsMode:'mcm-preview'});
+ let landings=0;
+ for(let i=0;i<500;i++){
+  const r=stepBike(s,{gas:true},.02);
+  assert.ok(Number.isFinite(s.x+s.y+s.z));assert.equal(s.crashed,false);
+  if(r.landed>.5){landings++;assert.ok(s.speed>15);assert.equal(s.recoveredAir.fieldc6c,0);}
+ }
+ assert.ok(landings>=3);assert.ok(s.z>175);assert.ok(s.speed>15);
 });
