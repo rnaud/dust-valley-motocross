@@ -1672,3 +1672,17 @@ for(const [name,words] of [['animation-pose-blend',395],['animation-four-pose-bl
   }
  });
 }
+
+test('normal frame-end rider poses and crash animation match original entry through return',async()=>{
+ const {evaluateNormalFrameRider}=await import('../scripts/mcm-reference/normal-frame-rider-case.mjs');
+ const corpus=fixture('normal-frame-rider-wine11.json.br'),outcomes=Object.keys(corpus.source.outcomes);
+ assert.equal(corpus.source.totalDifferences,0);
+ for(const gate of ['state=0:', 'state=1:', 'state=2:', 'state=3:', ':enabled=0:', ':enabled=1:', ':mask=0:', ':mask=3:', ':riderParent=0', ':riderParent=1'])assert.ok(outcomes.some(k=>k.includes(gate)),gate);
+ for(let pose=0;pose<=13;pose++)assert.ok(outcomes.some(k=>k.includes(`:pose=${pose}:`)),`pose ${pose}`);
+ assert.ok(corpus.fixtures.some(({input:c})=>c.speedBits===0x80000000));
+ for(const [i,{input,outputBits}] of corpus.fixtures.entries()){
+  const actual=evaluateNormalFrameRider(input);
+  assert.equal(actual.length,3247);
+  assert.deepEqual(actual,outputBits,`normal/frame-rider fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
+ }
+});
