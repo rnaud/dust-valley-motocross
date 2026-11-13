@@ -1255,3 +1255,8 @@ test('connected contact correction matches original angular acceleration, masks 
  const {evaluateContactCorrectionSubstep}=await import('../scripts/mcm-reference/contact-correction-substep-case.mjs');
  for(const [i,{input:c,outputBits}] of fixture('contact-correction-substep-wine11.json').fixtures.entries()){const actual=evaluateContactCorrectionSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
+
+test('connected angular integration matches original opposing torque, damping and corrected world caches',async()=>{
+ const {evaluateAngularIntegrationSubstep}=await import('../scripts/mcm-reference/angular-integration-substep-case.mjs');
+ for(const [i,{input:c,outputBits}] of fixture('angular-integration-substep-wine11.json').fixtures.entries()){const actual=evaluateAngularIntegrationSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});
