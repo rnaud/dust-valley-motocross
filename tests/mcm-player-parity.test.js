@@ -1896,3 +1896,19 @@ test('retained next-frame terrain probes match original contact controls and tra
   assert.deepEqual(actual.tail,outputBits,`next terrain tail ${caseIndex}`);
  }
 });
+
+test('retained next-frame engine uses carried timing, input and filter state',async()=>{
+ const {evaluateResetNextEngine}=await import('../scripts/mcm-reference/reset-next-engine-case.mjs');
+ const corpus=fixture('reset-next-engine-wine11.json.br');
+ assert.equal(corpus.source.mismatchCount,0);
+ assert.equal(corpus.source.exceptionCount,0);
+ assert.equal(corpus.source.priorTraceChangedCases,0);
+ assert.equal(corpus.source.priorTraceComparedCases,17941);
+ for(const branch of ['executed','no-iterations','pending'])assert.ok(corpus.source.engineBranches[branch]);
+ for(const {caseIndex,input,prefixBits,outputBits} of corpus.fixtures){
+  const actual=evaluateResetNextEngine(input);
+  assert.equal(actual.tail.length,11884);
+  assert.deepEqual(actual.prefix,prefixBits,`next engine prefix ${caseIndex}`);
+  assert.deepEqual(actual.tail,outputBits,`next engine tail ${caseIndex}`);
+ }
+});

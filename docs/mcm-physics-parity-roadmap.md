@@ -4056,3 +4056,34 @@ and x64, with zero exceptions and zero changed prior native traces. There are
 at a pending controller boundary. Forty-four compressed regression cases pass
 cold on both architectures. See `mcm-reset-next-terrain-validation.json` and
 `reset-next-terrain-wine11.json.br`.
+
+### Retained next-frame engine entry
+
+The retained comparison now crosses the iteration gate at `0x4a5bc5` and executes
+`0x4a5bd7..0x4a5e27` when iterations remain. The recovered adapter consumes the
+next frame's scheduled timestep, inverse timestep, analog input and contact
+controls. Engine state, gear state and both filter histories carry forward from
+the preceding frame; they are not reconstructed from initial parameters.
+
+The comparison observes throttle, automatic shifts, brake input, crash-dependent
+mass changes, saved speed, acceleration filtering, device queries and initialized
+per-substep scratch. Negative/nonpositive iteration cases stop at the original
+loop gate. AI/scripted controller boundaries remain explicit. All source initial
+states, external inputs and the shared consecutive-frame stack are unchanged.
+
+```sh
+node scripts/mcm-reference/compare-reset-next-engine.mjs /path/to/mcm.exe /path/to/next-terrain-corpus /path/to/new-output-directory
+```
+
+This is a validation-harness milestone. Browser MCM preview still couples the
+recovered engine and suspension to Cannon body dynamics; it does not yet execute
+the retained original frame pipeline. Next-frame contact, forces, integration
+and collision stages, followed by whole-bike trajectories and playable wiring,
+remain required.
+
+Validation: all 17,941 retained cases match all 20,161 observed words on ARM64
+and x64, with zero exceptions and zero changed prior native traces. Engine entry
+executes in 10,948 cases; 450 stop at the iteration gate and 6,543 remain pending
+at AI/scripted controller boundaries. All 105 regression fixtures pass cold on
+both architectures. All 294 tests and the production build pass. See
+`mcm-reset-next-engine-validation.json` and `reset-next-engine-wine11.json.br`.
