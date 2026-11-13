@@ -1880,3 +1880,19 @@ test('retained next-frame reset decision preserves prior execution and rider sta
   assert.deepEqual(actual.tail,outputBits,`next reset tail ${caseIndex}`);
  }
 });
+
+test('retained next-frame terrain probes match original contact controls and transforms',async()=>{
+ const {evaluateResetNextTerrain}=await import('../scripts/mcm-reference/reset-next-terrain-case.mjs');
+ const corpus=fixture('reset-next-terrain-wine11.json.br');
+ assert.equal(corpus.source.mismatchCount,0);
+ assert.equal(corpus.source.exceptionCount,0);
+ assert.equal(corpus.source.priorTraceChangedCases,0);
+ assert.equal(corpus.source.priorTraceComparedCases,17941);
+ for(const count of [0,2,3])assert.ok(corpus.source.terrainCoverage[count]);
+ for(const {caseIndex,input,prefixBits,outputBits} of corpus.fixtures){
+  const actual=evaluateResetNextTerrain(input);
+  assert.equal(actual.tail.length,11832);
+  assert.deepEqual(actual.prefix,prefixBits,`next terrain prefix ${caseIndex}`);
+  assert.deepEqual(actual.tail,outputBits,`next terrain tail ${caseIndex}`);
+ }
+});
