@@ -19,6 +19,11 @@ float start_input[62],analog_filter[2],acceleration_filter[2];uint32_t start_out
 void copy_engine_entry(void);void engine_entry_exit(void);
 __asm__(".text\n_engine_entry_exit:\n call _copy_engine_entry\n mov 0x8e4(%esi),%ecx\n push $0x200a5e2d\n ret\n");
 __asm__(".data");
+uint32_t prepared_output[12];
+void copy_prepared_entry(unsigned char*s){const int offsets[]={0x504,0x510,0x7ec,0x4f8};for(int j=0;j<4;j++)memcpy(prepared_output+j*3,s+offsets[j],12);}
+void prepared_entry(void);
+__asm__(".text\n_prepared_entry:\n pushal\n lea 32(%esp),%eax\n push %eax\n call _copy_prepared_entry\n add $4,%esp\n popal\n mov 0x8c(%esp),%eax\n push $0x200a5eac\n ret\n");
+__asm__(".data");
 uint32_t award_called;
 void award_entry(void);
 __asm__(".text\n_award_entry:\n movl $1,_award_called\n sub $4,%esp\n push %esi\n mov %ecx,%esi\n push $0x200b1a46\n ret\n");
@@ -95,12 +100,12 @@ void copy_engine_entry(void){engine_entry_active=0;
 }
 int main(int argc,char**argv){
  if(argc!=4)return 2;
- map_image(argv[1]);bind_oracle_kernel_imports();if(!((int (__cdecl *)(void))0x200c5230)())fail("CRT heap");if(!((int (__cdecl *)(void))0x200c24e0)())fail("CRT thread");HMODULE d3drm=LoadLibraryA("d3drm.dll");if(!d3drm)fail("d3drm load");char module_path[MAX_PATH],copy_path[MAX_PATH];if(!GetModuleFileNameA(d3drm,module_path,sizeof module_path))fail("d3drm path");if(snprintf(copy_path,sizeof copy_path,"%s.d3drm.dll",argv[3])>=(int)sizeof copy_path||!CopyFileA(module_path,copy_path,TRUE))fail("copy loaded d3drm");FARPROC rotate=GetProcAddress(d3drm,"D3DRMVectorRotate");if(!rotate)fail("vector rotate");*(FARPROC*)0x201278b8=rotate;patch(0x200a0130,frame_entry);patch(0x200a13b0,frame_exit);patch(0x200a8ddf,contact_exit);patch(0x200abd6e,normal_redirect_entry);patch(0x200a4baa,event_decision_exit);patch(0x200aecb0,join_rider_entry);patch(0x200bf190,supplied_event_random);patch(0x20052670,rider_device);patch(0x200ac94b,finish_prefix_exit);patch(0x200b1a40,award_entry);patch(0x2009e490,dispatch_primary_entry);patch(0x200ac81b,dispatch_state_entry);patch(0x200a5e27,engine_entry_exit);
+ map_image(argv[1]);bind_oracle_kernel_imports();if(!((int (__cdecl *)(void))0x200c5230)())fail("CRT heap");if(!((int (__cdecl *)(void))0x200c24e0)())fail("CRT thread");HMODULE d3drm=LoadLibraryA("d3drm.dll");if(!d3drm)fail("d3drm load");char module_path[MAX_PATH],copy_path[MAX_PATH];if(!GetModuleFileNameA(d3drm,module_path,sizeof module_path))fail("d3drm path");if(snprintf(copy_path,sizeof copy_path,"%s.d3drm.dll",argv[3])>=(int)sizeof copy_path||!CopyFileA(module_path,copy_path,TRUE))fail("copy loaded d3drm");FARPROC rotate=GetProcAddress(d3drm,"D3DRMVectorRotate");if(!rotate)fail("vector rotate");*(FARPROC*)0x201278b8=rotate;patch(0x200a0130,frame_entry);patch(0x200a13b0,frame_exit);patch(0x200a8ddf,contact_exit);patch(0x200abd6e,normal_redirect_entry);patch(0x200a4baa,event_decision_exit);patch(0x200aecb0,join_rider_entry);patch(0x200bf190,supplied_event_random);patch(0x20052670,rider_device);patch(0x200ac94b,finish_prefix_exit);patch(0x200b1a40,award_entry);patch(0x2009e490,dispatch_primary_entry);patch(0x200ac81b,dispatch_state_entry);patch(0x200a5e27,engine_entry_exit);patch(0x200a5ea5,prepared_entry);
  ((void (__cdecl *)(void))0x20001640)();((void (__cdecl *)(void))0x20001720)();((void (__cdecl *)(void))0x2009d620)();((void (__cdecl *)(void))0x2009d650)();((void (__cdecl *)(void))0x2009d680)();
  unsigned short cw=0x027f;__asm__ volatile("fninit; fldcw %0"::"m"(cw));
  FILE*in=fopen(argv[2],"rb"),*out=fopen(argv[3],"wb");if(!in||!out)fail("open");uint32_t count;if(fread(&count,4,1,in)!=1||count>1000000)fail("count");
  for(uint32_t i=0;i<count;i++){
-  float v[1224];uint32_t r[964];if(fread(v,sizeof v,1,in)!=1)fail("input");
+  float v[1224];uint32_t r[976];if(fread(v,sizeof v,1,in)!=1)fail("input");
   memset(bike,0,sizeof bike);memset(terrain_nodes,0,sizeof terrain_nodes);memset(children,0,sizeof children);memset(terrain,0,sizeof terrain);memset(node,0,sizeof node);memset(component,0,sizeof component);memset(front,0,sizeof front);
   int mode=(int)v[0];memcpy(terrain_nodes[0]+0xc,v+2,8);*(void**)(terrain_nodes[0]+0x50)=samples;
   for(int j=0;j<289;j++){uint16_t h=(uint16_t)((int)v[1]+j*137);memcpy(samples+j*16+2,&h,2);memcpy(samples+j*16+4,v+6+3*((j%17%2)+2*(j/17%2)),12);}
@@ -225,7 +230,7 @@ int main(int argc,char**argv){
   r[913]=*(void**)(dispatch_wall+0x88)==sync_object;r[914]=*(void**)(sync_manager+0x3980)==sync_object;r[915]=*(void**)(sync_manager+0x3984)==dispatch_wall;
   r[916]=dispatch_prior_state;
   memcpy(r+917,finish_prefix_output,8);memcpy(r+919,bike+0x4c0,24);r[925]=get32(0x4e0);r[926]=get32(0x4dc);r[927]=get32(0x4d8);memcpy(r+928,bike+0x4e4,12);
-  memcpy(r+931,start_output,sizeof start_output);
+  memcpy(r+931,start_output,sizeof start_output);memcpy(r+964,prepared_output,sizeof prepared_output);
   if(fwrite(r,sizeof r,1,out)!=1)fail("output");
  }
  if(fclose(out))fail("close");

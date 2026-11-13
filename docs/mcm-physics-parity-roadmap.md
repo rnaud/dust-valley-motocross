@@ -2764,7 +2764,9 @@ Reaching this synthetic substep boundary does not establish whole-bike parity.
 The original-execution comparison now starts at `0x4a5e27` and continues through
 `0x4ac94b` on the ordinary, no-reset-request path. The added entry resets front
 translation and the rear rest matrix, clears both suspension travel-limit flags,
-clears contact scratch vectors and refreshes the balance-reference world position.
+preserves contact scratch vectors and refreshes the balance-reference world position.
+(The original no-op vector constructor was initially misread as clearing; the
+pre-branch observation below corrects that interpretation.)
 All 931 captured words match across 40,326 original executions, including aliased
 front/rear/body/balance nodes and parented transforms.
 
@@ -2805,3 +2807,20 @@ Report: `mcm-engine-entry-substep-validation.json`. Reproduce with
 Reset requests, dynamic bike/rider collisions, frame-entry/loop-back wiring and
 complete acceleration/throttle-release trajectories remain to be connected and
 validated. This synthetic single-substep comparison does not prove full parity.
+
+
+### Common preparation scratch preservation
+
+An added observation at `0x4a5ea5`, immediately before reset/ordinary branch
+selection, captures four scratch vectors. The original `0x40ded0` constructor
+only returns its input pointer; it does not clear their contents. The recovered
+preparation previously cleared them, a difference hidden by later ordinary
+contact writes. The new observation detected 483,912 mismatching words across
+40,326 executions before the correction (all twelve added words in every case).
+
+Common preparation now preserves these vectors and is exposed separately for
+reset-path integration. The engine-entry corpus includes the twelve intermediate
+words as well as the existing 964 entry/final observations. All 976 words match
+across 40,326 original executions after the correction. This strengthens
+single-substep evidence; reset/force integration, dynamic collisions, repeated
+substeps and whole-bike acceleration/release parity remain incomplete.
