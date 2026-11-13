@@ -5,7 +5,7 @@ import {substepStartWords} from './substep-start-case.mjs';
 import {resetLoopFinishWords} from './reset-loop-finish-case.mjs';
 import {floatBits,bitsFloat} from '../../src/physics/mcm/math.js';
 
-export function captureRetainedFrame(c,options){
+export function captureRetainedFrame(c,options,observe){
  let output=Array(11244).fill(0),finishes=[],engines=[],frame;
   const cycle=new Error('Original reset avoidance repeated state'),history=[];
   c.observeResetAvoidance=({position,forward,nearest,flag})=>{
@@ -38,6 +38,7 @@ export function captureRetainedFrame(c,options){
     for(const n of c.bounds.components)output.push(...Array.from(n.local,floatBits),...Array.from(n.world,floatBits),n.cacheValid);
     output.push(...returnBefore,1);
    }
+   observe?.(stage,c,result);
   });}catch(error){if(error!==cycle)throw error;frame={status:'original-nonterminating',substeps:0};}
  return {output,finishes,engines,frame};
 }

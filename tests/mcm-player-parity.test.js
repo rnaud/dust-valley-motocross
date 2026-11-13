@@ -2104,3 +2104,27 @@ test('retained histories share the original CRT stream across shifts and rider e
   assert.equal(count,HISTORY_FRAMES);
  }
 });
+
+
+test('rear stiffness burst histories retain original contact torque through overflow and crash',async()=>{
+ const {evaluateRetainedHistory,HISTORY_FRAMES}=await import('../scripts/mcm-reference/retained-history-case.mjs');
+ const corpus=fixture('retained-burst-wine11.json.br');
+ assert.equal(corpus.source.mismatchCount,0);assert.equal(corpus.source.repeated,true);
+ assert.equal(corpus.source.frames,1600);assert.equal(corpus.source.priorTraceChangedCases,0);
+ assert.equal(corpus.source.schedule.burst,true);
+ for(const {caseIndex,input,frames} of corpus.fixtures){
+  let count=0;
+  evaluateRetainedHistory(input,(actual,{frame,context:c,random})=>{
+   assert.equal(actual.frame.status,'returned',`burst status ${caseIndex}/${frame}`);
+   assert.equal(floatBits(c.frameEntry.extraStiffness),frames[frame].extraStiffnessBits,`burst ${caseIndex}/${frame}`);
+   assert.equal(c.contactPhase.suspensionForces.extraStiffness,c.frameEntry.extraStiffness);
+   assert.equal(c.frameEntry.extraStiffness,frame===0?7500.00048828125:0);
+   assert.deepEqual({state:random.state,calls:random.calls},frames[frame].random,`burst CRT ${caseIndex}/${frame}`);
+   assert.deepEqual(actual.engines,frames[frame].engines,`burst engine ${caseIndex}/${frame}`);
+   assert.deepEqual(actual.finishes,frames[frame].finishes,`burst substeps ${caseIndex}/${frame}`);
+   assert.deepEqual(actual.output,frames[frame].output,`burst return ${caseIndex}/${frame}`);
+   count++;
+  },{randomSeed:corpus.source.schedule.randomSeed,burst:true});
+  assert.equal(count,HISTORY_FRAMES);
+ }
+});
