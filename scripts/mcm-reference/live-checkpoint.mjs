@@ -53,3 +53,44 @@ export function loadLiveRider(checkpoint){
  return {address,rider,records,visualAddress:u(0x34),
   unresolvedAnimationRecords:[...new Set([...records.flat(2),...rider.selected].filter(Boolean))]};
 }
+
+// Shared object/scene layout used by original animation callbacks. Cache state
+// and graph identity are loaded as captured; no transform is recomputed here.
+export function loadLiveVisuals(checkpoint){
+ const memory=checkpointMemory(checkpoint),nodes=new Map();
+ const loadNode=address=>{
+  if(!address)return null;
+  if(nodes.has(address))return nodes.get(address);
+  if(nodes.size>=256)throw Error('Transform graph exceeds checkpoint limit');
+  const bytes=memory.read(address,0x114),u=o=>bytes.readUInt32LE(o);
+  const matrix=o=>Array.from({length:16},(_,i)=>bytes.readFloatLE(o+i*4));
+  const node={address,local:matrix(0x84),world:matrix(0xc4),cacheValid:u(0x104)};nodes.set(address,node);
+  node.parent=loadNode(u(0x108));node.firstChild=loadNode(u(0x10c));node.nextSibling=loadNode(u(0x110));
+  return node;
+ };
+ const loadObject=(address,vtable)=>{
+  if(memory.u32(address)!==vtable)throw Error('Unsupported visual object vtable');
+  const count=memory.u32(address+0x230),table=memory.u32(address+0x234);
+  if(count<1||count>32)throw Error('Unsupported component count');
+  memory.read(table,count*0x40);
+  const bodyNode=loadNode(memory.u32(address+0x434));if(!bodyNode)throw Error('Missing visual root');
+  const components=Array.from({length:count},(_,i)=>{
+   const node=loadNode(memory.u32(table+i*0x40+0x34));if(!node)throw Error('Missing component transform');
+   return {node,positionEnabled:memory.u32(table+i*0x40+0x38)};
+  });
+  return {address,bodyNode,components};
+ };
+ const bike=loadObject(checkpoint.bikeAddress,0x4d9a94),rider=loadObject(memory.u32(checkpoint.bikeAddress+0xc8c),0x4d7b14);
+ for(const node of nodes.values()){
+  const ancestors=new Set();for(let n=node;n;n=n.parent){if(ancestors.has(n))throw Error('Cyclic transform parent chain');ancestors.add(n);}
+ }
+ for(const node of nodes.values()){
+  const chain=new Set();for(let sibling=node;sibling;sibling=sibling.nextSibling){if(chain.has(sibling))throw Error('Cyclic transform sibling chain');chain.add(sibling);if(sibling.parent!==node.parent)throw Error('Transform sibling parent mismatch');}
+  const siblings=new Set();for(let child=node.firstChild;child;child=child.nextSibling){
+   if(siblings.has(child))throw Error('Cyclic transform sibling chain');siblings.add(child);
+   if(child.parent!==node)throw Error('Transform parent/child mismatch');
+  }
+  if(node.parent){let found=false;const peers=new Set();for(let child=node.parent.firstChild;child;child=child.nextSibling){if(peers.has(child))throw Error('Cyclic transform sibling chain');peers.add(child);if(child===node)found=true;}if(!found)throw Error('Unlinked transform parent');}
+ }
+ return {bike,rider,nodes};
+}
