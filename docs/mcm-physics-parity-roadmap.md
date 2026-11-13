@@ -4268,3 +4268,32 @@ remaining iterations and frame-end tail, long original-asset acceleration and
 release histories, dynamic-bike collisions, AI/scripted controllers and full
 playable-preview integration remain open. The preview remains a hybrid using
 recovered engine/suspension helpers with Cannon chassis dynamics.
+
+### Complete retained second-frame substep loop
+
+The native continuation now takes the real loop-back at 0x4ac954 until the
+remaining count reaches zero. The recovered continuation follows the same
+engine, contact, response, suspension, tire, motion, controls, events, rider,
+collision and finish stages without resetting live bike state. It consumes the
+updated substep interval and inverse interval after each finish, including the
+final timing-carry step, rather than reapplying the frame-entry schedule.
+
+Across 17,941 retained inputs, 10,896 cases execute 24,872 second-frame substeps.
+There are completed paths of 1 through 7 and 9 through 11 substeps; 408 cases
+execute all ten scheduled steps plus a carry step. The 7,045 cases stopped at
+controller, no-iteration or original reset-cycle boundaries remain explicit.
+Each additional iteration records 2,168 state words, and all prior native
+checkpoints are preserved. The regression archive contains 616 fixtures.
+
+Random inputs are still externally supplied: the launch and rider draw sequence
+repeats per iteration, with a separate counter each time. This validates state
+continuity for those inputs; it is not yet a continuous application CRT stream.
+The second-frame post-loop filter, animation/caller tail and actual return are
+next. Full original-asset acceleration/release histories, unsupported controllers,
+dynamic-bike collisions and playable full-pipeline integration remain open.
+See [complete-loop evidence](mcm-reset-next-loop-validation.json).
+
+Validation: all 17,941 retained cases match on ARM64 and x64, with zero
+exceptions and zero changed prior native traces. All 616 archived fixtures pass
+in fresh processes on both architectures. All 301 repository tests and the
+production build pass.

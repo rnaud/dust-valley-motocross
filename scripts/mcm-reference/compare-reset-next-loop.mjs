@@ -1,0 +1,122 @@
+import fs from 'node:fs';
+import {resolve,join,dirname} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {spawnSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {evaluateResetNextLoop} from './reset-next-loop-case.mjs';
+import {floatBits,bitsFloat} from '../../src/physics/mcm/math.js';
+const [exeArg,corpusArg,outputArg,mode]=process.argv.slice(2);
+if(!outputArg||mode&&!['--pilot','--replay'].includes(mode))throw new Error('Usage: compare-reset-next-loop.mjs mcm.exe next-finish-corpus output-directory [--pilot|--replay]');
+const exe=resolve(exeArg),corpus=resolve(corpusArg),output=resolve(outputArg);
+const hash=path=>{const h=createHash('sha256'),fd=fs.openSync(path,'r'),b=Buffer.alloc(1048576);try{for(let n;(n=fs.readSync(fd,b))>0;)h.update(b.subarray(0,n));}finally{fs.closeSync(fd);}return h.digest('hex');};
+if(hash(exe)!=='e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b')throw new Error('Unrecognized original');
+const run=(cmd,args,options={})=>{const r=spawnSync(cmd,args,{encoding:'utf8',...options});if(r.error||r.status)throw new Error(`${cmd}: ${r.error||r.stderr||r.status}`);};
+if(mode!=='--replay'){
+ fs.mkdirSync(output,{recursive:false});
+ const inputs=JSON.parse(fs.readFileSync(join(corpus,'case-inputs.json'))),old=fs.readFileSync(join(corpus,'cases.bin'));
+ const samples=mode==='--pilot'?JSON.parse(fs.readFileSync(join(corpus,'fixtures.json'))).fixtures.map(c=>c.caseIndex):[];
+ let indices=mode==='--pilot'?[...new Set([...Array.from({length:256},(_,i)=>i),...samples,16630,16750,16770])]:inputs.map((_,i)=>i);
+ if(mode==='--pilot'){
+  const fd=fs.openSync(join(corpus,'results.bin'),'r'),state=Buffer.alloc(44),seen=new Set();
+  for(let i=0;i<inputs.length;i++){
+   fs.readSync(fd,state,0,44,i*14000*4);
+   const key=`${+!!state.readUInt32LE(0)}:${+!!state.readUInt32LE(4)}:${state.readUInt32LE(12)}:${state.readUInt32LE(40)&255}`;
+   if(!seen.has(key)){seen.add(key);indices.push(i);}
+  }
+  fs.closeSync(fd);indices=[...new Set(indices)];
+ }
+ const encoded=Buffer.alloc(4+indices.length*8064);encoded.writeUInt32LE(indices.length);
+ const cases=indices.map((index,i)=>{
+  const c=structuredClone(inputs[index]),start=4+i*8064;old.copy(encoded,start,4+index*8064,4+(index+1)*8064);
+  c.sourceCaseIndex=index;return c;
+ });
+ fs.writeFileSync(join(output,'cases.bin'),encoded);fs.writeFileSync(join(output,'case-inputs.json'),JSON.stringify(cases));
+ run(process.env.MCM_CC||'i686-w64-mingw32-gcc',['-O0','-Wall','-Wextra','-Werror','-Wl,--image-base,0x10000000','-Wl,--disable-dynamicbase',join(dirname(fileURLToPath(import.meta.url)),'reset-next-loop-oracle.c'),'-o',join(output,'oracle.exe')]);
+ console.log(`Executing ${cases.length} retained cases through all original second-frame substeps`);
+ run(process.env.MCM_WINE||'/Applications/Wine Stable.app/Contents/Resources/wine/bin/wine',[join(output,'oracle.exe'),exe,join(output,'cases.bin'),join(output,'prefix.bin'),join(output,'results.bin')],{env:{...process.env,WINEDLLOVERRIDES:'d3drm=b',WINEDEBUG:'-all',MVK_CONFIG_LOG_LEVEL:'0'}});
+}
+const dllHash=hash(join(output,'prefix.bin.d3drm.dll'));
+if(dllHash!=='7edb1ed218aececbb44f4d92d5b0880f0ff1777dc525e555140f987015d8be1a')throw new Error('Unrecognized loaded D3DRM');
+const cases=JSON.parse(fs.readFileSync(join(output,'case-inputs.json'))),size=35681;
+if(fs.statSync(join(output,'results.bin')).size!==cases.length*size*4)throw new Error('Output size');
+const fd=fs.openSync(join(output,'results.bin'),'r'),pf=fs.openSync(join(output,'prefix.bin'),'r'),native=Buffer.alloc(size*4),prefix=Buffer.alloc(8277*4);
+const oldPrefix=fs.openSync(join(corpus,'prefix.bin'),'r'),oldRider=fs.openSync(join(corpus,'results.bin'),'r'),oldPrefixBuffer=Buffer.alloc(8277*4),oldRiderBuffer=Buffer.alloc(14000*4);
+let priorTraceChangedCases=0;
+let mismatchCount=0,exceptionCount=0;const mismatches=[],exceptions=[],loopCoverage={},finishCoverage={},riderCoverage={},controlRoutes={},eventCoverage={},motionCoverage={},contactBranches={},engineBranches={},terrainCoverage={},resetBranches={},branches={},recovery={},returnGates={},schedules={},entryRecovery={},inputBranches={},inputModes={},steeringCoverage={},inputCoverage={linear:0,cubic:0,analogEnabled:0,analogDisabled:0,trickReleased:0},fixtures=[],seen=new Set();
+for(let i=0;i<cases.length;i++){
+ fs.readSync(fd,native,0,native.length,i*native.length);fs.readSync(pf,prefix,0,prefix.length,i*prefix.length);
+ const sourceIndex=cases[i].sourceCaseIndex;
+ fs.readSync(oldPrefix,oldPrefixBuffer,0,oldPrefixBuffer.length,sourceIndex*oldPrefixBuffer.length);
+ fs.readSync(oldRider,oldRiderBuffer,0,oldRiderBuffer.length,sourceIndex*oldRiderBuffer.length);
+ if(!prefix.equals(oldPrefixBuffer)||!native.subarray(0,14000*4).equals(oldRiderBuffer))priorTraceChangedCases++;
+ let actual;try{actual=evaluateResetNextLoop(cases[i]);}catch(e){exceptionCount++;if(exceptions.length<20)exceptions.push({case:i,error:e.stack});continue;}
+ for(const [part,words,expected] of [['prefix',actual.prefix,prefix],['tail',actual.tail,native]]){
+  if(words.length*4!==expected.length)throw new Error(`${part} length ${words.length}`);
+  for(let j=0;j<words.length;j++){const value=expected.readUInt32LE(j*4);if(value!==words[j]){mismatchCount++;if(mismatches.length<30)mismatches.push({case:i,part,word:j,actual:words[j],expected:value});}}
+ }
+ if(actual.finishReached){
+  const last=actual.loopCount===1?13502:14001+(actual.loopCount-2)*2168+1670;
+  if(actual.tail[last+493]!==0)throw new Error('Second-frame loop did not finish');
+ }
+ loopCoverage[actual.loopCount]=(loopCoverage[actual.loopCount]||0)+1;
+ const t=actual.tail,branch=actual.branch;contactBranches[actual.contactBranch]=(contactBranches[actual.contactBranch]||0)+1;if(actual.motionReached!==['ordinary','reset'].includes(actual.contactBranch))throw new Error('Invalid response continuation');engineBranches[actual.engineBranch]=(engineBranches[actual.engineBranch]||0)+1;terrainCoverage[actual.terrainQueries]=(terrainCoverage[actual.terrainQueries]||0)+1;resetBranches[actual.resetBranch]=(resetBranches[actual.resetBranch]||0)+1;branches[branch]=(branches[branch]||0)+1;if(branch==='recovery'){const k=actual.entry.riderStopped?'restart':'advance';recovery[k]=(recovery[k]||0)+1;}
+ const gate=cases[i].frameReturn,returned=actual.tail[10954];
+ const returnKey=`disabled=${gate.disabled}:state=${gate.state}:player=${gate.playerIsBike}:restored=${returned}`;
+ returnGates[returnKey]=(returnGates[returnKey]||0)+1;
+ if(actual.tail[11096]!==1)throw new Error('Original frame return not observed');
+ const scheduleKey=`path=${actual.scheduler.iterations<0?'negative':actual.scheduler.discardedSteps?'capped':actual.scheduler.iterations===1?'single':'multiple'}:cap=${cases[i].words[0x8d4/4]}:discarded=${actual.scheduler.discardedSteps>0}:delta=${cases[i].nextFrame.deltaBits}:step=${actual.scheduler.dt}`;
+ schedules[scheduleKey]=(schedules[scheduleKey]||0)+1;
+ entryRecovery[actual.recoveryBranch]=(entryRecovery[actual.recoveryBranch]||0)+1;
+ inputBranches[actual.inputBranch]=(inputBranches[actual.inputBranch]||0)+1;
+ const controls=cases[i].frameInput;
+ if(actual.inputBranch==='player'||actual.inputBranch==='scripted'){
+  inputCoverage[controls.devicePresent&&controls.deviceByte!==4&&[2,3].includes(controls.deviceKind)?'cubic':'linear']++;
+  inputCoverage[cases[i].words[0x6f8/4]?'analogEnabled':'analogDisabled']++;
+ }
+ if(actual.tail[11492]&&actual.tail[11478]===0&&actual.tail[11479]===1)inputCoverage.trickReleased++;
+ const inputMode=`branch=${actual.inputBranch}:enabled=${cases[i].words[0x6f8/4]}:device=${controls.devicePresent}:${controls.deviceKind}:${controls.deviceByte}`;
+ inputModes[inputMode]=(inputModes[inputMode]||0)+1;
+ const reached=actual.tail[11496],pose=actual.tail[11498],rate=bitsFloat(actual.tail[11505]),burst=bitsFloat(actual.tail[11510]);
+ const steeringKey=`input=${actual.inputBranch}:pose9=${pose===9}:rate=${!Number.isFinite(rate)?'nonfinite':rate===0?'zero':rate>0?'positive':'negative'}:burst=${burst!==0}:carry=${(actual.tail[11508]|0)>0x38d1b717}:zeroDelta=${(cases[i].nextFrame.deltaBits&0x7fffffff)===0}`;
+ steeringCoverage[steeringKey]=(steeringCoverage[steeringKey]||0)+1;
+ const motionKey=actual.motionReached?`front=${actual.tail[12151]}:rear=${actual.tail[12152]}:crash=${actual.tail[12806]}:chassis=${actual.tail[12699]}:extra=${bitsFloat(actual.tail[12710])!==0}`:'not-reached';
+ motionCoverage[motionKey]=(motionCoverage[motionKey]||0)+1;
+ controlRoutes[actual.controlRoute]=(controlRoutes[actual.controlRoute]||0)+1;
+ const eventKey=actual.eventReached?`route=${actual.controlRoute}:join=${actual.tail[13128]}:state=${actual.tail[13141]}:trigger=${actual.tail[13308]}:input=${actual.tail[13309]}:random=${actual.tail[13310]}`:'not-reached';
+ eventCoverage[eventKey]=(eventCoverage[eventKey]||0)+1;
+ const riderKey=actual.finishReached?`join=${t[13311]}:enabled=${t[13316]}:pose=${t[13317]}:queries=${t[13486]}:trick=${t[13490]}`:'not-reached';
+ riderCoverage[riderKey]=(riderCoverage[riderKey]||0)+1;
+ const finishKey=actual.finishReached?`callbacks=${t[13949]}:priorState=${t[13950]}:state=${t[13502]}:before=${t[13993]|0}:after=${t[13995]|0}:carryConsumed=${t[13994]!==0&&t[13507]===0}:award=${t[13996]}`:'not-reached';
+ finishCoverage[finishKey]=(finishCoverage[finishKey]||0)+1;
+ if(actual.finishReached!==actual.eventReached)throw new Error('Invalid finish continuation');
+ let key=`loops=${actual.loopCount}:finish=${finishKey}:rider=${riderKey}:event=${eventKey}:motion=${motionKey}:contact=${actual.contactBranch}:engine=${actual.engineBranch}:analog=${actual.tail[11836]}:${steeringKey}:recovery=${actual.recoveryBranch}:reset=${actual.resetBranch}:queries=${actual.terrainQueries}:contact=${actual.tail[11673]}:${actual.tail[11674]}`;
+ if(!reached)key=`pending=${actual.inputBranch}`;
+ if([34,47,73,75,352,2825,5312,9956,10664,12088].includes(i))key=`crash-component-limit-${i}`;
+ if(i===1034)key='cold-x64-angular-z-nan-regression';
+ if(i===14101)key='cold-pivot-translation-nan-regression';
+ if(i===4149)key='unordered-course-upper-bound';
+ if([16630,16750,16770].includes(i))key=`untouched-normal-stack-${i}`;
+ if(!seen.has(key)){seen.add(key);fixtures.push({caseIndex:i,key,input:cases[i],prefixBits:Array.from({length:8277},(_,j)=>prefix.readUInt32LE(j*4)),outputBits:Array.from({length:size},(_,j)=>native.readUInt32LE(j*4))});}
+}
+fs.closeSync(fd);fs.closeSync(pf);fs.closeSync(oldPrefix);fs.closeSync(oldRider);
+if(!mismatchCount&&!exceptionCount&&cases.length===17941){for(const route of [0,1,2,3,4])if(!controlRoutes[route])throw new Error(`Missing control route ${route}`);}
+if(priorTraceChangedCases)throw new Error(`Prior native trace changed in ${priorTraceChangedCases} cases`);
+if(!mismatchCount&&!exceptionCount&&cases.length===17941){
+ for(const [path,count] of Object.entries(inputCoverage))if(!count)throw new Error(`Missing input coverage ${path}`);
+ for(const branch of ['ordinary','reset','original-nonterminating','no-iterations','pending'])if(!contactBranches[branch])throw new Error(`Missing contact branch ${branch}`);
+ for(const branch of ['executed','no-iterations','pending'])if(!engineBranches[branch])throw new Error(`Missing engine branch ${branch}`);
+ for(const count of [0,2,3])if(!terrainCoverage[count])throw new Error(`Missing terrain query count ${count}`);
+ for(const branch of ['continue','crash-active','button','pending'])if(!resetBranches[branch])throw new Error(`Missing reset branch ${branch}`);
+ for(const branch of ['crash','player','ai','scripted'])if(!inputBranches[branch])throw new Error(`Missing input branch ${branch}`);
+ for(const branch of ['bypass','animate','restore'])if(!entryRecovery[branch])throw new Error(`Missing entry recovery branch ${branch}`);
+ for(const branch of ['crash','normal','recovery','trick','nearby'])if(!branches[branch])throw new Error(`Missing connected branch ${branch}`);
+ for(const path of ['negative','capped','single','multiple'])if(!Object.keys(schedules).some(k=>k.startsWith(`path=${path}:`)))throw new Error(`Missing scheduler path ${path}`);
+ for(const bits of [0,0x80000000])if(!cases.some(c=>c.nextFrame.deltaBits===bits))throw new Error('Missing signed zero delta');
+ if(Object.keys(returnGates).length!==8)throw new Error('Missing frame-return gate combinations');
+ for(const path of ['advance','restart'])if(!recovery[path])throw new Error(`Missing recovery ${path}`);
+ if(!cases.some(c=>c.frameRider.rawDelta!==c.frameTail.frameDelta))throw new Error('Raw and stored frame intervals were never distinct');
+}
+const report={scope:'Retained reset, substeps, post-loop filter, rider update, caller tail and actual original frame epilogue/ret 4; next frame recovery, player input, steering-rate and longitudinal burst setup, reset decision and terrain probes, engine entry and contact/reset paths and contact response, suspension, tire forces and motion followed by controls/alignment, event decision and setup followed by rider, static-wall collisions and every remaining substep through the untaken loop-back at 0x4ac94b; AI/scripted paths stop before controller calls',cases:cases.length,wordsPerCase:8277+size,motionReachedCases:(contactBranches.ordinary||0)+(contactBranches.reset||0),motionCoverage,controlRoutes,eventCoverage,riderCoverage,finishCoverage,loopCoverage,contactBranches,engineBranches,terrainCoverage,resetBranches,branches,recovery,returnGates,schedules,entryRecovery,inputBranches,inputModes,inputCoverage,steeringCoverage,steeringExecutedCases:inputBranches.player+inputBranches.crash,pendingControllerCases:inputBranches.ai+inputBranches.scripted,priorTraceChangedCases,priorTraceComparedCases:cases.length,initialVariantCases:cases.filter(c=>c.initialVariant).length,rawDeltaDiffersFromStoredInterval:cases.filter(c=>c.frameRider.rawDelta!==c.frameTail.frameDelta).length,
+ initialStateChanges:{thisMilestone:'Source initial states, engine inputs and frame stack unchanged; reset RNG draws reuse the supplied initial CRT draw; the next event uses separate supplied launch and rider-selection draws with a counter per iteration; these externally supplied draws repeat each iteration rather than advancing the application CRT stream; exact repeated avoidance state is observed and unwound by the harness',trickCompletion:'Additional cases initialize nonloop trick records and raw first-frame delta 1.2 before reset; inherited from the source input corpus and included in unchanged-prior-source checks here',frameInput:'Initial analog enable 0/1; externally supplied axis values and device type before reset; no bike state reseeding at frame handoff',recoveryChoice:'Initial bf8 set to 0/1; no handoff reseeding',balanceFilter:'Initial value constrained to [0.25,0.75]; old arithmetic corpus includes invalid pose-domain values -0.1/1.1',control6f4:'Initial values in [-1,1]; arbitrary old raw control words can drive animation blend out of range',animation:'Complete linked pose/trick records and live objects initialized before reset; stopped and advancing rider objects',nearby:'Inherited initial side-target scenarios from the source frame-rider corpus; no mid-loop state changes',nextFrame:'Initial per-bike cap set to 1/2/4/10; next raw delta varied over +0/-0/1\/120/.02/.04/.25/1; timing carry is retained without alteration',frameReturn:'All eight combinations of disabled gate, scene state 2/3, and selected player initialized before execution'},
+ limitations:['Computed extra suspension stiffness is zero throughout this retained corpus; nonzero steering-burst calculations are covered separately, not by connected motion here','Synthetic initial state and animation assets; nonterminating original reset avoidance is captured at repeated state, not counted as a completed reset','Animation-start path with pre-existing flag820=1 not reached by this retained corpus','AI 0x46d240 and scripted 0x470560 controller calls not executed; explicit pending boundaries','Next-frame frame-end tail not yet connected; rider visual object absent','At most four first-frame substeps, followed by all executed substeps of the next frame','Visual object c90 absent; static wall callbacks only','Long histories and whole-bike acceleration/release parity remain open'],mismatchCount,exceptionCount,mismatches,exceptions,exeSha256:hash(exe),d3drmSha256:dllHash,inputSha256:hash(join(output,'cases.bin')),outputSha256:hash(join(output,'results.bin')),prefixSha256:hash(join(output,'prefix.bin')),architecture:process.arch,node:process.version};
+fs.writeFileSync(join(output,`report-${process.arch}.json`),JSON.stringify(report,null,2)+'\n');if((mode!=='--replay'||process.env.MCM_WRITE_FIXTURES==='1')&&!mismatchCount&&!exceptionCount)fs.writeFileSync(join(output,'fixtures.json'),JSON.stringify({source:report,fixtures})+'\n');console.log(JSON.stringify(report,null,2));if(mismatchCount||exceptionCount)process.exitCode=1;
