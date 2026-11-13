@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "e7827736056305ace7e8958eea6efe8e0c91e90ce29cf633ca8cc473d31e805f",
+  "loaderSourceSha256": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe",
+  "casesSha256": "2bacdf88350a79296b0414f58014e037a4d6b84d6f64f8befe602982a0db704f",
+  "resultsSha256": "96a44a57cc52b59c25110a956f778b758edafed8b3722cc0022180b0c14a63e9",
+  "cases": 40000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "outcomes": {
+    "remaining=-1:consumed=false": 10000,
+    "remaining=0:consumed=false": 7144,
+    "remaining=1:consumed=false": 10000,
+    "remaining=2:consumed=false": 10000,
+    "remaining=1:consumed=true": 2856
+  },
+  "scope": "Connected original 0x4ac89e..0x4ac94b remainder scheduling, local axis extraction and full 0x43f870 angle refresh. Signed carry comparison around float32 .0001, remaining counts, reciprocal timestep and all six angle terms. Collision/proxy synchronization before this range and subsequent loop/whole-bike trajectories excluded."
+}

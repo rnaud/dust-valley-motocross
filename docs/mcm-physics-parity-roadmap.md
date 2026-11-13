@@ -893,3 +893,28 @@ are not proved by this run. Whole-bike contact/force completion, deterministic
 world checkpoints, original-versus-port trajectories and replacing the hybrid
 preview chassis remain unfinished. This closes the transition-substitution gap
 from the preceding rider-control validation, not the full physics objective.
+
+### Connected substep remainder and orientation refresh (2026-11-12)
+
+Recovered `0x43f870` angle extraction and connected it to the main update tail
+`0x4ac89e..0x4ac94b`. The tail decrements the remaining substep count, consumes
++0x8c8 carry only when that count reaches zero and the signed float-bit comparison
+exceeds float32 .0001, stores the reciprocal new timestep, then copies local
+forward/up axes and refreshes the angle fields. Angle extraction uses hardware
+square root and CRT acos, not the coarse physics sqrt table. Near +/-pi/2 pitch
+it folds roll into yaw with the original one-step wrap; cached trigonometric
+terms remain those calculated before that angle correction.
+
+The helper and connected tail each match 40,000 original-execution cases with
+zero differences (6 and 16 output words respectively). Cases include zero axes,
+near-vertical pitch, random finite axes, all tested remainder outcomes, signed
+zero carry and float32 neighbors of the carry threshold. Reports:
+`mcm-orientation-angles-validation.json`, `mcm-substep-finish-validation.json`.
+Reproduce with the corresponding `compare-orientation-angles-oracle.mjs` or
+`compare-substep-finish-oracle.mjs` script, pinned executable, and fresh directory.
+
+Still open immediately before this tail: proxy matrix synchronization
+(`0x4b7a20`/`0x4b6d70`), collision object refresh `0x42a550`, collision dispatch
+`0x42ccc0`, and their state-transition effects. The next iteration returns to
+`0x4a5bd7` when remaining >0. This validation does not execute the full iteration,
+complete contact/force generation, or establish whole-bike trajectory parity.

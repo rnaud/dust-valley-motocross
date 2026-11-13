@@ -843,3 +843,24 @@ test('connected rider update matches original graph, input and animation effects
  }
  assert.equal(tricks.size,16);assert.ok(nearby>0);
 });
+
+test('orientation angle refresh matches original six float outputs',async()=>{
+ const {extractMcmOrientationAngles}=await import('../src/physics/mcm/orientation-angles.js');
+ const {floatBits}=await import('../src/physics/mcm/math.js');
+ for(const {input:c,outputBits} of fixture('orientation-angles-wine11.json').fixtures){
+  assert.deepEqual(Object.values(extractMcmOrientationAngles(c.forward,c.up)).map(floatBits),outputBits);
+ }
+});
+
+test('connected substep remainder and angle refresh match original execution',async()=>{
+ const {finishMcmSubstep}=await import('../src/physics/mcm/substep-finish.js');
+ const {floatBits,bitsFloat}=await import('../src/physics/mcm/math.js');
+ const outcomes=new Set();
+ for(const {input:c,carryBits,outputBits} of fixture('substep-finish-wine11.json').fixtures){
+  c.carry=bitsFloat(carryBits);
+  const r=finishMcmSubstep({...c,local:[1,0,0,0,...c.up,0,...c.forward,0,0,0,0,1]});
+  assert.deepEqual([r.remaining>>>0,...[r.carry,r.dt,r.inverseDt,...r.forward,...r.up,r.yaw,r.pitch,r.roll,r.sinRoll,r.cosRoll,r.cosPitch].map(floatBits)],outputBits);
+  outcomes.add(`${r.remaining}:${r.carry!==c.carry}`);
+ }
+ assert.equal(outcomes.size,5);
+});
