@@ -1,0 +1,61 @@
+{
+  "scope": "Retained reset through loop exhaustion, acceleration filter and full frame-end rider call; valid synthetic animation assets initialized before execution",
+  "cases": 17648,
+  "wordsPerCase": 19231,
+  "branches": {
+    "crash": 10758,
+    "normal": 5473,
+    "recovery": 984,
+    "trick": 293,
+    "nearby": 140
+  },
+  "recovery": {
+    "advance": 162,
+    "restart": 822
+  },
+  "rawDeltaDiffersFromStoredInterval": 14084,
+  "initialStateChanges": {
+    "balanceFilter": "Initial value constrained to [0.25,0.75]; old arithmetic corpus includes invalid pose-domain values -0.1/1.1",
+    "control6f4": "Initial values in [-1,1]; arbitrary old raw control words can drive animation blend out of range",
+    "animation": "Complete linked pose/trick records and live objects initialized before reset; stopped and advancing rider objects",
+    "nearby": "140 additional initial side-target scenarios; no mid-loop state changes"
+  },
+  "limitations": [
+    "Synthetic initial state and animation assets",
+    "Frame entry and caller tail after rider return not yet connected",
+    "At most four substeps in this corpus",
+    "Visual object c90 absent; static wall callbacks only",
+    "Long histories and whole-bike acceleration/release parity remain open"
+  ],
+  "mismatchCount": 0,
+  "exceptionCount": 0,
+  "mismatches": [],
+  "exceptions": [],
+  "exeSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "d3drmSha256": "7edb1ed218aececbb44f4d92d5b0880f0ff1777dc525e555140f987015d8be1a",
+  "inputSha256": "cbc2ec0066e71d601b58dbc496450259420961de89a87dd1d0e9fcbf8f5068c2",
+  "outputSha256": "8aa3615af0337c2ff641a03edfb7a13aadc2b800d91b2fc10948e7c65a710b87",
+  "prefixSha256": "f171496d14444cc09b46c30638d2de959f83756b13758a853d13ecb44848a8a1",
+  "architecture": "arm64",
+  "node": "v24.22.2",
+  "replays": [
+    {
+      "architecture": "arm64",
+      "node": "v24.22.2",
+      "mismatchCount": 0,
+      "exceptionCount": 0
+    },
+    {
+      "architecture": "x64",
+      "node": "v22.23.5",
+      "mismatchCount": 0,
+      "exceptionCount": 0
+    }
+  ],
+  "regressionFixtures": 139,
+  "coldFixtureReplay": [
+    "arm64",
+    "x64"
+  ],
+  "tests": 284
+}
