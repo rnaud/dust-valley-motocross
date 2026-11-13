@@ -1,0 +1,64 @@
+{
+  "arm64": {
+    "scope": "Reusable production frame runner from retained first-frame return through every supported second-frame substep, post-loop filter, animation and actual return; every substep finish compared to original execution",
+    "cases": 17941,
+    "substeps": 24872,
+    "statuses": {
+      "returned": 10896,
+      "original-nonterminating": 52,
+      "pending-controller": 6543,
+      "no-iterations": 450
+    },
+    "mismatchCount": 0,
+    "exceptionCount": 0,
+    "mismatches": [],
+    "exceptions": [],
+    "exeSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+    "inputSha256": "4954577e51580b26d7ab3c085e4326af8f1ecd5374966be07d38e24d0cad0a2e",
+    "outputSha256": "eee6d422b4646c1a5a005a253357b4f93044a4f81d1c5c69a3676b5ba1494df1",
+    "prefixSha256": "04515b7feb15d7b27849cc74a9154e1d896dc6ef65024d2e67aedf308e725bfb",
+    "architecture": "arm64",
+    "node": "v24.22.2",
+    "limitations": [
+      "Computed extra suspension stiffness is zero throughout this retained corpus; nonzero steering-burst calculations are covered separately, not by connected motion here",
+      "Synthetic initial state and animation assets; nonterminating original reset avoidance is captured at repeated state, not counted as a completed reset",
+      "Animation-start path with pre-existing flag820=1 not reached by this retained corpus",
+      "AI 0x46d240 and scripted 0x470560 controller calls not executed; explicit pending boundaries",
+      "Second-frame no-iteration and pending-controller paths stop before the frame-end tail; rider visual object absent",
+      "At most four first-frame substeps, followed by all executed substeps of the next frame",
+      "Visual object c90 absent; static wall callbacks only",
+      "Long histories and whole-bike acceleration/release parity remain open"
+    ]
+  },
+  "x64": {
+    "scope": "Reusable production frame runner from retained first-frame return through every supported second-frame substep, post-loop filter, animation and actual return; every substep finish compared to original execution",
+    "cases": 17941,
+    "substeps": 24872,
+    "statuses": {
+      "returned": 10896,
+      "original-nonterminating": 52,
+      "pending-controller": 6543,
+      "no-iterations": 450
+    },
+    "mismatchCount": 0,
+    "exceptionCount": 0,
+    "mismatches": [],
+    "exceptions": [],
+    "exeSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+    "inputSha256": "4954577e51580b26d7ab3c085e4326af8f1ecd5374966be07d38e24d0cad0a2e",
+    "outputSha256": "eee6d422b4646c1a5a005a253357b4f93044a4f81d1c5c69a3676b5ba1494df1",
+    "prefixSha256": "04515b7feb15d7b27849cc74a9154e1d896dc6ef65024d2e67aedf308e725bfb",
+    "architecture": "x64",
+    "node": "v22.23.5",
+    "limitations": [
+      "Computed extra suspension stiffness is zero throughout this retained corpus; nonzero steering-burst calculations are covered separately, not by connected motion here",
+      "Synthetic initial state and animation assets; nonterminating original reset avoidance is captured at repeated state, not counted as a completed reset",
+      "Animation-start path with pre-existing flag820=1 not reached by this retained corpus",
+      "AI 0x46d240 and scripted 0x470560 controller calls not executed; explicit pending boundaries",
+      "Second-frame no-iteration and pending-controller paths stop before the frame-end tail; rider visual object absent",
+      "At most four first-frame substeps, followed by all executed substeps of the next frame",
+      "Visual object c90 absent; static wall callbacks only",
+      "Long histories and whole-bike acceleration/release parity remain open"
+    ]
+  }
+}

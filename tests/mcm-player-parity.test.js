@@ -2048,3 +2048,19 @@ test('retained second frame filters, animates and returns with original live sta
   assert.equal(actual.tail[46924],+actual.returned,`original ret 4 ${caseIndex}`);
  }
 });
+
+test('reusable retained frame runner preserves original substep finishes and actual return',async()=>{
+ const {evaluateRetainedFrame}=await import('../scripts/mcm-reference/retained-frame-case.mjs');
+ const corpus=fixture('retained-frame-wine11.json.br');
+ assert.equal(corpus.source.mismatchCount,0);assert.equal(corpus.source.exceptionCount,0);
+ assert.equal(corpus.source.cases,17941);assert.equal(corpus.source.substeps,24872);
+ assert.deepEqual(corpus.source.statuses,{returned:10896,'original-nonterminating':52,'pending-controller':6543,'no-iterations':450});
+ for(const {caseIndex,input,expected,status} of corpus.fixtures){
+  const actual=evaluateRetainedFrame(input);
+  assert.equal(actual.frame.status,status,`runner status ${caseIndex}`);
+  assert.deepEqual(actual.prior.prefix,expected.prefix,`runner prefix ${caseIndex}`);
+  assert.deepEqual(actual.prior.tail,expected.priorTail,`runner prior frame ${caseIndex}`);
+  assert.deepEqual(actual.finishes,expected.finishes,`runner substeps ${caseIndex}`);
+  assert.deepEqual(actual.output,expected.output,`runner return ${caseIndex}`);
+ }
+});
