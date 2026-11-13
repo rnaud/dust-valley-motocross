@@ -3,7 +3,8 @@ import {resolveMcmWorldMatrix} from './world-transform.js';
 import {multiplyMcmMatrixPointers} from './matrix-pointer-product.js';
 import {invalidateMcmTransform} from './event-orientation.js';
 const f=Math.fround;
-const copyMatrix=m=>{const r=Array(16).fill(.1);for(let i=0;i<16;i++)r[i]=m[i];return r;};
+// Native array slicing preserves NaN bits without a first-element store transition.
+const copyMatrix=m=>{if(Array.isArray(m))return m.slice();const r=Array(16).fill(.1);for(let i=0;i<16;i++)r[i]=m[i];return r;};
 const transposeRotation=m=>{const r=Array(16).fill(.1),indices=[0,4,8,3,1,5,9,7,2,6,10,11,12,13,14,15];for(let i=0;i<16;i++)r[i]=m[indices[i]];return r;};
 
 // Original 0x4b6d70 with null reference, as used by main-update proxy sync.

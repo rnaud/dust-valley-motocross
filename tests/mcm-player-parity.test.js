@@ -1962,3 +1962,21 @@ test('retained next-frame suspension, tire forces and motion consume the carried
   assert.deepEqual(actual.tail,outputBits,`next motion tail ${caseIndex}`);
  }
 });
+
+test('retained next-frame controls and events preserve the crash bypass and supplied draw sequence',async()=>{
+ const {evaluateResetNextEvent}=await import('../scripts/mcm-reference/reset-next-event-case.mjs');
+ const corpus=fixture('reset-next-event-wine11.json.br');
+ assert.equal(corpus.source.mismatchCount,0);
+ assert.equal(corpus.source.exceptionCount,0);
+ assert.equal(corpus.source.priorTraceChangedCases,0);
+ assert.equal(corpus.source.priorTraceComparedCases,17941);
+ for(const route of [0,1,2,3,4])assert.ok(corpus.source.controlRoutes[route]);
+ assert.equal(corpus.source.controlRoutes[4],8023);
+ for(const {caseIndex,input,prefixBits,outputBits} of corpus.fixtures){
+  const actual=evaluateResetNextEvent(input);
+  assert.equal(actual.eventReached,['ordinary','reset'].includes(actual.contactBranch));
+  assert.equal(actual.tail.length,13316);
+  assert.deepEqual(actual.prefix,prefixBits,`next event prefix ${caseIndex}`);
+  assert.deepEqual(actual.tail,outputBits,`next event tail ${caseIndex}`);
+ }
+});

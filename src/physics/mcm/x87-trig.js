@@ -1,9 +1,12 @@
+import {bitsFloat} from './math.js';
 // x87 argument reduction uses a 66-bit pi/2 constant. At large angles this
 // differs measurably from the host libm reduction. Keep the input exact while
 // subtracting quadrants, then evaluate the small remainder.
 const halfPi=0x3243f6a8885a308d3n,scale=2**-65;
 const buffer=new ArrayBuffer(8),view=new DataView(buffer);
 export function mcmSinCos(angle){
+ // FSINCOS of either infinity produces x87 negative indefinite.
+ if(angle===Infinity||angle===-Infinity){const invalid=bitsFloat(0xffc00000);return {sin:invalid,cos:invalid};}
  if(Number.isFinite(angle)&&Math.abs(angle)>=2**63)return {sin:angle,cos:angle};
  if(!Number.isFinite(angle)||Math.abs(angle)<2**20)return {sin:Math.sin(angle),cos:Math.cos(angle)};
  view.setFloat64(0,Math.abs(angle),false);
