@@ -3671,3 +3671,39 @@ They validate the frame-end routine's branches, not a complete physics frame.
 Connection to retained post-loop state, actual frame entry/return, longer
 histories, dynamic collisions, whole-bike acceleration/throttle-release parity
 and playable recovered simulation integration remain open.
+
+### Retained physics-to-rider handoff (`0x4ad07a`)
+
+The connected native harness now optionally captures 56 additional words just
+before the frame-end rider call. They cover dispatch/control fields, pose/blend
+state, position and orientation scratch, component angle, both animation-object
+selectors, bounds and fractional animation time. Pointer values are normalized
+using the same record/frame tokens as the existing loop corpus. The JavaScript
+observer receives the live context after the acceleration filter; it does not
+rebuild the bike or graph. Adding the native observation leaves every byte of
+the prior 8,277-word-per-case output unchanged.
+
+All 17,508 cases match the entry capture on ARM64 and x64. The retained states
+reach 10,745 crash, 5,413 normal, 996 recovery, 294 trick and 60 nearby branches.
+They include 2,172 non-finite speed values and five non-finite headings. Those
+exceptional states must remain visible in the connected comparison. See
+`mcm-frame-rider-entry-validation.json` and the representative native fixtures.
+
+This establishes the incoming state, not execution of the frame-end call.
+The current corpus's trick records contain frame-index placeholders and the
+initial rider animation object has no complete record. Before continuing the
+original through `0x4af710`, supply complete animation records and initialize
+both animation objects **before** the physics loop, then retain their mutations.
+Also add the raw incoming frame delta separately from the carry-inclusive
+stored interval. Do not reseed state at the observed handoff. Complete frame
+entry/return, longer histories, dynamic collisions, trajectory parity and
+playable integration remain required.
+
+Reproduce the handoff audit after generating the post-filter corpus:
+
+```sh
+node scripts/mcm-reference/compare-frame-rider-entry.mjs /path/to/mcm.exe /path/to/post-filter-corpus /path/to/new-audit-directory
+```
+
+Pass `--replay` as a fourth argument to compare an existing native capture under
+another Node architecture without rerunning Wine.

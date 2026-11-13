@@ -1728,3 +1728,20 @@ test('frame-end recovery retains animation time and restores orientation before 
   assert.deepEqual(actual,outputBits,`recovery/frame-rider fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
  }
 });
+
+test('retained physics supplies the original frame-end rider entry state without reseeding',async()=>{
+ const {evaluateResetPostFilter}=await import('../scripts/mcm-reference/reset-post-filter-case.mjs');
+ const {frameRiderEntryWords}=await import('../scripts/mcm-reference/frame-rider-entry-case.mjs');
+ const corpus=fixture('frame-rider-entry-wine11.json.br');
+ assert.equal(corpus.source.mismatchCount,0);
+ for(const branch of ['crash','normal','recovery','trick','nearby'])assert.ok(corpus.fixtures.some(c=>c.key.startsWith(`${branch}:`)),branch);
+ assert.ok(corpus.fixtures.some(c=>c.key.includes('finiteSpeed=false')));
+ assert.ok(corpus.fixtures.some(c=>c.key.includes('finiteHeading=false')));
+ for(const {caseIndex,input,outputBits} of corpus.fixtures){
+  let actual,calls=0;
+  evaluateResetPostFilter(input,c=>{calls++;actual=frameRiderEntryWords(c);});
+  assert.equal(calls,1);
+  assert.equal(actual.length,56);
+  assert.deepEqual(actual,outputBits,`frame-rider entry case ${caseIndex}`);
+ }
+});

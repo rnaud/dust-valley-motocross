@@ -1,0 +1,44 @@
+{
+  "scope": "Retained reset/substep loop and post-filter state at 0x4ad07a, before frame-end rider execution; no state reseeded at the handoff",
+  "cases": 17508,
+  "wordsPerCase": 56,
+  "branches": {
+    "crash": 10745,
+    "normal": 5413,
+    "recovery": 996,
+    "trick": 294,
+    "nearby": 60
+  },
+  "nonfinite": {
+    "848": 2172,
+    "4e0": 5
+  },
+  "mismatchCount": 0,
+  "mismatches": [],
+  "exeSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "d3drmSha256": "7edb1ed218aececbb44f4d92d5b0880f0ff1777dc525e555140f987015d8be1a",
+  "inputSha256": "b35ddf5103fb4b3d0005878c48d67b3836d5756e97a825900e1556917c0990c7",
+  "caseInputsSha256": "9bb78f378356335ccd07cf3a42ad1ab15b461dddf96cab1f9d69257eca28534d",
+  "prefixSha256": "5d2df9f3f455d55997a1aabde467cdfcdb3c56024f5cd90c9d4e632adeff2d29",
+  "entrySha256": "f3d96ca9ad8d49b532840717c6243f8e04658403dff790a5f6720b664824302c",
+  "node": "v24.22.2",
+  "architecture": "arm64",
+  "limitations": [
+    "Frame-end call not executed by this audit",
+    "Animation pointers use existing corpus tokens; complete animation assets still required",
+    "Raw incoming frame delta is not captured by the source corpus"
+  ],
+  "replays": [
+    {
+      "architecture": "arm64",
+      "node": "v24.22.2",
+      "mismatchCount": 0
+    },
+    {
+      "architecture": "x64",
+      "node": "v22.23.5",
+      "mismatchCount": 0
+    }
+  ],
+  "fixtures": 31
+}
