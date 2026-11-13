@@ -4402,3 +4402,23 @@ Validation: both native captures are byte-identical; all 1,600 frame comparisons
 match on ARM64 and x64, including engine snapshots. Fresh-process history and
 runner fixtures pass on both architectures. All 304 repository tests and the
 production build pass.
+
+### Live checkpoint export and capture timeout
+
+`capture-bike.c` can now export its existing partial local checkpoint through
+`MCM_CHECKPOINT`, retaining component and transform bytes needed to investigate
+live-state initialization. It neither expands the restore set nor claims a
+complete world snapshot. The no-player-record timeout now also runs during
+continuous debugger events, and successful records refresh the deadline.
+
+Validation: MinGW compilation passes with `-Wall -Wextra -Werror`; a Wine export
+probe preserves exact block bytes and metadata and refuses an existing output
+file. An isolated target continuously executing the RNG breakpoint instruction
+(with relocated test addresses) times out with capture status 4 after 30 seconds,
+then exits successfully after verifying all instruction bytes were restored.
+The live original also detaches with all four original instructions restored.
+
+The current original-game session has no allocated bike candidates and produced
+zero player records. No new normal acceleration/release comparison is claimed.
+Entering a live riding event, exporting its state and integrating original
+terrain/assets into the recovered runner remain the next requirements.

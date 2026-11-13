@@ -51,6 +51,22 @@ static int checkpoint(DWORD bike,int restore) {
     return read_memory(bike+0x434,&frame,4)&&save_tree(frame)&&read_memory(bike+0x8f0,&engine,4)&&read_memory(engine+4,&filter,4)&&save_block(filter,0x10);
 }
 
+// Export only blocks already read by the existing partial checkpoint. This does
+// not expand the set of objects restored between controlled passes.
+static int export_checkpoint(DWORD bike) {
+    const char *path=getenv("MCM_CHECKPOINT");
+    if(!path||!*path)return 1;
+    FILE *out=fopen(path,"wx");if(!out)return 0;
+    fprintf(out,"{\"schemaVersion\":1,\"kind\":\"mcm-partial-local-checkpoint\",\"bikeAddress\":%lu,\"blockCount\":%u,\"blocks\":[",bike,block_count);
+    for(unsigned i=0;i<block_count;i++){
+        const Block*b=&blocks[i];
+        fprintf(out,"%s{\"address\":%lu,\"size\":%lu,\"hex\":\"",i?",":"",b->address,b->size);
+        for(DWORD j=0;j<b->size;j++)fprintf(out,"%02x",b->bytes[j]);
+        fprintf(out,"\"}");
+    }
+    fprintf(out,"]}\n");const int failed=ferror(out);return fclose(out)==0&&!failed;
+}
+
 static void write_byte(DWORD address, BYTE value) {
     SIZE_T count;
     if (!WriteProcessMemory(process, (void *)(uintptr_t)address, &value, 1, &count) || count != 1 ||
@@ -131,6 +147,7 @@ int main(int argc, char **argv) {
         DWORD status = DBG_CONTINUE;
         if (!WaitForDebugEvent(&event, 500)) {
             if (GetTickCount() - start < 30000) continue;
+            fprintf(stderr, "No player-bike records for 30 seconds.\n");
             if (!DebugBreakProcess(process) || !WaitForDebugEvent(&event, 5000)) {
                 fprintf(stderr, "Cannot stop game for breakpoint cleanup.\n");
                 TerminateProcess(process, 5);
@@ -178,7 +195,7 @@ int main(int argc, char **argv) {
                             if (scripted) context.Eax = requested_throttle;
                         } else {
                             if (matched == 0) {
-                                if(scripted && player_frame==0 && !checkpoint(bike,0))done=2;
+                                if(scripted && player_frame==0 && (!checkpoint(bike,0)||!export_checkpoint(bike)))done=2;
                                 if(scripted && player_frame==400){if(!checkpoint(bike,1))done=2;player_frame=0;pass++;random_state=12345;}
                                 requested_throttle = player_frame >= 50 && player_frame < 200;
                                 if (scripted) {
@@ -188,7 +205,10 @@ int main(int argc, char **argv) {
                                 }
                                 player_frame++;
                             }
-                            if (!done && !snapshot(out, matched, count++, event.dwThreadId, &context)) done = 2;
+                            if (!done) {
+                                if (!snapshot(out, matched, count++, event.dwThreadId, &context)) done = 2;
+                                else start = GetTickCount();
+                            }
                         }
                     }
                     if(matched==1)player_active=0;
@@ -226,6 +246,13 @@ int main(int argc, char **argv) {
                 }
                 pending = -1;
             } else if (code != EXCEPTION_BREAKPOINT) status = DBG_EXCEPTION_NOT_HANDLED;
+        }
+        // Menu RNG calls can produce debug events continuously. Check the
+        // no-record deadline even when WaitForDebugEvent never times out.
+        // This event still holds the process stopped for instruction cleanup.
+        if (!done && GetTickCount() - start >= 30000) {
+            fprintf(stderr, "No player-bike records for 30 seconds.\n");
+            done = 2;
         }
         if (done) {
             for (unsigned i = 0; i < 4; i++) if (armed[i]) {
