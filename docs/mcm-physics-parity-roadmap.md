@@ -2513,6 +2513,6 @@ The regression corpus is stored as compressed JSON.
 
 Report: `mcm-normal-rotation-substep-validation.json`. Reproduce with
 `node scripts/mcm-reference/compare-normal-rotation-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
-The next connection is the real terrain/contact retest at `0x4ac17b`, then
-normal-state alignment and collision/tail/entry integration. Complete-bike
+The next connection is the bike-event transition call (`0x4a4b60`) at
+`0x4ac17b`, then normal-state alignment and collision/tail/entry integration. Complete-bike
 acceleration and throttle-release trajectory parity remains unproven.
