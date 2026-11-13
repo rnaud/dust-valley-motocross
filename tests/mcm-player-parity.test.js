@@ -1413,3 +1413,10 @@ test('reset output flows through rear traction, combined forces and chassis impu
  for(const gate of ['rear=1:driveZero=true:maxSpeedPositive=true','rear=1:driveZero=true:maxSpeedPositive=false','rear=0:driveZero=false',':factorNegative=true',':factorNegative=false'])assert.ok(Object.keys(corpus.source.tractionOutcomes).some(k=>k.includes(gate)),gate);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetChassisImpulse(c),outputBits,`reset/impulse fixture ${i}`);
 });
+
+test('reset forces integrate angular/linear motion and update the live transform graph',async()=>{
+ const {evaluateResetMotionTransform}=await import('../scripts/mcm-reference/reset-motion-transform-case.mjs');
+ const corpus=fixture('reset-motion-transform-wine11.json.br');
+ for(const gate of ['mask=1:','mask=2:',':counter=true:',':counter=false:',':moving=true:',':largeAngle=true:',':largeAngle=false:',':zeroAngle=true:',':zeroAngle=false:',':bodyWheelAlias=true:',':bodyWheelAlias=false:',':wheelAlias=true',':wheelAlias=false'])assert.ok(Object.keys(corpus.source.motionOutcomes).some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetMotionTransform(c),outputBits,`reset/motion fixture ${i}`);
+});

@@ -2927,3 +2927,28 @@ Reset-path suspension/contact force contributions, angular/linear integration,
 transform updates and substep completion remain to be connected. Engine entry
 preceding reset, dynamic collisions, repeated frames and complete acceleration /
 throttle-release parity remain unproven.
+
+### Reset forces connected through integrated motion and transforms
+
+The continuous reset comparison now runs `0x4a5e27..0x4ab7fd`. Following chassis
+impulse handling, it executes suspension-force preparation, single/paired-contact
+force assembly, contact pivot correction, opposing angular acceleration, angular
+integration, force-to-linear acceleration and position integration, then ordered
+wheel rotations and body translation/pivot rotation on the live transform graph.
+All 1,829 captured words match in 16,384 original executions.
+
+Required coverage includes both reset contact masks, pitch-counter changes,
+nonzero linear motion, zero/nonzero body rotation, large rotation angles, shared
+wheel/body nodes and shared/distinct wheel nodes. Reset still reaches one-wheel
+contact here, so the paired-contact helper retains its original skip behavior;
+paired force execution is covered separately by the ordinary-path corpus.
+Counter words at bike+8bc/+6e0 are encoded as integers, independently of the
+surrounding float state. No state is re-seeded between reset, forces and motion.
+
+Report: `mcm-reset-motion-transform-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-motion-transform-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+The remaining reset-path connection is post-motion control/events, rider/common
+updates, collision dispatch and scheduler completion. Engine entry preceding
+reset, dynamic collisions, frame-loop persistence and complete acceleration /
+throttle-release trajectories remain unproven. This is synthetic single-substep
+evidence, not full gameplay parity.
