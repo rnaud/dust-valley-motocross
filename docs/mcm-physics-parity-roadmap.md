@@ -2075,3 +2075,29 @@ Original terrain, transform, suspension and engine callees run directly with
 pinned executable/DLL checks and both lookup initializers. Remaining rear tire
 and contact-force processing, no-wheel response, full-loop integration and
 whole-bike acceleration/release trajectory parity remain unfinished.
+
+### Connected rear load and contact velocity (2026-11-12)
+
+Extended continuous ordinary execution through `0x4a8216`, preserving no-wheel
+and front-only observation exits. Both-wheel contact constructs the rear arm,
+projects angular velocity onto the rear normal, forms its angular cross product
+and assigns the front-weight share of shared force. Rear-only contact uses full
+force and updates the local contact arm. Rear tangent projection then updates
+forward speed, travel direction, contact speed and normalized contact direction.
+Unlike the front path, rear linear velocity is not rounded before adding the
+angular contribution. The low-speed path retains separate zeroing/preservation
+behavior, including leaving the tangent and alignment scratch untouched.
+
+All 40,000 original-execution cases match across 404 output words with zero
+differences. The extended corpus exposed an overflowed suspension transform
+whose invalid matrix products/sums must store x87 negative indefinite NaNs;
+the recovered matrix multiplication now preserves those stores, and a selected
+fixture retains the observed failure. Arbitrary input NaN payloads remain
+outside this finite-input corpus.
+
+Report: `mcm-rear-motion-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-rear-motion-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+All prior terrain, suspension, steering, front-tire and rear-drive operations
+execute continuously with original callees. Remaining rear tire/contact-force
+processing, no-wheel response, full-loop integration and whole-bike
+acceleration/release trajectory parity remain unfinished.
