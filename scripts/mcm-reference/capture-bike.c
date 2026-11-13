@@ -75,6 +75,30 @@ static int checkpoint(DWORD bike,int restore) {
         read_memory(bike+0x8f0,&engine,4)&&read_memory(engine+4,&filter,4)&&save_block(filter,0x10);
 }
 
+// Same-process local checkpoint import. Discover the live block layout first,
+// then validate the whole file before any process write. No allocation/remapping.
+static int import_checkpoint(DWORD bike) {
+    const char *path=getenv("MCM_INITIAL_CHECKPOINT");
+    if(!path||!*path)return 1;
+    FILE *in=fopen(path,"rb");if(!in)return 0;
+    BYTE magic[8];DWORD owner,count;static Block incoming[256];int ok=0;
+    if(fread(magic,1,8,in)!=8||memcmp(magic,"MCMCP01",8)||
+       fread(&owner,4,1,in)!=1||owner!=bike||fread(&count,4,1,in)!=1||count!=block_count)goto end;
+    for(unsigned i=0;i<count;i++){
+        Block *b=&incoming[i];
+        if(fread(&b->address,4,1,in)!=1||fread(&b->size,4,1,in)!=1||
+           b->address!=blocks[i].address||b->size!=blocks[i].size||
+           fread(b->bytes,1,b->size,in)!=b->size)goto end;
+    }
+    if(fgetc(in)!=EOF||ferror(in)||incoming[0].address!=bike||
+       memcmp(incoming[0].bytes,blocks[0].bytes,4))goto end;
+    memcpy(blocks,incoming,count*sizeof(Block));ok=1;
+end:
+    fclose(in);
+    if(!ok){fprintf(stderr,"Initial checkpoint layout or data invalid; no imported memory written.\n");return 0;}
+    return checkpoint(bike,1);
+}
+
 // Export only blocks already read by the existing partial checkpoint. This does
 // not expand the set of objects restored between controlled passes.
 static int export_checkpoint(DWORD bike) {
@@ -162,6 +186,7 @@ int main(int argc, char **argv) {
     capture_stack = getenv("MCM_STACK") != NULL;
     capture_rider_timing = getenv("MCM_RIDER_TIMING") != NULL;
     fixed_rider = getenv("MCM_FIXED_RIDER") != NULL;
+    if(getenv("MCM_INITIAL_CHECKPOINT")&&!scripted){fprintf(stderr,"Initial checkpoint requires MCM_SCRIPTED.\n");return 2;}
     if(fixed_rider&&!scripted){fprintf(stderr,"MCM_FIXED_RIDER requires MCM_SCRIPTED.\n");return 2;}
     if(fixed_rider)capture_rider_timing=1;
     if(capture_rider_timing)hook_count=5;
@@ -255,7 +280,7 @@ int main(int argc, char **argv) {
                             if (scripted) context.Eax = requested_throttle;
                         } else {
                             if (matched == 0) {
-                                if(scripted && player_frame==0 && (!checkpoint(bike,0)||!export_checkpoint(bike)))done=2;
+                                if(scripted && player_frame==0 && (!checkpoint(bike,0)||!import_checkpoint(bike)||!export_checkpoint(bike)))done=2;
                                 if(scripted && player_frame==400){if(!checkpoint(bike,1))done=2;player_frame=0;pass++;random_state=12345;}
                                 requested_throttle = player_frame >= 50 && player_frame < 200;
                                 if (scripted) {
