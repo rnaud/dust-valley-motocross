@@ -1701,3 +1701,30 @@ test('frame-end trick holds and releases retain original input and animation sta
   assert.deepEqual(actual,outputBits,`trick/frame-rider fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
  }
 });
+
+test('frame-end nearby interaction retains tracking, hold, return and normal-pose transitions',async()=>{
+ const {evaluateNearbyFrameRider}=await import('../scripts/mcm-reference/nearby-frame-rider-case.mjs');
+ const corpus=fixture('nearby-frame-rider-wine11.json.br'),outcomes=Object.keys(corpus.source.outcomes);
+ assert.equal(corpus.source.totalDifferences,0);
+ for(const gate of ['active=0:', 'active=1:', ':returning=0:', ':returning=1:', ':lean=-1:', ':lean=0:', ':lean=1:', ':ended=true:', ':ended=false:', ':normalLater=true:', ':normalLater=false:', ':mask=0:', ':mask=3:'])assert.ok(outcomes.some(k=>k.includes(gate)),gate);
+ assert.ok(corpus.fixtures.some(({input:c})=>c.leanBits===0x80000000));
+ assert.ok(corpus.fixtures.some(({outputBits:w})=>w[3247]===0&&w[215]===14&&w[3469]!==14),'last interaction seek precedes normal posing on a later call');
+ for(const [i,{input,outputBits}] of corpus.fixtures.entries()){
+  const actual=evaluateNearbyFrameRider(input);
+  assert.equal(actual.length,13016);
+  assert.deepEqual(actual,outputBits,`nearby/frame-rider fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
+ }
+});
+
+test('frame-end recovery retains animation time and restores orientation before normal posing',async()=>{
+ const {evaluateRecoveryFrameRider}=await import('../scripts/mcm-reference/recovery-frame-rider-case.mjs');
+ const corpus=fixture('recovery-frame-rider-wine11.json.br'),outcomes=Object.keys(corpus.source.outcomes);
+ assert.equal(corpus.source.totalDifferences,0);
+ for(const gate of ['stopped=0:', 'stopped=1:', ':loop=0:', ':loop=1:', ':resetFirst=true:', ':resetFirst=false:', ':resetLater=true:', ':resetLater=false:', ':mask=0:', ':mask=1:', ':parented=0', ':parented=1'])assert.ok(outcomes.some(k=>k.includes(gate)),gate);
+ assert.ok(corpus.fixtures.some(({outputBits:w})=>w[206]===3&&w[207]===0&&w[3476]!==0),'orientation restoration precedes normal bike animation on a later call');
+ for(const [i,{input,outputBits}] of corpus.fixtures.entries()){
+  const actual=evaluateRecoveryFrameRider(input);
+  assert.equal(actual.length,13076);
+  assert.deepEqual(actual,outputBits,`recovery/frame-rider fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
+ }
+});
