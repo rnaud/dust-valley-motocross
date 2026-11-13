@@ -1,6 +1,7 @@
 import * as C from 'cannon-es';
 import {SandSurface} from './sand-physics.js';
 import {createMcmPreviewEngine,stepMcmPreviewEngine} from './mcm-preview.js';
+import {mcmPreviewTireForces} from './mcm-preview-contact.js';
 import {parkHeight} from './jump-park.js';
 import {BikeVehicle} from './bike-vehicle.js';
 import {MCM_HANDLING,advanceLean} from './mcm-handling.js';
@@ -173,8 +174,8 @@ export function stepBike(s,input,dt) {
         const rawLoad=Math.min(b.mass*9.81*1.5,support*(contacts===1?1:i===0?rearShare:1-rearShare));
         s.tireLoads[i]+=(rawLoad-s.tireLoads[i])*(1-Math.exp(-dt*20));
         const load=s.tireLoads[i];
-        const forces=tireForces({longSpeed:velocity.dot(wheelForward),sideSpeed:velocity.dot(wheelSide),load,
-          drive:i===0?driveForce:0,brake:brake?(i===1?1200*safeBrake:700*safeBrake):i===0?s.engine.engineBrake:0,camber:s.roll-slopeRoll,front:i===1,dt});
+        const forces=(s.physicsMode==='mcm-preview'?mcmPreviewTireForces:tireForces)({longSpeed:velocity.dot(wheelForward),sideSpeed:velocity.dot(wheelSide),load,
+          drive:i===0?driveForce:0,brake:s.physicsMode==='mcm-preview'?brake:brake?(i===1?1200*safeBrake:700*safeBrake):i===0?s.engine.engineBrake:0,camber:s.roll-slopeRoll,front:i===1,dt,mass:b.mass*(contacts===1?1:i===0?rearShare:1-rearShare)});
         const groundSpeed=velocity.dot(wheelForward),rolling=groundSpeed/.61;
         if(s.physics.sand&&wheel.raycastResult.body?.sandSurface===s.physics.sand){
           const hit=wheel.raycastResult.hitPointWorld,packed=s.physics.sand.compaction(hit.x,hit.z);
