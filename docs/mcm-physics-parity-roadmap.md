@@ -1414,3 +1414,25 @@ Report: `mcm-contact-preparation-validation.json`. Reproduce with
 The settings-dependent contact-query branches after `0x4a5ea5`, contact/force
 assembly and whole-loop state adaptation are still required before full
 acceleration/release trajectory parity can be claimed.
+
+### Wheel-contact terrain samples and front frame (2026-11-12)
+
+Recovered the continuous `0x4a0130..0x4a0442` sequence: rear and front terrain
+height/normal samples, world-space forward/up resolution, contact-axis helper
+`0x4a1450`, front tangent and normal construction, normal orientation correction,
+wheel-radius offset, and the offset terrain resample. Zero cross products retain
+the original forward fallback. Missing terrain preserves supplied normal storage.
+
+40,000 original-execution cases match all 80 output words with zero differences.
+The oracle runs the real terrain, transform, cross-product and inverse-square-root
+helpers. Inputs exercise full 3D root transforms, cached/uncached matrices,
+leaf/child/parent terrain traversal, absent child tables, empty child tables and
+null terrain roots. Outputs include all ten point/normal/axis arguments, unchanged
+height arguments, bike tangent/normal/offset, local/world matrices and cache flag,
+and the routine's forward and resample-normal scratch vectors.
+
+Report: `mcm-wheel-contact-frame-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-wheel-contact-frame-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+This validates the front preparation section with synthetic terrain and finite
+inputs; rear contact construction, contact-depth processing, connection to the
+main substep and full acceleration/release trajectory parity remain unfinished.

@@ -1065,3 +1065,8 @@ test('connected substep start and contact transform preparation match original g
  const {evaluateContactPreparation}=await import('../scripts/mcm-reference/contact-preparation-case.mjs');
  for(const {input:c,outputBits} of fixture('contact-preparation-wine11.json').fixtures)assert.deepEqual(evaluateContactPreparation(c),outputBits);
 });
+
+test('wheel contact frame matches original terrain samples, radius offset and transform cache',async()=>{
+ const {evaluateWheelContactFrame}=await import('../scripts/mcm-reference/wheel-contact-frame-case.mjs');
+ for(const {input:c,outputBits} of fixture('wheel-contact-frame-wine11.json').fixtures)assert.deepEqual(evaluateWheelContactFrame(c),outputBits);
+});
