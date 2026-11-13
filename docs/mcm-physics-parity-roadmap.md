@@ -4297,3 +4297,41 @@ Validation: all 17,941 retained cases match on ARM64 and x64, with zero
 exceptions and zero changed prior native traces. All 616 archived fixtures pass
 in fresh processes on both architectures. All 301 repository tests and the
 production build pass.
+
+### Retained second-frame filter, animation and actual return
+
+The continuation now runs beyond the completed second-frame substep loop through
+its post-loop acceleration filter, retained animation objects and original
+caller tail. The native harness resumes the original loop exit and observes the
+actual epilogue/`ret 4`, preserving separate first- and second-frame snapshots.
+The recovered filter uses the scheduler's stored frame interval, while animation
+advances by the incoming raw delta. Neither is replaced with the final substep
+interval. Animation children and the acceleration filter retain their state from
+the preceding frame.
+
+The new trace adds 11,244 words covering the filter, rider and animation state,
+all mutable animation children, transforms, saved position and actual-return
+marker. Cases that stopped before an executed second-frame substep still stop at
+their existing explicit boundary; they are not labeled as completed returns.
+This includes unsupported controller paths, original reset cycles and synthetic
+negative-count/no-iteration cases.
+
+Long original-asset acceleration/release histories, a continuous application RNG
+stream, dynamic-bike collisions, unsupported controllers and full playable
+preview integration remain outstanding. See
+[second-frame return evidence](mcm-reset-next-return-validation.json).
+
+The full corpus reaches 10,896 second-frame returns: 9,693 crash, 905 normal,
+233 recovery and 65 trick paths. No second-frame nearby-animation path is
+reached, which remains a coverage gap. There are 636 saved regression fixtures.
+
+Fresh-process fixtures exposed case 134's recovery-root matrix losing the sign
+of its first NaN during a partially optimized typed-to-mutable-array copy. The
+warmed full corpus did not expose this. Appending through an existing double
+array and slicing preserves the original sign while keeping the mutable matrix
+contract. The return fixtures retain this ordering-sensitive regression.
+
+Validation after the recovery-copy fix: all 17,941 retained cases match on
+ARM64 and x64 with zero mismatches, exceptions or changed prior native traces.
+The 636 archived fixtures pass in fresh processes on both architectures. All
+302 repository tests and the production build pass.

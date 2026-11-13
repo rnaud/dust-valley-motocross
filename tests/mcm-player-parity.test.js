@@ -2030,3 +2030,21 @@ test('retained second frame completes every scheduled and carry substep against 
   }
  }
 });
+
+test('retained second frame filters, animates and returns with original live state',async()=>{
+ const {evaluateResetNextReturn}=await import('../scripts/mcm-reference/reset-next-return-case.mjs');
+ const corpus=fixture('reset-next-return-wine11.json.br');
+ assert.equal(corpus.source.mismatchCount,0);
+ assert.equal(corpus.source.exceptionCount,0);
+ assert.equal(corpus.source.priorTraceChangedCases,0);
+ assert.equal(corpus.source.priorTraceComparedCases,17941);
+ for(const branch of ['crash','normal','trick','recovery'])assert.ok(corpus.source.returnCoverage[branch]);
+ for(const {caseIndex,input,prefixBits,outputBits} of corpus.fixtures){
+  const actual=evaluateResetNextReturn(input);
+  assert.equal(actual.tail.length,46925);
+  assert.equal(actual.returned,actual.loopCount>0);
+  assert.deepEqual(actual.prefix,prefixBits,`second return prefix ${caseIndex}`);
+  assert.deepEqual(actual.tail,outputBits,`second return tail ${caseIndex}`);
+  assert.equal(actual.tail[46924],+actual.returned,`original ret 4 ${caseIndex}`);
+ }
+});
