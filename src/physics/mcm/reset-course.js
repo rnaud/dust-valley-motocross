@@ -6,7 +6,27 @@ const f=Math.fround;
 // mode-3 course limits. The iterable preserves original bike enumeration order.
 export function adjustMcmResetCourse(c,position,forward){
  const b=c.bike;
- if(forward&&!(c.playerCount===1&&c.aiCount===0)){
+ if(forward)avoidMcmResetBikes(c,position,forward);
+ if(c.mode!==3)return;
+ for(const axis of [0,2]){
+  const low=c.width*f(1.2333),high=c.width*f(254.76);
+  if(low>b.position[axis])position[axis]=f(low);
+  else if(high<b.position[axis])position[axis]=f(high);
+  if(c.width*10>position[axis]){
+   const n=queryMcmTerrainFaceNormal({...c.terrain,point:[...position],normal:[0,0,0]});
+   if((floatBits(n[1])|0)<0x3f34fdf4)position[axis]=f(c.width*10+position[axis]);
+  }else if(c.width*246<position[axis]){
+   const n=queryMcmTerrainFaceNormal({...c.terrain,point:[...position],normal:[0,0,0]});
+   if((floatBits(n[1])|0)<0x3f34fdf4)position[axis]=f(position[axis]-c.width*10);
+  }
+ }
+ if(forward&&c.setting===0&&!b.fieldbb8)forward.splice(0,3,...b.spawnPosition.map((v,i)=>f(v-position[i])));
+}
+
+// Original 0x4ae9c0; shared avoidance arithmetic in 0x4adb10.
+export function avoidMcmResetBikes(c,position,forward){
+ const b=c.bike;
+ if(!(c.playerCount===1&&c.aiCount===0)){
   b.position=[...position];
   if(forward[0]===0&&forward[2]===0)forward.splice(0,3,0,0,1);
   let previous=null;
@@ -30,18 +50,4 @@ export function adjustMcmResetCourse(c,position,forward){
    previous=nearest;b.position=[...position];
   }
  }
- if(c.mode!==3)return;
- for(const axis of [0,2]){
-  const low=c.width*f(1.2333),high=c.width*f(254.76);
-  if(low>b.position[axis])position[axis]=f(low);
-  else if(high<b.position[axis])position[axis]=f(high);
-  if(c.width*10>position[axis]){
-   const n=queryMcmTerrainFaceNormal({...c.terrain,point:[...position],normal:[0,0,0]});
-   if((floatBits(n[1])|0)<0x3f34fdf4)position[axis]=f(c.width*10+position[axis]);
-  }else if(c.width*246<position[axis]){
-   const n=queryMcmTerrainFaceNormal({...c.terrain,point:[...position],normal:[0,0,0]});
-   if((floatBits(n[1])|0)<0x3f34fdf4)position[axis]=f(position[axis]-c.width*10);
-  }
- }
- if(forward&&c.setting===0&&!b.fieldbb8)forward.splice(0,3,...b.spawnPosition.map((v,i)=>f(v-position[i])));
 }

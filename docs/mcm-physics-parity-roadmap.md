@@ -1749,3 +1749,54 @@ Inputs use valid level-two synthetic terrain, finite state and positive course
 width. The main selection's integration with this helper, terrain selector
 `0x4ae0b0`, complete main-loop forces and acceleration/release trajectory parity
 remain unfinished.
+
+### Connected terrain reset selection (2026-11-12)
+
+Recovered complete `0x4ae0b0`, including its real terrain, target-position and
+avoidance callees. Five samples cover current position and world X/Z offsets
+of +/-10. The original compares normal Y values, preserves its tie order, and
+tracks a secondary support using comparisons between normal Y and sample height.
+Modes 0/2/4 derive heading from that support or retain the saved heading, then
+call `0x4ae9c0` avoidance when a heading pointer is present. Mode 1 optionally
+points toward a selected target and calls `0x4adb10`; remaining modes return the
+selected support without those heading adjustments.
+
+Target access `0x475380` calls `0x4b7920`, which reads local translation directly;
+it does not resolve world transforms or change their caches. The reference
+harness runs world-right/up/forward initializers as well as terrain-normal and
+math-table initialization. Missing the world-right initializer during harness
+development incorrectly collapsed the two X-offset samples onto the center.
+
+All 906 output words match in 16,384 cases: zero differences. Outputs include
+the entire bike allocation, selected position/heading, neighboring bikes and
+both target-node matrices/caches. Inputs independently vary three terrain grid
+scales, flat/shallow/steep height scales, optional target and target choice,
+parent/cache combinations, null headings where valid, saved vertical headings,
+and neighbors placed around the sampled support locations to exercise avoidance.
+Mode 1 supplies a heading pointer, matching its original caller requirements.
+There are 300 retained regression fixtures. Shared avoidance arithmetic was
+extracted for both original helper entry points; existing course fixtures still
+validate the separate boundary-adjustment path.
+
+Report: `mcm-reset-terrain-selection-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-terrain-selection-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+No callees are patched or supplied. Cases use finite synthetic state and valid
+level-two terrain. Main selection/complete-reset dispatch integration, full
+force-loop integration, and acceleration/release trajectory parity remain open.
+
+### Main reset selection with recovered callees (2026-11-12)
+
+Connected the main selection sequence `0x4a5eb4..0x4a62eb` to the recovered
+terrain and course helpers by default. Explicit callbacks remain available for
+the earlier boundary-isolation test. The connected oracle executes all original
+callees; only its exit boundary is patched. It covers nonzero reset reasons,
+mode/setting and bike flags, conditional position-only terrain selection, stored
+respawn headings, target objects, nearby bikes and varied terrain.
+
+All 906 output words match across 16,384 cases with zero differences; 429
+fixtures preserve this connected comparison independently of the complete
+terrain-selector fixtures. Report: `mcm-reset-selection-connected-validation.json`.
+Reproduce with
+`node scripts/mcm-reference/compare-reset-selection-connected-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+The subsequent call into the complete bike reset, main-loop force integration,
+and whole-bike acceleration/release trajectories remain pending.

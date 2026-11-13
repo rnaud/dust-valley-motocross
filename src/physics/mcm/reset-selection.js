@@ -1,3 +1,5 @@
+import {selectMcmResetTerrain} from './reset-terrain-selection.js';
+import {adjustMcmResetCourse} from './reset-course.js';
 import {mcmInverseSqrt} from './inverse-sqrt.js';
 const f=Math.fround;
 
@@ -6,8 +8,10 @@ const f=Math.fround;
 // Initial vectors are caller scratch: the original vector constructor is a no-op.
 export function selectMcmResetPose(c){
  const b=c.bike,pose=c.pose,mode=(c.mode<<16)>>16;
+ const selectTerrain=c.selectTerrain||((p,h)=>selectMcmResetTerrain({...c,mode},p,h));
+ const selectCourse=c.selectCourse||((p,h)=>adjustMcmResetCourse({...c,mode},p,h));
  if(mode===0||mode===1||mode===4){
-  c.selectTerrain(pose.position,pose.forward);return pose;
+  selectTerrain(pose.position,pose.forward);return pose;
  }
  if(mode!==2&&mode!==3){
   pose.position=[...b.position];pose.forward=[...b.forward];return pose;
@@ -25,7 +29,7 @@ export function selectMcmResetPose(c){
   else{const inverse=mcmInverseSqrt(f(squared));pose.forward=delta.map(v=>f(v*inverse));}
  }
  if(mode===2){
-  if(b.fieldc08||b.fieldbe4)c.selectTerrain(pose.position,null);
- }else c.selectCourse(pose.position,pose.forward);
+  if(b.fieldc08||b.fieldbe4)selectTerrain(pose.position,null);
+ }else selectCourse(pose.position,pose.forward);
  return pose;
 }
