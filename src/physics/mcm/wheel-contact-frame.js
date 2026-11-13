@@ -36,3 +36,22 @@ export function prepareMcmWheelContactFrame(c){
  sampleResult=sample(p[2],c.resampleNormal);p[2]=sampleResult.point;
  return {forward,resampleNormal:sampleResult.normal};
 }
+
+// Extend the same routine through 0x4a06ee: rear frame/resample and initial
+// height differences. Later pitch/contact-depth corrections are not included.
+export function prepareMcmWheelContactPair(c){
+ const result=prepareMcmWheelContactFrame(c),p=c.points;
+ p[9]=buildMcmWheelContactAxis({node:c.node,forward:c.bikeForward,up:c.bikeUp});
+ let tangent=cross(p[5],p[9]);
+ if(tangent.every(x=>x===0))tangent=[...c.bikeForward];
+ else tangent=normalize(tangent,(tangent[1]*tangent[1]+tangent[2]*tangent[2])+tangent[0]*tangent[0]);
+ c.rearTangent=tangent;c.normal=cross(tangent,p[9]);
+ const n=c.normal,t=p[5];
+ if((n[1]*t[1]+n[0]*t[0])+t[2]*n[2]>0){c.normal=n.map(x=>f(-x));p[9]=p[9].map(x=>f(-x));}
+ c.offset=c.normal.map(x=>f(c.rearRadius*x));
+ p[7]=p[1].map((x,i)=>f(x+c.offset[i]));p[3]=[...p[7]];
+ const rearResampleNormal=queryMcmTerrainNormal({...c.terrain,point:p[3],normal:c.rearResampleNormal});
+ p[3]=queryMcmTerrainHeight({...c.terrain,point:p[3]});
+ c.heights=[f(p[2][1]-p[6][1]),f(p[3][1]-p[7][1])];
+ return {...result,rearResampleNormal};
+}

@@ -1436,3 +1436,26 @@ Report: `mcm-wheel-contact-frame-validation.json`. Reproduce with
 This validates the front preparation section with synthetic terrain and finite
 inputs; rear contact construction, contact-depth processing, connection to the
 main substep and full acceleration/release trajectory parity remain unfinished.
+
+### Both wheel frames and initial contact heights (2026-11-12)
+
+Extended the continuous wheel-contact query through `0x4a06ee`. The rear axis
+uses the bike's stored forward/up vectors; its tangent falls back to stored
+forward when the cross product is zero. The routine overwrites the shared
+normal/offset scratch fields with the rear result, offsets the rear wheel by
+its own radius, resamples terrain and writes both terrain-minus-contact height
+differences. The front tangent and original forward/resample scratch survive.
+
+40,000 original-execution cases match all 86 output words with zero differences.
+The oracle executes both frames and all four terrain queries continuously.
+In addition to front-frame terrain/cache coverage, inputs include independent
+rear radii, arbitrary stored forward/up vectors, parallel rear axes, zero rear
+normals and seeded rear scratch normals for absent terrain. Regression fixtures
+retain the first case for each combination of these conditions as well as a
+deterministic sample of the remaining cases.
+
+Report: `mcm-wheel-contact-pair-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-wheel-contact-pair-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Pitch-dependent contact corrections and the rest of `0x4a0130` remain pending.
+The two-wheel query is not yet connected to a recovered full substep, so this
+does not establish whole-bike acceleration/release trajectory parity.

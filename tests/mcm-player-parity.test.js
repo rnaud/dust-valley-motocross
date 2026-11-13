@@ -1070,3 +1070,8 @@ test('wheel contact frame matches original terrain samples, radius offset and tr
  const {evaluateWheelContactFrame}=await import('../scripts/mcm-reference/wheel-contact-frame-case.mjs');
  for(const {input:c,outputBits} of fixture('wheel-contact-frame-wine11.json').fixtures)assert.deepEqual(evaluateWheelContactFrame(c),outputBits);
 });
+
+test('both wheel contacts match original rear frame, resamples and initial height differences',async()=>{
+ const {evaluateWheelContactPair}=await import('../scripts/mcm-reference/wheel-contact-pair-case.mjs');
+ for(const {input:c,outputBits} of fixture('wheel-contact-pair-wine11.json').fixtures)assert.deepEqual(evaluateWheelContactPair(c),outputBits);
+});
