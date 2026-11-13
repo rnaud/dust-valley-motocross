@@ -648,3 +648,26 @@ PID, terrain address and exclusive output binary. The prefix is a read-only
 preserved under `player-validation/live-terrain-2026-11-13/`. These static
 observations were taken after the replay; they are not a new atomic checkpoint
 of rider, collision grid, opponents or other mutable world state.
+
+## Rider checkpoint expansion
+
+The rider replay fixture adds the complete `0x3ac`-byte controller reached through
+bike `+0x874` to the local checkpoint and every before/after observation.
+The allocation size is established by `0x4a3a6b..0x4a3aa9`; `+0x15c` points back
+to the player bike. Both replay passes restore this allocation. Across 800 paired
+boundaries, all rider bytes, engine bytes and observed motion agree. The four
+bike words `+0x488..+0x494` still differ and remain comparison failures.
+See [rider replay report](mcm-rider-replay-validation.json).
+
+`loadLiveRider` loads six event records with stride `0x5c`. Their three choice
+groups have capacities 5, 5 and 10; actual live counts are `[0,3,8]` for kind zero
+and `[1,3,8]` for kinds one through five. The loader retains all resource pointers
+and rejects counts that would cross their allocation boundaries. Sixteen unique
+animation records and the non-null visual object remain unresolved dependencies;
+the loader does not fabricate assets or suppress visual restoration.
+
+The recovered engine also matches 14,400 stores and 1,600 random-state boundaries
+on this expanded fixture, with original chassis inputs supplied each frame.
+This is still a partial original-versus-original replay plus conditional engine
+validation, not recovered whole-bike trajectory parity. Event selection with the
+live eight-choice tables still needs native execution validation.

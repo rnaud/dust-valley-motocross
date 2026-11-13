@@ -5,11 +5,15 @@ import {decodeBikeRecord, BIKE_BYTES} from './decode-bike.mjs';
 export function compareBikeReplay(rows) {
   const passes = [0, 1].map(pass => rows.filter(r => r.pass === pass));
   if (!passes[0].length || passes[0].length !== passes[1].length) throw new Error('Incomplete replay passes');
-  const differingBikeWords = new Map(), differingEngineWords = new Map();
+  const differingBikeWords = new Map(), differingEngineWords = new Map(), differingRiderWords = new Map();
+  const hasRider = rows.some(r => r.riderHex !== undefined);
   let firstMotionDifference = null;
   const motionFields = ['positionFeet', 'velocityFeetPerSecond', 'angularVelocity', 'accelerationFeetPerSecondSquared', 'transformMatrixBits', 'gearIndex', 'throttleState', 'rpmDemand', 'shiftThreshold', 'shiftTimer'];
   let previous = -1;
   for (const row of rows) {
+    if (hasRider && (typeof row.riderHex !== 'string' || !/^[0-9a-f]{1880}$/i.test(row.riderHex) || !/^[0-9a-f]{8}$/i.test(row.riderAddress ?? ''))) throw new Error('Missing or invalid rider allocation');
+    if (hasRider && (Buffer.from(row.stateHex,'hex').readUInt32LE(0x874) !== parseInt(row.riderAddress,16) ||
+        Buffer.from(row.riderHex,'hex').readUInt32LE(0x15c) !== parseInt(row.bike,16))) throw new Error('Rider owner or bike pointer differs');
     if (row.sequence !== previous + 1) throw new Error('Non-contiguous sequence');
     previous = row.sequence;
   }
@@ -38,11 +42,15 @@ export function compareBikeReplay(rows) {
     if (fields.length && !firstMotionDifference) firstMotionDifference = {frame: a.playerFrame, phase: a.phase, fields, a: x, b: y};
     recordDifferences(a.stateHex, b.stateHex, differingBikeWords, a.playerFrame, a.phase);
     recordDifferences(a.engineHex, b.engineHex, differingEngineWords, a.playerFrame, a.phase);
+    if(hasRider){
+      if(a.riderAddress!==b.riderAddress)throw new Error('Rider allocation identity differs');
+      recordDifferences(a.riderHex,b.riderHex,differingRiderWords,a.playerFrame,a.phase);
+    }
     if (a.phase === 'after-update' && [0, 49, 50, 100, 150, 199, 200, 224, 225, 300, 399].includes(a.playerFrame)) samples.push(x);
   }
   return {framesPerPass: passes[0].length / 2, comparedBoundaryPairs: passes[0].length,
     firstMotionDifference, differingBikeWords: Object.fromEntries(differingBikeWords),
-    differingEngineWords: Object.fromEntries(differingEngineWords), samples};
+    differingEngineWords: Object.fromEntries(differingEngineWords), differingRiderWords: Object.fromEntries(differingRiderWords), samples};
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   if (process.argv.length !== 3) throw new Error('Usage: node scripts/mcm-reference/compare-bike.mjs capture.jsonl');
@@ -50,5 +58,5 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   const report = compareBikeReplay(rows);
   console.log(JSON.stringify(report, null, 2));
   // Even the four currently unexplained inherited fields remain visible failures.
-  if (report.firstMotionDifference || Object.keys(report.differingBikeWords).length || Object.keys(report.differingEngineWords).length) process.exitCode = 1;
+  if (report.firstMotionDifference || Object.keys(report.differingBikeWords).length || Object.keys(report.differingEngineWords).length || Object.keys(report.differingRiderWords).length) process.exitCode = 1;
 }

@@ -5,7 +5,8 @@
 // restored, and any resulting divergence must remain visible in comparisons.
 // Captures the scheduler entry and the end of the whole bike update.
 // Includes the proven 0xcc8-byte bike allocation and known engine prefix. The complete 0x1f0-byte engine is checkpointed.
-// This is NOT a complete state/replay format: pointed-to objects are not followed.
+// This is NOT a complete state/replay format: only the documented local blocks
+// are followed. Rider animation assets and the complete world remain outside it.
 // Breakpoints slow execution and consequently change the observed frame deltas.
 #include <windows.h>
 #include <stdio.h>
@@ -44,7 +45,8 @@ static int save_tree(DWORD address) {
 }
 static int checkpoint(DWORD bike,int restore) {
     if(restore){for(unsigned i=0;i<block_count;i++){SIZE_T n;Block*b=&blocks[i];if(!WriteProcessMemory(process,(void*)(uintptr_t)b->address,b->bytes,b->size,&n)||n!=b->size)return 0;}return 1;}
-    static const DWORD slots[][2]={{0x8d8,0x44},{0x8dc,0x50},{0x8e0,0x50},{0x8e4,0x60},{0x8e8,0x60},{0x8ec,0x60},{0x8f0,0x1f0},{0x8f8,0x10},{0x8fc,0x10},{0x900,0x10},{0x904,0x10}};
+    // Rider allocation: 0x4a3a6b..0x4a3aa9, constructor 0x40d400.
+    static const DWORD slots[][2]={{0x874,0x3ac},{0x8d8,0x44},{0x8dc,0x50},{0x8e0,0x50},{0x8e4,0x60},{0x8e8,0x60},{0x8ec,0x60},{0x8f0,0x1f0},{0x8f8,0x10},{0x8fc,0x10},{0x900,0x10},{0x904,0x10}};
     if(!save_block(bike,0xcc8))return 0;
     for(unsigned i=0;i<sizeof slots/sizeof slots[0];i++){DWORD ptr;if(!read_memory(bike+slots[i][0],&ptr,4))return 0;if(ptr&&!save_block(ptr,slots[i][1]))return 0;}
     DWORD frame,engine,filter;
@@ -79,11 +81,13 @@ static void write_byte(DWORD address, BYTE value) {
 }
 
 static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CONTEXT *context) {
-    DWORD frame, carry, nominal, cap, dt, steps, engine, transform;
-    unsigned char matrix[64];
+    DWORD frame, carry, nominal, cap, dt, steps, engine, transform, rider;
+    unsigned char matrix[64], rider_state[0x3ac];
     unsigned char engine_state[0x16c];
     unsigned char object[0xcc8];
     if (!read_memory(context->Esi, object, sizeof object) ||
+        !read_memory(context->Esi+0x874,&rider,4) ||
+        !read_memory(rider,rider_state,sizeof rider_state) ||
         !read_memory(context->Esp + 0xbfc, &frame, 4) ||
         !read_memory(context->Esi + 0x8c8, &carry, 4) ||
         !read_memory(context->Esi + 0x8cc, &nominal, 4) ||
@@ -104,6 +108,8 @@ static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CON
     for (unsigned i = 0; i < sizeof engine_state; i++) fprintf(out, "%02x", engine_state[i]);
     fprintf(out, "\",\"transformAddress\":\"%08lx\",\"matrixHex\":\"", transform);
     for (unsigned i = 0; i < sizeof matrix; i++) fprintf(out, "%02x", matrix[i]);
+    fprintf(out,"\",\"riderAddress\":\"%08lx\",\"riderHex\":\"",rider);
+    for(unsigned i=0;i<sizeof rider_state;i++)fprintf(out,"%02x",rider_state[i]);
     fprintf(out, "\",\"scripted\":%s,\"playerFrame\":%lu,\"requestedThrottle\":%lu,\"pass\":%lu,\"randomState\":%lu}\n", scripted ? "true" : "false", player_frame - 1, requested_throttle,pass,random_state);
     return !ferror(out);
 }
