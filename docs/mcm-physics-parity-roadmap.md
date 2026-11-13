@@ -3484,3 +3484,27 @@ whole-bike physics parity. Actual frame entry and the post-loop tail, longer
 runtime histories, dynamic bike/rider collisions, repeatable acceleration/release
 trajectory comparison and playable integration remain. Supplied wheel-query
 scratch, input callbacks and animation-record limitations still apply.
+
+### Post-loop local-velocity acceleration filter
+
+The original terminal loop branch now continues through `0x4ad07a`, immediately
+before the subsequent rider update. The port resolves the final body world
+transform, converts retained velocity to local space, divides the local Z change
+by the original frame delta, selects the filter interval, and commits filter value,
+`field850` and previous local velocity `field854`. This uses frame timing, including
+zero delta, independently of the final substep or carry-consumption timestep.
+The real post-loop entry also clears the `field8c0` flag.
+
+The connected corpus supplies frame delta and filter state before native execution
+and matches all 8,277 observed words in 17,508 cases on ARM and x64, retaining
+all previous loop observations. It
+covers one through four substeps, shorter/equal/longer filter intervals, root and
+parented bodies, and finite/non-finite results. The optional visual-effect object
+at `c90` is absent; the original takes its real visual-effect bypass. This is an
+explicit scope limit, not evidence for the present-effect path.
+
+Report: `mcm-reset-post-filter-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-post-filter-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+The `0x4af710` rider/animation update, actual frame entry and return, longer histories,
+present visual effects, dynamic bike/rider collisions, whole-bike trajectory
+comparison and playable integration remain unvalidated as a connected simulation.

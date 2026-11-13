@@ -1612,3 +1612,17 @@ test('retained reset state exhausts the captured loop through up to four complet
   assert.deepEqual(actual,outputBits,`reset/loop-completion fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
  }
 });
+
+
+test('post-loop frame acceleration uses retained velocity and the original frame delta',async()=>{
+ const {evaluateResetPostFilter}=await import('../scripts/mcm-reference/reset-post-filter-case.mjs');
+ const corpus=fixture('reset-post-filter-wine11.json.br'),outcomes=Object.keys(corpus.source.postFilterOutcomes);
+ assert.equal(corpus.source.totalDifferences,0);
+ for(const gate of ['iterations=1:', 'iterations=2:', 'iterations=3:', 'iterations=4:', ':deltaZero=true:', ':deltaZero=false:', ':interval=short:', ':interval=equal:', ':interval=long:', ':finite=true:', ':finite=false:', ':parented=true:', ':parented=false:'])assert.ok(outcomes.some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){
+  const actual=evaluateResetPostFilter(c);
+  assert.equal(actual.length,8277);
+  assert.equal(actual[8130],0);
+  assert.deepEqual(actual,outputBits,`reset/post-filter fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j]).join(',')}`);
+ }
+});
