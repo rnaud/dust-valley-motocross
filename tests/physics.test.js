@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createState,stepBike,resetBike,freeTerrain} from '../src/world.js';
-const flat=()=>createState({flat:true,height:()=>0});
+const flat=()=>createState({sand:false,flat:true,height:()=>0});
 const run=(s,input,n)=>{for(let i=0;i<n;i++)stepBike(s,input,1/120);};
 test('suspension supports chassis at rest without ground snapping',()=>{const s=flat();run(s,{},240);assert.equal(s.contacts,2);assert.ok(s.y>.5&&s.y<.9);assert.ok(Math.abs(s.vy)<.01);assert.ok(s.compression.every(c=>c>0&&c<1));});
 test('rear-wheel drive accelerates forward and brakes dissipate momentum',()=>{const s=flat();run(s,{gas:true},600);assert.ok(s.z>25);assert.ok(s.speed>12);run(s,{brake:true},600);assert.ok(s.speed<.2);});
 test('analog steering turns left with half-stick and stays upright',()=>{const s=flat();run(s,{gas:true},360);run(s,{gas:true,steer:-.5},240);assert.ok(s.x>3);assert.ok(s.yaw>.3);assert.equal(s.crashed,false);assert.ok(Math.abs(s.roll)<.8);});
 test('airborne throttle cannot accelerate the chassis; gravity follows ballistic flight',()=>{const a=flat(),b=flat();for(const s of [a,b]){s.physics.chassis.position.y=30;s.physics.chassis.velocity.set(0,4,10);}run(a,{gas:true},60);run(b,{},60);assert.ok(Math.abs(a.z-b.z)<.01);assert.ok(Math.abs(a.vy-(4-9.81*.5))<.1);assert.equal(a.contacts,0);assert.ok(a.y>25);});
-test('a ramp launches both wheels and the bike lands through suspension contact',()=>{const s=createState({flat:true,height:(x,z)=>z<0?0:z<20?z*.4:8});s.physics.chassis.position.z=-20;s.physics.chassis.velocity.z=20;let maxAir=0,landed=0;for(let i=0;i<1000;i++){const r=stepBike(s,{gas:true},1/120);maxAir=Math.max(maxAir,s.airtime);landed=Math.max(landed,r.landed);}assert.ok(maxAir>.15);assert.ok(landed>.15);assert.ok(Number.isFinite(s.y));});
+test('a ramp launches both wheels and the bike lands through suspension contact',()=>{const s=createState({sand:false,flat:true,height:(x,z)=>z<0?0:z<20?z*.4:8});s.physics.chassis.position.z=-20;s.physics.chassis.velocity.z=20;let maxAir=0,landed=0;for(let i=0;i<1000;i++){const r=stepBike(s,{gas:true},1/120);maxAir=Math.max(maxAir,s.airtime);landed=Math.max(landed,r.landed);}assert.ok(maxAir>.15);assert.ok(landed>.15);assert.ok(Number.isFinite(s.y));});
 test('rider lean rotates airborne chassis without redirecting momentum',()=>{const s=flat();s.physics.chassis.position.y=20;s.physics.chassis.velocity.set(0,0,10);run(s,{lean:1},60);assert.ok(s.pitch>.1);assert.ok(Math.abs(s.x)<.01);});
 test('crash recovery clears actual rigid-body velocities',()=>{const s=flat();s.physics.chassis.position.y=20;s.physics.chassis.velocity.set(4,-15,8);run(s,{},180);resetBike(s,0,0,0);assert.equal(s.crashed,false);assert.equal(s.physics.chassis.velocity.length(),0);assert.equal(s.physics.chassis.angularVelocity.length(),0);run(s,{},240);assert.equal(s.contacts,2);});
 
@@ -20,7 +20,7 @@ test('holding air steering produces a bounded lean rather than a barrel roll',()
 // Regression: the old short half-stick tests missed full-lock rollover at speed.
 for(const rough of [false,true])for(const direction of [-1,1])for(const delay of [0,1,3]){
   test(`20s full steering: ${rough?'course terrain':'flat'}, direction ${direction}, ${delay}s launch`,()=>{
-    const s=rough?createState():flat();let peakRoll=0;
+    const s=rough?createState({sand:false}):flat();let peakRoll=0;
     for(let i=0;i<2400;i++){
       stepBike(s,{gas:true,steer:i>=delay*120?direction:0},1/120);
       peakRoll=Math.max(peakRoll,Math.abs(s.roll));
@@ -59,7 +59,7 @@ for(const height of [3,6,10,15])for(const pitch of [-.3,0,.3])test(`landing from
  assert.equal(s.contacts,2);assert.ok(Math.abs(s.pitch)<.15);assert.ok(s.speed>20);
 });
 for(const speed of [15,22,30])test(`course-shaped jump at ${speed}m/s lands and rides away`,()=>{
- const s=createState({height:(x,z)=>5.5*Math.exp(-z*z/90),spawn:{x:0,z:-35,yaw:0}});
+ const s=createState({sand:false,height:(x,z)=>5.5*Math.exp(-z*z/90),spawn:{x:0,z:-35,yaw:0}});
  s.physics.chassis.velocity.z=speed;let first=-1,landingSpeed=0,minSpeed=Infinity;
  for(let i=0;i<1000;i++){
   const r=stepBike(s,{gas:true},1/120);
@@ -74,7 +74,7 @@ for(const speed of [15,22,30])test(`course-shaped jump at ${speed}m/s lands and 
 });
 
 for(const surface of ['flat','free'])test(`accelerate then alternate left/right on ${surface} without spin or braking`,()=>{
- const s=surface==='flat'?flat():createState({height:freeTerrain,spawn:{x:80,z:-100,yaw:0}});
+ const s=surface==='flat'?flat():createState({sand:false,height:freeTerrain,spawn:{x:80,z:-100,yaw:0}});
  run(s,{gas:true},240);
  for(const direction of [-1,1,-1,1]){
   const entrySpeed=s.speed;

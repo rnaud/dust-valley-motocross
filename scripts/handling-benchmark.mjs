@@ -1,7 +1,7 @@
 // Deterministic SI measurements of Dust Valley, not original-game telemetry.
 // Usage: node scripts/handling-benchmark.mjs > /tmp/handling.json
 import {createState,stepBike} from '../src/world.js';
-const dt=1/120,flat=()=>createState({flat:true,height:()=>0});
+const dt=1/120,flat=()=>createState({sand:false,flat:true,height:()=>0});
 const run=(s,input,seconds)=>{for(let i=0;i<Math.round(seconds/dt);i++)stepBike(s,input,dt);};
 const round=n=>Math.round(n*1000)/1000;
 function acceleration(boost){

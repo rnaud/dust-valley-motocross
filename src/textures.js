@@ -74,23 +74,39 @@ export function createTextures(renderer,mobile){
   aiRock.colorSpace=THREE.SRGBColorSpace;aiRock.wrapS=aiRock.wrapT=THREE.RepeatWrapping;aiRock.repeat.set(2,2);aiRock.anisotropy=aniso;
   const aiDetail=loader.load(new URL('./assets/ground-detail.webp',import.meta.url).href);
   aiDetail.colorSpace=THREE.SRGBColorSpace;aiDetail.wrapS=aiDetail.wrapT=THREE.RepeatWrapping;aiDetail.anisotropy=aniso;
-  return {macro,freeMacro,detail:aiDetail,rock:aiRock,cactus,rubber};
+  // Periodic height fields produce seam-free linear-data normal/roughness maps.
+  const relief=(rocky=false)=>{
+    const n=256,heights=new Float32Array(n*n);
+    for(let y=0;y<n;y++)for(let x=0;x<n;x++){
+      const u=x/n*TAU,v=y/n*TAU;
+      heights[y*n+x]=rocky?Math.sin(v*9+Math.sin(u*3)*2)*.3+Math.sin(u*17+v*13)*.13+hash(x,y)*.12:Math.sin(v*11+Math.sin(u*2)*1.2)*.13+Math.sin(u*37+v*29)*.025+hash(x,y)*.018;
+    }
+    const h=(x,y)=>heights[((y+n)%n)*n+(x+n)%n];
+    const normal=texture(pixels(n,(x,y)=>{const dx=(h(x-1,y)-h(x+1,y))*2,dy=(h(x,y-1)-h(x,y+1))*2,l=Math.hypot(dx,dy,1);return[(dx/l*.5+.5)*255,(dy/l*.5+.5)*255,(1/l*.5+.5)*255];}),aniso,rocky?2:180);
+    const roughness=texture(pixels(n,(x,y)=>{const r=rocky?190+h(x,y)*35:225+h(x,y)*40;return[r,r,r];}),aniso,rocky?2:180);
+    normal.colorSpace=roughness.colorSpace=THREE.NoColorSpace;
+    return {normal,roughness};
+  };
+  return {macro,freeMacro,detail:aiDetail,rock:aiRock,cactus,rubber,soilRelief:relief(),rockRelief:relief(true)};
 }
 
 export function applyTerrainTexture(material,textures){
+  material.normalMap=textures.soilRelief.normal;material.normalScale.set(.6,.6);material.roughnessMap=textures.soilRelief.roughness;
+  material.userData.sandBounds={value:new THREE.Vector4(0,0,0,0)};
   material.map=textures.macro;material.color.set('#ffffff');material.vertexColors=false;material.flatShading=false;
   // Fine detail is projected in world space, independently of the large color map.
   material.onBeforeCompile=shader=>{
-    shader.uniforms.soilDetail={value:textures.detail};
+    shader.uniforms.soilDetail={value:textures.detail};shader.uniforms.sandBounds=material.userData.sandBounds;
     shader.vertexShader='varying vec3 soilPosition;\n'+shader.vertexShader;
-    shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nsoilPosition = position;');
-    shader.fragmentShader='uniform sampler2D soilDetail;\nvarying vec3 soilPosition;\n'+shader.fragmentShader;
+    shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nsoilPosition = (modelMatrix * vec4(position, 1.0)).xyz;');
+    shader.fragmentShader='uniform sampler2D soilDetail;\nuniform vec4 sandBounds;\nvarying vec3 soilPosition;\n'+shader.fragmentShader;
     shader.fragmentShader=shader.fragmentShader.replace('#include <map_fragment>',`#include <map_fragment>
+      if (sandBounds.y > sandBounds.x && soilPosition.x > sandBounds.x && soilPosition.x < sandBounds.y && soilPosition.z > sandBounds.z && soilPosition.z < sandBounds.w) discard;
       vec3 grain = texture2D(soilDetail, soilPosition.xz * .22).rgb;
       vec3 broadGrain = texture2D(soilDetail, soilPosition.xz * .043).rgb;
       diffuseColor.rgb *= mix(vec3(1.0), grain * 1.65, .65) * mix(vec3(1.0), broadGrain * 1.5, .2);`);
   };
-  material.customProgramCacheKey=()=> 'procedural-soil-v1';
+  material.customProgramCacheKey=()=> 'procedural-soil-v2';
 }
 
 export function createSkyTexture(){

@@ -17,7 +17,7 @@ export function createRider(){
  const pants=new T.MeshStandardMaterial({color:'#33484f',roughness:.9});
  const trim=new T.MeshStandardMaterial({color:'#f2ede2',roughness:.65});
  const rubber=new T.MeshStandardMaterial({color:'#172326',roughness:.8});
- const lens=new T.MeshStandardMaterial({color:'#264e58',metalness:.5,roughness:.16});
+ const lens=new T.MeshStandardMaterial({color:'#264e58',metalness:.5,roughness:.1});
  function add(geo,mat,parent=root){const m=new T.Mesh(geo,mat);m.castShadow=true;parent.add(m);return m;}
  function oval(mat,scale,parent=root){const m=add(new T.SphereGeometry(1,16,12),mat,parent);m.scale.set(...scale);return m;}
  function segment(mat,top,bottom){return add(new T.CylinderGeometry(top,bottom,1,12),mat);}
@@ -32,7 +32,7 @@ export function createRider(){
   const cv=document.createElement('canvas');cv.width=cv.height=128;const g=cv.getContext('2d');
   g.fillStyle='#f2ede2';g.fillRect(4,4,120,120);g.fillStyle='#203126';g.font='bold 68px Arial';g.textAlign='center';g.textBaseline='middle';g.fillText('07',64,68);
   const tex=new T.CanvasTexture(cv);tex.colorSpace=T.SRGBColorSpace;
-  const plate=new T.Mesh(new T.PlaneGeometry(.31,.33),new T.MeshBasicMaterial({map:tex,transparent:true}));plate.position.set(0,.04,-.221);plate.rotation.y=Math.PI;torso.add(plate);
+  const plate=new T.Mesh(new T.PlaneGeometry(.31,.33),new T.MeshStandardMaterial({map:tex,transparent:true,roughness:.8}));plate.position.set(0,.04,-.221);plate.rotation.y=Math.PI;torso.add(plate);
  }
  const brace=add(new T.TorusGeometry(.16,.035,6,18),rubber,torso);brace.position.y=.30;brace.rotation.x=Math.PI/2;
  const neck=oval(rubber,[.105,.13,.105],torso);neck.position.y=.35;
@@ -50,6 +50,8 @@ export function createRider(){
  const helmetVent=add(new T.BoxGeometry(.16,.035,.035),rubber,helmet);helmetVent.position.set(0,-.1,-.30);
  const limbs=[-1,1].map(side=>{
   const boot=oval(trim,[.125,.17,.23]);
+  const sole=add(new T.BoxGeometry(1.65,.24,1.8),rubber,boot);sole.position.set(0,-.77,.08);
+  for(let i=0;i<3;i++){const buckle=add(new T.BoxGeometry(1.65,.09,.16),rubber,boot);buckle.position.set(0,-.1+i*.3,.8);}
   const shinGuard=oval(trim,[.12,.19,.085]);
   return {side,upperArm:segment(jersey,.12,.105),forearm:segment(pants,.10,.075),elbow:oval(jersey,[.11,.11,.11]),shoulder:oval(jersey,[.14,.14,.14]),glove:oval(rubber,[.09,.09,.12]),thigh:segment(pants,.145,.12),shin:segment(pants,.11,.085),knee:oval(jersey,[.13,.14,.12]),boot,shinGuard};
  });
