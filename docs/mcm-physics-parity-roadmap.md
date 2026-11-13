@@ -2665,3 +2665,27 @@ Report: `mcm-normal-rider-substep-validation.json`. Reproduce with
 Next is the common post-event state and collision/tail connection, followed by
 entry wiring and full acceleration/throttle-release trajectory comparisons.
 Full whole-bike parity remains unproven.
+
+### Connected common post-event state
+
+The continuous prefix now reaches `0x4ac7c4` after the common post-event block.
+It extracts the body position, applies the low-speed paired-contact yaw stop,
+resolves the world transform and converts local angular velocity, handles the
+delayed award/timer, and stores wheel-height history and the last timestep.
+The award reference executes the real `0x4b1a40`; optional UI observers are absent.
+
+All 748 captured words match in 40,256 original executions. An observation hook
+records actual award-callee entry, requiring both paid and suppressed awards in
+the corpus. Other coverage includes ticking timers, zero yaw, parented/root
+bodies and the preceding event/rider paths. Initial differences were NaN signs
+in world-angular conversion; the helper now uses recovered x87 arithmetic and
+typed stores. Cases 388, 4300, 8901, 9506, 12610 and 14065 are retained explicitly.
+
+Report: `mcm-post-state-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-post-state-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+The new regression corpus uses lossless Brotli compression to keep it below
+GitHub's 50 MB recommended file size; the fixture loader also retains support
+for existing JSON and gzip fixtures.
+Next is collision processing and the scheduler/orientation tail, then entry
+wiring and full acceleration/throttle-release trajectory comparisons. Full
+whole-bike parity remains unproven.
