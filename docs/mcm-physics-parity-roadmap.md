@@ -3074,3 +3074,27 @@ Report: `mcm-reset-rider-validation.json`. Reproduce with
 Remaining reset connections: common post-state tail, collision dispatch and
 scheduler. Shared engine/reset entry, persistent frame loops, dynamic collisions,
 whole acceleration/release trajectories and playable integration remain unproven.
+
+### Reset post-state and collision synchronization connected
+
+The continuous reset comparison now reaches `0x4ac81b` with a collision object,
+or `0x4ac89e` without one. All 1,856 captured words match in 16,384 original
+executions. The preceding `0x4ac6cd..0x4ac7c4` post-state section was also compared
+independently with zero differences before extending through synchronization.
+
+The shared implementation refreshes bike position from its local transform,
+resolves cached world transforms for angular velocity, commits front/rear
+contact-height history and last timestep, then synchronizes the live collision
+matrix, proxy and spatial grid. Existing grid entries are reused from reset;
+no intermediate transform or physics state is replaced. Required coverage spans
+normal/event states, zero/nonzero world angular velocity, parented transforms,
+body/wheel/proxy aliases, collision present/absent, and enabled/disabled grids.
+The delayed-award entry is observed and remains uncalled after these resets;
+its ordinary-path coverage remains separate evidence.
+
+Reports: `mcm-reset-post-state-validation.json` and
+`mcm-reset-collision-sync-validation.json`. Reproduce the full connection with
+`node scripts/mcm-reference/compare-reset-collision-sync-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+The collision dispatcher and scheduler are the remaining reset-tail connections.
+Shared engine/reset entry, persistent frame loops, dynamic collisions, complete
+acceleration/release trajectories and playable integration remain unproven.
