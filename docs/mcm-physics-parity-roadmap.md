@@ -3024,3 +3024,26 @@ Remaining reset connections: event join, normal rider update, common tail,
 collision dispatch and scheduler. Engine/reset entry, persistent frame loops,
 dynamic collisions, complete acceleration/release trajectories and playable
 integration remain unproven.
+
+### Reset event return connected to rider-call selection
+
+The reset path now continues from the event wrapper return to `0x4ac6cd`, or
+to the entry of `0x4aecb0` when the original calls the normal rider update.
+All 1,855 captured words match across 16,384 original executions. Triggered
+events force the remaining-step flag to one and clear bike+8c8; non-events
+preserve that delay and call the rider update only when the flag equals one.
+
+The comparison captures the actual rider-call height, filtered balance control
+and timestep, alongside full preceding bike/controller/transform/physics state.
+Required outcomes include called/skipped, event/non-event, cleared/preserved
+delay, front/rear contact, zero/nonzero height, and limited/unlimited contact.
+The rider entry is an observation boundary: its body has not executed in this
+reset corpus. No physics or branch condition is stubbed or reseeded between
+reset and call selection. Ordinary and reset paths share the join implementation.
+
+Report: `mcm-reset-event-join-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-event-join-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Next reset connections remain the rider-update body, common tail, collision
+dispatch and scheduler. Shared engine/reset entry, persistent frames, dynamic
+collisions, whole acceleration/release trajectories and playable integration
+remain unproven.
