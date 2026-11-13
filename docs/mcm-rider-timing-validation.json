@@ -1,0 +1,170 @@
+{
+  "schemaVersion": 1,
+  "scope": "Separate rider timing observation and controlled partial replay; different initial checkpoints, not a causal A/B experiment or recovered whole-bike parity.",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "sourceSha256": "7f448fe593cd1e094d9cb18786b41689772ad65be0ef57f4c1af5f6d94731e63",
+  "fixtureSha256": "49d9d96934e2e62d0eef0f9ea95721ff88ed13d75b0f0b97281fd1c10d2ff787",
+  "captureSha256": "cd257a1ed23433bf251736a5212b23d7c2333efb4a9cad782205030372b6729d",
+  "checkpointSha256": "a54ab1ad6dc5d8fcc2ddd99b03d557f609c8781faad1824cf911985154ac0f0c",
+  "observedCaptureSha256": "d45f9c911a5909a55f6038aac98d5aacf4ab69cd49de02bd65542f2c816b2aa4",
+  "observed": {
+    "firstMotionDifference": null,
+    "randomStateDifferences": [],
+    "differingBikeWords": {
+      "0x488": {
+        "records": 396,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x48c": {
+        "records": 462,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x490": {
+        "records": 436,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x494": {
+        "records": 94,
+        "firstFrame": 1,
+        "phase": "before-update"
+      }
+    },
+    "differingEngineWords": {},
+    "differingRiderWords": {},
+    "differingStackWordCount": 479,
+    "timing": {
+      "fixed": false,
+      "passes": [
+        {
+          "updates": 399,
+          "updatesDuringBike": 0,
+          "intervalBits": [
+            1012202996,
+            1034818683,
+            1034416030,
+            1035087119,
+            1034550248,
+            1034281812,
+            1034013377,
+            1033879159,
+            1033744942,
+            1033610724,
+            1037368820,
+            1036295078,
+            1035892425,
+            1035758208,
+            1034147595,
+            1033073853,
+            1033342288,
+            1033208071,
+            1036563514,
+            1032939635,
+            1033476506,
+            1032805417,
+            1032671200
+          ]
+        },
+        {
+          "updates": 399,
+          "updatesDuringBike": 0,
+          "intervalBits": [
+            1033073853,
+            1035087119,
+            1034013377,
+            1033476506,
+            1033879159,
+            1033744942,
+            1033610724,
+            1034416030,
+            1034147595,
+            1032939635,
+            1032805417,
+            1033208071,
+            1036295078,
+            1034684466,
+            1034550248,
+            1035221337,
+            1034818683,
+            1037637256,
+            1036160861,
+            1035355554,
+            1035758208,
+            1035892425,
+            1035489772,
+            1035623990,
+            1036563514,
+            1034281812,
+            1033342288,
+            1038308345
+          ]
+        }
+      ],
+      "differences": 770,
+      "firstDifference": {
+        "frame": 1,
+        "phase": "before-update",
+        "countA": 1,
+        "countB": 1,
+        "dtA": 1012202996,
+        "dtB": 1033073853
+      }
+    }
+  },
+  "controlled": {
+    "firstMotionDifference": null,
+    "randomStateDifferences": [],
+    "differingBikeWords": {
+      "0x488": {
+        "records": 472,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x48c": {
+        "records": 406,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x490": {
+        "records": 484,
+        "firstFrame": 1,
+        "phase": "before-update"
+      },
+      "0x494": {
+        "records": 158,
+        "firstFrame": 1,
+        "phase": "before-update"
+      }
+    },
+    "differingEngineWords": {},
+    "differingRiderWords": {},
+    "differingStackWordCount": 521,
+    "timing": {
+      "fixed": true,
+      "passes": [
+        {
+          "updates": 399,
+          "updatesDuringBike": 0,
+          "intervalBits": [
+            1017370378
+          ]
+        },
+        {
+          "updates": 399,
+          "updatesDuringBike": 0,
+          "intervalBits": [
+            1017370378
+          ]
+        }
+      ],
+      "differences": 0,
+      "firstDifference": null
+    }
+  },
+  "crashBoundaryCounts": [
+    398,
+    398
+  ]
+}

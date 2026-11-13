@@ -1,5 +1,8 @@
 // Experimental controlled player replay for the pinned retail executable.
 // MCM_SCRIPTED enables dt=.02, throttle on frames [50,200), and RNG seed 12345.
+// MCM_RIDER_TIMING observes the separate player rider update at 0x40e990.
+// MCM_FIXED_RIDER additionally forces its argument to .02 (requires SCRIPTED).
+// Incoming rider timing remains observable; this does not control the world.
 // Every 400 frames it restores the initial local checkpoint. This is NOT a full
 // world save: opponent, camera, rendering and timer state are deliberately not
 // restored, and any resulting divergence must remain visible in comparisons.
@@ -16,14 +19,16 @@
 #include "capture-animation-assets.c"
 #undef MCM_ANIMATION_EMBEDDED
 
-static const DWORD addresses[] = {0x4a54b6, 0x4ad0e1, 0x4ad5a2, 0x4bf195};
+static const DWORD addresses[] = {0x4a54b6, 0x4ad0e1, 0x4ad5a2, 0x4bf195, 0x40e990};
 static const BYTE expected[][6] = {{0xd9, 0x86, 0xc8, 0x08, 0, 0},
-                                  {0x8b, 0x86, 0xf8, 0x04, 0, 0}, {0x85, 0xc0}, {0x8b, 0x48, 0x14}};
-static const unsigned lengths[] = {6, 6, 2, 3};
-static BYTE saved[4];
-static int armed[4];
+                                  {0x8b, 0x86, 0xf8, 0x04, 0, 0}, {0x85, 0xc0}, {0x8b, 0x48, 0x14}, {0x8b,0x44,0x24,0x04}};
+static const unsigned lengths[] = {6, 6, 2, 3, 4};
+static BYTE saved[5];
+static int armed[5];
 static HANDLE process;
-static int scripted, capture_stack;
+static int scripted, capture_stack, capture_rider_timing, fixed_rider;
+static unsigned hook_count=4;
+static DWORD rider_update_count, rider_dt_bits, rider_observed_dt_bits;
 static DWORD player_frame, requested_throttle, pass, random_state=12345;
 static int player_active;
 
@@ -142,6 +147,8 @@ static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CON
         for(unsigned i=0;i<sizeof frame_stack;i++)fprintf(out,"%02x",frame_stack[i]);
         fprintf(out,"\"");
     }
+    if(capture_rider_timing)fprintf(out,",\"riderUpdateCount\":%lu,\"riderDtBits\":%lu",rider_update_count,rider_dt_bits);
+    if(capture_rider_timing)fprintf(out,",\"riderObservedDtBits\":%lu,\"fixedRider\":%s",rider_observed_dt_bits,fixed_rider?"true":"false");
     fprintf(out, ",\"scripted\":%s,\"playerFrame\":%lu,\"requestedThrottle\":%lu,\"pass\":%lu,\"randomState\":%lu}\n", scripted ? "true" : "false", player_frame - 1, requested_throttle,pass,random_state);
     return !ferror(out);
 }
@@ -153,6 +160,11 @@ int main(int argc, char **argv) {
     }
     scripted = getenv("MCM_SCRIPTED") != NULL;
     capture_stack = getenv("MCM_STACK") != NULL;
+    capture_rider_timing = getenv("MCM_RIDER_TIMING") != NULL;
+    fixed_rider = getenv("MCM_FIXED_RIDER") != NULL;
+    if(fixed_rider&&!scripted){fprintf(stderr,"MCM_FIXED_RIDER requires MCM_SCRIPTED.\n");return 2;}
+    if(fixed_rider)capture_rider_timing=1;
+    if(capture_rider_timing)hook_count=5;
     DWORD pid = strtoul(argv[1], NULL, 0), limit = strtoul(argv[3], NULL, 0);
     if (!pid || limit < 2 || limit > 10000 || (limit & 1)) return 2;
     FILE *out = fopen(argv[2], "wx");
@@ -161,7 +173,7 @@ int main(int argc, char **argv) {
     process = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
     // This instruction guard prevents attaching to another executable version.
     // The caller must also verify mcm.exe's SHA-256 as documented in README.
-    for (unsigned i = 0; i < 4; i++) {
+    for (unsigned i = 0; i < hook_count; i++) {
         BYTE instruction[6];
         if (!process || !read_memory(addresses[i], instruction, lengths[i]) ||
             memcmp(instruction, expected[i], lengths[i])) {
@@ -208,9 +220,9 @@ int main(int argc, char **argv) {
             DWORD code = event.u.Exception.ExceptionRecord.ExceptionCode;
             DWORD address = (DWORD)(uintptr_t)event.u.Exception.ExceptionRecord.ExceptionAddress;
             int matched = -1;
-            for (unsigned i = 0; i < 4; i++) if (armed[i] && address == addresses[i]) matched = i;
+            for (unsigned i = 0; i < hook_count; i++) if (armed[i] && address == addresses[i]) matched = i;
             if (code == EXCEPTION_BREAKPOINT && !installed && !done) {
-                for (unsigned i = 0; i < 4; i++) {
+                for (unsigned i = 0; i < hook_count; i++) {
                     write_byte(addresses[i], 0xcc);
                     armed[i] = 1;
                 }
@@ -222,7 +234,16 @@ int main(int argc, char **argv) {
                     TerminateProcess(process, 5);
                     done = 2;
                 } else {
-                    if(matched==3) {
+                    if(matched==4) {
+                        DWORD owner,ai;
+                        if(!read_memory(context.Ecx+0x15c,&owner,4)||!read_memory(owner+0x614,&ai,4))done=2;
+                        else if(ai==0){
+                            if(!read_memory(context.Esp+4,&rider_dt_bits,4))done=2;
+                            rider_observed_dt_bits=rider_dt_bits;
+                            if(fixed_rider){SIZE_T n;rider_dt_bits=0x3ca3d70a;if(!WriteProcessMemory(process,(void*)(uintptr_t)(context.Esp+4),&rider_dt_bits,4,&n)||n!=4)done=2;}
+                            rider_update_count++;
+                        }
+                    } else if(matched==3) {
                         if(scripted&&player_active){SIZE_T n;DWORD seed=random_state;if(!WriteProcessMemory(process,(void*)(uintptr_t)(context.Eax+0x14),&seed,4,&n)||n!=4)done=2;random_state=random_state*214013u+2531011u;}
                     } else {
                     DWORD bike = context.Esi, ai = 1;
@@ -294,7 +315,7 @@ int main(int argc, char **argv) {
             done = 2;
         }
         if (done) {
-            for (unsigned i = 0; i < 4; i++) if (armed[i]) {
+            for (unsigned i = 0; i < hook_count; i++) if (armed[i]) {
                 write_byte(addresses[i], saved[i]);
                 armed[i] = 0;
             }

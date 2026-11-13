@@ -4740,3 +4740,37 @@ than throwing away the comparison at the first different random state.
 Next: isolate crash-stage mutable dependencies and capture the missing original
 stage inputs/outputs, then extend retained full-bike comparisons. This milestone
 does not change playable preview behavior or establish full physics parity.
+
+### Separate rider update timing
+
+Original rider controller update `0x40e990` receives its own time-step argument
+at entry ESP+4. It runs outside the main bike update. At `0x40e9eb..0x40ea05`
+it copies the animation object's bounds into rider+a0/ac through `0x44f870`;
+these are among the first differing words in the earlier crash capture.
+
+`MCM_RIDER_TIMING=1` now observes the player's rider update count and last
+interval. `MCM_FIXED_RIDER=1` requires scripted replay and additionally sets
+that player's rider interval to binary32 .02. Incoming timing remains recorded
+as `riderObservedDtBits`; effective timing is `riderDtBits`. Other riders and
+world timing remain uncontrolled. The new hook is instruction-guarded and is
+restored through the same debugger cleanup as the existing hooks.
+
+The observation run measured 399 rider calls between the 400 frame boundaries
+in each pass, none inside a bike update, with 23 and 28 distinct interval words.
+770 paired boundaries had different rider timing. Motion nevertheless matched
+in that run, so timing variance alone does not prove the earlier failure's cause.
+
+The controlled run contains 398 crashed-state boundaries per pass. All 400
+frames match in decoded motion, engine allocation, rider allocation and tracked
+random state. Rider counts and effective intervals also match. Four unexplained
+bike words (488–494) and 521 raw caller-stack word positions still differ;
+these remain comparator failures. The controlled and observed captures start
+from different checkpoints: this is not a causal A/B experiment. Neither run
+establishes recovered full-bike trajectory parity.
+
+The compressed controlled fixture and `mcm-rider-timing-validation.json` retain
+these results. Timing comparisons normalize cumulative counts at pass entry and
+exclude the preceding frame's interval at the checkpoint boundary. Missing,
+regressing or mixed-protocol observations and invalid forced intervals fail.
+Next, replay the earlier crash checkpoint under both timing protocols and trace
+any remaining animation/world inputs before expanding the retained simulator.
