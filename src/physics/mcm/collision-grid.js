@@ -1,3 +1,4 @@
+import {insertMcmCollisionLine} from './collision-line-grid.js';
 const f=Math.fround;
 // Original 0x42a550 followed by 0x42a6e0, types 0/1.
 // Cells are linked-list sentinels. Entry metadata survives unlinking.
@@ -13,8 +14,9 @@ export function updateMcmCollisionGrid(object,grid,enabled){
   if(entry.next)entry.next.previous=entry.previous;
   entry.previous=null;entry.next=null;entry.active=0;
  }
+ if(object.type===3){insertMcmCollisionLine(object,grid);return;}
  if(object.type!==0&&object.type!==1){
-  if(object.type===3||object.type===4)throw new RangeError('Collision grid types 3/4 not recovered');
+  if(object.type===4)throw new RangeError('Collision grid type 4 not recovered');
   return;
  }
  // The original initializes links, owner, auxiliary and active fields, but

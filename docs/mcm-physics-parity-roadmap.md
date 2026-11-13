@@ -992,3 +992,26 @@ Report: `mcm-collision-grid-allocation-validation.json`; reproduce with
 Types 3/4 have separate spatial insertion paths and remain open, along with
 collision dispatch and integration into complete original-versus-port trajectories.
 This allocation validation does not claim memory-allocator implementation parity.
+
+### Type 3 collision line-grid insertion (2026-11-12)
+
+Recovered the full type 3 branch `0x42a9a0..0x42b00d` and connected it to common
+grid dispatch/unlinking. It inserts both endpoints, then traverses X and Z at
+cell-size increments using float32 deltas and intermediate coordinates. New nodes
+are individually allocated and inserted at the cell-list head, rather than held
+in the object's four-entry array used by types 0/1.
+
+Preserved two original quirks: duplicate-owner checks examine the sentinel and
+all nodes with successors, excluding the tail; the Z traversal uses the X origin
+when constructing its intermediate Z coordinate, while its interpolation subtracts
+the Z origin. Neither behavior is replaced with a conventional line rasterizer.
+
+16,000 original-execution cases match all 1,236 output words with zero differences.
+Original CRT allocation runs unmodified. Checks ordered owner/auxiliary/active
+fields, list lengths and previous-link consistency for every cell; uninitialized
+cell-index fields are excluded. Cases include differing grid origins, both signs
+of axis delta, zero-length axes, dimensions 1–8, empty lists and one/two existing
+neighbors, matching sentinel/tail owners and disabled updates.
+Report: `mcm-collision-line-grid-validation.json`; reproduce with
+`node scripts/mcm-reference/compare-collision-line-grid-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Type 4, collision dispatch, main-step integration and whole-bike parity remain open.
