@@ -2779,3 +2779,29 @@ Report: `mcm-prepared-substep-validation.json`. Reproduce with
 Engine entry `0x4a5bd7..0x4a5e27`, reset requests, dynamic bike/rider collisions,
 loop-back wiring and complete acceleration/throttle-release trajectories remain
 to be connected and validated. Full physics parity remains unproven.
+
+### Connected engine/input entry
+
+The continuous original comparison now runs `0x4a5bd7..0x4ac94b`: engine/input
+entry, ordinary suspension/contact preparation, physics, static collisions and
+substep finish. All 964 captured words match across 40,326 original executions.
+An entry observation captures throttle/brake, gear, shift timer, mass selection,
+vertical acceleration filtering and ordered device calls before their shared
+state flows into the rest of the physics. Coverage requires up/down shifts,
+ordered brake/throttle polling, analog/digital control and low-speed stopping.
+
+Recovered engine entry initializes the same torque/contact scratch state and
+shares brake, velocity, mass, engine level, RPM demand and gear ratio with the
+physics path. The checked public throttle helper retains its input validation;
+the recovered entry uses an unchecked path matching finite out-of-range original
+engine levels. The expanded corpus exposed a bike/rider mass mapping error,
+original CRT asin domain-error behavior (case 8092), and a NaN sign lost by an
+acceleration array literal (case 8901). Typed stores and recovered arithmetic
+preserve the original results. Signed-zero brakes use the shared restored bike
+field when replaying serialized fixtures.
+
+Report: `mcm-engine-entry-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-engine-entry-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Reset requests, dynamic bike/rider collisions, frame-entry/loop-back wiring and
+complete acceleration/throttle-release trajectories remain to be connected and
+validated. This synthetic single-substep comparison does not prove full parity.

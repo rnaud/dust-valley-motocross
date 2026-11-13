@@ -1,5 +1,5 @@
 import {floatBits} from './math.js';
-import {updateMcmDigitalThrottle} from './throttle.js';
+import {updateMcmDigitalThrottleUnchecked as updateMcmDigitalThrottle} from './throttle.js';
 import {updateMcmGears} from './gears.js';
 import {queryMcmBikeInput} from './bike-input.js';
 const f=Math.fround;
