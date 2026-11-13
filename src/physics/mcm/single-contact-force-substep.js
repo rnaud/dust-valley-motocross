@@ -22,7 +22,7 @@ function inverse(c,v){
 export function assembleMcmSingleContactForces(c){
  if(c.state844&&c.chassisContact.enabled)return;
  const s=c.singleContactForce;
- if(!c.anyContact){c.chassisResponse.localLever=[...c.localBalanceCenter];s.torque=[0,0,0];return;}
+ if(!c.anyContact){c.chassisResponse.localLever=new Float64Array(c.localBalanceCenter);s.torque=[0,0,0];return;}
  if(c.bothContact)return;
  const front=!!c.frontContact,load=front?c.frontLoad:c.rearLoad,motion=front?c.frontMotion:c.rearMotion;
  const normal=c.points[front?4:5],spring=c.suspensionForces[front?'front':'rear'].force;
