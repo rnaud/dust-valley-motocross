@@ -2196,3 +2196,26 @@ Report: `mcm-chassis-contact-substep-validation.json`. Reproduce with
 `node scripts/mcm-reference/compare-chassis-contact-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
 Subsequent collision response and force assembly, full-loop integration, and
 whole-bike acceleration / throttle-release trajectory parity remain unfinished.
+
+### Connected contact-count angular response and crash damping (2026-11-12)
+
+Extended continuous ordinary execution through `0x4a9a52`, just before the
+single-body impulse wrapper, with the skipped contact branch still observed at
+`0x4a9b29`. Chassis-contact response now selects normal/crashed mass and angular
+coefficients, resolves one-contact or two-contact surface levers in the original
+branch order, transforms the resulting angular change into body coordinates,
+and applies the original speed-bit-dependent damping. The two-contact rear-only
+body branch deliberately reads the front terrain surface, matching the binary.
+Other contact counts preserve normal-state motion or damp/stop crashed motion;
+the stop branch changes state to 2 and clears local angular and linear velocity.
+
+All 40,000 cases match across 473 output words with zero bit differences.
+Captured outputs include local angular velocity, its shared field `0x53c`,
+local lever `0x660`, response scalars, and every previously connected output.
+The contact-count observation hook preserves the overwritten instructions and
+resumes original execution; no response or transform helper is replaced.
+Report: `mcm-chassis-response-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-chassis-response-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+The following single-body impulse call, remaining force assembly, full-loop
+integration, and whole-bike acceleration / throttle-release trajectory parity
+remain unfinished.
