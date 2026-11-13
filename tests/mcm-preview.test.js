@@ -239,3 +239,28 @@ test('preview rides the starter jumps and lands with recovered airborne controls
  }
  assert.ok(landings>=3);assert.ok(s.z>175);assert.ok(s.speed>15);
 });
+
+test('preview retains progressive braking and previous-speed shift scheduling',async()=>{
+ const {createMcmPreviewEngine,stepMcmPreviewEngine}=await import('../src/mcm-preview.js');
+ const {mcmPreviewContactForces}=await import('../src/mcm-preview-contact.js');
+ const engine=createMcmPreviewEngine(),step=brake=>stepMcmPreviewEngine(engine,{speed:20,pressed:false,grounded:true,brake},.02);
+ const ramp=[];
+ for(let i=0;i<5;i++){step(true);ramp.push(engine.recovered.brake);}
+ assert.deepEqual(ramp,[Math.fround(.2),Math.fround(.4),Math.fround(.6),Math.fround(.8),1]);
+ step(false);assert.equal(engine.recovered.brake,.5);
+ step(false);assert.equal(engine.recovered.brake,0);
+ const velocity=[0,0,20],wheel={velocity,axis:[0,0,1],arm:[0,0,0],load:900};
+ const force=brake=>mcmPreviewContactForces({front:wheel,rear:wheel,velocity,mass:183.7,dt:.02,brake}).force[2];
+ assert.ok(force(.2)<force(0));assert.ok(force(.2)>force(1));
+ const shifting=createMcmPreviewEngine();
+ Object.assign(shifting.recovered,{state:1,rpmDemand:8000,previousRpmDemand:8000,shiftThreshold:0});
+ stepMcmPreviewEngine(shifting,{speed:40,pressed:true,grounded:true},.02);
+ assert.equal(shifting.recovered.gear,0,'first shift sees retained zero speed');
+ stepMcmPreviewEngine(shifting,{speed:40,pressed:true,grounded:true},.02);
+ assert.equal(shifting.recovered.gear,1,'next shift sees previous frame speed');
+ const s=createState({sand:false,flat:true,height:()=>0,physicsMode:'mcm-preview'});
+ for(let i=0;i<10;i++)stepBike(s,{gas:true,brake:true},.02);
+ assert.equal(s.engine.recovered.brake,1);
+ resetBike(s,0,0,0);
+ assert.equal(s.engine.recovered.brake,0);assert.equal(s.engine.recovered.previousSpeed,0);
+});

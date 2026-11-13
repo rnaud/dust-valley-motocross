@@ -170,7 +170,7 @@ export function stepBike(s,input,dt) {
 
   // Actual engine state powers the rear tire and also feeds the HUD and audio.
   if(s.physicsMode==='mcm-preview'){
-    stepMcmPreviewEngine(s.engine,{speed:b.velocity.dot(fwd),pressed:!!gas,grounded:v.wheelInfos[0].raycastResult.hasHit},dt);s.throttle=s.engine.recovered.state;
+    stepMcmPreviewEngine(s.engine,{speed:b.velocity.dot(fwd),pressed:!!gas,brake:!!brake,grounded:v.wheelInfos[0].raycastResult.hasHit},dt);s.throttle=s.engine.recovered.state;
   }else stepDrivetrain(s.engine,{speed:b.velocity.dot(fwd),throttle:s.throttle,brake:!!brake,grounded:v.wheelInfos[0].raycastResult.hasHit,boost:boosting},dt);
   const driveForce=s.engine.force*(s.physicsMode==='mcm-preview'?1:MCM_HANDLING.traction);
   // Safe-brake clamp: don't ask a fully banked tire for a straight-line stop.
@@ -239,7 +239,7 @@ export function stepBike(s,input,dt) {
       if(s.physicsMode==='mcm-preview'){
         const axes=[new C.Vec3(1,0,0),new C.Vec3(0,1,0),new C.Vec3(0,0,1)].map(axis=>b.quaternion.vmult(axis).toArray());
         const bodyMatrix=[...axes[0],0,...axes[1],0,...axes[2],0,0,0,0,1];
-        const contact=mcmPreviewContactForces({front:recoveredContacts[1],rear:recoveredContacts[0],velocity:b.velocity.toArray(),mass:b.mass,dt,brake:!!brake,
+        const contact=mcmPreviewContactForces({front:recoveredContacts[1],rear:recoveredContacts[0],velocity:b.velocity.toArray(),mass:b.mass,dt,brake:s.engine.recovered.brake,
           drive:driveForce,acceleration:s.recoveredAcceleration,rearShare,bikeForward:f.toArray(),roll:s.roll,bodyMatrix});
         // Apply the accumulated contact force and its recovered moment once.
         // Sand resistance was applied above; the recovered stage scales drive once.
@@ -307,7 +307,7 @@ export function stepBike(s,input,dt) {
       velocity:b.velocity.toArray(),angularVelocity:b.angularVelocity.toArray(),
       frontContact:v.wheelInfos[1].isInContact,rearContact:v.wheelInfos[0].isInContact,
       chassisContact:world.contacts.some(c=>c.bi===b||c.bj===b),lean:leanInput,steer:steerInput,
-      brake,engineLevel:s.engine.recovered.state,dt});
+      brake:s.engine.recovered.brake,engineLevel:s.engine.recovered.state,dt});
     if(air.active){
       b.velocity.set(...air.velocity);b.angularVelocity.set(...air.angularVelocity);
       if(air.applied){

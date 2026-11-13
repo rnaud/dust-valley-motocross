@@ -4664,3 +4664,24 @@ takeoff/landing state, reset and absence of artificial throttle pitch torque.
 The ten-second preview starter-line test completes three substantial jumps and
 lands without crashing, retaining more than 15 m/s through each landing.
 Fresh original-game telemetry is still blocked by the locked desktop.
+
+### Playable preview: retained braking and shift speed
+
+The preview now uses the recovered normal-state brake ramp from
+`0x4a5bd7..0x4a5e27`: float32 increments of 0.2 while held, decrements of
+0.5 on release, bounded to zero/one. The retained value reaches both tire
+braking and airborne controls, replacing binary full braking. Reset clears it.
+The retained runner calls the same extracted helper, preserving its existing
+crash-state gate. Preview automatic shifts now consume the previous saved
+speed before refreshing it, matching the recovered engine-entry ordering.
+
+Preview scheduling remains one engine update per browser physics step, and
+speed still comes from the adapted Cannon chassis. This is additional playable
+integration, not proof of complete original-bike trajectory parity. Regression
+coverage checks brake buildup/release, fractional force application, reset,
+and the one-update delay in speed-dependent shifting.
+
+Validation: all 320 tests pass, including the retained original fixture
+comparisons and 15 playable-preview tests. Production build and browser checks
+pass for acceleration, steering, throttle release, pause/photo/reset, classic
+fallback and mobile layout.

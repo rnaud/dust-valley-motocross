@@ -31,7 +31,7 @@ export function mcmPreviewContactForces({front,rear,velocity,mass,dt,brake=false
     frontMotion:a.motion,rearMotion:b.motion,frontTire:a.tire,traction,
     frontLoad:{arm:a.arm,scratch354:b.active?b.axis.map(x=>f(x*f(drive/LBF))):[0,0,0]},rearLoad:{arm:b.arm},tangent:a.axis,rearTangent:b.axis,
     mass:f(mass/SLUG),dt:f(dt),speedCopy:f(Math.hypot(...feet(velocity))),force:[0,0,0],totalTorque:[0,0,0],
-    brakeInput:brake?1:0,brakeCoefficient:175,state844:0,steeringFlag:+((b.active?b.forward:a.forward)>=0),
+    brakeInput:f(Number(brake)),brakeCoefficient:175,state844:0,steeringFlag:+((b.active?b.forward:a.forward)>=0),
     brakes:{front:{},rear:{}},rearSuspension:{},frontWeight:f(rearShare),bikeForward:bikeForward.map(f),
     driveScalar:b.active?f(drive/LBF):0,points,bodyPosition:[0,0,0],bodyNode:{world:bodyMatrix.map(f),cacheValid:1}};
   if(c.anyContact){updateMcmRearTire(c);accumulateMcmTireForces(c);applyMcmBrakes(c);}

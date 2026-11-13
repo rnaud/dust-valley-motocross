@@ -1,3 +1,4 @@
+import {updateMcmBrakeInput} from './physics/mcm/substep-start.js';
 import config from './physics/mcm/preview-engine.json' with {type:'json'};
 import {updateMcmDigitalThrottle} from './physics/mcm/throttle.js';
 import {updateMcmGears} from './physics/mcm/gears.js';
@@ -5,16 +6,19 @@ import {calculateMcmDriveForce} from './physics/mcm/drive-force.js';
 import {calculateMcmSuspension} from './physics/mcm/suspension.js';
 const f=Math.fround,FT=.3048,LBF=4.448221615;
 export function createMcmPreviewEngine(){
-  return {gear:1,rpm:0,force:0,engineBrake:0,load:0,recovered:{gear:0,state:0,released:0,rpmDemand:0,previousRpmDemand:0,shiftThreshold:7000,shiftTimer:0,randomState:12345}};
+  return {gear:1,rpm:0,force:0,engineBrake:0,load:0,recovered:{gear:0,state:0,released:0,rpmDemand:0,previousRpmDemand:0,shiftThreshold:7000,shiftTimer:0,randomState:12345,brake:0,previousSpeed:0}};
 }
 // The helpers and tables are recovered. Feeding chassis speed into the engine,
 // timer scheduling, SI conversion and contact-force application are preview glue.
-export function stepMcmPreviewEngine(engine,{speed,pressed,grounded},dt){
+export function stepMcmPreviewEngine(engine,{speed,pressed,grounded,brake=false},dt){
   const e=engine.recovered;
+  e.brake=updateMcmBrakeInput(e.brake,brake);
+  if(brake)e.released=1;
   e.shiftTimer=f(Math.max(0,e.shiftTimer-f(dt)));
   Object.assign(e,updateMcmDigitalThrottle({...e,pressed,dt:f(dt),maxRpm:config.maxRpm}));
   const nextRandom=(Math.imul(e.randomState,214013)+2531011)>>>0;
-  const shift=updateMcmGears({...config,...e,speed:f(speed/FT),randomValue:(nextRandom>>>16)&32767});
+  const shift=updateMcmGears({...config,...e,speed:e.previousSpeed,randomValue:(nextRandom>>>16)&32767});
+  e.previousSpeed=f(speed/FT);
   Object.assign(e,shift);if(shift.randomUsed)e.randomState=nextRandom;
   const drive=calculateMcmDriveForce({...config,...e,speed:f(speed/FT),direction:[0,0,1],gearRatio:config.ratios[e.gear]});
   engine.gear=e.gear+1;engine.rpm=e.rpmDemand;engine.load=e.state;
