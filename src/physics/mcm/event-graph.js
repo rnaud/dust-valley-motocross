@@ -4,6 +4,7 @@ import {applyMcmRelativeChildTransform} from './relative-child-transform.js';
 
 // State adapter shared by original event and trick transitions.
 export function createMcmEventGraph(s){
+ if(s.graph)return s.graph;
  const target={local:[...s.targetLocal],world:[...s.targetWorld],cacheValid:s.targetCache};
  const source={local:[...s.sourceLocal],world:[...s.sourceWorld],cacheValid:s.sourceCache};
  if(s.parented){source.parent=target;target.firstChild=source;}

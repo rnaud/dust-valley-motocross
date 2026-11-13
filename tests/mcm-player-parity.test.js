@@ -1328,3 +1328,11 @@ test('connected post-event joins match original rider gate and call arguments',a
  for(const gate of ['event=1:',':called=0:',':called=1:',':heightZero=true',':heightZero=false'])assert.ok(Object.keys(corpus.source.joinOutcomes).some(k=>k.includes(gate)),gate);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){const actual=evaluateNormalEventJoinSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
+
+
+test('connected rider body matches original pose, blend, input, trick and nearby transitions',async()=>{
+ const {evaluateNormalRiderSubstep}=await import('../scripts/mcm-reference/normal-rider-substep-case.mjs');
+ const corpus=fixture('normal-rider-substep-wine11.json.gz');
+ for(const gate of ['called=0:','called=1:queries=0,0,0','called=1:queries=9,6,7',':animation=255:nearby=1',':animation=1:',':poseChanged=true:',':flags=16:flag=1',':flags=16:flag=2'])assert.ok(Object.keys(corpus.source.riderOutcomes).some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){const actual=evaluateNormalRiderSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});
