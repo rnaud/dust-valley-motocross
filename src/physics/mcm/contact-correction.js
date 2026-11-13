@@ -1,18 +1,20 @@
+import {mcmMultiply as mul} from './x87-arithmetic.js';
 import {floatBits} from './math.js';
 import {rotateMcmTransformAtPivot} from './transform.js';
 
 // 0x4aaa55–0x4aaded: field/flag names retain unresolved caller semantics.
 export function applyMcmContactCorrection(c) {
   const f=Math.fround, signed=x=>floatBits(x)|0;
-  let matrix=[...c.matrix], field6ac=c.field6ac, mask=c.mask;
-  const acceleration=c.state?c.torque.map((v,i)=>f(c.inertia[i+3]*v)):[f(c.inertia[0]*c.torque[0]),0,0];
+  let matrix=[...c.matrix], field6ac=c.field6ac, mask=c.mask, rotationApplied=false;
+  const acceleration=c.state?c.torque.map((v,i)=>f(mul(c.inertia[i+3],v))):[f(mul(c.inertia[0],c.torque[0])),0,0];
+  // Negated ordered comparisons retain the original unordered x87 branches.
   if(c.state && c.contact) {
-    if(Math.abs(c.field4d8)<=f(.035) && signed(c.field560)<0x40000000) {
+    if(!(Math.abs(c.field4d8)>f(.035)) && signed(c.field560)<0x40000000) {
       const sign=floatBits(c.component44)>0x80000000?-1:1;
       if(c.controller170===2 && c.controller140) field6ac=f(sign*f(-.01));
       else {let angle=sign*f(-.03);if(signed(c.field894)<0x3f7ae148)angle*=f(1.000418782234192);field6ac=f(angle);}
     }
-    if(Math.abs(field6ac)>=f(.001))matrix=rotateMcmTransformAtPivot(matrix,c.pivot,[0,0,1],field6ac);
+    if(Math.abs(field6ac)>=f(.001)){matrix=rotateMcmTransformAtPivot(matrix,c.pivot,[0,0,1],field6ac);rotationApplied=true;}
   }
   if(c.contact && !c.state) {
     if(c.both)mask=1;
@@ -25,14 +27,14 @@ export function applyMcmContactCorrection(c) {
         if(rear) {
           const candidate=f(((Math.asin(-(value/c.field5d8))*c.dt)*2)/c.field4f4);
           const limit=c.dt*f(.21);
-          angle=f((limit<candidate?f(limit):candidate)*.5);
+          angle=f((!(limit>=candidate)?f(limit):candidate)*.5);
         } else {
           const limit=f(c.dt*4),candidate=(Math.asin(-(value/c.field5d8))/c.field4f4)*limit;
-          angle=f((candidate<=limit?f(candidate):limit)*-.5);
+          angle=f((!(candidate>limit)?f(candidate):limit)*-.5);
         }
-        matrix=rotateMcmTransformAtPivot(matrix,c.pivot,[1,0,0],angle);
+        matrix=rotateMcmTransformAtPivot(matrix,c.pivot,[1,0,0],angle);rotationApplied=true;
       }
     }
   }
-  return {matrix,acceleration,field6ac,mask};
+  return {matrix,acceleration,field6ac,mask,rotationApplied};
 }
