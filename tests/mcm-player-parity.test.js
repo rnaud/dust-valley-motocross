@@ -1832,3 +1832,26 @@ test('retained player input matches original axes, device curve and controller b
   assert.deepEqual(actual.tail,outputBits,`next input tail ${caseIndex}`);
  }
 });
+
+test('frame steering rate and longitudinal burst match isolated original execution',async()=>{
+ const {evaluateFrameSteering}=await import('../scripts/mcm-reference/frame-steering-case.mjs');
+ const corpus=fixture('frame-steering-wine11.json.br');
+ assert.equal(corpus.source.mismatchCount,0);
+ for(const path of ['directLimit','reducedLimit','deadzone','nonzeroRate','burst','cappedBurst','zeroDelta','carryIncluded'])assert.ok(corpus.source.coverage[path]);
+ for(const {input,outputBits} of corpus.fixtures)assert.deepEqual(evaluateFrameSteering(input),outputBits);
+});
+
+test('retained player steering setup preserves earlier frame observations',async()=>{
+ const {evaluateResetNextSteering}=await import('../scripts/mcm-reference/reset-next-steering-case.mjs');
+ const corpus=fixture('reset-next-steering-wine11.json.br');
+ assert.equal(corpus.source.mismatchCount,0);
+ assert.equal(corpus.source.exceptionCount,0);
+ assert.equal(corpus.source.priorTraceChangedCases,0);
+ assert.equal(corpus.source.priorTraceComparedCases,17941);
+ for(const {caseIndex,input,prefixBits,outputBits} of corpus.fixtures){
+  const actual=evaluateResetNextSteering(input);
+  assert.equal(actual.tail.length,11516);
+  assert.deepEqual(actual.prefix,prefixBits,`next steering prefix ${caseIndex}`);
+  assert.deepEqual(actual.tail,outputBits,`next steering tail ${caseIndex}`);
+ }
+});
