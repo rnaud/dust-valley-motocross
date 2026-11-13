@@ -1209,3 +1209,35 @@ the port requires an explicit event adapter when the final transition gate is
 entered. Primary/secondary callback gates, tag transfer, event integration,
 full main-step orchestration and complete original-v-port trajectories remain
 outstanding. This is not evidence of complete whole-bike parity.
+
+### Collision callback gates and connected dynamic response (2026-11-12)
+
+Recovered primary `0x49e490` and secondary `0x49e610`. Preserves own/other
+cooldown gates, secondary field618 and state-2 gates, secondary position-
+correction suppression, and the rider-to-own-bike identity exception. Tag
+transfer changes the holder before the reset callback, then sends its
+notification before setting both bikes' five-second cooldowns. A matching tag
+player with a third-party holder reaches the response without the usual other-
+bike cooldown gate. Unknown classes reach response routing but do no work.
+
+11,520 exhaustive original callback cases match 23 output words each with zero
+differences. These cover both callbacks, classes 0..4, all Boolean gates, states
+0/1/2, tag presence/player/holder selection and self-rider aliasing. Response,
+tag reset and network notification are instrumented boundaries in this suite;
+it validates their call order and arguments, not their downstream behavior.
+Report: `mcm-collision-callback-validation.json`.
+
+A separate 32,000-case suite executes the real original callbacks connected to
+`0x49d900`, paired impulse, transforms, proxy/grid and inactive audio. All 264
+words match with zero differences across 1,152 combinations of callback,
+cooldowns, dynamic contact type, both states, position gate and rider flags.
+Tag is disabled and the final event gate naturally suppressed here. Report:
+`mcm-connected-collision-callback-validation.json`. Reproduce with the matching
+`compare-collision-callback-oracle.mjs` or
+`compare-connected-collision-callback-oracle.mjs`, pinned executable, and a fresh
+output directory.
+
+The port defaults to the recovered static/dynamic responses and requires tag
+reset/notification adapters for those branches. Full dispatcher execution with
+mutating bike callbacks, final event integration, tag reset internals and full
+main-step/trajectory parity remain outstanding.

@@ -1025,3 +1025,13 @@ test('connected dynamic collision response matches original bike, rider, proxy a
  const {evaluateDynamicCollision}=await import('../scripts/mcm-reference/dynamic-collision-response-case.mjs');
  for(const {input:c,outputBits} of fixture('dynamic-collision-response-wine11.json').fixtures)assert.deepEqual(evaluateDynamicCollision(c),outputBits);
 });
+
+test('collision callbacks match original gates, tag mutation and ordered boundary calls',async()=>{
+ const {evaluateCollisionCallback}=await import('../scripts/mcm-reference/collision-callback-case.mjs');
+ for(const {input:c,outputBits} of fixture('collision-callback-wine11.json').fixtures)assert.deepEqual(evaluateCollisionCallback(c),outputBits);
+});
+
+test('collision callbacks connected to dynamic response match original physics and grid mutations',async()=>{
+ const {evaluateConnectedCollisionCallback}=await import('../scripts/mcm-reference/connected-collision-callback-case.mjs');
+ for(const {input:c,outputBits} of fixture('connected-collision-callback-wine11.json').fixtures)assert.deepEqual(evaluateConnectedCollisionCallback(c),outputBits);
+});
