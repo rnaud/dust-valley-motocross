@@ -927,3 +927,16 @@ test('type 3/4 collision line traversal matches original ordered lists',async()=
  assert.deepEqual(expected,outputBits);
  }
 });
+
+test('collision dispatch matches original pair gates, contact copies and callback order',async()=>{
+ const {dispatchMcmCollisions,testMcmSpherePair}=await import('../src/physics/mcm/collision-dispatch.js');
+ const {floatBits}=await import('../src/physics/mcm/math.js');
+ for(const {input:c,outputBits} of fixture('collision-dispatch-wine11.json').fixtures){
+ const calls=[],objects=c.objects.map((o,k)=>({...o,entries:k===0?c.entries:[],contactCC:[k*10,k*10+1,k*10+2],contactD8:[k*10+3,k*10+4,k*10+5],contactE4:[k*10+6,k*10+7,k*10+8],onPrimary:o.primary?()=>calls.push(100+k):null,onSecondary:o.secondary?()=>calls.push(200+k):null}));
+ const nodes=c.owners.map(owner=>({owner}));nodes.forEach((node,k)=>{if(k%4!==3)node.next=nodes[k+1];});
+ const m={objects,cells:[{next:nodes[0]},{next:nodes[4]}],pairs:c.pairs.map(row=>[...row]),enabled:c.enabled,depth:c.depth,contactCC:[1000,1001,1002],contactD8:[1003,1004,1005],contactE4:[1006,1007,1008],otherE4:[1009,1010,1011]};
+ dispatchMcmCollisions(m,0,testMcmSpherePair);
+ const expected=[...objects.flatMap(o=>[objects.indexOf(o.other)+1,...[...o.contactCC,...o.contactD8,...o.contactE4].map(floatBits)]),...m.pairs.flat(),floatBits(m.depth),m.currentA===undefined?0:m.currentA+1,m.currentB===undefined?0:m.currentB+1,calls.length,...calls,...Array(6-calls.length).fill(0)];
+ assert.deepEqual(expected,outputBits);
+ }
+});

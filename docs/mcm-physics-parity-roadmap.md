@@ -1031,3 +1031,19 @@ same captured fixture without duplicating it. Separate original source/report:
 Reproduce with
 `node scripts/mcm-reference/compare-collision-type4-grid-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
 Collision dispatch and complete simulation integration remain unfinished.
+
+### Collision dispatch and sphere pair (2026-11-12)
+
+Recovered connected dispatch `0x42ccc0`, candidate preparation `0x42b870`,
+pair-state gate `0x42ca00`, and type 0/type 0 primitive `0x42c0e0`. Preserves
+protected pair states, symmetric hit/miss updates, original depth calculation,
+asymmetric contact-field copies and ordered primary/secondary callbacks.
+
+32,000 original-execution cases match all 66 output words with zero differences,
+covering four objects, repeated cell/owner references, enable flags, protected
+pair states, and zero through six observational callbacks. Report:
+`mcm-collision-dispatch-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-collision-dispatch-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+
+Other primitive combinations, mutating gameplay callbacks, full simulation
+integration and whole-bike trajectory parity remain unfinished.
