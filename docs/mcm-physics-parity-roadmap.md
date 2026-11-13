@@ -2758,3 +2758,24 @@ Report: `mcm-finished-substep-validation.json`. Reproduce with
 Dynamic bike/rider collision callbacks, entry/loop-back wiring and complete
 acceleration/throttle-release trajectories still need connected validation.
 Reaching this synthetic substep boundary does not establish whole-bike parity.
+
+### Connected ordinary suspension/contact entry
+
+The original-execution comparison now starts at `0x4a5e27` and continues through
+`0x4ac94b` on the ordinary, no-reset-request path. The added entry resets front
+translation and the rear rest matrix, clears both suspension travel-limit flags,
+clears contact scratch vectors and refreshes the balance-reference world position.
+All 931 captured words match across 40,326 original executions, including aliased
+front/rear/body/balance nodes and parented transforms.
+
+The initial field mapping cleared active flags instead of travel-limit flags;
+comparison corrected that distinction. Entry preparation also changes which
+synthetic state reaches airborne rider inputs. Case 5629 now supplies those
+variants naturally, with independent horizontal/vertical inputs and matching
+raw-bit metadata. Required trick and nearby-interaction coverage remains present.
+
+Report: `mcm-prepared-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-prepared-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Engine entry `0x4a5bd7..0x4a5e27`, reset requests, dynamic bike/rider collisions,
+loop-back wiring and complete acceleration/throttle-release trajectories remain
+to be connected and validated. Full physics parity remains unproven.

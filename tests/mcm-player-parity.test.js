@@ -1367,3 +1367,11 @@ test('connected substep finish matches original remainder scheduling and final o
  for(const bits of [0,0x38d1b716,0x38d1b717,0x38d1b718,0x3f000000,0xbf000000])assert.ok(corpus.fixtures.some(({input:c})=>floatBits(c.normalEventJoin.delay)===bits),`carry ${bits.toString(16)}`);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){const actual=evaluateFinishedSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
+
+test('connected ordinary entry matches suspension resets and balance-reference refresh',async()=>{
+ const {evaluatePreparedSubstep}=await import('../scripts/mcm-reference/prepared-substep-case.mjs');
+ const corpus=fixture('prepared-substep-wine11.json.br');
+ for(const gate of ['frontRearAlias=true','frontRearAlias=false',':bodyAlias=true',':balanceAlias=true',':parented=true',':parented=false'])assert.ok(Object.keys(corpus.source.preparationOutcomes).some(k=>k.includes(gate)),gate);
+ for(const gate of ['called=1:queries=9,6,7',':animation=255:nearby=1',':animation=1:'])assert.ok(Object.keys(corpus.source.riderOutcomes).some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){const actual=evaluatePreparedSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});
