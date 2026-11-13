@@ -1035,3 +1035,8 @@ test('collision callbacks connected to dynamic response match original physics a
  const {evaluateConnectedCollisionCallback}=await import('../scripts/mcm-reference/connected-collision-callback-case.mjs');
  for(const {input:c,outputBits} of fixture('connected-collision-callback-wine11.json').fixtures)assert.deepEqual(evaluateConnectedCollisionCallback(c),outputBits);
 });
+
+test('collision response through final event matches original physics, transforms and rider transitions',async()=>{
+ const {evaluateCollisionEvent}=await import('../scripts/mcm-reference/collision-event-case.mjs');
+ for(const {input:c,outputBits} of fixture('collision-event-wine11.json').fixtures)assert.deepEqual(evaluateCollisionEvent(c),outputBits);
+});

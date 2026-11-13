@@ -1241,3 +1241,35 @@ The port defaults to the recovered static/dynamic responses and requires tag
 reset/notification adapters for those branches. Full dispatcher execution with
 mutating bike callbacks, final event integration, tag reset internals and full
 main-step/trajectory parity remain outstanding.
+
+### Collision response through final crash event (2026-11-12)
+
+Connected `0x49d900` types 0/1/2 to the real `0x4a4b60` event transition,
+including its decision, orientation reset, bounds copy and rider animation
+selection. The adapter reads the bike after impulse, speed refresh and
+proxy/grid synchronization and passes the original collision arguments,
+including the wrapper's impulse/type argument ordering. It updates the shared
+bike velocities, state, scratch vector and transform and returns the remaining
+event/rider state for the caller.
+
+32,000 original-execution cases match 367 output words each with zero
+differences. Both dynamic types and static contacts cover event/no-event,
+orientation reset on/off, parented/root source components, cached transforms,
+linked grid updates, rider selection and input/RNG call counts. Finite supplied
+states include zero speed on either bike. Contact type varies independently of
+the event scenarios. The original response, impulse, event, orientation and
+rider callees run together; only input-query results and CRT draws are supplied.
+Visual effects and active audio are disabled; bounds children are absent in
+this suite. Report: `mcm-collision-event-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-collision-event-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+
+This connection exposed and fixed a previously untested zero-speed decision:
+x87 invalid normalization stores negative indefinite NaN, whose unsigned bits
+select event kind 3. Depending on a JavaScript NaN's sign incorrectly selected
+kind 4/5 and different rider records. Stopped-bike cases are now retained among
+the original-execution fixtures.
+
+Full dispatcher traversal with mutating gameplay callbacks, persistent event
+state adaptation in the full main step, tag reset internals and complete
+original-v-port trajectories remain outstanding. Full physics parity is not
+yet established.

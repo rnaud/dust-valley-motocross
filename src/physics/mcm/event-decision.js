@@ -32,7 +32,10 @@ export function decideMcmBikeEvent(c){
  if(c.otherPresent){
   const a=1/c.speed,b=1/c.otherSpeed,v=c.velocity,w=c.otherVelocity;
   const dot=((w[0]*b)*(v[0]*a)+(w[1]*b)*(v[1]*a))+(w[2]*b)*(v[2]*a);
-  return event(dot>f(.707)?1:floatBits(f(dot))>0xbf34fdf4?3:side(),2);
+  // Zero-speed normalization produces the x87 negative indefinite NaN.
+  // Its stored unsigned bits (0xffc00000) select kind 3; JS NaN sign
+  // is engine-dependent and must not control this branch.
+  return event(dot>f(.707)?1:Number.isNaN(dot)||floatBits(f(dot))>0xbf34fdf4?3:side(),2);
  }
  if(c.time>c.arg8)return r;
  if(!(c.speed-c.previousSpeed>=c.decel*c.arg8))return event(1,4);
