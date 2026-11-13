@@ -21,7 +21,7 @@ let physicsMode='classic';
 const simulationStep=()=>physicsMode==='mcm-preview'?.02:1/120;
 const terrain=(x,z)=>activeSand?activeSand.height(x,z):(mode==='free'?freeTerrain(x,z):raceTerrain(x,z));
 const $=id=>document.getElementById(id);
-$('physics-mode').onchange=()=>{physicsMode=$('physics-mode').value;syncSandOption();$('physics-note').textContent=physicsMode==='mcm-preview'?'Recovered engine, suspension, tire/brake forces, steering, traction, rider weight balance and airborne controls. Terrain contacts, chassis and ground stabilization remain experimental. Boost disabled.':'Original Dust Valley handling.';};
+$('physics-mode').onchange=()=>{physicsMode=$('physics-mode').value;syncSandOption();$('physics-note').textContent=physicsMode==='mcm-preview'?'Recovered engine, suspension, tire/brake forces, steering, traction, rider weight balance, airborne controls and linear motion. Terrain contacts, chassis rotation and ground stabilization remain experimental. Boost disabled.':'Original Dust Valley handling.';};
 function syncSandOption(){$('sand-option').hidden=false;$('sand-mode').disabled=false;$('sand-note').textContent='Tires carve soft sand in every mode. Switch off for hardpack.';}
 const speedCanvas=$('speedlines'),speedCtx=speedCanvas?speedCanvas.getContext('2d'):null;
 const mobile=matchMedia('(pointer: coarse)').matches||navigator.maxTouchPoints>0;

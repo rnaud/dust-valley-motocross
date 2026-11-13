@@ -4685,3 +4685,25 @@ Validation: all 320 tests pass, including the retained original fixture
 comparisons and 15 playable-preview tests. Production build and browser checks
 pass for acceleration, steering, throttle release, pause/photo/reset, classic
 fallback and mobile layout.
+
+### Playable preview: original linear integration
+
+Normal riding in MCM Preview now advances position and linear velocity through
+`integrateMcmLinear`, with original binary32 acceleration/delta-velocity stores
+before the recovered integration slice. `mcm-preview-motion.js` converts the
+preview's SI forces, mass, position and velocity to original units and back.
+The adapter matches the position, velocity and speed words of the retained
+original-execution force-linear fixtures exactly.
+
+The stage runs at Cannon's body integration boundary, after collision and spring
+impulses. It snapshots incoming velocity before Cannon's integration, retains
+Cannon's angular result/history updates, and replaces the translation result.
+This prevents double application of force. Sleeping bodies remain asleep and
+crashed riding keeps the existing Cannon path. Reset retains the installed
+adapter without adding another wrapper.
+
+This is a playable integration milestone, not full chassis parity. Force/contact
+inputs, angular integration, ground stabilization and the position reference
+still come from the preview adapter. Full recovered steering-force state,
+chassis impulses and motion transforms remain to be connected. Original
+checkpoint trajectory comparison remains required for a whole-bike claim.
