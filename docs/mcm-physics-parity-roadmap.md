@@ -2172,3 +2172,27 @@ Reproduce with
 `node scripts/mcm-reference/compare-braking-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
 Subsequent force assembly, full-loop integration and whole-bike acceleration /
 throttle-release trajectory parity remain unfinished.
+
+### Connected chassis contact merging and penetration correction (2026-11-12)
+
+Extended continuous ordinary execution through `0x4a8ddf`, with the skipped
+contact branch observed at `0x4a9b29`. The caller selects crash/normal angular
+weights and refreshes chassis probe positions after suspension transforms when
+required. Original `0x4b0100` merges rear/front suspension limits and the two
+chassis contacts, averages their positions, normalizes the summed normal when
+multiple contacts participate, and selects the penetration depth. It computes
+the world contact arm, local body arm and velocity at that contact, then moves
+both body position and balance center by the normal-projected correction.
+
+All 40,000 cases match across 458 output words with zero bit differences.
+Every combination of the four contact flags appears. The response executes with
+zero contacts in 106 cases, one in 1,950, two in 6,908, three in 6,595 and four
+in 18,482; another 5,959 cases skip it and preserve scratch. Fixtures retain
+these branches alongside prior finite-input overflow, signed-zero, transform
+aliasing and terrain coverage. The helper and its original transform/math
+callees run directly, with no replacement of the contact solver.
+
+Report: `mcm-chassis-contact-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-chassis-contact-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Subsequent collision response and force assembly, full-loop integration, and
+whole-bike acceleration / throttle-release trajectory parity remain unfinished.
