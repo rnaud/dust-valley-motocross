@@ -988,3 +988,12 @@ test('all original collision type combinations match connected dispatch',async()
  assert.deepEqual(expected,outputBits);
  }
 });
+
+test('single-body collision impulse matches original velocity, angular response and transform cache',async()=>{
+ const {applyMcmCollisionImpulse}=await import('../src/physics/mcm/collision-impulse.js');
+ const {floatBits}=await import('../src/physics/mcm/math.js');
+ for(const {input:c,outputBits} of fixture('collision-impulse-wine11.json').fixtures){
+ const r=structuredClone(c);applyMcmCollisionImpulse(r);
+ assert.deepEqual([...[...r.angularVelocity,...r.velocity,r.impulse,...r.transform.world].map(floatBits),r.transform.cacheValid],outputBits);
+ }
+});

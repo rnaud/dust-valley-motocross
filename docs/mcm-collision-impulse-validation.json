@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSourceSha256": "d146d401508aa73366378c9dcd925e7d8b3d6a4bf8a539a631b01b0387a94163",
+  "loaderSourceSha256": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe",
+  "casesSha256": "3bfb4bb080e0c4ffe5b315afbfb1163c669754f78343784e324732a95be3f458",
+  "resultsSha256": "b7a36e38c7163132c961fdc0ff5ca23cc46ae5ac7b228925402790d375c826e4",
+  "cases": 40000,
+  "controlWord": 639,
+  "totalDifferences": 0,
+  "firstDifferences": [],
+  "outcomes": {
+    "type=0:cache=1:changed=true": 8000,
+    "type=1:cache=1:changed=true": 8000,
+    "type=2:cache=1:changed=true": 8000,
+    "type=3:cache=1:changed=false": 1789,
+    "type=4:cache=1:changed=true": 8000,
+    "type=3:cache=1:changed=true": 4317,
+    "type=3:cache=0:changed=false": 1894
+  },
+  "scope": "Original single-body collision impulse 0x45b3c0 with real transform resolution, inverse/forward rotation and inverse sqrt. Cached/uncached root transforms, finite velocities, normal directions, inverse mass/inertia, angular/linear scale and type-specific separating gate. Whole-bike wrapper excluded."
+}

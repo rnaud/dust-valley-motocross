@@ -1101,3 +1101,33 @@ All primitive type routes are implemented for the validated finite domain.
 Gameplay-mutating collision callbacks, complete main-step integration and
 original-v-port whole-bike trajectories remain unfinished; full parity is not
 yet established.
+
+### Single-body collision impulse and callback map (2026-11-12)
+
+Recovered `0x45b3c0`: normal contact speed, type-3 separating gate, inverse
+rotation of the lever/normal cross product, inverse-inertia scaling, effective
+mass, restitution impulse, optional linear scaling and original angular limiter.
+Includes `0x4b85c0` forward-vector rotation with instruction-order sums.
+40,000 original-execution cases match all 24 output words with zero differences
+(linear/angular velocity, impulse, resolved world matrix and cache flag). Covers
+cached/uncached root transforms, full 3D rotations, stationary contacts, all
+type gates, positive inverse mass/inertia, and signed angular scales.
+Report: `mcm-collision-impulse-validation.json`; reproduce with
+`node scripts/mcm-reference/compare-collision-impulse-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+
+Constructor `0x4a396d/0x4a397d` assigns bike primary callback `0x49e490` and
+secondary `0x49e610`. These apply cooldown/secondary-bike gates, optional tag
+transfer (`0x4b1d30`), then collision response `0x49d900`. Secondary sets bike
+`+0x8a8` before invoking primary. Response type 0 uses the other bike; type 1
+uses its rider/proxy body; type 2 is static contact.
+
+Static response calls bike wrapper `0x49d7f0`, which invokes the recovered
+`0x45b3c0`. Wrapper arguments are normal, contact velocity, world lever, local
+lever, angular scale, type, linear scale. State `+0x844` selects inertia `+0x5fc`
+and restitution .1 (linear scale forced zero), otherwise inertia `+0x5f0` and
+restitution `+0x5e0`. It updates angular `+0x534`, linear `+0x510`, copies local
+lever to `+0x654`, then for type !=3 rotates angular into `+0x528` and reports
+to `0x427110`. Dynamic response instead calls paired-body solver `0x45b6b0`.
+The response ends with collision/proxy transform synchronization, grid update,
+and possible event wrapper `0x4a4b60`. These wrappers and paired-body solver
+remain to be connected and validated; this milestone alone is not full parity.
