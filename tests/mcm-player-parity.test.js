@@ -1020,3 +1020,8 @@ test('connected static collision response matches original bike, proxy and grid 
  const {evaluateStaticCollision}=await import('../scripts/mcm-reference/static-collision-response-case.mjs');
  for(const {input:c,outputBits} of fixture('static-collision-response-wine11.json').fixtures)assert.deepEqual(evaluateStaticCollision(c),outputBits);
 });
+
+test('connected dynamic collision response matches original bike, rider, proxy and grid mutations',async()=>{
+ const {evaluateDynamicCollision}=await import('../scripts/mcm-reference/dynamic-collision-response-case.mjs');
+ for(const {input:c,outputBits} of fixture('dynamic-collision-response-wine11.json').fixtures)assert.deepEqual(evaluateDynamicCollision(c),outputBits);
+});
