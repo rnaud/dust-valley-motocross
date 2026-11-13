@@ -2634,3 +2634,34 @@ Report: `mcm-normal-event-join-substep-validation.json`. Reproduce with
 The rider-update body (including input, pose/blend and transitions), common
 collision/tail, entry wiring and whole-bike trajectory comparisons remain to
 be connected. Full acceleration/throttle-release parity remains unproven.
+
+### Connected complete rider-update body
+
+The continuous prefix now executes the original `0x4aecb0` body and returns to
+`0x4ac6cd`. Rider controls use the validated call arguments and current physics
+state. The reference runs real bike-input aggregation, orientation reset, child
+callbacks, nearby interaction, directional trick startup, animation selectors
+and pose/blend. Only device responses, animation records and world-list data
+are supplied. A valid player input controller is shared with the earlier event
+decision; the device boundary now handles its button-8 query as well.
+
+The recovered event/trick graph adapter accepts the existing live graph, so
+rider transitions update the same body, source, attached components and caches
+used by the physics prefix. Existing standalone callers retain their cloned
+graph behavior. The adapter preserves a previous nearby reference unless a
+nearby query actually occurs.
+
+All 743 captured words match in 40,256 pinned-original executions: the 40,000
+broad cases plus 256 independent input/animation variations of case 14630,
+which naturally reaches the airborne rider-input path. The initial broad run
+had only one input-query case; targeted cases exercise both flag-16 button
+branches, six directional trick selections, accepted/rejected/missing nearby
+candidates, animation seeking and normal pose/blend paths without bypassing
+the preceding physics. Cases use synthetic records and a shared bike/rider
+component graph; live assets and independent rider graphs remain separate.
+
+Report: `mcm-normal-rider-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-normal-rider-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Next is the common post-event state and collision/tail connection, followed by
+entry wiring and full acceleration/throttle-release trajectory comparisons.
+Full whole-bike parity remains unproven.
