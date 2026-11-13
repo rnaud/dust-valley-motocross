@@ -699,3 +699,40 @@ reads do not establish that pose entries cannot mutate. Before running a complet
 recovered frame, capture the animation objects, component graphs and dependencies
 at the same boundary as the bike, then load them together. The normal animation
 table also does not replace the separate crash/event rider resource table.
+
+## Visual graphs at the player frame boundary
+
+The visual replay checkpoint expands the local restore set to 41 blocks. It adds
+both component tables (eight bike slots and sixteen rider slots), the rider
+visual object's `0x438`-byte prefix, and its sixteen transform nodes. The eight
+bike nodes were already captured. Object `+0x230/+0x234` supplies count/table;
+component stride is `0x40`, with node pointer `+0x34` and position flag `+0x38`.
+The rider visual object is bike `+0xc8c`, with vtable `0x4d7b14`. This prefix is
+not claimed to be the complete object allocation.
+
+`loadLiveVisuals` preserves the original local/world matrix words, valid-cache
+flags, parent/child/sibling links and shared component identities. It rejects
+missing memory, invalid counts, cyclic graph links and mismatched ownership.
+It does not resolve invalid caches or substitute synthetic transforms at load.
+The root world matrix agrees with the captured first-frame transform.
+
+Both 400-frame original passes still match in observed motion, all engine bytes
+and rider controller bytes. The four unexplained bike words remain differences.
+The retained engine comparator again matches 14,400 stores with original chassis
+inputs supplied. See [visual replay report](mcm-visual-replay-validation.json).
+The debugger detached and restored its instruction bytes after the capture.
+
+This capture still excludes animation resource records, whole-world collision
+state and opponents. The separate normal-animation observations are not atomic
+with this checkpoint; they must not be silently combined and called a complete
+original state. Raw replay/checkpoint data are archived locally under
+`player-validation/visual-replay-2026-11-13/`.
+
+Validation also exposed an intermittent existing non-finite comparison failure:
+`normal-event-decision-substep` fixture 6210 differed at fields
+35,36,37,41,45,49,53,69,220,334,342,454,458,490,491,492,493,529,538,541 in one full
+suite run. The case passed in isolation, five consecutive complete 6,339-case
+corpus passes, and a subsequent complete 204-test player-parity file run.
+This is not considered fixed or evidence of stable whole-simulation parity;
+runtime warm-up/order sensitivity remains an investigation item. The checkpoint
+loader and capture changes do not alter that evaluator's code path.

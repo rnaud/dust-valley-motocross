@@ -33,7 +33,7 @@ typedef struct {DWORD address, size; BYTE bytes[0xcc8];} Block;
 static Block blocks[256]; static unsigned block_count;
 static int save_block(DWORD address, DWORD size) {
     if(!address || size>sizeof blocks[0].bytes || block_count>=256)return 0;
-    for(unsigned i=0;i<block_count;i++)if(blocks[i].address==address)return 1;
+    for(unsigned i=0;i<block_count;i++)if(blocks[i].address==address)return blocks[i].size==size;
     Block *b=&blocks[block_count++];b->address=address;b->size=size;
     return read_memory(address,b->bytes,size);
 }
@@ -43,14 +43,26 @@ static int save_tree(DWORD address) {
     DWORD child,sibling;
     return save_block(address,0x114)&&read_memory(address+0x10c,&child,4)&&read_memory(address+0x110,&sibling,4)&&save_tree(child)&&save_tree(sibling);
 }
+// Shared object prefix used by animation dispatch: count/table +230/+234,
+// root +434, 0x40-byte components with node +34 and position flag +38.
+static int save_components(DWORD object) {
+    DWORD count,table,root;
+    if(!read_memory(object+0x230,&count,4)||count<1||count>32||
+       !read_memory(object+0x234,&table,4)||!save_block(table,count*0x40)||
+       !read_memory(object+0x434,&root,4)||!save_tree(root))return 0;
+    for(DWORD i=0;i<count;i++){DWORD node;if(!read_memory(table+i*0x40+0x34,&node,4)||!node||!save_tree(node))return 0;}
+    return 1;
+}
 static int checkpoint(DWORD bike,int restore) {
     if(restore){for(unsigned i=0;i<block_count;i++){SIZE_T n;Block*b=&blocks[i];if(!WriteProcessMemory(process,(void*)(uintptr_t)b->address,b->bytes,b->size,&n)||n!=b->size)return 0;}return 1;}
     // Rider allocation: 0x4a3a6b..0x4a3aa9, constructor 0x40d400.
     static const DWORD slots[][2]={{0x874,0x3ac},{0x8d8,0x44},{0x8dc,0x50},{0x8e0,0x50},{0x8e4,0x60},{0x8e8,0x60},{0x8ec,0x60},{0x8f0,0x1f0},{0x8f8,0x10},{0x8fc,0x10},{0x900,0x10},{0x904,0x10}};
     if(!save_block(bike,0xcc8))return 0;
     for(unsigned i=0;i<sizeof slots/sizeof slots[0];i++){DWORD ptr;if(!read_memory(bike+slots[i][0],&ptr,4))return 0;if(ptr&&!save_block(ptr,slots[i][1]))return 0;}
-    DWORD frame,engine,filter;
-    return read_memory(bike+0x434,&frame,4)&&save_tree(frame)&&read_memory(bike+0x8f0,&engine,4)&&read_memory(engine+4,&filter,4)&&save_block(filter,0x10);
+    DWORD proxy,vtable,engine,filter;
+    return save_components(bike)&&read_memory(bike+0xc8c,&proxy,4)&&
+        read_memory(proxy,&vtable,4)&&vtable==0x4d7b14&&save_block(proxy,0x438)&&save_components(proxy)&&
+        read_memory(bike+0x8f0,&engine,4)&&read_memory(engine+4,&filter,4)&&save_block(filter,0x10);
 }
 
 // Export only blocks already read by the existing partial checkpoint. This does
