@@ -1,6 +1,45 @@
-# Original runtime status — November 12, 2026
+# Original runtime status — November 13, 2026
 
-**The original is playable under Wine 11/Rosetta.** The unmodified executable
+## Current verified state
+
+A fresh original session now executes healthy player physics under Wine 11.
+The November 13 run used builtin DirectDraw/Direct3D, OpenGL, `csmt=0`, and
+`winecoreaudio.drv=` to isolate audio. It completed two 400-frame controlled
+acceleration/release passes with identical motion, transform and engine state.
+A starting partial checkpoint is now preserved with the full trace in
+[healthy replay evidence](mcm-healthy-replay-validation.json). All 1,600 boundary
+records have normal state zero and finite motion/transforms. Four inherited
+words still differ, so this is not whole-allocation or recovered-port parity.
+Visual rendering and physical keyboard control have not been revalidated in
+this new session; its verified achievement is live original simulation/capture.
+
+The previous session had exited. Relaunches with the existing OpenGL settings
+were intermittent: one fault was captured during Wine's 3-D framebuffer format
+probe, while other launches reached the menu. Native UI callbacks advanced
+SinglePlayer (`0x64`), Quarry (`0x65`), event Next (`0x104`), course Next (`0xd3`)
+and rider Start (`0xd0`). Course Next failed twice at `0x7bf2123d`, reading
+`0x4dc9`, on worker thread `0x134`, distinct from main thread `0x124`.
+With CoreAudio disabled, the same sequence reached gameplay and capture.
+This narrows the compatibility investigation; one successful audio-isolated
+session does not prove a reliable startup fix or identify the worker conclusively.
+
+In that successful session, Windows PID 292/main thread 296 contains PDM at
+`0x051c89f8` (AI flag zero, controller `0x01932000`) and SAGE at `0x051f7250`
+(AI flag one, null controller). These addresses must be rechecked before use.
+After capture, the process was alive, no debugger was attached, and all four
+telemetry hooks plus menu breakpoint `0x433841` had their original bytes.
+The retained parent launcher keeps the game alive. Do not restart it merely
+because desktop capture is unavailable.
+
+Source, logs and full captures for this attempt are preserved locally under
+`player-validation/healthy-replay-2026-11-13/` in the reference directory.
+The committed compressed fixture includes all 1,600 records and the 21-block
+starting checkpoint. Opponents, world, rider allocation and globals remain
+outside that partial checkpoint; these gaps matter for recovered initialization.
+
+## Earlier verified gameplay milestone
+
+**The original was playable under Wine 11/Rosetta.** The unmodified executable
 loads the main menu and Yuma Sand Dunes practice, renders the course/rider/HUD,
 and responds to keyboard throttle. The working configuration uses builtin
 DirectDraw, OpenGL, a virtual desktop and a 256 MB reported-video-memory cap.
@@ -185,3 +224,9 @@ onscreen, but macOS capture failed while locked and Win32 BitBlt returned black.
 These are session identifiers and must be rechecked before use. The user has
 been asked to unlock the Mac; visual gameplay is not yet revalidated. Do not
 terminate/restart this live session merely because capture is unavailable.
+
+The follow-up hardware-watchpoint attempt on the four differing words produced
+no writer records and timed out without a usable debug break. It supplies no
+classification evidence. A subsequent read confirmed all debug registers were
+zero, the process remained alive with no debugger attached, and instruction
+bytes at all five temporary hook locations were intact.

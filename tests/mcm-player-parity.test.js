@@ -2128,3 +2128,39 @@ test('rear stiffness burst histories retain original contact torque through over
   assert.equal(count,HISTORY_FRAMES);
  }
 });
+
+test('healthy original replay retains its starting checkpoint and all 400 acceleration/release frames',()=>{
+ const {rows,checkpoint}=fixture('healthy-replay-checkpoint-wine11.json.br');
+ assert.equal(rows.length,1600);
+ const result=compareBikeReplay(rows);
+ assert.equal(result.framesPerPass,400);assert.equal(result.comparedBoundaryPairs,800);
+ assert.equal(result.firstMotionDifference,null);assert.deepEqual(result.differingEngineWords,{});
+ // Preserve these failures explicitly; this is not a whole-allocation parity claim.
+ assert.deepEqual(Object.keys(result.differingBikeWords),['0x488','0x48c','0x490','0x494']);
+ assert.equal(checkpoint.kind,'mcm-partial-local-checkpoint');
+ assert.equal(checkpoint.blockCount,checkpoint.blocks.length);
+ const memory=(address,size)=>{
+  const block=checkpoint.blocks.find(b=>address>=b.address&&address+size<=b.address+b.size);
+  assert.ok(block,`missing captured block at ${address.toString(16)}`);
+  assert.equal(block.hex.length,block.size*2);
+  return Buffer.from(block.hex,'hex').subarray(address-block.address,address-block.address+size);
+ };
+ assert.equal(checkpoint.bikeAddress,parseInt(rows[0].bike,16));
+ assert.equal(memory(checkpoint.bikeAddress,0xcc8).toString('hex'),rows[0].stateHex);
+ assert.equal(memory(parseInt(rows[0].engineAddress,16),0x16c).toString('hex'),rows[0].engineHex);
+ assert.equal(memory(parseInt(rows[0].transformAddress,16)+0x84,64).toString('hex'),rows[0].matrixHex);
+ for(const row of rows){
+  const b=Buffer.from(row.stateHex,'hex'),d=decodeBikeRecord(row);
+  assert.equal(b.readUInt32LE(0x844),0);assert.equal(row.cw,0x27f);
+  assert.equal(d.controller,'local-input');assert.equal(d.name,'PDM');
+  assert.ok([...d.positionFeet,...d.velocityFeetPerSecond,...d.angularVelocity,...d.transformMatrix].every(Number.isFinite));
+ }
+ const at=frame=>decodeBikeRecord(rows[frame*2+1]);
+ assert.ok(at(49).speedMetresPerSecond<.001);
+ assert.equal(at(50).throttleState,Math.fround(.02));
+ assert.ok(at(199).speedMetresPerSecond>22);
+ assert.equal(at(200).throttleState,Math.fround(.96));
+ assert.equal(at(224).throttleState,0);
+ assert.ok(at(399).speedMetresPerSecond<at(224).speedMetresPerSecond);
+ assert.throws(()=>compareBikeReplay(rows.slice(0,-2)),/Incomplete/);
+});
