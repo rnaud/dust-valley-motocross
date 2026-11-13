@@ -24,3 +24,14 @@ export function selectMcmNearbyBike(world, self) {
  }
  return nearest;
 }
+
+// Original selection and angle gate through 0x4a1847. A missing candidate leaves
+// the previous angle untouched. Wrapping is one correction, not a modulo.
+export function evaluateMcmNearbyInteraction(world,self,heading,previousAngle){
+ const bike=selectMcmNearbyBike(world,self);
+ if(!bike)return {bike:null,angle:previousAngle,accepted:false};
+ let angle=Math.fround(Math.atan2(bike.position[0]-self.position[0],bike.position[2]-self.position[2])-heading);
+ if(angle < -Math.PI)angle=Math.fround(angle+Math.fround(2*Math.PI));
+ else if(angle > Math.PI)angle=Math.fround(angle-Math.fround(2*Math.PI));
+ return {bike,angle,accepted:Math.abs(angle)>Math.fround(.698)};
+}

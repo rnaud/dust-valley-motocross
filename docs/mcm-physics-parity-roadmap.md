@@ -763,3 +763,27 @@ Report: `mcm-nearby-bike-validation.json`; reproduce with
 `node scripts/mcm-reference/compare-nearby-bike-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
 This is another dependency for the remaining interaction branch, not whole-bike
 trajectory parity. The playable preview still uses the hybrid Cannon chassis.
+
+### Nearby interaction angle gate (2026-11-12)
+
+Extended the connected original execution through `0x4a1847`: candidate selection,
+`fpatan` relative heading, float32 store, single +/-2pi correction, and the strict
+absolute-angle gate at float32 0.698. No candidate preserves the previous angle.
+The port matches all five output words in 32,162 cases, including 162 directed
+float32 neighbors around +/-0.698, +/-pi and +/-2pi. Fixtures retain every directed
+case and each selection/acceptance outcome. Report:
+`mcm-nearby-interaction-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-nearby-interaction-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+The harness marks the accepted branch and returns before any orientation, state
+or animation mutation; those remain outstanding, as does full rider-update parity.
+JS atan2 agreement here is empirical for these finite cases, not an exhaustive
+proof of agreement with x87 transcendental rounding.
+
+Next dependency traced directly from disassembly: `0x430ab0` seeks the linked
+animation frame whose index is nearest-even(float32((frameCount-1)*fraction-.5)),
+copies its bounds, and dispatches each frame child through vtable slot +0x14.
+For the bike that callback is `0x44f8b0`, not the bounds-reset `0x44fa70` callback.
+It normalizes orientation using the existing local/relative helpers, but only
+sets relative position when component table entry +0x38 is nonzero. The interaction
+seeks rider record bike+0x778 and bike record +0x790 at fraction .5. Validate these
+callbacks and the rider proxy's actual vtable before claiming the complete helper.
