@@ -61,3 +61,15 @@ test('race spawn and both handling modes retain ground support with tiled sand',
   assert.ok(s.speed>1);assert.ok(Number.isFinite(s.y));assert.equal(s.physics.sand.tiles.size,9);
  }
 });
+
+test('a moving driven wheel leaves a readable rut at classic and preview step rates',()=>{
+ const depths=[];
+ for(const dt of [1/120,.02]){
+  const s=new SandSurface(()=>0);
+  for(let t=0;t<1;t+=dt)s.deform([{x:.125,z:t*20,load:1000,demand:1},null],dt);
+  const depth=-s.displacementAt(.125,10);depths.push(depth);
+  assert.ok(depth>.03&&depth<.14,`moving-wheel rut ${depth}`);
+  assert.equal(s.displacementAt(2,10),0);
+ }
+ assert.ok(Math.abs(depths[0]-depths[1])<.005,'rut depth should remain comparable across supported simulation steps');
+});
