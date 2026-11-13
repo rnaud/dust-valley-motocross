@@ -1441,3 +1441,10 @@ test('reset events initialize the original rider controller and preserve skipped
  for(const gate of ['triggered=0:state=0:', 'triggered=1:state=1:', ':firstEmpty=true:', ':firstEmpty=false:', ':pitchFloor=true:', ':pitchFloor=false:', ':randomCalls=0:', ':randomCalls=2:', ':randomCalls=3:', ':randomCalls=4:', ':randomCalls=5:', ':limited=true', ':limited=false'])assert.ok(Object.keys(corpus.source.setupOutcomes).some(k=>k.includes(gate)),gate);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetEventSetup(c),outputBits,`reset/rider setup fixture ${i}`);
 });
+
+test('reset event returns match remaining-step commitment and rider-call arguments',async()=>{
+ const {evaluateResetEventJoin}=await import('../scripts/mcm-reference/reset-event-join-case.mjs');
+ const corpus=fixture('reset-event-join-wine11.json.br');
+ for(const gate of ['called=0:', 'called=1:', ':triggered=0:', ':triggered=1:flag=1:delayZero=true:', ':delayZero=false:', ':heightZero=true:', ':heightZero=false:', ':rear=0:', ':rear=1:', ':limited=true', ':limited=false'])assert.ok(Object.keys(corpus.source.joinOutcomes).some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries())assert.deepEqual(evaluateResetEventJoin(c),outputBits,`reset/event join fixture ${i}`);
+});
