@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "courseSha256": "942b756572b407adf9223ecc1afb22556c5bc5636d3bd5e3ac51ef5419543d0b",
+  "scope": "Live static terrain bank payloads, scales and physics hierarchy versus recovered course loader. Not chassis trajectory parity.",
+  "banks": 882,
+  "bytes": 5041512,
+  "byteDifferences": 0,
+  "bankSha256": "d01d6da1ac7a075dd4cb612ff6fb8d399b7c21978d4ce681749972dc936885c7",
+  "decodedBankSha256": "d01d6da1ac7a075dd4cb612ff6fb8d399b7c21978d4ce681749972dc936885c7",
+  "nodes": 12594,
+  "nodeDifferences": 0,
+  "firstNodeDifferences": [],
+  "scaleDifferences": 0,
+  "heightScale": 0.01171875,
+  "worldToGrid": 0.3333333432674408,
+  "prefixSha256": "51332f39b041b564f217eaada5b27199c0e9f843849e10aa700e2da85921a7a1",
+  "treeSha256": "96f59bf2e24876fa72144ae6c0837d87e53d7a9ff9f9f9af4a9f334a5e139bab",
+  "date": "2026-11-13",
+  "course": "teraform/quarries/dunes.trn",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "identicalCaptures": 2,
+  "sourceSha256": {
+    "scripts/mcm-reference/capture-terrain-banks.c": "b0ddafe696a6297d85ce2a267d0fed22702d698458f347cbfbc61b34c1240906",
+    "scripts/mcm-reference/capture-terrain-tree.c": "5549f6a49c521577c84592c8a1f44091d7737e0a3912d057d6be773a9fa4bd65",
+    "scripts/mcm-reference/compare-live-terrain.mjs": "d85ccd6790f423de02b2f23284fed6d2d3f537e70a304e2efb6f7d85b29196b7",
+    "scripts/mcm-reference/terrain-data.mjs": "726039214d949a60762eb07a7ecaf0501de11fde07e2b6f58a9b325b14baead9"
+  }
+}
