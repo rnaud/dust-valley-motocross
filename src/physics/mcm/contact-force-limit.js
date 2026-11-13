@@ -1,9 +1,10 @@
-import {floatBits} from './math.js';
+import {floatBits,bitsFloat} from './math.js';
 
 // Original 0x4ad310–0x4ad3e7. Limits a contact force by the available
 // velocity change and consumes that budget. Inputs use original units.
 export function limitMcmContactForce({mass,dt,remaining,requested,magnitude,force}) {
-  const f=Math.fround;
+  // Match x87 invalid arithmetic stores for zero-step/overflowed state.
+  const f=value=>Number.isNaN(value)?bitsFloat(0xffc00000):Math.fround(value);
   let change=remaining<requested?remaining:requested;
   if((floatBits(change)|0)<=0)change=0;
   const massOverDt=mass/dt,limit=massOverDt*change;

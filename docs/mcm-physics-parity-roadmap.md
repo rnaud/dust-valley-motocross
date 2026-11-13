@@ -2125,3 +2125,26 @@ Reproduce with
 Pinned original callees execute directly throughout. Remaining combined
 contact-force processing, no-wheel response, full-loop integration and whole-bike
 acceleration/release trajectory parity remain unfinished.
+
+### Connected combined tire-force and torque accumulation (2026-11-12)
+
+Extended continuous ordinary execution through `0x4a875b`. Front-only and
+rear-only contact pass the actual tire force vector to the limiter, preserving
+its in-place mutation; both-wheel contact uses a summed temporary. The caller
+combines force magnitudes, derives enabled contacts from signed speed-bit gates,
+and passes the real contact arms, timestep, mass, accumulated force/torque and
+remaining velocity-change budget into original `0x4b1570`.
+
+All 40,000 cases match across 430 output words with zero differences. The
+connected corpus includes zero-timestep invalid arithmetic and canonical NaNs
+propagated from overflowed contact arms. Limiter stores preserve the original
+negative indefinite value; cross-product and torque arithmetic distinguish it
+from positive NaN propagation. Shared exceptional arithmetic also serves the
+previous inverse-point path. Saved fixtures retain both observed NaN signs;
+arbitrary input payloads remain outside the finite-input corpus.
+
+Report: `mcm-tire-accumulation-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-tire-accumulation-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+No-wheel execution remains observed at its branch entry. Subsequent braking,
+contact-force processing, no-wheel response, full-loop integration and whole-bike
+acceleration/release trajectory parity remain unfinished.
