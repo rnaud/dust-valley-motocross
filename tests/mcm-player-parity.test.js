@@ -1320,3 +1320,11 @@ test('connected event children match original ordered callbacks and nested compo
  for(const gate of ['active=false','active=true:count=0','active=true:count=1','active=true:count=2','active=true:count=3',':local=0,1,0:',':local=1,0,1:',':nested=true',':nested=false'])assert.ok(Object.keys(corpus.source.childOutcomes).some(k=>k.includes(gate)),gate);
  for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){const actual=evaluateNormalEventChildrenSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
 });
+
+
+test('connected post-event joins match original rider gate and call arguments',async()=>{
+ const {evaluateNormalEventJoinSubstep}=await import('../scripts/mcm-reference/normal-event-join-substep-case.mjs');
+ const corpus=fixture('normal-event-join-substep-wine11.json.gz');
+ for(const gate of ['event=1:',':called=0:',':called=1:',':heightZero=true',':heightZero=false'])assert.ok(Object.keys(corpus.source.joinOutcomes).some(k=>k.includes(gate)),gate);
+ for(const [i,{input:c,outputBits}] of corpus.fixtures.entries()){const actual=evaluateNormalEventJoinSubstep(c);assert.deepEqual(actual,outputBits,`fixture ${i}, fields ${actual.flatMap((v,j)=>v===outputBits[j]?[]:[j])}`);}
+});
