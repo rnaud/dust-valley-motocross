@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import {evaluateRetainedHistory} from './retained-history-case.mjs';
+import {floatBits} from '../../src/physics/mcm/math.js';
 import {createHash} from 'node:crypto';
 const [source,dir]=process.argv.slice(2);
 if(!dir)throw new Error('Usage: compare-retained-history.mjs native-return-source history-output');
@@ -22,17 +23,18 @@ for(let index=0;index<inputs.length;index++){
   if(rng)compare(caseIndex,frame,'random',[random.state,random.calls],rng.subarray((index*400+frame)*8,(index*400+frame+1)*8));
   const b=c.bike;
   const start=base+(46926+frame*recordSize)*4,record=native.subarray(start,start+recordSize*4),count=record.readUInt32LE((14000-11097)*4);
+  compare(caseIndex,frame,'stiffness',[floatBits(c.frameEntry.extraStiffness)],record.subarray(413*4,414*4));
   compare(caseIndex,frame,'return',r.output,record.subarray((35681-11097)*4));
   if(count!==r.finishes.length)throw Error(`Substeps ${caseIndex}/${frame}`);
   for(let step=0;step<count;step++){const off=(step===0?13502:14001+(step-1)*2168+1670)-11097;compare(caseIndex,frame,`finish-${step}`,r.finishes[step],record.subarray(off*4,(off+498)*4));}
-  if(process.env.MCM_WRITE_FIXTURES==='1')expectedFrames.push({random:rng?{state:rng.readUInt32LE((index*400+frame)*8),calls:rng.readUInt32LE((index*400+frame)*8+4)}:undefined,engines:Array.from({length:count},(_,step)=>{const off=(step===0?735:2904+(step-1)*2168)+9;return Array.from({length:33},(_,i)=>record.readUInt32LE((off+i)*4));}),output:Array.from({length:11244},(_,i)=>record.readUInt32LE((35681-11097+i)*4)),finishes:Array.from({length:count},(_,step)=>{const off=(step===0?13502:14001+(step-1)*2168+1670)-11097;return Array.from({length:498},(_,i)=>record.readUInt32LE((off+i)*4));})});
+  if(process.env.MCM_WRITE_FIXTURES==='1')expectedFrames.push({extraStiffnessBits:record.readUInt32LE(413*4),random:rng?{state:rng.readUInt32LE((index*400+frame)*8),calls:rng.readUInt32LE((index*400+frame)*8+4)}:undefined,engines:Array.from({length:count},(_,step)=>{const off=(step===0?735:2904+(step-1)*2168)+9;return Array.from({length:33},(_,i)=>record.readUInt32LE((off+i)*4));}),output:Array.from({length:11244},(_,i)=>record.readUInt32LE((35681-11097+i)*4)),finishes:Array.from({length:count},(_,step)=>{const off=(step===0?13502:14001+(step-1)*2168+1670)-11097;return Array.from({length:498},(_,i)=>record.readUInt32LE((off+i)*4));})});
   for(let step=0;step<count;step++){const engine=(step===0?735:2904+(step-1)*2168)+9;compare(caseIndex,frame,`engine-${step}`,r.engines[step],record.subarray(engine*4,(engine+33)*4));}
   const lastEngine=(count===1?735:2904+(count-2)*2168)+9;
   const firstFinish=((count===1?13502:14001+(count-2)*2168+1670)-11097)*4;
-  rows.push({caseIndex,frame,pressed,status:r.frame.status,substeps:count,nativeSpeed:record.readFloatLE(firstFinish+6*4),recoveredSpeed:b.field6a4,nativeCrash:record.readUInt32LE(firstFinish),recoveredCrash:b.field844,nativeSpeedBits:record.readUInt32LE(firstFinish+6*4),
+  rows.push({caseIndex,frame,pressed,extraStiffness:record.readFloatLE(413*4),status:r.frame.status,substeps:count,nativeSpeed:record.readFloatLE(firstFinish+6*4),recoveredSpeed:b.field6a4,nativeCrash:record.readUInt32LE(firstFinish),recoveredCrash:b.field844,nativeSpeedBits:record.readUInt32LE(firstFinish+6*4),
    positionBits:Array.from({length:3},(_,i)=>record.readUInt32LE(firstFinish+(24+i)*4)),velocityBits:Array.from({length:3},(_,i)=>record.readUInt32LE(firstFinish+(27+i)*4)),
    gear:record.readUInt32LE((lastEngine+1)*4),throttleBits:record.readUInt32LE((lastEngine+2)*4),rpmBits:record.readUInt32LE((lastEngine+3)*4),released:record.readUInt32LE((lastEngine+6)*4)});
- },{randomSeed:capture.randomSeed});
+ },{randomSeed:capture.randomSeed,burst:capture.burst});
  if(expectedFrames.length)fixtures.push({caseIndex,input,frames:expectedFrames});
 }
 fs.closeSync(old);fs.closeSync(oldPrefix);

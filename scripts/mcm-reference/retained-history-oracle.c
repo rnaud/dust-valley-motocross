@@ -35,6 +35,7 @@ uint32_t next_response_output[202],next_tires_output[332],next_motion_output[273
 uint32_t next_rider_output[175],next_nearby_output[11],next_finish_output[498];
 uint32_t next_loop_count,next_loop_records[11][2168];
 static jmp_buf next_contact_abort;static uint32_t cycle_history[128][8],cycle_count;
+uint32_t history_burst;
 uint32_t history_random_enabled,history_random_active,history_random_seed,history_random_calls;
 uint32_t history_random_thread[6],history_random_records[400][2];
 int original_random(void);
@@ -557,7 +558,7 @@ void history_transfer(uint32_t*r,int restore){
  if(restore)memcpy(second_rider,r,sizeof second_rider);else memcpy(r,second_rider,sizeof second_rider);r+=(sizeof second_rider)/4;
  if(restore)memcpy(second_return,r,sizeof second_return);else memcpy(r,second_return,sizeof second_return);r+=(sizeof second_return)/4;
 }
-void history_begin(void){if(next_loop_count)transfer_next_loop(next_loop_records[0],1);history_transfer(history_saved,0);history_cursor=0;history_random_active=history_random_enabled;history_random_thread[5]=history_random_seed;history_random_calls=0;}
+void history_begin(void){if(next_loop_count)transfer_next_loop(next_loop_records[0],1);history_transfer(history_saved,0);history_cursor=0;history_random_active=history_random_enabled;history_random_thread[5]=history_random_seed;history_random_calls=0;if(history_burst){put32(0x848,0x42480000);put32(0x73c,0x42340000);put32(0x700,0);}}
 int history_prepare(void){if(history_cursor>=400)return 0;
  memset(next_entry_output,0,sizeof next_entry_output);
  memset(next_recovery_output,0,sizeof next_recovery_output);
@@ -583,6 +584,7 @@ int history_prepare(void){if(history_cursor>=400)return 0;
  next_event_active=next_event_random_calls=engine_entry_active=0;reset_pressed_value=0;
  next_frame_delta=.02f;float pressed=history_cursor>=50&&history_cursor<200?1.0f:0.0f;
  memcpy(settings+0x12fc,&pressed,4);start_input[58]=0;start_input[59]=pressed;
+ if(history_burst){uint32_t longitudinal=history_cursor==0?0xbf800000:input_parameters[1];memcpy(settings+0x12e8,&longitudinal,4);}
  start_next_frame();return 1;
 }
 void history_capture(void){history_random_records[history_cursor][0]=history_random_thread[5];history_random_records[history_cursor][1]=history_random_calls;if(!next_loop_count)fail("unsupported history frame boundary");if(next_loop_count)transfer_next_loop(next_loop_records[0],1);history_transfer(history_records[history_cursor++],0);}
@@ -618,6 +620,7 @@ unsigned char*p=(void*)0x200bf190;p[0]=0xe9;*(uint32_t*)(p+1)=(uintptr_t)draw_ra
  p=(void*)0x200a0130;p[0]=0xe9;*(uint32_t*)(p+1)=(uintptr_t)frame_entry-0x200a0130-5;
  ((void (__cdecl *)(void))0x2009d680)();
  unsigned short cw=0x027f;__asm__ volatile("fninit; fldcw %0"::"m"(cw));
+ history_burst=getenv("MCM_HISTORY_BURST")!=NULL;
  const char*seed=getenv("MCM_HISTORY_SEED");history_random_enabled=seed!=NULL;history_random_seed=seed?(uint32_t)strtoul(seed,NULL,10):0;
  FILE*rng_out=NULL;if(history_random_enabled&&argc==5){char path[MAX_PATH];if(snprintf(path,sizeof path,"%s.rng.bin",argv[4])>=(int)sizeof path)fail("rng path");rng_out=fopen(path,"wb");if(!rng_out)fail("rng open");}
  FILE*entry_out=argc==5?fopen(argv[4],"wb"):NULL;if(argc==5&&!entry_out)fail("entry open");

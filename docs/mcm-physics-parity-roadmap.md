@@ -4587,3 +4587,40 @@ Validation: all 315 tests and the production build pass. ARM64 and x64 native
 comparisons each report zero mismatches across 1,600 frames. The preview menu
 now accurately lists recovered traction and rider weight balance while retaining
 the warning about adapted terrain contacts, chassis and rider stabilization.
+
+
+### Retained histories: rear stiffness burst and exceptional contact torque
+
+The long-history oracle now accepts `MCM_HISTORY_BURST=1`. After the unchanged
+retained-frame setup, both implementations set bike +0x848 to 50, +0x73c to 45,
+and +0x700 to zero. The first history frame supplies longitudinal input -1;
+subsequent frames restore the corpus input. With the existing 0.02 frame interval,
+original steering setup produces rear extra stiffness 7500.00048828125 in all
+four cases. Later history frames produce zero. The comparator checks this value
+from the original stack observation at every frame as well as the complete
+engine, substep-finish and frame-return records and continuous CRT state/count.
+
+This scenario exposed a contact-moment divergence at case 16616/frame 264,
+followed by 1,089 mismatched words in the four-history comparison. The cross
+product in `accumulateMcmContactForce` used an ordinary array literal, whose first
+NaN could become positive in V8. The original x87 result is negative indefinite.
+That sign feeds opposing-acceleration branches, changing an angular component to
+zero in the recovered path while the original retains negative indefinite.
+Typed stores now preserve each unrounded cross-product component before the
+existing float32 stores. The arithmetic order and finite force behavior remain
+unchanged; no mismatch tolerance or trajectory exclusion was introduced.
+
+With the fix, ARM64 and x64 comparisons each match all 1,600 frames exactly.
+Intermediate motion/control/event observations at the first failing frame also
+match. Native runs repeat byte-for-byte and earlier setup traces are unchanged.
+`retained-burst-wine11.json.br` records the new native regression corpus;
+`mcm-retained-burst-validation.json` records the comparison and hashes.
+
+These are controlled synthetic burst trajectories, including overflow/crash
+states. They validate nonzero stiffness through the connected solver and fix a
+shared tire-force helper used by the preview. They do not replace the adapted
+preview chassis/contact integration or establish healthy live riding parity.
+
+Validation: all 316 tests and the production build pass. Production preview
+browser checks pass for selection, acceleration, steering, throttle release,
+pause/photo/reset, classic fallback and mobile layout.

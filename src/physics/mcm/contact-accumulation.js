@@ -14,7 +14,15 @@ export function accumulateMcmContactForce(c) {
   if((floatBits(c.magnitude)|0)<=0 || (floatBits(change)&0x7fffffff)===0)return {force,remaining,totalForce,totalTorque};
   ({force,remaining}=limitMcmContactForce({...c,requested:change}));
   totalForce=totalForce.map((v,i)=>f(mcmAdd(v,force[i])));
-  const cross=a=>[mcmSubtract(mcmMultiply(a[1],force[2]),mcmMultiply(force[1],a[2])),mcmSubtract(mcmMultiply(force[0],a[2]),mcmMultiply(force[2],a[0])),mcmSubtract(mcmMultiply(force[1],a[0]),mcmMultiply(force[0],a[1]))];
+  const cross=a=>{
+    // Preserve x87 negative indefinite through the first vector store. A normal
+    // array literal can canonicalize its first NaN to positive under V8.
+    const result=new Float64Array(3);
+    result[0]=mcmSubtract(mcmMultiply(a[1],force[2]),mcmMultiply(force[1],a[2]));
+    result[1]=mcmSubtract(mcmMultiply(force[0],a[2]),mcmMultiply(force[2],a[0]));
+    result[2]=mcmSubtract(mcmMultiply(force[1],a[0]),mcmMultiply(force[0],a[1]));
+    return result;
+  };
   let torque=cross(c.first?c.armFirst:c.armSecond).map(Math.fround);
   if(c.first && c.second)torque=cross(c.armSecond).map((v,i)=>Math.fround(mcmAdd(v,torque[i])));
   totalTorque=totalTorque.map((v,i)=>Math.fround(mcmAdd(v,torque[i])));
