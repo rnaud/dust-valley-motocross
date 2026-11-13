@@ -1543,3 +1543,36 @@ Source mass is positive and source time/threshold parameters are finite.
 The reset is validated independently; the subsequent pose rebuild, terrain
 alignment and alternate-path integration remain pending before whole-loop
 acceleration/release parity can be established.
+
+### Connected alternate reset and initial pose rebuild (2026-11-12)
+
+Recovered the continuous `0x49f8f0..0x49fa3c` sequence. It executes the full
+bike reset, copies supplied forward/up vectors, places the body at input x/z
+and local y=100, and saves that position. A vertical/zero forward vector uses
+the supplied up vector with a sign selected from the original forward-y bits.
+The path then sets world-up, flattens forward-y, applies local orientation to
+body and component, and calls the original zero-angle component handoff.
+
+Both orientation calls normalize and overwrite the same forward/up storage.
+The second normalization is retained even when the body and component share
+one node. The zero-angle handoff copies the body local matrix, zeros component
+translation and still executes the axis-angle matrix operation. Cache
+invalidation follows the original rule that an already-invalid node skips
+its descendants. The saved bike position can consequently differ from the
+final local translation when the two nodes alias.
+
+8,192 original-execution cases match all 1,176 output words with zero
+differences. Outputs include the full bike/component reset allocations and
+random-call count, four nodes' local/world matrices and cache flags, and the
+component angle. Cases cover all 64 optional reset-component combinations,
+all 16 body/component node pairs, parent graphs, cached/uncached nodes, and
+vertical, zero and general forward vectors. Fixtures retain every component
+presence pattern, every node-pair/vertical combination, and periodic samples.
+Only CRT rand is supplied; reset, orientation, finite check, matrix copy,
+translation, rotation and invalidation helpers execute inside the original.
+
+Report: `mcm-reset-pose-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-pose-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Source parameters are finite and the component rotation axis is nonzero.
+Terrain alignment after this initial pose, remaining alternate-path work and
+whole-loop integration are still needed for full trajectory parity.

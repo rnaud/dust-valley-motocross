@@ -1,6 +1,6 @@
 import {resetMcmBikeState} from '../../src/physics/mcm/bike-reset.js';
 import {floatBits,bitsFloat} from '../../src/physics/mcm/math.js';
-export function evaluateBikeReset(input){
+export function evaluateBikeReset(input,apply=resetMcmBikeState){
  const words=[...input.words],read=i=>bitsFloat(words[i]),vec=i=>[read(i),read(i+1),read(i+2)],write=(i,v)=>{words[i]=floatBits(v);};
  const b={};for(let i=0;i<818;i++)b[`field${(i*4).toString(16)}`]=read(i);
  b.field814=words[0x814/4];b.mass=read(0x558/4);b.inverseMass=read(0x55c/4);
@@ -14,7 +14,7 @@ export function evaluateBikeReset(input){
  const engineFields={gear:0x158,rpmDemand:0x15c,brake:0x7c,state:0x160,previousRpmDemand:0x164,shiftTimer:0x168,released:0x150,shiftThreshold:0x154};
  if(input.mask&16){c.engine={thresholdBases:[read(914+0x20/4)],thresholdRanges:[read(914+0x50/4)]};for(const [key,offset] of Object.entries(engineFields))c.engine[key]=read(914+offset/4);}
  if(input.mask&32)c.effect=Array.from({length:4},(_,j)=>read(1038+j));
- const result=resetMcmBikeState(c);
+ const result=apply(c);
  for(let i=0;i<818;i++)write(i,b[`field${(i*4).toString(16)}`]);
  for(const offset of [0x620,0x724,0x72c,0x814])words[offset/4]=b[`field${offset.toString(16)}`]>>>0;
  write(0x558/4,b.mass);write(0x55c/4,b.inverseMass);
