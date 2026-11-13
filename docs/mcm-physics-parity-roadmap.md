@@ -3592,3 +3592,27 @@ These are synthetic valid asset corpora. The complete frame-end rider state
 machine, connection to retained post-loop state, actual frame entry/return,
 longer histories, dynamic bike/rider collisions and complete acceleration/release
 trajectories remain open; this does not establish full physics parity.
+
+### Frame-end normal rider application (`0x4af710` normal/crash paths)
+
+`normal-frame-rider.js` connects the recovered pose-blending and animation-seek
+helpers for the normal frame-end rider path. It selects the two/four-record rider
+blend, applies the original speed clamp and secondary weighting, selects the
+bike's pose or lean animation, then copies the complete resolved bike world
+matrix into the rider proxy graph. Crash-state cases execute the separately
+recovered crash animation branch instead and retain the rider state.
+
+The native oracle enters at `0x4af710` and runs through the actual return, with no
+patches inside this routine or its callees. All 12,000 cases match all 3,247 observed
+words: six transform nodes and cache flags, pose/control fields, both animation
+objects' selected records/frames and bounds, and all 336 source child records'
+axes/positions. Coverage includes poses 0–13, both pose-enable branches, both
+rider-parent configurations, childless and populated frames, signed-zero and
+clamped speeds, and crash states 1–3. See
+`mcm-normal-frame-rider-validation.json` for hashes and coverage.
+
+This corpus supplies finite synthetic state with `field710=0` and `fieldbfc != 2`.
+Trick/nearby animation updates and the recovery-animation branch remain open,
+as does connecting this frame-end call to the retained post-loop physics state.
+Actual frame entry/return, longer histories, dynamic bike/rider collisions and
+end-to-end acceleration/throttle-release comparisons remain required for parity.
