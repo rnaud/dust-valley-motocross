@@ -2997,3 +2997,30 @@ Event setup/rider updates, common tail, collisions and scheduler remain to be
 connected on this reset path. Shared engine entry, persistent multi-frame
 execution, dynamic collisions, complete acceleration/release trajectories and
 playable integration remain unproven.
+
+### Reset events connected through rider initialization
+
+The continuous reset comparison now returns from the real event wrapper at
+`0x4ac5fc`/`0x4ac681`. It executes state844 commitment, the crash-effect envelope,
+saved heading/direction, pitch angular-velocity floor for kind 1, controller
+linear/angular velocity handoff, the real `0x40fa10` animation-record selection,
+and resource selection. All 1,851 captured words match in 16,384 executions.
+
+Required outcomes include event and no-event preservation, empty/nonempty first
+animation groups, pitch-floor application, both limited-contact entry branches,
+and zero/two/three/four/five event-plus-rider random draws. The reset draw remains
+first; launch consumes two more before rider selection consumes two or three.
+Record groups are valid synthetic inputs. The original selection code executes;
+only its external random source and input-query callback are supplied.
+
+The reset clears flag820, so event-root reorientation and child-bound rebuilding
+are naturally skipped here. Their independent ordinary-path comparisons remain
+separate evidence. Controller state is captured alongside the full bike, engine,
+effect, transforms, contact/force/motion scratch and random/input counts.
+
+Report: `mcm-reset-event-setup-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-event-setup-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Remaining reset connections: event join, normal rider update, common tail,
+collision dispatch and scheduler. Engine/reset entry, persistent frame loops,
+dynamic collisions, complete acceleration/release trajectories and playable
+integration remain unproven.
