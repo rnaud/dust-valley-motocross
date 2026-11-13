@@ -1155,3 +1155,13 @@ test('connected ordinary force preparation matches original contacts, drag and a
  const {evaluateContactForceSubstep}=await import('../scripts/mcm-reference/contact-force-substep-case.mjs');
  for(const {input:c,outputBits} of fixture('contact-force-substep-wine11.json').fixtures)assert.deepEqual(evaluateContactForceSubstep(c),outputBits);
 });
+
+test('connected contact roll matches original projection, trigonometry and steering blend',async()=>{
+ const {evaluateContactRollSubstep}=await import('../scripts/mcm-reference/contact-roll-substep-case.mjs');
+ for(const {input:c,outputBits} of fixture('contact-roll-substep-wine11.json').fixtures)assert.deepEqual(evaluateContactRollSubstep(c),outputBits);
+});
+
+test('connected contact geometry matches original post-rotation mount reads, wheel levers and axis',async()=>{
+ const {evaluateContactGeometrySubstep}=await import('../scripts/mcm-reference/contact-geometry-substep-case.mjs');
+ for(const {input:c,outputBits} of fixture('contact-geometry-substep-wine11.json').fixtures)assert.deepEqual(evaluateContactGeometrySubstep(c),outputBits);
+});

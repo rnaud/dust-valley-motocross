@@ -1867,3 +1867,38 @@ is seeded as before, and query-return/main-exit observation boundaries capture
 outputs. Pinned executable and loaded Wine 11 D3DRM hashes are checked. Later
 force assembly, unified complete main-loop execution, and acceleration/release
 trajectory parity remain unfinished.
+
+### Connected roll target and suspension geometry (2026-11-12)
+
+Extended ordinary-path execution through `0x4a692a`. The recovered block
+projects rear contact normal off the wheel-contact direction, constructs the
+roll-target geometry, evaluates the original signed arcsine, and blends the
+angle toward current roll according to component steering angle. It preserves
+the original differing normalization rounding points and signed speed-bit gate
+at 32. The cosine is written before the steering blend and is not recomputed.
+Inactive/degenerate paths use current roll and cosine 1.
+
+A second extension through `0x4a69e8` resolves rear and front suspension-mount
+world positions after the component rotation, computes wheel lever vectors,
+and constructs the front contact axis. These reads can repopulate caches
+invalidated by the preceding update, including aliased body/component/mount
+nodes. The normal scratch ends with the front mount world position.
+
+Both continuous original-execution runs match all 40,000 cases with zero
+differences, across 229 and 238 output words. They retain the prior contact,
+force and transform outputs plus target angle/cosine, lever vectors and axis.
+Cases cover state and speed gates, exact and adjacent speed thresholds,
+component angle thresholds and overflow, signed zeros, all mount pairings,
+parent graphs, cached/uncached transforms, and synthetic terrain variants.
+The pinned original CRT arcsine executes with heap/thread initialization.
+
+Reports: `mcm-contact-roll-substep-validation.json` and
+`mcm-contact-geometry-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-contact-roll-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`
+and
+`node scripts/mcm-reference/compare-contact-geometry-substep-oracle.mjs /path/to/mcm.exe /tmp/another-new-output-directory`.
+The executable and loaded Wine 11 D3DRM hashes are checked. Initial wheel-query
+normal scratch and query-return/main-exit observation boundaries are supplied;
+geometry and math callees execute directly. Chassis terrain probes, remaining
+force assembly, complete main-loop integration and acceleration/release
+trajectory parity remain unfinished.
