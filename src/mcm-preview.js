@@ -21,11 +21,11 @@ export function stepMcmPreviewEngine(engine,{speed,pressed,grounded},dt){
   engine.force=grounded?drive.scalar*LBF:0;engine.engineBrake=0;
   return engine;
 }
-export function mcmPreviewSuspension({compression,velocity,mass,front,contactFactor=1}){
+export function mcmPreviewSuspension({compression,velocity,mass,front,contactFactor=1,massShare=.5}){
   const c=f(compression/FT),v=f(velocity/FT);
   const r=calculateMcmSuspension({displacement:[0,c,0],velocity:[0,v,0],compression:c,
     linearStiffness:front?1000:600,cubicStiffness:front?100:60,dampingMultiplier:1.5,
-    velocityLimit:f(front?20.6:1.6),massShare:.5,extraStiffness:0,mass:f(mass/14.59390294)});
+    velocityLimit:f(front?20.6:1.6),massShare:f(massShare),extraStiffness:0,mass:f(mass/14.59390294)});
   // Ray projection, unilateral contact and solver ceiling belong to Cannon glue.
   return Math.max(0,Math.min(30000,r.force[1]*LBF*contactFactor));
 }

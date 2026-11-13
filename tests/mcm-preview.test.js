@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createState,stepBike,resetBike} from '../src/world.js';
+import {mcmPreviewSuspension} from '../src/mcm-preview.js';
 import {Vector3,Quaternion} from 'three';
 import {bikeLinkagePoints,fitBikeLink} from '../src/bike-linkage.js';
 
@@ -132,4 +133,46 @@ test('retained preview acceleration includes spring impulses without applying th
  assert.ok(s.recoveredAcceleration.every(Number.isFinite));
  assert.ok(s.recoveredContact.driveForce[2]>0);
  resetBike(s,0,0,0);assert.deepEqual(s.recoveredAcceleration,[0,0,0]);
+});
+
+test('preview balance uses the captured profile and retains forward/back weight history',async()=>{
+ const {createMcmPreviewBalance,stepMcmPreviewBalance}=await import('../src/mcm-preview-balance.js');
+ const fs=await import('node:fs');
+ const record=JSON.parse(fs.readFileSync(new URL('./fixtures/mcm/player-state-wine11.json',import.meta.url))).records[0];
+ const bike=Buffer.from(record.stateHex,'hex'),c=createMcmPreviewBalance();
+ assert.equal(bike.readUInt32LE(0x618),0);
+ for(const [name,offset] of [['bikeMass',0x684],['riderMass',0x688],['totalMass',0x68c],['supportDepth',0x5d8]])assert.equal(c[name],bike.readFloatLE(offset));
+ assert.equal(c.balanceFilter[1],Math.fround(bike.readFloatLE(0x8cc)*Math.fround(6.3)));
+ const input={riderLean:1,contact:true,position:[10,2,20],velocity:[0,0,3],forward:[0,0,1],dt:.02};
+ for(let i=0;i<100;i++)stepMcmPreviewBalance(c,input);
+ assert.ok(Math.abs(c.frontShare-(240*.5+165*.75)/405)<1e-6);
+ assert.ok(c.offset[2]>.24&&c.offset[2]<.26);
+ stepMcmPreviewBalance(c,{...input,riderLean:0});
+ assert.equal(c.frontShare,.5);assert.equal(c.rearShare,.5);assert.ok(c.balanceFilter[0]>.5);
+ for(let i=0;i<150;i++)stepMcmPreviewBalance(c,{...input,riderLean:-1});
+ assert.ok(Math.abs(c.frontShare-(240*.5+165*.25)/405)<1e-6);assert.ok(c.offset[2]<-.24);
+ stepMcmPreviewBalance(c,{...input,contact:false});
+ assert.deepEqual(c.offset,[0,0,0]);assert.equal(c.field4bc,1);
+ assert.deepEqual(c.takeoffVelocity,input.velocity.map(x=>Math.fround(x/.3048)));
+});
+
+test('preview contact load projects original gravity and drag rather than spring impulses',async()=>{
+ const {mcmPreviewBaseForce,mcmPreviewNormalLoad}=await import('../src/mcm-preview-balance.js');
+ const rest=mcmPreviewBaseForce([0,0,0]);assert.deepEqual(rest.originalForce,[0,-405,0]);assert.deepEqual(rest.drag,[0,0,0]);
+ assert.ok(Math.abs(mcmPreviewNormalLoad(rest.originalForce,[0,1,0],.5)-405*4.448221615*.5)<1e-6);
+ assert.equal(mcmPreviewNormalLoad(rest.originalForce,[1,0,0],.5),0);
+ const moving=mcmPreviewBaseForce([10,0,0]);assert.ok(moving.drag[0]<0);assert.equal(moving.originalForce[1],-405);
+ assert.ok(mcmPreviewNormalLoad(moving.originalForce,[1,0,0],1)>0);
+});
+
+test('rider balance reaches tire loads and spring mass shares and clears on reset',()=>{
+ const spring={compression:.1,velocity:-.2,mass:183.7,front:true};
+ assert.ok(mcmPreviewSuspension({...spring,massShare:.7})>mcmPreviewSuspension({...spring,massShare:.3}));
+ const s=createState({sand:false,flat:true,height:()=>0,physicsMode:'mcm-preview'});
+ for(let i=0;i<150;i++)stepBike(s,{},.02);
+ stepBike(s,{leanForward:true},.02);
+ assert.ok(s.recoveredBalance.frontShare>.5);
+ assert.ok(s.tireLoads[1]>s.tireLoads[0]);
+ assert.deepEqual(s.physics.vehicle.recoveredMassShares,[s.recoveredBalance.rearShare,s.recoveredBalance.frontShare]);
+ resetBike(s,0,0,0);assert.deepEqual(s.physics.vehicle.recoveredMassShares,[.5,.5]);assert.equal(s.recoveredBalance.balanceFilter[0],.5);assert.deepEqual(s.recoveredBalance.offset,[0,0,0]);
 });
