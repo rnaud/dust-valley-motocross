@@ -3150,3 +3150,30 @@ Report: `mcm-reset-finished-substep-validation.json`. Reproduce with
 Shared engine/reset entry, repeated substeps and frame completion, dynamic
 bike/rider callbacks, complete acceleration/release trajectories, and playable
 integration remain outstanding.
+
+### Engine entry connected through reset and completed substep
+
+The continuous alternate path now starts at `0x4a5bd7`, before engine/input
+processing, and reaches `0x4ac94b`. All 1,937 captured words match across 16,400
+original executions. Engine and bike fields flow directly into the reset path;
+there is no state replacement at the engine/reset boundary. An observation-only
+hook captures the 33 engine-entry outputs before reset can clear them. Final
+analog and acceleration filter values are also compared, alongside the complete
+prior substep state.
+
+Required outcomes include digital and analog throttle, incoming normal/crashed
+states, upshifts/downshifts, ordered brake/throttle device polling, and low-speed
+stopping. All 16 collision-induced event transitions and 2,227 carry-consuming
+scheduler cases remain covered. The same engine parameter tables and object
+serve input processing and reset. The input controller is valid throughout:
+original non-AI engine input dereferences it unconditionally, so the old
+reset-only harness's absent-controller case is invalid at this earlier entry.
+The real input aggregator runs; only device responses and CRT draws are supplied.
+
+Report: `mcm-reset-engine-entry-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-reset-engine-entry-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+Ordinary and reset paths now share the same original entry/exit addresses in
+separate continuous comparisons. A unified persistent state representation,
+actual loop-back/frame execution, dynamic bike/rider collision callbacks,
+end-to-end acceleration/release trajectories, and playable integration remain
+outstanding. This corpus does not establish full simulation parity.
