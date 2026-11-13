@@ -4,6 +4,7 @@ on:
     branches: [main]
   workflow_dispatch:
 permissions:
+  actions: read
   contents: read
   pages: write
   id-token: write
@@ -30,6 +31,27 @@ jobs:
         with:
           path: dist
           name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Wait for Pages artifact metadata
+        uses: actions/github-script@v7
+        env:
+          PAGES_ARTIFACT: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
+        with:
+          script: |
+            // Pages discovers the upload through this API, which can lag behind upload completion.
+            for (let attempt = 0; attempt < 12; attempt++) {
+              const artifacts = await github.paginate(github.rest.actions.listWorkflowRunArtifacts, {
+                ...context.repo,
+                run_id: context.runId,
+                per_page: 100,
+              });
+              if (artifacts.some(a => a.name === process.env.PAGES_ARTIFACT && !a.expired)) {
+                core.info('Pages artifact is available for deployment.');
+                return;
+              }
+              core.info(`Waiting for artifact metadata (${attempt + 1}/12).`);
+              if (attempt < 11) await new Promise(resolve => setTimeout(resolve, 5000));
+            }
+            core.setFailed(`Pages artifact ${process.env.PAGES_ARTIFACT} was not visible after 55 seconds.`);
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
