@@ -2611,3 +2611,26 @@ Report: `mcm-normal-event-children-substep-validation.json`. Reproduce with
 Next are the caller's post-event joins and trick handling, then collision/tail
 and entry integration. Full whole-bike acceleration/throttle-release trajectory
 parity remains unproven.
+
+### Connected post-event joins and rider-call arguments
+
+The normal callers now execute their post-event branches through the common
+`0x4ac6cd` join or the entry of `0x4aecb0`, before its prologue. Triggered events
+set the shared chassis control flag (`stack+0x20`) to 1 and clear `bike+0x8c8`.
+Untriggered normal states call rider update only when that existing flag is 1.
+The height argument follows the airborne/limited/grounded route and rear-wheel
+contact; control comes from the already-updated rider balance filter, not a
+separate input. The third argument is the original timestep.
+
+All 710 captured words match in 40,000 original executions, including 7,235
+rider calls. The harness observes entry arguments and exits before executing the
+rider body; it does not substitute a fake rider result. Already-crashed states
+and skipped calls preserve their scratch values. Initial failed comparisons
+identified the shared contact flag and filtered-balance argument and eliminated
+incorrect independent harness inputs for those values.
+
+Report: `mcm-normal-event-join-substep-validation.json`. Reproduce with
+`node scripts/mcm-reference/compare-normal-event-join-substep-oracle.mjs /path/to/mcm.exe /tmp/new-output-directory`.
+The rider-update body (including input, pose/blend and transitions), common
+collision/tail, entry wiring and whole-bike trajectory comparisons remain to
+be connected. Full acceleration/throttle-release parity remains unproven.
