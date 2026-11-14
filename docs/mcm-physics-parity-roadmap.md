@@ -1,5 +1,15 @@
 # Motocross Madness physics parity roadmap
 
+## Normal chase input controls recovered (2026-11-14)
+
+Original `0x47b52a..0x47c30c` now has a recovered control step for normal chase modes, including inactive-camera handling, modes 3/6 reset flags, keyboard pitch/yaw/distance controls, joystick POV and modifier-gated buttons, native angle limits/wrapping and the camera-field/109 multiplier. Fixed-target mode 5 and free-camera controls explicitly remain unsupported.
+
+The native oracle executes the original keyboard, POV and button readers without return-value shims. **8,192 cases / 32,768 retained control updates match all 196,608 words**, covering seven modes, all 256 eight-key combinations, radius thresholds, five timestep values, joystick availability/POV values, button states and modifier gates. These retained histories execute the control block alone, not intervening downstream camera updates.
+
+Live idle capture matches **40 updates / 240 words**. A separate one-second OS camera-key pulse matches **160 updates / 960 words**, including **111 updates with changed camera angles**, key-up and key-down frames. The key was released, both original instructions restored, and debugger detachment verified. Live coverage is mode 0 without a joystick; each live control entry supplies current state, so this does not prove full-controller retention. See `mcm-chase-controls-validation.json`.
+
+Next: connect initialization/backup restoration and these controls to the retained spatial/heading chain, then complete the view/render scratch-writer sequence. Input polling, alternate camera paths, world scheduling and the negative-steering dependency remain open. Preview handling is unchanged.
+
 ## Source and base construction bridged into retained camera state (2026-11-14)
 
 Original source selection/normalization at `0x47b107..0x47b1fe` and base prediction at `0x47b452..0x47b4e5` now have recovered helpers. Source preserves the signed speed-bit threshold, velocity sign gate and zero-vector fallback. Base preserves the signed timestep clamp, previous-target branch and different X/Y/Z rounding boundaries. Isolated native execution matches **3,072/3,072 source words across 768 cases** and **6,144/6,144 base words across 1,536 cases**.

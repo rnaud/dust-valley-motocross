@@ -1,0 +1,75 @@
+{
+  "scope": "Original normal chase input-control block with original keyboard/joystick readers; not a complete retained camera controller.",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "entry": "0x47b52a",
+  "exit": "0x47c30c",
+  "fixtureSha256": "99d4eb344659b4b3559cc0ee8556d660b1093e980571417be479d64116c3ff75",
+  "inputSha256": "d0a94952e68ab22e816ac2bbde3ad883e8f0bcae09e3069c74151f7cad9c73cd",
+  "outputSha256": "363868a8e2e61647475c6d843dca135c50077fb214b39c102d81759c3d3d290b",
+  "sources": {
+    "src/physics/mcm/chase-controls.js": "9fe88042780b40c5c2d2c1e68cdfc8df2c7dc004a7a7f751048121e07464975a",
+    "scripts/mcm-reference/chase-controls-oracle.c": "3b59a0f94ba2447dfb23449c9b25bc0eb38dd8d504725c271cba97979e9d4cc0",
+    "scripts/mcm-reference/capture-chase-controls.c": "5036a06b81130643dcae2d6c49e9ad5cf677ebfcba5944f20d6ce556012f40ff"
+  },
+  "isolated": {
+    "cases": 8192,
+    "steps": 32768,
+    "words": 196608,
+    "differences": 0,
+    "examples": []
+  },
+  "idle": {
+    "frames": 40,
+    "words": 240,
+    "active": 40,
+    "changes": 0,
+    "keys": [
+      0
+    ],
+    "joysticks": [
+      0
+    ],
+    "modes": [
+      0
+    ]
+  },
+  "pulse": {
+    "frames": 160,
+    "words": 960,
+    "active": 160,
+    "changes": 111,
+    "keys": [
+      0,
+      4
+    ],
+    "joysticks": [
+      0
+    ],
+    "modes": [
+      0
+    ]
+  },
+  "pulseRawSha256": "a0b9ba05050840a0c069bd1aeb16ca053c60d5991a750b01a3c53726df5750ae",
+  "cleanup": [
+    "0047b52a restored=1",
+    "0047c30c restored=1",
+    "debugger=0 clean=1"
+  ],
+  "keyRelease": "down=1 up=1 released=1",
+  "coverage": [
+    "Seven modes (0/1/2/3/4/6/7), active/inactive camera, four retained updates per case",
+    "All 256 combinations of eight camera keys; radius boundary below/at/above 50 and lower limit 7",
+    "Original keyboard reader, POV reader and modifier-gated button reader execute without shims",
+    "POV missing/neutral, cardinal/diagonal and intermediate angles; present/absent joystick",
+    "Zero, negative and positive timestep, angle wrap/clamp and reset branches",
+    "160 live mode-0 updates contain 111 angle changes during an OS camera-key pulse"
+  ],
+  "remaining": [
+    "Fixed-target mode5 and free-camera controls are explicitly unsupported.",
+    "Live comparisons seed state at each control entry; full controller state retention and intervening lifecycle are not yet connected.",
+    "Isolated native inputs retain state for four control updates but do not execute the downstream camera between those steps.",
+    "Live joystick transitions and general exceptional inputs remain unvalidated.",
+    "Input-device polling and world scheduling remain outside this block.",
+    "Negative-steering scratch dependency remains unresolved; preview handling is unchanged."
+  ]
+}
