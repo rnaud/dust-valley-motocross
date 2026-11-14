@@ -264,3 +264,27 @@ test('preview retains progressive braking and previous-speed shift scheduling',a
  resetBike(s,0,0,0);
  assert.equal(s.engine.recovered.brake,0);assert.equal(s.engine.recovered.previousSpeed,0);
 });
+
+
+test('preview neutral controls hold a playable heading through Free Ride with sand on and off',()=>{
+ for(const sand of [false,true]){
+  const s=createState({physicsMode:'mcm-preview',sand,height:freeTerrain,spawn:{x:0,z:0,yaw:0}});
+  let maxHeading=0;
+  for(let i=0;i<1000;i++){stepBike(s,{gas:true,steer:0,lean:0},.02);maxHeading=Math.max(maxHeading,Math.abs(s.yaw));}
+  assert.equal(s.crashed,false);assert.ok(s.z>250);assert.ok(maxHeading<.22,`Uncommanded heading ${maxHeading}, sand=${sand}`);
+  assert.equal(s.steer,0);
+ }
+});
+test('preview neutral assist keeps the selected turn heading and resets on recovery',()=>{
+ const s=createState({physicsMode:'mcm-preview',sand:true,flat:true,height:()=>0});
+ for(let i=0;i<150;i++)stepBike(s,{gas:true},.02);
+ for(let i=0;i<100;i++)stepBike(s,{gas:true,steer:.4},.02);
+ for(let i=0;i<50;i++)stepBike(s,{gas:true,steer:0},.02);
+ const target=s.previewHeadingTarget;
+ assert.ok(Math.abs(target)>.2);
+ for(let i=0;i<100;i++)stepBike(s,{gas:true,steer:0},.02);
+ assert.ok(Math.abs(Math.atan2(Math.sin(s.yaw-target),Math.cos(s.yaw-target)))<.1);
+ resetBike(s,0,0,1.2);assert.equal(s.previewHeadingTarget,null);
+ for(let i=0;i<150;i++)stepBike(s,{gas:true,steer:0},.02);
+ assert.ok(Math.abs(s.yaw-1.2)<.1);assert.equal(s.crashed,false);
+});

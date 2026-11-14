@@ -5221,3 +5221,22 @@ checks also pass on x64. Native captures and hook restoration evidence are
 archived outside git under `live-frame-return-2026-11-14`. An exploratory
 unreinitialized two-frame run matches its observed words, but is not yet the
 supported acceleration/release trajectory validation.
+
+### Playable preview: neutral steering assistance
+
+The playable preview now steers from rider input instead of feeding terrain roll
+error back into bar angle. A bounded grounded heading assist counters unwanted
+turns when the stick is neutral; it rotates velocity with chassis heading and
+damps residual yaw. Steering input updates the heading target, and recovery
+clears it. Recovered engine, suspension, tires, braking and airborne helpers remain
+connected. This assistance is a playability adaptation, not original-game parity.
+
+Regression coverage includes 20-second neutral Free Ride runs with sand on/off,
+intentional turns, stick release, holding a newly selected heading and recovery
+at a different heading. The browser smoke check now exercises actual multi-touch
+Free Ride throttle, left/right steering, steering-finger release and throttle
+release. The menu explicitly describes the preview as assisted handling.
+
+Validation: all 415 tests and the production build pass. Desktop browser checks
+passed through recovery/classic fallback; the corrected multi-touch Free Ride
+check passes on a mobile viewport with no runtime errors.
