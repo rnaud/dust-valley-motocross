@@ -1,5 +1,11 @@
 # Motocross Madness physics parity roadmap
 
+## Draw inputs and Wine stateblock boundary (2026-11-14)
+
+Captured 60 indexed draws with complete vertex/index arrays: the observed batches contain 12/24, 280/894, and 247/738 vertices/indices. The retained scratch word never matches an aligned input vertex word. A separate version-guarded capture resolves `DDRAW!DrawIndexedPrimitive` through Wine's device wrappers to `wined3d_device_apply_stateblock`; all 12 initialized calls change the word across stateblock application. The first uninitialized capture prefix is explicitly excluded. All indices, stack cleanup and caller identities are validated.
+
+The stateblock function reserves a large local stack frame that overlaps the bike's reused slot. A candidate direct store writes an intermediate integer 1; the final retained float is still not attributed to an instruction or input expression. An earlier intermediate probe also observed one later indexed-submission write, so stateblock application must not be treated as the only possible writer. The next target is the final local writer and the stateblock inputs/gates. No observed scratch is injected; negative steering remains mismatched. See `mcm-draw-stateblock-validation.json` and the archived intermediate probes.
+
 ## Safe renderer call capture (2026-11-14)
 
 The failed deep probe was reproduced in an isolated process: single-stepping a direct x86 `CALL` under this host's Wine 11 decrements ESP by eight bytes instead of four, displacing the matrix-copy argument. The same uninstrumented copy passes; indirect-call and preceding-MOV hooks each pass 100 copies. New renderer probes reject direct-call hooks, and the old unvalidated force probe now refuses its unsupported hook before attaching. Do not compensate by editing the game's stack.

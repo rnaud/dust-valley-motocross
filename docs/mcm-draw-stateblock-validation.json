@@ -1,0 +1,116 @@
+{
+  "scope": "Observed graphics inputs and native stateblock boundary; not implemented physics parity.",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "fixtureSha256": "755d27671b9f53d356edf3d42431b37003a78e5138b6cf0ad13928819352e32f",
+  "drawRawSha256": "07ab3bc591d996b4a818b3b26ea3c5a03237cb7df16af5f4bbce383b2887d222",
+  "stateblockRawSha256": "e00e0d9afa2a0f933d2c709ab84d2e91c8c6df1ff69642cffce99e728a7efb8b",
+  "sources": {
+    "draw": "2018e5676c2cf5deea0d4030b283538ad19ace050fde69fa86e2198dc64a135f",
+    "stateblock": "53b2c17e5ac5fb89ee11b3cefe9c1641965125f457013d7471e5d910de72e742"
+  },
+  "modules": {
+    "ddraw": {
+      "sha256": "be2964ddd67d148bcf87c4a1eedf8cf5e1ccc39eb7c87f3079df181d80fbea29",
+      "base": "0x7aa90000",
+      "imageSize": "0x69000",
+      "timestamp": "0x69e0eaba",
+      "device2DrawIndexedPrimitiveRva": "0x98d0",
+      "device7Rva": "0xf530",
+      "stateblockApplyIatRva": "0x60544"
+    },
+    "wined3d": {
+      "sha256": "25feee6100619bd123fc00568d4e5107a3a20d60f62d160e12c368731fa32f1c",
+      "base": "0x7a770000",
+      "applyStateblockRva": "0x1bd500"
+    }
+  },
+  "draw": {
+    "scope": "Observed draw inputs and caller-stack changes; no simulated graphics or scratch injection.",
+    "calls": 60,
+    "changedCalls": 60,
+    "batches": {
+      "12 vertices / 24 indices": 20,
+      "280 vertices / 894 indices": 20,
+      "247 vertices / 738 indices": 20
+    },
+    "inputWordMatches": 0,
+    "applyPairs": 0,
+    "applyChanges": 0,
+    "targets": [
+      2057935056
+    ],
+    "applyTargets": [],
+    "ignoredLeadingRows": 1
+  },
+  "stateblock": {
+    "scope": "Observed draw inputs and caller-stack changes; no simulated graphics or scratch injection.",
+    "calls": 12,
+    "changedCalls": 12,
+    "batches": {
+      "12 vertices / 24 indices": 4,
+      "280 vertices / 894 indices": 4,
+      "247 vertices / 738 indices": 4
+    },
+    "inputWordMatches": 0,
+    "applyPairs": 12,
+    "applyChanges": 12,
+    "targets": [
+      2057935056
+    ],
+    "applyTargets": [
+      2056443136
+    ],
+    "ignoredLeadingRows": 59
+  },
+  "cleanup": [
+    "00467fc8 restored=1",
+    "00445f85 restored=1",
+    "00445f88 restored=1",
+    "00467fcb restored=1",
+    "7aa9b340 restored=1",
+    "7aa9b3b3 restored=1",
+    "7aa9b3dc restored=1",
+    "7aa9ebfe restored=1",
+    "7aa9ec30 restored=1",
+    "7aa91588 restored=1",
+    "7aa9ebf6 restored=1",
+    "7aa9ea3f restored=1",
+    "7aa9eaa5 restored=1",
+    "7aa9eae1 restored=1",
+    "7aa9eb19 restored=1",
+    "7aa9eb4f restored=1",
+    "7aa9eb76 restored=1",
+    "7aa9eb88 restored=1",
+    "7aa9eb9a restored=1",
+    "7aa9ebb4 restored=1",
+    "7aa9ebd8 restored=1",
+    "7aa9ebee restored=1",
+    "7a92d8a4 restored=1",
+    "7a92db4d restored=1",
+    "7a92de66 restored=1",
+    "7a92f30c restored=1",
+    "7a92fb1d restored=1",
+    "7a92fd05 restored=1",
+    "7a9300db restored=1",
+    "7a9302f6 restored=1",
+    "7a930428 restored=1",
+    "7a930491 restored=1",
+    "7a9305dd restored=1",
+    "7a93066c restored=1",
+    "7a930c91 restored=1",
+    "7a930d02 restored=1",
+    "7a930d68 restored=1",
+    "7a930e0a restored=1",
+    "7a930e79 restored=1",
+    "7a930eec restored=1",
+    "004a54b6 restored=1",
+    "debugger=0 clean=1"
+  ],
+  "remaining": [
+    "The final stateblock-local writer and its input expression remain unidentified.",
+    "Candidate direct-store observation writes intermediate integer 1, not the final retained float; it is not a parity implementation.",
+    "An earlier intermediate capture also observed one write during indexed submission; do not assume stateblock application is the only writer.",
+    "Debugger overhead changes timing and render paths. These fixtures are separate observations, not a repeatable controlled negative-steering trajectory.",
+    "Negative-steering mismatch remains; no observed scratch injection."
+  ]
+}
