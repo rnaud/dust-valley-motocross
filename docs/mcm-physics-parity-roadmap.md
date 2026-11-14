@@ -1,5 +1,13 @@
 # Motocross Madness physics parity roadmap
 
+## Offset-to-smoothing controller chain recovered (2026-11-14)
+
+Original `0x47d166..0x47d606` now joins offset rotation, target construction, filter initialization and retained smoothing. Mode 3 adds the original bank rotation. Mode 5 and the disabled gate preserve the upstream target and bypass construction. The shared mutable axis is retained; its original initializer `0x47e310` establishes `[0, 1, 0]`.
+
+A native oracle matches **256,000/256,000 words across 6,400 updates in 640 cases**, covering eight modes, four actor types, both initialization states, both gate states and five timestep groups. This includes 2,800 active and 3,600 bypass updates. A guarded live capture matches **80 consecutive updates / 3,120 words**, including computed targets, shared axis, records and smoothed outputs. Filters and axis are seeded once; subsequent native entries must equal retained state. The live case only covers mode 0 and existing filters. Probe restoration and debugger detachment passed. See `mcm-chase-offset-validation.json`.
+
+Earlier source/base/eye/angle/factor/distance construction, terrain/camera collision, live branch transitions and whole-controller evolution remain. The known negative-steering scratch mismatch is still open; this milestone does not change preview handling.
+
 ## Runtime camera-offset rotation recovered (2026-11-14)
 
 The upstream camera call `0x4bcb90` resolves through IAT `0x5278b8` to the pinned `d3drm.dll` export `D3DRMVectorRotate` (RVA `0x1fd0`). Its 416 loaded instruction bytes match the pinned DLL after relocation. This routine normalizes the caller's axis in place, performs two float32 quaternion products, and normalizes the result; zero-length normalization returns `[1, 0, 0]`. It is distinct from the game's x87 matrix rotation.

@@ -7,11 +7,13 @@ export function prepareMcmChaseTargets(state,{base,offset,eye,factor,distance,mo
  const scale=mode===6?-10:f(factor)*f(distance),targets=new Float32Array(6);
  for(let i=0;i<3;i++)targets[i]=f(f(base[i])+f(f(offset[i])*scale));
  targets[1]=f(targets[1]+3);targets.set(eye,3);
- if(!state.filters){
-  const time=actorType===1?.25:f(.3);
-  state.filters=Array.from(targets,value=>Float32Array.of(value,time,maximum,-maximum));
- }
+ initializeMcmChaseFilters(state,targets,actorType);
  return targets;
+}
+export function initializeMcmChaseFilters(state,targets,actorType){
+ if(state.filters)return;
+ const time=actorType===1?.25:f(.3);
+ state.filters=Array.from(targets,value=>Float32Array.of(value,time,maximum,-maximum));
 }
 // Keep initialization and subsequent retained updates on the same path.
 export function stepMcmPreparedChase(state,input,delta){

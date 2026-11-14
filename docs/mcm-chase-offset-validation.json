@@ -1,0 +1,51 @@
+{
+  "scope": "Combined offset rotation, target construction, filter initialization and retained smoothing, original 0x47d166..0x47d606.",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "runtimeDllSha256": "7edb1ed218aececbb44f4d92d5b0880f0ff1777dc525e555140f987015d8be1a",
+  "fixtureSha256": "1b5312a4a99422e9cce8b141d4e2f6ca8628b30ed40cdc050300fd0860dc2f8e",
+  "inputSha256": "6dc28c44eb74771d7db88cc57716b8a17ebf02f5f8b3f3bdae758eb67b066ea1",
+  "outputSha256": "ed1ff01698e80c370a5142fe179183d9c62f60220a0a51aa2b5fc3661c82bd7b",
+  "liveRawSha256": "35dc6876db4d3f8c57d456b7023a23a10c5466af503d4d9832f006a6aa7851fb",
+  "sources": {
+    "src/physics/mcm/chase-offset.js": "6c67a48983ee7993d77051e94c388d43e68472ac8104d2ea27086973096ebee2",
+    "src/physics/mcm/chase-preparation.js": "731f995550810ed9e663c9480f7397723a1e2f72c57423d3c78d3dae5177dc03",
+    "scripts/mcm-reference/chase-offset-chain-oracle.c": "c50cf687383881410ffa75aaa6b41cdb92186405f148790b2ef5037bddaeb643",
+    "scripts/mcm-reference/capture-chase-offset.c": "940bd8c32ce2b18629108893d67659ecb2ebb8f940fab90c1f65674cf1981152"
+  },
+  "isolated": {
+    "cases": 640,
+    "steps": 6400,
+    "words": 256000,
+    "active": 2800,
+    "bypassed": 3600,
+    "differences": 0,
+    "examples": []
+  },
+  "live": {
+    "pairs": 80,
+    "words": 3120,
+    "active": 80,
+    "bypassed": 0,
+    "modes": [
+      0
+    ]
+  },
+  "coverage": [
+    "Eight modes, four actor types, initialized/uninitialized filters, enabled/disabled gate, five timestep groups",
+    "Mode5 and disabled bypass preserve upstream target; mode3 uses bank rotation before shared-axis rotation",
+    "Native shared axis initializer 0x47e310 writes [0,1,0]; axis and filters retained across steps",
+    "Live mode0 only; camera identity and native entry state checked before every update"
+  ],
+  "cleanup": [
+    "0047d166 restored=1",
+    "0047d606 restored=1",
+    "debugger=0 clean=1"
+  ],
+  "remaining": [
+    "Upstream base/source/eye/angle/factor/distance and bank/lean remain supplied inputs.",
+    "Live bypass branches, live allocation, terrain/camera collision and full controller mode evolution remain unvalidated.",
+    "Runtime trigonometric equivalence beyond captured finite inputs remains unproven.",
+    "Heap allocation failure and native pointer values excluded from isolated numerical comparison.",
+    "No captured scratch injection, preview handling change, or closure of negative-steering mismatch."
+  ]
+}
