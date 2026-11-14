@@ -9,7 +9,7 @@ export function compareLiveRiderTick(before,after,terrain){
  const loaded=loadLiveRiderTick({...before,terrain}),{context:c,ordered,assets,childBytes,proxy,dt}=loaded,r=c.rider;
  const result=advanceMcmRiderTick(c,dt),blocks=serializeLiveOrderedDispatch(ordered,before.world),rb=blocks.find(b=>b.address===r.address).bytes,pb=blocks.find(b=>b.address===proxy).bytes;
  for(const [o,a]of [[0x40,r.position],[0x4c,r.previousPosition],[0xa0,r.center],[0xac,r.extents]])a.forEach((n,j)=>rb.writeFloatLE(n,o+j*4));
- for(const [o,n]of [[0x138,r.field138],[0x13c,r.flag13c],[0x140,r.field140],[0x144,r.field144],[0x154,r.field154],[0x39c,r.field39c],[0x3a4,r.region]])rb.writeUInt32LE(n>>>0,o);rb.writeFloatLE(r.fieldf8,0xf8);writeFrameAnimation(pb,c.animation);
+ for(const [o,n]of [[0x138,r.field138],[0x13c,r.flag13c],[0x140,r.field140],[0x144,r.field144],[0x148,r.field148],[0x14c,r.field14c],[0x154,r.field154],[0x39c,r.field39c],[0x3a4,r.region]])rb.writeUInt32LE(n>>>0,o);rb.writeFloatLE(r.fieldf8,0xf8);r.selected.forEach((v,j)=>rb.writeUInt32LE(v>>>0,0x160+j*4));writeFrameAnimation(pb,c.animation);
  const differences=[];let comparedWords=1,changedWords=0;
  const compare=(name,initial,actual,recovered)=>{
   const a=Buffer.from(actual,'hex'),b=Buffer.from(initial,'hex');if(a.length!==recovered.length||b.length!==a.length)throw Error('Rider tick allocation differs');
@@ -23,5 +23,5 @@ export function compareLiveRiderTick(before,after,terrain){
  compareBlocks(before.animations.blocks,after.animations.blocks,b=>{const bytes=Buffer.from(b.hex,'hex'),child=assets.children.get(b.address);if(child)for(const [key,o]of [['forward',8],['up',0x14],['position',0x20]])child[key].forEach((n,j)=>bytes.writeFloatLE(n,o+j*4));return bytes;});
  compare('child',before.child.hex,after.child.hex,childBytes);
  if(floatBits(c.globalDelta)!==after.child.globalDtBits)differences.push({object:'global-delta',original:after.child.globalDtBits,recovered:floatBits(c.globalDelta)});
- return {scope:'Separate rider tick during active crash animation, including the first ground-contact transition. Captured collision world, all animation assets, child actor and global timestep compared. Free-rider integration, active particles and crossfade remain explicit unsupported branches; not retained trajectory parity.',frame:before.world.playerFrame,result,callbackTrace:ordered.trace,comparedWords,changedWords,differences};
+ return {scope:'Separate rider tick during crash animation, first ground contact, and free-rider motion. Captured collision world, all animation assets, child actor and global timestep compared. Active particle updates, stopped animation and crossfade remain explicit unsupported branches; not retained trajectory parity.',frame:before.world.playerFrame,result,callbackTrace:ordered.trace,comparedWords,changedWords,differences};
 }

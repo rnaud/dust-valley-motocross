@@ -5373,3 +5373,9 @@ This is a diagnostic projection, not full trajectory parity: unmodeled bytes use
 Recovered the first ground-contact transition inside `0x40e990`: collider callback rebinding, pair mode, transfer of crash velocity, extent growth, the second animation advance, and joint-pose compensation with native per-element arithmetic order. The full original frame-119 rider tick matches 160,110 words (438 changed), including world transforms, animation allocations, child state, and global delta. Recovered dispatch invokes rider-primary and bike-secondary callbacks; native callback order was not separately traced.
 
 The retained fixture now reaches 121 bike calls and 120 separate rider ticks, with zero physics differences across 415,277 plus 74,880 comparison words. It reports 525 visual differences and stops explicitly at frame 120's free-rider integration dependency. This retains the diagnostic scope and limitations above; it does not establish full trajectory parity.
+
+### Free-rider ground-motion tick (2026-11-14)
+
+Recovered `0x40cd60` and the `0x430a60` animation transition, connecting captured drag, gravity, angular integration, terrain contact, the previously recovered rider impulse, contact-animation selection, proxy/collider updates, and contact-emitter activation. The full original frame-120 rider tick matches 264,335 words, including all 386 changed words, with no differences. The capture includes all rider event animation records and the previously missing drag coefficient at `0x4e21bc`; neither is supplied from output state.
+
+This is one complete live tick, not broad branch coverage or continuous parity. The next active-particle update and animation crossfade remain explicit dependencies. The earlier retained fixture still stops at frame 120 because its initial capture lacks the drag coefficient; it is not silently supplemented with executable defaults.

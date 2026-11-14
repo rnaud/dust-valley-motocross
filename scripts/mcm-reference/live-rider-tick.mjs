@@ -3,7 +3,7 @@ import {loadLiveAnimationAssets,loadLiveAnimationState} from './live-animation-a
 import {loadLiveVisuals} from './live-checkpoint.mjs';
 import {applyMcmAnimationChild} from '../../src/physics/mcm/animation-seek.js';
 import {tickMcmRiderParticles} from '../../src/physics/mcm/rider-particle-tick.js';
-import {bitsFloat} from '../../src/physics/mcm/math.js';
+import {mcmSqrtLookup,bitsFloat} from '../../src/physics/mcm/math.js';
 export function loadLiveRiderTick({world,animations,child,terrain}){
  if(world.captureBoundary!=='rider-tick'||animations.captureBoundary!=='rider-tick'||world.captureId!==animations.captureId||world.bikeAddress!==animations.bikeAddress)throw Error('Rider tick dependency boundary differs');
  if(!Number.isInteger(child.dtBits))throw Error('Missing rider tick timestep');
@@ -13,14 +13,18 @@ export function loadLiveRiderTick({world,animations,child,terrain}){
 }
 export function connectLiveRiderTick({ordered,bikeAddress,visuals,assets,animation,child,terrain}){
  const m=ordered.memory,bike=ordered.actors.get(bikeAddress),rider=ordered.actors.get(bike.riderAddress),proxy=bike.proxyAddress,vector=o=>[0,4,8].map(i=>m.f32(rider.address+o+i));
- rider.previousPosition=vector(0x4c);rider.field138=m.u32(rider.address+0x138);rider.field144=m.u32(rider.address+0x144);rider.region=m.u32(rider.address+0x3a4);rider.field39c=m.u32(rider.address+0x39c);
+ rider.previousPosition=vector(0x4c);rider.field138=m.u32(rider.address+0x138);rider.field144=m.u32(rider.address+0x144);rider.region=m.u32(rider.address+0x3a4);rider.field39c=m.u32(rider.address+0x39c);rider.field148=m.u32(rider.address+0x148);rider.field14c=m.u32(rider.address+0x14c);
+ rider.selected=[0x160,0x164,0x168].map(o=>m.u32(rider.address+o));rider.eventKind=m.u32(rider.address+0x170);
  for(const [key,field] of [['fieldf8','extentScale'],['field140','flag140'],['field154','contactClass']])Object.defineProperty(rider,key,{get:()=>rider[field],set:value=>{rider[field]=value;}});
  const childBytes=Buffer.from(child.hex,'hex');
  if(childBytes.length!==0x610||m.u32(rider.address+0x14)!==child.address||childBytes.readUInt32LE(0)!==0x4d729c||childBytes.readUInt32LE(0x18)!==rider.address||childBytes.readUInt32LE(0x10)||childBytes.readUInt32LE(0x2c)||child.ownerGate!==0||child.updateAddress!==0x43a0c0)throw Error('Unmapped rider child update branch');
  const point=offset=>{const n=ordered.transformNodes.get(m.u32(rider.address+offset));if(!n)throw Error('Missing rider probe transform');return n;};
  const selected=m.u32(rider.address+0x160),selectedRecord=assets.records.find(a=>a.token===selected);
  if(selected&&!selectedRecord)throw Error('Missing selected rider animation');
- const context={rider,animation,bodyNode:bike.riderTransform,collider:rider.collision,bikeCollider:bike.collision,manager:ordered.dispatch,grid:ordered.grid,gridEnabled:ordered.enabled,paused:child.paused,globalDelta:bitsFloat(child.globalDtBits),selectedRecord,
+ let damping;try{damping=m.f32(0x4e21bc);}catch(error){if(!/^Missing checkpoint memory at 0x4e21bc \(4 bytes\)$/.test(error.message))throw error;}
+ const context={rider,animation,damping,response:ordered.riderResponse,
+  contactRecord(index){const token=m.u32(rider.address+0x1a8+(rider.eventKind*0x17+index)*4),record=assets.records.find(r=>r.token===token);if(!record)throw Error('Missing free-rider contact animation');return record;},
+  contactEffects(point){if(!m.u32(rider.address+0x3c)||bike.riderEffect.disabled||bike.riderEffect.eventKind===3)return;const [x,y,z]=rider.velocity;if(mcmSqrtLookup(Math.fround((z*z+y*y)+x*x))>2){if(m.u32(rider.address+0x3a8)!==child.address)throw Error('Uncaptured rider contact emitter');childBytes.writeUInt32LE(1,0x64);point.forEach((v,j)=>childBytes.writeFloatLE(v,0x48+j*4));}},bodyNode:bike.riderTransform,collider:rider.collision,bikeCollider:bike.collision,manager:ordered.dispatch,grid:ordered.grid,gridEnabled:ordered.enabled,paused:child.paused,globalDelta:bitsFloat(child.globalDtBits),selectedRecord,
   points:[0xfc,0x100,0x104,0x10c,0x110,0x118,0x11c,0x120,0x128,0x12c,0x134].map(point),terrain,queryOutput:{point:[0,0,0],normal:[0,0,0],penetration:[0,0,0]},
   applyChild:record=>applyMcmAnimationChild(bike.riderTransform,visuals.rider.components,record),
   updateChildren(dt){if(childBytes.readUInt32LE(0x20)&&!childBytes.readUInt32LE(0x28))tickMcmRiderParticles(new DataView(childBytes.buffer,childBytes.byteOffset,childBytes.length),{dt,paused:context.paused});}};

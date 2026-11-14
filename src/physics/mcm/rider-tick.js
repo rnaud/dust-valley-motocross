@@ -7,10 +7,11 @@ import {queryMcmRiderTerrain} from './rider-terrain-query.js';
 import {mcmSqrtLookup} from './math.js';
 import {compensateMcmRiderGroundTransform} from './rider-ground-transform.js';
 import {setMcmWorldMatrix} from './proxy-transform.js';
+import {advanceMcmFreeRider} from './free-rider.js';
 const f=Math.fround;
 
-// Separate 0x40e990 actor tick through active crash animation and its first
-// ground-contact transition. Subsequent free-rider integration remains explicit.
+// Separate 0x40e990 actor tick through active crash animation, ground contact,
+// and free-rider integration. Stopped-animation and crossfade paths remain explicit.
 export function advanceMcmRiderTick(c,dt){
  c.updateChildren(dt);
  if(c.paused)return 1;
@@ -40,8 +41,11 @@ export function advanceMcmRiderTick(c,dt){
   }
  }
  if(r.field138){
-  if(!r.field39c||a.stopped)throw Error('Free-rider integration is not connected');
+  if(a.stopped)throw Error('Free-rider integration is not connected: stopped animation');
+  if(!r.field39c&&c.damping===undefined)throw Error('Free-rider integration is not connected');
   r.fieldf8=Math.min(1,f(dt*.75+r.fieldf8));
+  if(!r.field39c){advanceMcmInterpolatedAnimation(a,dt,c.applyChild);r.center=[...a.boundsMin];r.extents=[...a.boundsMax];advanceMcmFreeRider(c,dt);}
+  else {
   const previousJoint=[...resolveMcmWorldMatrix(c.points[6])];
   advanceMcmInterpolatedAnimation(a,dt,c.applyChild);
   r.center=[...a.boundsMin];r.extents=[...a.boundsMax];
@@ -56,6 +60,7 @@ export function advanceMcmRiderTick(c,dt){
   o.extents=r.extents.map(v=>f(v*r.fieldf8));o.localCenter=[...r.center];
   const [ex,ey,ez]=o.extents;o.radius=mcmSqrtLookup(f((ez*ez+ey*ey)+ex*ex));o.radiusSquared=f(o.radius*o.radius);
   o.matrix=[...resolveMcmWorldMatrix(bodyNode)];updateMcmCollisionGrid(o,c.grid,c.gridEnabled);
+ }
  }
  if(o)dispatchMcmCollisions(c.manager,o.owner);
  return 1;
