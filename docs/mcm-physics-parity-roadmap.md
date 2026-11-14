@@ -5022,3 +5022,31 @@ it cannot be assumed absent when connecting frame-end filtering and animation.
 That tail, active collision callbacks, full-frame return and retained
 acceleration/release trajectories remain unfinished. Preview handling is
 unchanged, and whole-bike parity remains unproven.
+
+### Frame-effects terrain segment clipping
+
+Additional same-frame original captures confirm that world flags `+0x714` and
+`+0x718` are enabled and the selected player's effects invoke `0x410ac0` once.
+That query returns zero in the observed frame. The effect interval changes the
+bike counter at `+0xcb0` and emitter position; captured engine, rider and body
+matrix words remain unchanged. The query output buffer is undefined on a miss
+and must not be used as an expected collision point. Raw captures and diagnostic
+sources are archived outside git under `frame-effects-query-2026-11-13`.
+
+`queryMcmTerrainSegment` now translates the `0x410ac0` wrapper: world-to-terrain
+scaling, ordered clipping against root bounds, float-bit direction gates,
+coordinate permutation, traversal dispatch and successful-result conversion.
+An intersecting segment requires an explicit traversal implementation; missing
+`0x48e4c0` cannot silently return a miss.
+
+The isolated native oracle runs the original wrapper and clipping helpers while
+replacing only traversal with an argument recorder and controlled output. The
+captured query, boundary cases and seeded finite segments total 2,045 cases and
+24,540 word comparisons, with zero differences on ARM and x64. The recorder is
+called in 1,535 cases. Tests also detect intermediate-coordinate corruption and
+verify that missing traversal fails. See `mcm-terrain-segment-wrapper-validation.json`.
+
+This proves the wrapper boundary, not terrain traversal. Recovering `0x48e4c0`
+(grid crossings, child traversal and triangle intersection), connecting enabled
+effects, full-frame return and retained acceleration/release validation remain
+outstanding. Preview handling is unchanged.
