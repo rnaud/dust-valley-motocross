@@ -18,6 +18,11 @@ export function compareLiveRetainedRiderFrames(inputs,rows,events){
   const row=rows[i],after=rows[i+1],frame=i/2;
   if(row.phase!=='before-update'||row.playerFrame!==frame||row.pass!==0||row.bike!==rows[0].bike||![0,1].includes(row.requestedThrottle))throw Error('Retained capture sequence differs');
   c.engineEntry.input.throttleResponses[0]=row.requestedThrottle;
+  if(Object.hasOwn(row,'requestedBrake')!==Object.hasOwn(rows[0],'requestedBrake'))throw Error('Missing retained brake input');
+  if(Object.hasOwn(row,'requestedBrake')){
+   if(![0,1].includes(row.requestedBrake)||after.requestedBrake!==row.requestedBrake)throw Error('Retained brake input differs');
+   c.engineEntry.input.brakeResponses[0]=row.requestedBrake;
+  }
   let report;
   try{report=compareLiveFrameReturn({...inputs,row},after,{loaded,retained:true,diagnostic:true});}
   catch(error){if(error.message!=='Unmapped live frame dependency: context.restoreRiderVisual')throw error;pendingBikeFrame={frame,reason:error.message};break;}
@@ -56,5 +61,5 @@ export function compareLiveRetainedRiderFrames(inputs,rows,events){
   if(pendingExternalTick||physicsDifferences)break;
   if(frame<rows.length/2-1&&tickCount!==1)throw Error('Missing or repeated external rider tick');
  }
- return {scope:'Retained modeled bike/rider state initialized once, using explicit throttle and external rider timing/gates. Visual emitter differences remain reported separately. Unmodeled bytes use each observed entry as an unchanged-within-call baseline. External rider output checks cover rider/child/global delta and, when captured, the retained particle pool. Pool differences from unconnected shared-world updates remain reported as visual differences; not all transforms/world allocations are checked. This is not full trajectory parity.',bikeFrames:reports.length,riderTicks:riderReports.length,comparedWords,externalWords,particleComparedWords,particleDifferences,physicsDifferences,visualDifferences,pendingExternalTick,pendingBikeFrame,reports,riderReports};
+ return {scope:'Retained modeled bike/rider state initialized once, using explicit throttle, optional captured brake responses and external rider timing/gates. Visual emitter differences remain reported separately. Unmodeled bytes use each observed entry as an unchanged-within-call baseline. External rider output checks cover rider/child/global delta and, when captured, the retained particle pool. Pool differences from unconnected shared-world updates remain reported as visual differences; not all transforms/world allocations are checked. This is not full trajectory parity.',bikeFrames:reports.length,riderTicks:riderReports.length,comparedWords,externalWords,particleComparedWords,particleDifferences,physicsDifferences,visualDifferences,pendingExternalTick,pendingBikeFrame,reports,riderReports};
 }
