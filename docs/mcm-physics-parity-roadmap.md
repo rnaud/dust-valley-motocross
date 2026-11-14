@@ -23,6 +23,12 @@ This section is the current status. The original planning checkboxes and dated e
 
 Recent evidence: [complete retained crash-and-release history](mcm-live-retained-rider-release-validation.json), [retained rider prefix](mcm-live-retained-rider-prefix-validation.json), [ground transition](mcm-live-rider-ground-transition-validation.json), [free-rider motion](mcm-live-free-rider-tick-validation.json). Active rider particles match 160 native cases (2,782,560 words); complete live ticks 121 and 122 each match 283,386 words after correcting premature rounding of horizontal drag.
 
+### Browser integration prerequisite — November 14
+
+The deployed MCM preview passes desktop and touch smoke tests, including gas-only straight riding, both steering directions and release. Its served bundle matches the local build. Recent native milestones have **not changed preview handling**: it still uses the assisted simulation.
+
+Captured frame initialization now uses browser-native byte views and a pure animation asset loader. `node scripts/mcm-reference/browser-core-smoke.mjs` executes a complete captured first frame in real Chrome without Node polyfills and compares 176 bike fields, all 22 stage names and the return result against Node. This is a browser portability check, **not a playable integration or long-running browser parity claim**. The retained native replay regressions remain the physics evidence. Next: share retained rider/pool initialization, validate continuous browser histories, then connect terrain, inputs and rendering to the playable preview.
+
 ### Steering and caller-stack boundary — November 14
 
 A [recorded positive quarter-scale steering trace](mcm-live-retained-steering-validation.json) completes 400 bike calls, 399 rider ticks and 399 pool ticks with **zero modeled-physics differences**. Throttle runs for frames 0–39, steering for 20–69, then both release. The trace exercises heading/lean changes, neutral release, and crash states 1 and 2. Its 842,655 bike/frame words and 16,248,876 external words include 9,832,174 reported visual differences. The initial prototype omitted steering metadata; the accepted capture reruns the experiment with explicit per-frame steering words. Missing/inconsistent input is rejected, and removing steering is detected at frame 20.

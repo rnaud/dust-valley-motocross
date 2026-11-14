@@ -1,8 +1,9 @@
+import {CapturedBytes} from '../../src/physics/mcm/captured-bytes.js';
 // Main-update stack at the existing scheduler-entry / update-exit breakpoints.
 // Entry locals may be stale: decoding them does not make them initialized inputs.
 export function decodeFrameStack(row){
  if(typeof row.stackHex!=='string'||!/^[0-9a-f]{6144}$/i.test(row.stackHex)||!/^[0-9a-f]{8}$/i.test(row.stackAddress??''))throw Error('Missing or invalid frame stack');
- const bytes=Buffer.from(row.stackHex,'hex'),address=parseInt(row.stackAddress,16);
+ const bytes=CapturedBytes.from(row.stackHex,'hex'),address=parseInt(row.stackAddress,16);
  if(address+bytes.length>0x100000000)throw Error('Invalid stack address range');
  for(const [field,offset] of [['frameBits',0xbfc],['dtBits',0x10],['steps',0x20]])if(bytes.readUInt32LE(offset)!==row[field])throw Error(`Stack metadata differs: ${field}`);
  const u32=o=>bytes.readUInt32LE(o),f32=o=>bytes.readFloatLE(o);

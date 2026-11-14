@@ -26,7 +26,7 @@ export function compareFrameEffects(input,output){
   for(const o of ints)recovered.writeUInt32LE(bike['field'+o.toString(16)]>>>0,o);
   for(const o of floats)recovered.writeFloatLE(bike['field'+o.toString(16)],o);
   bike.normal.forEach((v,j)=>recovered.writeFloatLE(v,0x54c+j*4));bike.offset.forEach((v,j)=>recovered.writeFloatLE(v,0x540+j*4));
-  let at=0xcc8;for(const e of emitters){e.bytes.copy(recovered,at);at+=e.bytes.length;}
+  let at=0xcc8;for(const e of emitters){recovered.set(e.bytes,at);at+=e.bytes.length;}
   c.bodyNode.local.forEach((v,j)=>recovered.writeFloatLE(v,at+j*4));
   const initial=Buffer.concat([before,source.subarray(0xe74,0x13fc),source.subarray(0xe34,0xe74)]);
   for(let o=0;o<actual.length;o+=4){comparedWords++;if(initial.readUInt32LE(o)!==actual.readUInt32LE(o))changedWords++;if(actual.readUInt32LE(o)!==recovered.readUInt32LE(o))differences.push({case:i,offset:o,original:actual.readUInt32LE(o),recovered:recovered.readUInt32LE(o)});}

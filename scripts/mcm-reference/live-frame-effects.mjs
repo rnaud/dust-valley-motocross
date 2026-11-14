@@ -1,7 +1,8 @@
+import {CapturedBytes} from '../../src/physics/mcm/captured-bytes.js';
 // Captured visual-effect allocations remain byte-backed, preserving untouched
 // fields while exposing the original helper stores to the recovered frame tail.
 export function loadFrameEmitter(record,exhaust=false){
- const bytes=Buffer.from(record.hex,'hex'),expected=exhaust?0x480:0x84;
+ const bytes=CapturedBytes.from(record.hex,'hex'),expected=exhaust?0x480:0x84;
  if(record.size!==expected||bytes.length!==expected)throw new Error('Wrong emitter observation size');
  const emitter={bytes,address:record.address},position=exhaust?0x4c:0x48;
  for(const [name,offset] of Object.entries({position,previousPosition:position+12,...(!exhaust?{velocity:0x78}:{})}))
@@ -24,7 +25,7 @@ export function connectLiveFrameEffects(c,{memory:m,checkpoint,row}){
  for(const offset of [0x8c0,0xc90,0xca4,0xca8,0xcac,0xcb0,0xcb4,0xcbc,0xcc0])c.bike[`field${offset.toString(16)}`]=m.u32(a+offset);
  for(const offset of [0x850,0x854,0xcb8])c.bike[`field${offset.toString(16)}`]=m.f32(a+offset);
  if(c.bike.fieldca8!==environment.shape)throw new Error('Frame-effects target differs from checkpoint');
- const target=Buffer.from(environment.targetHex,'hex');if(target.length!==12)throw new Error('Wrong frame-effects target size');
+ const target=CapturedBytes.from(environment.targetHex,'hex');if(target.length!==12)throw new Error('Wrong frame-effects target size');
  const inputs={};
  const getters={rearPoint:()=>p.points[3],frontPoint:()=>p.points[2],chassisFront:()=>p.chassisSurface[0],chassisRear:()=>p.chassisSurface[1],
   rearContact:()=>p.rearContact,frontContact:()=>p.frontContact,control1c:()=>p.control1c,control30:()=>p.control30,

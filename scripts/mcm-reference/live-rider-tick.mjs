@@ -1,6 +1,7 @@
+import {CapturedBytes} from '../../src/physics/mcm/captured-bytes.js';
 import {loadLiveParticlePool} from './live-particle-pool.mjs';
 import {loadLiveOrderedDispatch} from './live-ordered-dispatch.mjs';
-import {loadLiveAnimationAssets,loadLiveAnimationState} from './live-animation-assets.mjs';
+import {loadLiveAnimationAssets,loadLiveAnimationState} from './animation-assets-loader.mjs';
 import {loadLiveVisuals} from './live-checkpoint.mjs';
 import {applyMcmAnimationChild} from '../../src/physics/mcm/animation-seek.js';
 import {tickMcmRiderParticles} from '../../src/physics/mcm/rider-particle-tick.js';
@@ -17,7 +18,7 @@ export function connectLiveRiderTick({ordered,bikeAddress,visuals,assets,animati
  rider.previousPosition=vector(0x4c);rider.field138=m.u32(rider.address+0x138);rider.field144=m.u32(rider.address+0x144);rider.region=m.u32(rider.address+0x3a4);rider.field39c=m.u32(rider.address+0x39c);rider.field148=m.u32(rider.address+0x148);rider.field14c=m.u32(rider.address+0x14c);
  rider.selected=[0x160,0x164,0x168].map(o=>m.u32(rider.address+o));rider.eventKind=m.u32(rider.address+0x170);
  for(const [key,field] of [['fieldf8','extentScale'],['field140','flag140'],['field154','contactClass']])Object.defineProperty(rider,key,{get:()=>rider[field],set:value=>{rider[field]=value;}});
- const childBytes=Buffer.from(child.hex,'hex');
+ const childBytes=CapturedBytes.from(child.hex,'hex');
  if(![0x610,0x618].includes(childBytes.length)||m.u32(rider.address+0x14)!==child.address||childBytes.readUInt32LE(0)!==0x4d729c||childBytes.readUInt32LE(0x18)!==rider.address||childBytes.readUInt32LE(0x10)||childBytes.readUInt32LE(0x2c)||child.ownerGate!==0||child.updateAddress!==0x43a0c0)throw Error('Unmapped rider child update branch');
  let particles={};
  if(child.poolHex!==undefined||child.particlesHex!==undefined||child.poolAddress!==undefined)particles=loadLiveParticlePool(child,childBytes.readUInt32LE(0x34));

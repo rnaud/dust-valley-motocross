@@ -1,5 +1,5 @@
 import {checkpointMemory,loadLiveVisuals} from './live-checkpoint.mjs';
-import {loadLiveAnimationAssets,loadLiveAnimationState} from './live-animation-assets.mjs';
+import {loadLiveAnimationAssets,loadLiveAnimationState} from './animation-assets-loader.mjs';
 import {applyMcmAnimationChild} from '../../src/physics/mcm/animation-seek.js';
 
 // Initializes the normal pose branch. Extended captures also preserve animation

@@ -1,17 +1,18 @@
+import {CapturedBytes} from '../../src/physics/mcm/captured-bytes.js';
 // Addressed reads from an explicitly partial original-memory capture. Missing
 // dependencies fail rather than becoming zero-filled or synthetic state.
 export function checkpointMemory(checkpoint){
  if(checkpoint?.schemaVersion!==1||checkpoint.kind!=='mcm-partial-local-checkpoint'||checkpoint.blockCount!==checkpoint.blocks?.length)throw Error('Invalid partial checkpoint');
  const blocks=checkpoint.blocks.map(b=>{
   if(!Number.isInteger(b.address)||b.address<=0||!Number.isInteger(b.size)||b.size<=0||b.address+b.size>0x100000000||typeof b.hex!=='string'||b.hex.length!==b.size*2||!/^[0-9a-f]+$/i.test(b.hex))throw Error('Invalid checkpoint block');
-  return {...b,bytes:Buffer.from(b.hex,'hex')};
+  return {...b,bytes:CapturedBytes.from(b.hex,'hex')};
  }).sort((a,b)=>a.address-b.address);
  for(let i=1;i<blocks.length;i++)if(blocks[i].address<blocks[i-1].address+blocks[i-1].size)throw Error('Overlapping checkpoint blocks');
  const read=(address,size)=>{
   if(!Number.isInteger(address)||!Number.isInteger(size)||size<1)throw Error('Invalid memory read');
   const block=blocks.find(b=>address>=b.address&&address+size<=b.address+b.size);
   if(!block)throw Error(`Missing checkpoint memory at 0x${address.toString(16)} (${size} bytes)`);
-  return Buffer.from(block.bytes.subarray(address-block.address,address-block.address+size));
+  return CapturedBytes.from(block.bytes.subarray(address-block.address,address-block.address+size));
  };
  return {read,u32:a=>read(a,4).readUInt32LE(),f32:a=>read(a,4).readFloatLE()};
 }
