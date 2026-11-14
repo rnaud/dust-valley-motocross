@@ -22,10 +22,11 @@ static int capture_mcm_frame_environment(HANDLE process,DWORD bike,const char*pa
   if(steering_device){ENV_SAVE(steering_device+0x30,4);ENV_SAVE(steering_device+0x5c,4);}
  }
  if(getenv("MCM_FRAME_ACTIONS")&&!capture_mcm_frame_actions(process,blocks,&count,controller))goto done;
+ if(getenv("MCM_FRAME_EVENTS")){DWORD terrain;if(!collision_world_read(process,bike+0x8f4,&terrain,4)||!terrain)goto done;ENV_SAVE(terrain+0x954,4);}
  out=fopen(path,"wx");if(!out)goto done;
  fprintf(out,"{\"schemaVersion\":1,\"kind\":\"mcm-frame-environment-observation\",\"bikeAddress\":%lu,\"captureId\":\"%s\",\"captureBoundary\":\"%s\",\"playerFrame\":%lu,\"inputCaptured\":%s,\"blockCount\":%u,\"blocks\":[",bike,id,boundary,frame,getenv("MCM_FRAME_INPUT")?"true":"false",count);
  for(unsigned i=0;i<count;i++){CollisionWorldBlock*b=&blocks[i];fprintf(out,"%s{\"address\":%lu,\"size\":%lu,\"hex\":\"",i?",":"",b->address,b->size);for(DWORD j=0;j<b->size;j++)fprintf(out,"%02x",b->bytes[j]);fprintf(out,"\"}");}
- fprintf(out,"],\"actionsCaptured\":%s}\n",getenv("MCM_FRAME_ACTIONS")?"true":"false");ok=!ferror(out);
+ fprintf(out,"],\"actionsCaptured\":%s,\"eventsCaptured\":%s}\n",getenv("MCM_FRAME_ACTIONS")?"true":"false",getenv("MCM_FRAME_EVENTS")?"true":"false");ok=!ferror(out);
  done:
  if(out&&fclose(out))ok=0;
  for(unsigned i=0;i<count;i++)free(blocks[i].bytes);
