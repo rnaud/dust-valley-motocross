@@ -5299,3 +5299,14 @@ This helper is not yet connected to retained replay: live actor ordering,
 actual actor delta time, particle-pool state and other actor ticks must be
 captured first. The retained comparison still honestly stops at frame 51.
 No trajectory or full-physics parity is claimed by this isolated validation.
+
+Live follow-up: captured the separate player exhaust calls after bike frames 50
+and 51, including all particle slots. Both match the recovered helper exactly:
+28,578 words, zero differences. Their actual actor deltas are approximately
+0.103 and 0.145 seconds, despite the controlled bike delta being 0.02 seconds.
+These observed timings are affected by breakpoint capture and are not physics
+constants. Replacing them with the bike delta fails the regression test.
+`mcm-live-exhaust-ticks-validation.json` records this narrower live validation;
+it does not extend the retained trajectory claim. Original checkpoint restoration
+and breakpoint cleanup follow capture. Raw trace and capture sources are archived
+under `player-validation/exhaust-tick-2026-11-14` in the local reference store.
