@@ -27,8 +27,24 @@ export function loadLiveFrameEnvironment(checkpoint,observation){
  }
  let terrainMode=null;
  if(observation.eventsCaptured){const address=local.u32(bike+0x8f4)+0x954;terrainMode=memory.u32(address);used.push(address);}
+ let resetSupport=null;
+ if(observation.resetSupportCaptured){
+  const observer=memory.u32(world+0x608);
+  used.push(world+0x314,world+0x1078,world+0x608);
+  if(observer)used.push(observer+0x80);
+  resetSupport={playerCount:memory.u32(world+0x314),aiCount:memory.read(world+0x1078,4).readInt16LE(2),observerBikeAddress:observer?memory.u32(observer+0x80):0};
+  used.push(world+0x614);resetSupport.enumerationDisabled=!!memory.u32(world+0x614);
+  resetSupport.bikes=[];
+  if(!resetSupport.enumerationDisabled){
+   if(resetSupport.playerCount!==1||resetSupport.aiCount<0||resetSupport.aiCount>64)throw Error('Unsupported reset bike enumeration');
+   used.push(owner+0x30,owner+0x38);
+   const list=memory.u32(owner+0x38),addresses=[memory.u32(owner+0x30)];
+   if(list)for(let i=0;i<resetSupport.aiCount;i++){used.push(list+i*4);addresses.push(memory.u32(list+i*4));}
+   for(const address of addresses){used.push(address+0xc30);resetSupport.bikes.push({address,fieldc30:memory.u32(address+0xc30)});}
+  }
+ }
  const actions=observation.actionsCaptured?loadLiveFrameActions(memory,controller,used):null;
  if(observation.blocks.length!==new Set(used).size||observation.blocks.some(b=>b.size!==4||!used.includes(b.address)))throw Error('Unexpected frame environment blocks');
- return {worldAddress:world,ownerAddress:owner,controllerAddress:controller,deviceAddress:device,resetAction,input,actions,terrainMode,
+ return {worldAddress:world,ownerAddress:owner,controllerAddress:controller,deviceAddress:device,resetAction,input,actions,terrainMode,resetSupport,
   resetDecision:{setting:flags.readUInt16LE(0),mode:flags.readUInt16LE(2),worldScale:memory.f32(owner+0x18bc),controllerPresent:!!controller,queryReset:()=>resetAction===1},memory};
 }

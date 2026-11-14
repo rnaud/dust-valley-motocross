@@ -15,6 +15,13 @@ export function connectLiveFrameFinish(c,{checkpoint,memory:m,collision,world,en
  for(const [key,field] of Object.entries({angular:'baseAngularVelocity',velocity:'previousVelocity',alternateVelocity:'velocity',alternateAngular:'angularVelocity',flag13c:'flag13c',flag140:'field140'}))alias(rider,key,c.rider,field);
  b.field8a8=m.u32(a+0x8a8);b.fieldc7c=m.f32(a+0xc7c);b.field818=m.f32(a+0x818);
  c.mode=env.resetDecision.mode;c.collision=actor.collision;c.grid=ordered.grid;c.gridEnabled=ordered.enabled;
+ // Original 0x40fbb0 delegates only pair/callback restoration here; the
+ // scalar rider flags are reset by clearMcmCrashRider.
+ if(env.resetSupport)c.restoreRiderVisual=()=>{
+  const a=rider.collision.owner,b=actor.collision.owner;
+  ordered.dispatch.pairs[a][b]=ordered.dispatch.pairs[b][a]=3;
+  rider.collision.setCallbacks([0x40b9e0,0x40ba00]);
+ };
  c.dispatch={manager:ordered.dispatch,run(){
   const randomBefore=p.normalEventDecision.randomCalls,step={bike:actor,collision:c.collision,manager:ordered.dispatch,remaining:p.control20};
   dispatchMcmCollisionState(step);
