@@ -1,5 +1,13 @@
 # Motocross Madness physics parity roadmap
 
+## Chase target preparation and initialization recovered (2026-11-14)
+
+Original `0x47d211..0x47d477` now constructs the target with the original float32 stores, mode-6 scale, vertical offset, and actor-dependent six-filter initialization. A full cross-product of eight modes, four actor types, initialized/uninitialized records, and five timestep groups matches **9,920/9,920 native words across 320 cases**. Running preparation and smoothing together through `0x47d606`, retaining records between steps, matches **118,400/118,400 words across 3,200 updates**.
+
+A guarded two-breakpoint capture of the running original matches **80 consecutive updates / 2,880 words**, including computed targets and retained filter outputs, with 480 short-timestep component updates and two actual gradual changes. The live case covers existing filters, mode 0 and actor type 3; initialization is verified by isolated native execution. All hooks were restored and debugger detachment checked. See `mcm-chase-preparation-validation.json`.
+
+Earlier base/offset/eye/factor construction, distance evolution, terrain/camera collision and controller gates still use supplied native inputs. The next step is to recover those upstream dependencies and retain the controller through the validated camera-to-renderer path. This does **not** close the negative-steering scratch-lifetime mismatch or change preview handling.
+
 ## Retained chase-camera smoothing recovered (2026-11-14)
 
 Original `0x47d477..0x47d606` now updates the six persistent camera filters with the original comparison, division, addition order, and float32 stores. The upper/lower fields are preserved but are not clamps in this block. An isolated native oracle matches **124,800/124,800 words across 4,160 updates in 192 cases**, including repeated histories, short/negative/zero timesteps, zero/negative time constants, and signed invalid-result NaNs. Float32 record storage is required: ordinary JavaScript arrays can canonicalize a negative NaN during representation changes.

@@ -1,0 +1,65 @@
+{
+  "scope": "Chase target preparation, filter initialization and retained smoothing; upstream controller inputs remain supplied.",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "fixtureSha256": "0f764be743ceb2115fcba331124e41b05a977bd1f847b24d1824b5ad1bfc45b3",
+  "inputSha256": "c6c1763c6747ef6eb01b8ce718c66e9f5ced5b6ab462bedceabfb7b99d1e63ee",
+  "outputSha256": "94d94d7c67b12dcabf187544ffb4375ac00d10d1b3098bf12ef83563931d992c",
+  "joinedInputSha256": "2925c198dda17aee8cc5225817e9f5f809fafce01f2478640aa4b06b5acbc022",
+  "joinedOutputSha256": "9565377623652ab7639511eefd3b74864b7829d25a5f4c96db7738be49d1d9ac",
+  "liveRawSha256": "e80275a50f3e610cafa9a5eb9435bbfe6633f97985a7207f8c18dadf895b19b8",
+  "sources": {
+    "src/physics/mcm/chase-preparation.js": "9452330b8521aa3830be31e804efb0b753abe8f80fcddab533db8ae2d98a1320",
+    "scripts/mcm-reference/chase-preparation-oracle.c": "79baca4c4061eca23908e96b7589f656c9c26083d0239bfd6ad894fe08c0da0b",
+    "scripts/mcm-reference/chase-prepared-smoothing-oracle.c": "2b562682c6104fbc2aeb8c9ddf851e7d912f860378f0698489685ceb7854e526",
+    "scripts/mcm-reference/capture-chase-preparation.c": "04ed00df7758fbe9801efc66a92eb330dfce7af6bb07a5a451a297a211cad5f5"
+  },
+  "isolated": {
+    "cases": 320,
+    "steps": 320,
+    "words": 9920,
+    "differences": 0,
+    "examples": []
+  },
+  "joined": {
+    "cases": 320,
+    "steps": 3200,
+    "words": 118400,
+    "differences": 0,
+    "examples": []
+  },
+  "live": {
+    "pairs": 80,
+    "words": 2880,
+    "shortUpdates": 480,
+    "gradualChanges": 2,
+    "minDelta": 0.02200000174343586,
+    "maxDelta": 0.03100000135600567,
+    "modes": [
+      0
+    ],
+    "actorTypes": [
+      3
+    ]
+  },
+  "addresses": {
+    "preparation": "0x47d211..0x47d477",
+    "joined": "0x47d211..0x47d606"
+  },
+  "coverage": [
+    "Full cross-product: eight modes, four actor types, initialized/uninitialized records, five timestep groups",
+    "3200 retained joined updates; no reseeding after the first update",
+    "Live initialized mode 0, actor type 3; 80 paired updates; supplied upstream locals"
+  ],
+  "cleanup": [
+    "0047d211 restored=1",
+    "0047d606 restored=1",
+    "debugger=0 clean=1"
+  ],
+  "remaining": [
+    "Earlier base, eye, offset, factor and distance construction is not retained from bike/world state.",
+    "Heap allocation failure and pointer identity are excluded from isolated numerical equivalence.",
+    "Live initialization is not covered; initialization is exercised by isolated native execution.",
+    "Terrain/camera collision, mode gates, render scheduling and other scratch writers remain.",
+    "No preview handling change; negative-steering mismatch remains unresolved."
+  ]
+}
