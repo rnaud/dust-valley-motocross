@@ -1,4 +1,4 @@
-import {checkpointMemory} from './live-checkpoint.mjs';
+import {checkpointMemory,loadLiveVisuals} from './live-checkpoint.mjs';
 export function loadLiveCollisionWorld(checkpoint,observation){
  if(observation?.schemaVersion!==1||observation.kind!=='mcm-collision-world-observation'||!['player-frame-entry','collision-before-primary'].includes(observation.captureBoundary)||checkpoint.captureBoundary!==observation.captureBoundary||!observation.captureId||observation.captureId!==checkpoint.captureId||observation.bikeAddress!==checkpoint.bikeAddress||observation.playerFrame!==checkpoint.playerFrame)throw Error('Collision world capture boundary differs');
  const local=checkpointMemory(checkpoint);
@@ -36,6 +36,16 @@ export function loadLiveCollisionWorld(checkpoint,observation){
    a.bike=actors.get(a.bikeAddress);if(a.bike?.kind!=='bike'||a.bike.riderAddress!==a.address)throw Error('Collision rider owner missing');a.bike.rider=a;
   }
  }
+ const transformNodes=new Map();
+ if(observation.transformsCaptured){
+  if(!observation.actorsCaptured)throw Error('Actor transforms require captured actors');
+  for(const actor of actors.values())if(actor.kind==='bike'){
+   const visual=loadLiveVisuals({...observation,kind:'mcm-partial-local-checkpoint',bikeAddress:actor.address},{nodes:transformNodes});
+   actor.transform=visual.bike.bodyNode;actor.riderTransform=visual.rider.bodyNode;actor.proxy=visual.rider;
+   used.add(actor.proxyAddress);used.add(u(actor.address+0x234));used.add(u(actor.proxyAddress+0x234));
+  }
+  for(const address of transformNodes.keys())used.add(address);
+ }
  const bikeObject=objects.find(o=>o.address===local.u32(checkpoint.bikeAddress+0xc88)),rider=local.u32(checkpoint.bikeAddress+0x874),riderObject=objects.find(o=>o.address===local.u32(rider+0x34));
  if(bikeObject?.ownerAddress!==checkpoint.bikeAddress||riderObject?.ownerAddress!==rider)throw Error('Player collision object ownership differs');
  for(const n of nodes.values()){
@@ -53,5 +63,5 @@ export function loadLiveCollisionWorld(checkpoint,observation){
  }
  for(const object of objects)for(const n of object.entries)if(n.active?!reached.has(n):(n.previous||n.next))throw Error('Orphaned collision entry');
  if(observation.blocks.some(b=>!used.has(b.address))||observation.blocks.length!==used.size)throw Error('Unreferenced collision world block');
- return {memory,manager,objects,nodes,actors,enabled:u(0x4e3754),grid:{dimension,cellSize:f(manager+0x3944),centerX:f(manager+0x3938),centerZ:f(manager+0x393c),cells}};
+ return {memory,manager,objects,nodes,actors,transformNodes,enabled:u(0x4e3754),grid:{dimension,cellSize:f(manager+0x3944),centerX:f(manager+0x3938),centerZ:f(manager+0x393c),cells}};
 }
