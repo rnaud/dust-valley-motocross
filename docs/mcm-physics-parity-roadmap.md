@@ -5050,3 +5050,43 @@ This proves the wrapper boundary, not terrain traversal. Recovering `0x48e4c0`
 (grid crossings, child traversal and triangle intersection), connecting enabled
 effects, full-frame return and retained acceleration/release validation remain
 outstanding. Preview handling is unchanged.
+
+### Complete terrain segment traversal on the original dunes
+
+`traverseMcmTerrainSegment` now translates `0x48e4c0`: separate grid-crossing
+lists, their ordered merge, child-height rejection, recursive tile traversal,
+alternating triangle selection, `0x401820` plane construction and `0x401970`
+intersection. The course loader retains signed node height bounds and origin
+coordinates. The isolated oracle validates 3,350,004 node words against the
+original tile deserializer, including these newly retained fields.
+
+The full original wrapper and traversal execute against dunes banks in the
+oracle. A hook records sample reads and then runs the overwritten instructions;
+terrain traversal and triangle intersection are not substituted. The 2,105
+queries include the actual live frame-effects query, seeded rays spanning
+multiple cells, near-vertical rays, exactly vertical rays and exact-height plane endpoints. Recovered results
+match 10,525 result words (including 228 hits, points and node identities), and
+the ordered sequence of 14,252 height reads, on ARM and x64. The compact fixture
+retains only accessed node metadata and samples. See
+`mcm-terrain-segment-course-validation.json`.
+
+Original boundary rounding can generate an additional tiny segment along a
+tile edge. The leaf code does not clamp its cell indices and can read beyond
+the 17×17 sample bank. The observer confirms this behavior. These cases require
+33 reads from adjacent allocation memory in this fixture. The recovered code
+requires explicit observed bytes for those reads and throws when unavailable;
+it does not reuse the oracle's adjacent bytes as live-game memory or fabricate
+zero heights. Thus these results do not establish unrestricted live-world
+queries without the corresponding memory observations.
+
+`generate-terrain-segment-course.mjs` builds deterministic input from the course
+and saved frame-effects query report. `terrain-segment-course-oracle.c` reuses
+the original course-deserializer oracle's host stdio/allocation adapters and
+omits renderer initialization. `build-terrain-segment-course-fixture.mjs` verifies
+the pinned executable hash, all serialized node fields and observed normal-bank
+samples before writing the fixture and comparison report. Raw native runs are
+archived outside git under `terrain-segment-traversal-2026-11-13`.
+
+Enabled frame-effects integration, frame-end filtering/animation/return,
+active collision callbacks and repeatable acceleration/release trajectory
+validation remain unfinished. Preview handling is unchanged.
