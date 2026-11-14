@@ -4904,3 +4904,27 @@ A fresh comparison through motion still matches all 925 checked words with
 24 changed words and zero differences. This supplies dependencies needed by
 rider/event continuation; it does not yet execute those later stages, establish
 whole-bike trajectory parity, or alter browser preview handling.
+
+### Connected captured frame through normal control and alignment
+
+The live bootstrap now supplies the actual bike controller fields and alignment
+scratch to the retained runner. The same captured state advances through
+controller handoff, normal control, rotation and ground alignment after motion.
+It stops explicitly at the unmapped event-decision context; it does not replace
+missing event input with a neutral default.
+
+`MCM_CAPTURE_CONTROLS=1` captures the normal grounded branch at `0x4ac5c5`,
+before event-wrapper argument setup. The harness verifies the original four
+instruction bytes and requires a scripted first-frame capture with exactly two
+records, excluding other endpoint modes. The native capture and recovered run
+match 1,160 words: the complete bike allocation, observed engine prefix, body
+local matrix and rider-controller allocation. There are 24 changed words across
+the captured prefix and zero differences on ARM and x64 Node. This snapshot
+does not add controller mutations beyond the preceding motion prefix; it does
+not establish active/crash control coverage or complete-frame parity.
+
+Evidence is in `live-frame-controls-wine11.json.br` and
+`mcm-live-frame-controls-validation.json`. Tests also detect a one-bit mismatch
+in the rider velocity and reject a wrong endpoint. Event input mapping,
+rider/event setup, finish/collision dispatch, retained trajectories and browser
+integration remain unfinished. Preview handling is unchanged by this milestone.
