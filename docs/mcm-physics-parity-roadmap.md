@@ -1,5 +1,13 @@
 # Motocross Madness physics parity roadmap
 
+## Velocity-derived camera factor recovered (2026-11-14)
+
+Original `0x47c685..0x47c7d2` now computes the camera target-distance factor from velocity projection, camera angles/radius, control gate, original denominators and the upstream multiplier. The factor is computed before the retained active-eye/reset/offset/smoothing chain; the captured factor is no longer consumed.
+
+A direct native boundary oracle matches **3,840/3,840 words across 1,280 cases**, including ±5 speed boundaries and adjacent floats, zero/negative denominators, signed zero, clamp conditions and **281 invalid-result words with exact native NaN bits**. Direct outputs prevent downstream bypass branches from hiding factor differences. The combined chain matches **622,080/622,080 words across 13,824 updates**, and the live mode-0 path matches **80 updates / 3,760 words**. Tests deliberately corrupt the captured factor to verify it is ignored, and reject changes to the actual upstream multiplier. See `mcm-chase-factor-validation.json`.
+
+Earlier heading/source/base/control construction and whole-world camera scheduling remain supplied or unmodeled. Alternate paths, runtime exceptional/trig coverage, terrain/camera collision and scratch-writer ordering remain incomplete. Preview handling and the negative-steering mismatch are unchanged.
+
 ## Active eye construction and filter-reset gates joined (2026-11-14)
 
 The active path from `0x47c7d2` now computes eye position from two runtime rotations and base/distance, applies eye-filter reset gates, updates camera state, then enters the validated offset/target/smoothing chain through `0x47d606`. It preserves the signed integer speed-bit comparison, strict coordinate-distance thresholds, reset flag behavior, crash scaling, and mode-6 camera-update bypass.

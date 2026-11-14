@@ -1,0 +1,62 @@
+{
+  "scope": "Original camera factor 0x47c685..0x47c7d2, separately observed and joined through active eye/reset/offset/smoothing to0x47d606.",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "fixtureSha256": "7221d074c7b754a4864c006bfa4a14911021c1403b1c04085fc168d4b6075b83",
+  "inputSha256": "04088e84f76a64a1c7fc567a2664cee725dc6250cd3a2de7d21b5d71e9659e84",
+  "outputSha256": "e4ad15b31c722b71b63d05cc99bce1375512ec5dbae19cb9ca16fcf75101f665",
+  "chainInputSha256": "05fdf8b75d70b0d84347bce2c7609b0e695ae0181e572c11d655d654ad27fd9c",
+  "chainOutputSha256": "b3f3b3778fe1451c2c879c06c50ad1166acae3f12e9c52cc28b5ab7142bfd688",
+  "liveRawSha256": "f2999a26cd0816094e60a6336ea24366463aea57364b88b5a1eb202c3ef472e0",
+  "sources": {
+    "src/physics/mcm/chase-factor.js": "f756f43c05d3625106ff1da2a8fd596484049e9e0f4713b760e65582cd5a5336",
+    "scripts/mcm-reference/chase-factor-oracle.c": "f26fca997e6a05ec7b19e7f167a9b852cc6809654cb23207785a98263b647b53",
+    "scripts/mcm-reference/chase-factor-chain-oracle.c": "3db9ee6de6289126ab4d35e41c6228c40505aab6248846d63b2dfd2f5892330f",
+    "scripts/mcm-reference/capture-chase-factor.c": "1c3d039b132c9d61a7ac3c4b61837b1c48398c914ba0cc598a2d724d49fb283f"
+  },
+  "isolated": {
+    "cases": 1280,
+    "words": 3840,
+    "invalidWords": 281,
+    "differences": 0,
+    "examples": []
+  },
+  "chain": {
+    "cases": 3456,
+    "steps": 13824,
+    "words": 622080,
+    "active": 4032,
+    "bypassed": 9792,
+    "resets": 384,
+    "differences": 0,
+    "examples": []
+  },
+  "live": {
+    "pairs": 80,
+    "words": 3760,
+    "active": 80,
+    "bypassed": 0,
+    "resets": 0,
+    "modes": [
+      0
+    ]
+  },
+  "coverage": [
+    "Direct three-word factor boundary output: longitudinal projection, factor and velocity correction",
+    "Float32 neighbors below/at/above positive and negative5 speed threshold; signed-bit comparisons preserved",
+    "Zero, negative-zero, negative and positive denominators; multiplier-1/0/1/2; angle clamps; zero source vectors",
+    "281 native invalid-result words match exact NaN bits using typed output and recovered x87 arithmetic",
+    "Chain captures retain camera/axis/filters; live mode0 and no reset transitions"
+  ],
+  "cleanup": [
+    "0047c685 restored=1",
+    "0047d606 restored=1",
+    "debugger=0 clean=1"
+  ],
+  "remaining": [
+    "Earlier heading/source/base/control construction and mode reachability remain supplied or unmodeled.",
+    "Bike inputs and denominators are observed values, not yet driven by retained whole-world camera scheduling.",
+    "Arbitrary NaN payloads and full runtime trig equivalence remain unproven.",
+    "Alternate camera paths, terrain collision and original caller-stack writer ordering remain incomplete.",
+    "No preview handling change or closure of negative-steering mismatch."
+  ]
+}
