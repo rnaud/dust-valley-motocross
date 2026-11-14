@@ -65,6 +65,14 @@ export function loadLiveCollisionWorld(checkpoint,observation){
    used.add(owner+0x44);used.add(settings+0x20);used.add(event+0x1f4);
   }
  }
+ let tag=null;
+ if(observation.bikeCallbackGatesCaptured){
+  const world=u(0x4e4fb4),address=u(world+0x608);used.add(0x4e4fb4);used.add(world+0x608);
+  if(address){const context=u(address+0x3c),player=u(context+0x30),holder=u(address+0x80);used.add(address+0x3c);used.add(context+0x30);used.add(address+0x80);
+   const actor=a=>{if(!a)return null;const result=actors.get(a);if(result?.kind!=='bike')throw Error('Uncaptured tag actor');return result;};
+   tag={address,player:actor(player),holder:actor(holder)};
+  }
+ }
  const bikeObject=objects.find(o=>o.address===local.u32(checkpoint.bikeAddress+0xc88)),rider=local.u32(checkpoint.bikeAddress+0x874),riderObject=objects.find(o=>o.address===local.u32(rider+0x34));
  if(bikeObject?.ownerAddress!==checkpoint.bikeAddress||riderObject?.ownerAddress!==rider)throw Error('Player collision object ownership differs');
  for(const n of nodes.values()){
@@ -82,5 +90,5 @@ export function loadLiveCollisionWorld(checkpoint,observation){
  }
  for(const object of objects)for(const n of object.entries)if(n.active?!reached.has(n):(n.previous||n.next))throw Error('Orphaned collision entry');
  if(observation.blocks.some(b=>!used.has(b.address))||observation.blocks.length!==used.size)throw Error('Unreferenced collision world block');
- return {memory,manager,objects,nodes,actors,transformNodes,riderResponse,enabled:u(0x4e3754),grid:{dimension,cellSize:f(manager+0x3944),centerX:f(manager+0x3938),centerZ:f(manager+0x393c),cells}};
+ return {memory,manager,objects,nodes,actors,transformNodes,riderResponse,tag,enabled:u(0x4e3754),grid:{dimension,cellSize:f(manager+0x3944),centerX:f(manager+0x3938),centerZ:f(manager+0x393c),cells}};
 }

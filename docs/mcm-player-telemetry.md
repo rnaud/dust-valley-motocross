@@ -957,3 +957,43 @@ The new rider response is not yet bound into full ordered live dispatch. Bike
 callback gates, connected actor ordering, normal-state events and complete
 acceleration/throttle-release trajectory parity remain open. Preview handling
 is unchanged by this milestone.
+
+## Ordered live dispatch through rider and bike callbacks
+
+`MCM_COLLISION_BIKE_GATES=1` captures global `0x4e4fb4`, the world singleton's
+`+0x608` tag pointer, and tag ownership fields when present. In the observed
+practice contact the tag pointer is zero. The world singleton is static image
+state at `0x507c68`; the isolated oracle relocates both its captured gate and the
+global pointer, then normalizes the pointer before raw-memory comparison. The
+previous grid oracle still produces byte-identical output after this change.
+
+`loadLiveOrderedDispatch` binds the observed bike callbacks `0x49e490/0x49e610`
+and rider crash callbacks `0x40bb20/0x40bb30`, preserving shared actor and
+transform identity. Unsupported callbacks fail if reached. Notification gates
+are read from the capture; active audio and tag-transfer adapters are not
+substituted. The native wrappers record callback order and call the original
+functions. They restore relocated callback pointers for comparison, preserving
+any original callback replacement rather than hiding it.
+
+The new capture completed 1,600 records and observed a real contact at scheduler
+counter 120. Dispatch is re-executed from the captured current primary object,
+ID 1. It is not a continuation of the interrupted native instruction/stack.
+Both implementations invoke player-rider primary, then player-bike secondary,
+and match all 35,635 words including the fixed callback trace and all captured
+memory. There are 42 changed memory words.
+
+Four explicitly counterfactual copies exercise bike-first dispatch, bike
+`+0x8ac` suppression, bike `+0x618` suppression and rider class sentinel 3.
+They all match original execution: bike-first invokes bike primary then rider
+secondary and changes 53 words; suppression cases change 22 words each; the
+sentinel case changes 41. ARM64 and x64 agree. Tests also reject missing gate
+memory and unsupported callbacks, and detect a corrupted callback trace.
+[Ordered dispatch report](mcm-live-ordered-dispatch-validation.json) contains
+results and hashes; raw artifacts are archived under
+`player-validation/live-ordered-dispatch-2026-11-13/`.
+
+This connects both actors' collision responses for the captured crash contact.
+It does not validate active audio/tag transfer, normal rider callbacks,
+normal-state events, whole-frame scheduling or full-bike trajectories. Browser
+preview handling is unchanged. The original debugger detached and hook bytes
+were verified after capture.
