@@ -4988,3 +4988,37 @@ post-state, then stops at the next unmapped dependency (`bike.fieldc7c`).
 Post-state/collision completion, end-of-frame integration and retained
 acceleration/release trajectories remain unfinished. Preview handling is
 unchanged; this is not whole-bike parity.
+
+### Connected post-state, shared collision graph and physics substep finish
+
+The live bootstrap now connects post-event state, collision synchronization,
+ordered dispatch and substep completion to the existing captured world graph.
+Player actor properties are views of the running bike/rider state, including
+controller flags and both rider velocity representations. The graph reuses the
+same transforms and grid nodes. The legacy static-wall harness remains a
+separate adapter; the live path preserves the captured callback routing and
+still fails on unsupported callbacks or active external dependencies.
+
+`MCM_CAPTURE_FINISH=1` observes `0x4ac95a`, after the physics loop and before the
+optional effect/tail processing. `MCM_FINISH_WORLD` exports the observed world
+at this boundary under the entry capture ID. Both the untouched first-frame
+case and the deliberate upright-threshold trigger match 36,543 word checks on
+ARM and x64, with 105 and 146 changed checks respectively and zero differences.
+These totals include repeated checks of player/transform words present in both
+the core snapshot and the world observation. Every captured collision-world
+block is compared; physics-only nodes absent from that observation and other
+component allocations remain outside the comparison.
+
+The recovered callback traces are empty in both cases, so these are connection
+and synchronization proofs, not evidence for active collision responses.
+Existing ordered callback tests still pass. Tests also verify shared state
+identity, catch a one-bit pair-table difference and reject a mismatched world
+capture boundary. Fixtures/reports use the `live-frame-finish` and
+`live-frame-finish-trigger` names; the trigger is a modified-input experiment.
+
+The retained run now reaches `context.frameTail`. The original optional effect
+path is enabled in the running process and writes bike scratch/effect state;
+it cannot be assumed absent when connecting frame-end filtering and animation.
+That tail, active collision callbacks, full-frame return and retained
+acceleration/release trajectories remain unfinished. Preview handling is
+unchanged, and whole-bike parity remains unproven.

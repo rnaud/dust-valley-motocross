@@ -28,7 +28,8 @@ static unsigned lengths[] = {6, 6, 2, 3, 4, 4};
 static BYTE saved[6];
 static int armed[6];
 static HANDLE process;
-static int capture_tires,capture_motion,capture_controls,capture_loop_rider;
+static int capture_tires,capture_motion,capture_controls,capture_loop_rider,capture_finish;
+static char frame_capture_id[17];
 static int scripted, capture_stack, capture_rider_timing, fixed_rider, capture_collision, checkpoint_collision_callbacks, checkpoint_collision_pairs;
 static unsigned hook_count=4;
 static DWORD rider_update_count, rider_dt_bits, rider_observed_dt_bits;
@@ -130,6 +131,7 @@ static int export_checkpoint(DWORD bike) {
         if(animations&&*animations&&!capture_mcm_animation_assets(process,bike,animations,capture_id))return 0;
         if(world&&*world&&!capture_mcm_collision_world(process,bike,world,capture_id,player_frame,export_boundary))return 0;
     }
+    memcpy(frame_capture_id,capture_id,sizeof frame_capture_id);
     FILE *out=fopen(path,"wx");if(!out)return 0;
     fprintf(out,"{\"schemaVersion\":1,\"kind\":\"mcm-partial-local-checkpoint\",\"bikeAddress\":%lu,\"playerFrame\":%lu,\"blockCount\":%u,\"blocks\":[",bike,player_frame,block_count);
     for(unsigned i=0;i<block_count;i++){
@@ -202,7 +204,7 @@ static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CON
     fprintf(out, "{\"phase\":\"%s\",\"sequence\":%lu,\"bike\":\"%08lx\","
                  "\"thread\":%lu,\"cw\":%lu,\"frameBits\":%lu,\"carryBits\":%lu,"
                  "\"nominalBits\":%lu,\"cap\":%lu,\"dtBits\":%lu,\"steps\":%lu,\"stateHex\":\"",
-            phase ? (capture_tires?"after-tires":capture_motion?"after-motion":capture_controls?"after-controls":capture_loop_rider?"after-loop-rider":"after-update") : "before-update", sequence, context->Esi,
+            phase ? (capture_tires?"after-tires":capture_motion?"after-motion":capture_controls?"after-controls":capture_loop_rider?"after-loop-rider":capture_finish?"after-finish":"after-update") : "before-update", sequence, context->Esi,
             thread, context->FloatSave.ControlWord, frame, carry, nominal, cap, dt, steps);
     for (unsigned i = 0; i < sizeof object; i++) fprintf(out, "%02x", object[i]);
     fprintf(out, "\",\"engineAddress\":\"%08lx\",\"engineHex\":\"", engine);
@@ -212,10 +214,11 @@ static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CON
     fprintf(out,"\",\"riderAddress\":\"%08lx\",\"riderHex\":\"",rider);
     for(unsigned i=0;i<sizeof rider_state;i++)fprintf(out,"%02x",rider_state[i]);
     fprintf(out,"\"");
-    if(capture_loop_rider){
+    if(capture_loop_rider||capture_finish){
         DWORD effect;BYTE bytes[16];if(!read_memory(context->Esi+0x904,&effect,4)||!read_memory(effect,bytes,16))return 0;
         fprintf(out,",\"effectAddress\":%lu,\"effectHex\":\"",effect);for(unsigned i=0;i<16;i++)fprintf(out,"%02x",bytes[i]);fprintf(out,"\"");
     }
+    if(capture_finish&&phase&&!capture_mcm_collision_world(process,context->Esi,getenv("MCM_FINISH_WORLD"),frame_capture_id,0,"player-substep-finish"))return 0;
     if(capture_collision&&!observe_rider_collision(out,rider))return 0;
     if(capture_stack){
         fprintf(out,",\"stackAddress\":\"%08lx\",\"stackHex\":\"",context->Esp);
@@ -269,6 +272,11 @@ int main(int argc, char **argv) {
     if(capture_loop_rider){
         if(!scripted||limit!=2||capture_contact||capture_tires||capture_motion||capture_controls||getenv("MCM_CAPTURE_FRAME")){fprintf(stderr,"Loop rider capture requires scripted first frame and exactly two records.\n");return 2;}
         addresses[1]=0x4ac6cd;lengths[1]=6;const BYTE bytes[]={0x8d,0x86,0xf8,0x04,0,0};memcpy(expected[1],bytes,6);
+    }
+    capture_finish=getenv("MCM_CAPTURE_FINISH")!=NULL;
+    if(capture_finish){
+        if(!scripted||limit!=2||capture_contact||capture_tires||capture_motion||capture_controls||capture_loop_rider||getenv("MCM_CAPTURE_FRAME")||!getenv("MCM_FINISH_WORLD")||!getenv("MCM_CHECKPOINT")||!getenv("MCM_COLLISION_WORLD")){fprintf(stderr,"Finish capture requires scripted first frame, two records and world output.\n");return 2;}
+        addresses[1]=0x4ac95a;lengths[1]=2;const BYTE bytes[]={0x33,0xff};memcpy(expected[1],bytes,2);
     }
     const char*frame_arg=getenv("MCM_CAPTURE_FRAME");
     if(frame_arg&&capture_contact){fprintf(stderr,"Choose frame or contact capture, not both.\n");return 2;}

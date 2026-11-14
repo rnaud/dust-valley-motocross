@@ -13,6 +13,8 @@ export function updateMcmResetCollisionDispatch(c){
 
 export function applyMcmBikeCollisionDispatch(c){
  const b=c.bike,p=c.contactPhase,d=c.dispatch;
+ // A captured actor graph supplies callbacks bound to its shared live state.
+ if(d.run)return d.run();
  const randomBefore=p.normalEventDecision.randomCalls;
  const bike={transform:c.bodyNode,field8a8:b.field8a8,field618:b.field618,field8ac:b.field8ac,
   carry:b.field8c8,field564:b.field564,field8d0:b.field8d0,inverseMass:b.inverseMass,

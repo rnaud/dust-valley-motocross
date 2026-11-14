@@ -1,7 +1,7 @@
 import {loadLiveCollisionWorld} from './live-collision-world.mjs';
-export function loadLiveCollisionDispatch(checkpoint,observation){
+export function loadLiveCollisionDispatch(checkpoint,observation,{world:sharedWorld}={}){
  if(!observation.actorsCaptured)throw Error('Collision actor capture required');
- const world=loadLiveCollisionWorld(checkpoint,observation),m=world.memory,a=world.manager;
+ const world=sharedWorld??loadLiveCollisionWorld(checkpoint,observation),m=world.memory,a=world.manager;
  m.read(a,0x3988);m.read(0x4e3754,8);
  const vector=o=>[0,4,8].map(i=>m.f32(a+o+i));
  const objectFor=address=>{if(!address)return null;const o=world.objects.find(o=>o.address===address);if(!o)throw Error('Uncaptured collision contact object');return o;};

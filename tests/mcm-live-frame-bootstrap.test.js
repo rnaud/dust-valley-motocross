@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {brotliDecompressSync} from 'node:zlib';
 import {loadLiveFrameBootstrap} from '../scripts/mcm-reference/live-frame-bootstrap.mjs';
-import {compareLiveFrameTires,compareLiveFrameMotion,compareLiveFrameControls,compareLiveFrameLoopRider} from '../scripts/mcm-reference/compare-live-frame-tires.mjs';
+import {compareLiveFrameTires,compareLiveFrameMotion,compareLiveFrameControls,compareLiveFrameLoopRider,compareLiveFrameFinish} from '../scripts/mcm-reference/compare-live-frame-tires.mjs';
 import {advanceMcmRetainedFrame} from '../src/physics/mcm/retained-frame.js';
 function fixture(boundary='tires'){
  const f=JSON.parse(brotliDecompressSync(fs.readFileSync(new URL(`./fixtures/mcm/live-frame-${boundary}-wine11.json.br`,import.meta.url)))),cache=new Map();
@@ -62,7 +62,7 @@ test('connected captured event/rider prefix matches original allocations, effect
  const loaded=loadLiveFrameBootstrap(f.input);
  assert.equal(loaded.context.contactPhase.normalEventDecision.inputResult,loaded.environment.actions[8]);
  assert.equal(loaded.context.contactPhase.normalEventDecision.terrainMode,loaded.environment.terrainMode);
- assert.throws(()=>advanceMcmRetainedFrame(loaded.context,{delta:Math.fround(.02),mode:loaded.mode,input:loaded.input}),/Unmapped live frame dependency: bike.fieldc7c/);
+ assert.throws(()=>advanceMcmRetainedFrame(loaded.context,{delta:Math.fround(.02),mode:loaded.mode,input:loaded.input}),/Unmapped live frame dependency: context.frameTail/);
  const raw=Buffer.from(f.after.effectHex,'hex');raw.writeUInt32LE((raw.readUInt32LE(4)^1)>>>0,4);
  const mismatch=compareLiveFrameLoopRider(f.input,{...f.after,effectHex:raw.toString('hex')});
  assert.equal(mismatch.differences,1);assert.equal(mismatch.firstDifferences[0].object,'rider-effect');
@@ -86,4 +86,27 @@ test('connected event setup matches a deliberate original crash trigger and shar
  assert.equal(loaded.random.state,3837989202);assert.equal(loaded.random.calls,3);
  assert.deepEqual(loaded.context.rider.selected,[27620160,27153472,27541184]);
  assert.equal(loaded.context.rider.kind,3);assert.equal(loaded.context.rider.flag13c,1);assert.equal(loaded.context.rider.active16c,1);
+});
+
+test('completed captured substep matches the original observed collision world',()=>{
+ for(const [name,changed] of [['finish',105],['finish-trigger',146]]){
+  const f=fixture(name),report=compareLiveFrameFinish(f.input,f.after);
+  assert.equal(report.comparedWords,36543);assert.equal(report.changedWords,changed);assert.equal(report.differences,0);
+  assert.deepEqual(report.callbackTrace,[]);assert.equal(report.stages.at(-1),'finish');
+ }
+ const f=fixture('finish'),afterWorld=structuredClone(f.input.afterWorld),block=afterWorld.blocks.find(b=>b.address===afterWorld.managerAddress);
+ const bytes=Buffer.from(block.hex,'hex');bytes.writeUInt32LE((bytes.readUInt32LE(0xf8)^1)>>>0,0xf8);block.hex=bytes.toString('hex');
+ const mismatch=compareLiveFrameFinish({...f.input,afterWorld},f.after);
+ assert.equal(mismatch.differences,1);assert.equal(mismatch.firstDifferences[0].object,'collision-world');
+ assert.throws(()=>compareLiveFrameFinish({...f.input,afterWorld:{...afterWorld,captureId:'other'}},f.after),/boundary differs/);
+});
+test('finish adapter shares player actor, rider state, transforms and grid identities',()=>{
+ const {input}=fixture('finish'),loaded=loadLiveFrameBootstrap(input),c=loaded.context,w=loaded.ordered;
+ const actor=w.actors.get(input.checkpoint.bikeAddress),rider=actor.rider;
+ assert.equal(actor.transform,c.bodyNode);assert.equal(actor.riderTransform,c.proxy);
+ assert.equal(c.collision,actor.collision);assert.equal(c.grid.cells,w.dispatch.cells);
+ assert.equal(actor.velocity,c.bike.velocity);actor.velocity=[3,4,5];assert.equal(actor.velocity,c.bike.velocity);
+ c.bike.velocity=[6,7,8];assert.equal(actor.velocity,c.bike.velocity);
+ c.rider.flag13c=1;assert.equal(rider.flag13c,1);rider.alternateVelocity=[1,2,3];assert.equal(rider.alternateVelocity,c.rider.velocity);
+ rider.angular=[4,5,6];assert.equal(rider.angular,c.rider.baseAngularVelocity);
 });

@@ -1,9 +1,9 @@
 import {loadLiveCollisionDispatch} from './live-collision-dispatch.mjs';
 import {primaryMcmCollision,secondaryMcmCollision} from '../../src/physics/mcm/collision-callback.js';
 import {respondMcmRiderCrashContact,respondMcmRiderSecondary} from '../../src/physics/mcm/rider-collision-response.js';
-export function loadLiveOrderedDispatch(checkpoint,observation){
+export function loadLiveOrderedDispatch(checkpoint,observation,options){
  if(!observation.bikeCallbackGatesCaptured||!observation.notificationGatesCaptured||!observation.riderResponseCaptured||!observation.transformsCaptured)throw Error('Ordered dispatch dependencies not captured');
- const w=loadLiveCollisionDispatch(checkpoint,observation),m=w.memory,trace=[];
+ const w=loadLiveCollisionDispatch(checkpoint,observation,options),m=w.memory,trace=[];
  for(const a of w.actors.values()){
   const u=o=>m.u32(a.address+o),f=o=>m.f32(a.address+o),v=(o,n=3)=>Array.from({length:n},(_,i)=>f(o+i*4));
   if(a.kind==='bike'){

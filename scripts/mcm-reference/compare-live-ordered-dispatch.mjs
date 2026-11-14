@@ -5,8 +5,19 @@ export function compareLiveOrderedDispatch(checkpoint,observation,output){
  const w=loadLiveOrderedDispatch(checkpoint,observation),m=w.dispatch,start=m.currentA;
  if(start===undefined)throw Error('Captured primary missing');
  dispatchMcmCollisions(m,start);
- const blocks=observation.blocks.map(b=>({...b,bytes:Buffer.from(b.hex,'hex')})),header=257*4;
+ const blocks=serializeLiveOrderedDispatch(w,observation),header=257*4;
  if(output.length!==header+blocks.reduce((n,b)=>n+b.size,0))throw Error('Wrong ordered oracle output length');
+ const trace=[w.trace.length,...w.trace.flat()];while(trace.length<257)trace.push(0);
+ let differences=0,changedWords=0,comparedWords=0,cursor=header;const firstDifferences=[];
+ const check=(actual,expected,field)=>{comparedWords++;if(actual!==expected){differences++;if(firstDifferences.length<20)firstDifferences.push({field,original:expected,recovered:actual});}};
+ trace.forEach((v,i)=>check(v,output.readUInt32LE(i*4),`trace[${i}]`));
+ for(const b of blocks){const before=Buffer.from(b.hex,'hex');for(let i=0;i<b.size;i+=4){const original=output.readUInt32LE(cursor+i);if(original!==before.readUInt32LE(i))changedWords++;check(b.bytes.readUInt32LE(i),original,`0x${(b.address+i).toString(16)}`);}cursor+=b.size;}
+ return {scope:'Dispatch from captured current primary through original rider and bike callbacks, with callback order and all captured memory compared. Re-executes dispatch from the snapshot; not continuation of the interrupted native stack. Active audio/tag transfer and whole trajectories excluded.',startObject:start,callbackTrace:w.trace,comparedWords,changedWords,differences,firstDifferences};
+}
+
+export function serializeLiveOrderedDispatch(w,observation){
+ const m=w.dispatch;
+ const blocks=observation.blocks.map(b=>({...b,bytes:Buffer.from(b.hex,'hex')}));
  const put=(a,v)=>{const b=blocks.find(b=>a>=b.address&&a+4<=b.address+b.size);if(!b)throw Error('Uncaptured ordered dispatch store');b.bytes.writeUInt32LE(v>>>0,a-b.address);},vector=(a,v)=>v.forEach((x,i)=>put(a+i*4,floatBits(x)));
  for(const a of w.actors.values())if(a.kind==='bike'){
   for(const [key,offset] of [['position',0x4f8],['velocity',0x510],['angularVelocity',0x534],['worldAngularVelocity',0x528],['scratch540',0x540],['field654',0x654]])vector(a.address+offset,a[key]);
@@ -20,10 +31,5 @@ export function compareLiveOrderedDispatch(checkpoint,observation,output){
  put(w.manager+0x394c,floatBits(m.depth));for(const [key,offset] of [['contactCC',0x3950],['contactD8',0x395c],['contactE4',0x3968],['otherE4',0x3974]])vector(w.manager+offset,m[key]);
  put(w.manager+0x3980,m.currentA===undefined?0:m.objects[m.currentA].address);put(w.manager+0x3984,m.currentB===undefined?0:m.objects[m.currentB].address);
  if(w.tag)put(w.tag.address+0x80,w.tag.holder?.address??0);
- const trace=[w.trace.length,...w.trace.flat()];while(trace.length<257)trace.push(0);
- let differences=0,changedWords=0,comparedWords=0,cursor=header;const firstDifferences=[];
- const check=(actual,expected,field)=>{comparedWords++;if(actual!==expected){differences++;if(firstDifferences.length<20)firstDifferences.push({field,original:expected,recovered:actual});}};
- trace.forEach((v,i)=>check(v,output.readUInt32LE(i*4),`trace[${i}]`));
- for(const b of blocks){const before=Buffer.from(b.hex,'hex');for(let i=0;i<b.size;i+=4){const original=output.readUInt32LE(cursor+i);if(original!==before.readUInt32LE(i))changedWords++;check(b.bytes.readUInt32LE(i),original,`0x${(b.address+i).toString(16)}`);}cursor+=b.size;}
- return {scope:'Dispatch from captured current primary through original rider and bike callbacks, with callback order and all captured memory compared. Re-executes dispatch from the snapshot; not continuation of the interrupted native stack. Active audio/tag transfer and whole trajectories excluded.',startObject:start,callbackTrace:w.trace,comparedWords,changedWords,differences,firstDifferences};
+ return blocks;
 }
