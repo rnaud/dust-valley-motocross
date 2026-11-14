@@ -24,7 +24,7 @@ export function serializeLiveOrderedDispatch(w,observation){
   for(const [key,offset] of [['field8a8',0x8a8],['field8ac',0x8ac]])put(a.address+offset,a[key]);
   put(a.address+0x6a4,floatBits(a.speed));put(a.address+0x888,floatBits(a.field888));
  }else{vector(a.address+0x58,a.velocity);vector(a.address+0x64,a.angular);vector(a.address+0xb8,a.matrix);put(a.address+0x154,a.contactClass);}
- for(const o of w.objects){vector(o.address+0x1c,o.matrix);vector(o.address+0x64,o.extents);vector(o.address+0x70,o.localCenter);vector(o.address+0x7c,o.worldCenter);put(o.address+0x5c,floatBits(o.radius));if(o.radiusSquared!==undefined)put(o.address+0x60,floatBits(o.radiusSquared));put(o.address+0x88,o.other?.address??0);vector(o.address+0xcc,o.contactCC);vector(o.address+0xd8,o.contactD8);vector(o.address+0xe4,o.contactE4);}
+ for(const o of w.objects){o.callbackAddresses.forEach((v,i)=>put(o.address+0x108+i*4,v));vector(o.address+0x1c,o.matrix);vector(o.address+0x64,o.extents);vector(o.address+0x70,o.localCenter);vector(o.address+0x7c,o.worldCenter);put(o.address+0x5c,floatBits(o.radius));if(o.radiusSquared!==undefined)put(o.address+0x60,floatBits(o.radiusSquared));put(o.address+0x88,o.other?.address??0);vector(o.address+0xcc,o.contactCC);vector(o.address+0xd8,o.contactD8);vector(o.address+0xe4,o.contactE4);}
  for(const n of w.transformNodes.values()){vector(n.address+0x84,n.local);vector(n.address+0xc4,n.world);put(n.address+0x104,n.cacheValid);}
  for(const n of w.nodes.values())for(const [i,v] of [n.previous?.token??0,n.next?.token??0,n.owner,n.cell,n.other,n.active].entries())put(n.token+i*4,v);
  for(let i=0;i<60;i++)for(let j=0;j<60;j++)put(w.manager+0xf8+(i*60+j)*4,m.pairs[i][j]);
