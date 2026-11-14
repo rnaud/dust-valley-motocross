@@ -1,0 +1,92 @@
+{
+  "captured": {
+    "scope": "Original 0x4b0610 reset decision with captured world settings and unmodified 0x4526d0 action lookup. Normal state only; no rider cleanup, device polling or whole-frame parity.",
+    "branch": "continue",
+    "queries": 1,
+    "blocks": 48,
+    "comparedWords": 3713,
+    "changedWords": 0,
+    "differences": 0,
+    "firstDifferences": []
+  },
+  "variantScope": "Counterfactual copies of captured state; not observed trajectories.",
+  "variants": [
+    {
+      "name": "pressed",
+      "scope": "Original 0x4b0610 reset decision with captured world settings and unmodified 0x4526d0 action lookup. Normal state only; no rider cleanup, device polling or whole-frame parity.",
+      "branch": "button",
+      "queries": 1,
+      "blocks": 48,
+      "comparedWords": 3713,
+      "changedWords": 2,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "name": "not-pressed-two",
+      "scope": "Original 0x4b0610 reset decision with captured world settings and unmodified 0x4526d0 action lookup. Normal state only; no rider cleanup, device polling or whole-frame parity.",
+      "branch": "continue",
+      "queries": 1,
+      "blocks": 48,
+      "comparedWords": 3713,
+      "changedWords": 0,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "name": "not-pressed-negative",
+      "scope": "Original 0x4b0610 reset decision with captured world settings and unmodified 0x4526d0 action lookup. Normal state only; no rider cleanup, device polling or whole-frame parity.",
+      "branch": "continue",
+      "queries": 1,
+      "blocks": 48,
+      "comparedWords": 3713,
+      "changedWords": 0,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "name": "elapsed",
+      "scope": "Original 0x4b0610 reset decision with captured world settings and unmodified 0x4526d0 action lookup. Normal state only; no rider cleanup, device polling or whole-frame parity.",
+      "branch": "elapsed",
+      "queries": 0,
+      "blocks": 48,
+      "comparedWords": 3713,
+      "changedWords": 0,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "name": "boundary",
+      "scope": "Original 0x4b0610 reset decision with captured world settings and unmodified 0x4526d0 action lookup. Normal state only; no rider cleanup, device polling or whole-frame parity.",
+      "branch": "boundary",
+      "queries": 1,
+      "blocks": 48,
+      "comparedWords": 3713,
+      "changedWords": 3,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "name": "mode-three",
+      "scope": "Original 0x4b0610 reset decision with captured world settings and unmodified 0x4526d0 action lookup. Normal state only; no rider cleanup, device polling or whole-frame parity.",
+      "branch": "continue",
+      "queries": 1,
+      "blocks": 48,
+      "comparedWords": 3713,
+      "changedWords": 0,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "name": "mode-two",
+      "scope": "Original 0x4b0610 reset decision with captured world settings and unmodified 0x4526d0 action lookup. Normal state only; no rider cleanup, device polling or whole-frame parity.",
+      "branch": "boundary",
+      "queries": 1,
+      "blocks": 48,
+      "comparedWords": 3713,
+      "changedWords": 3,
+      "differences": 0,
+      "firstDifferences": []
+    }
+  ]
+}

@@ -19,6 +19,7 @@
 #include "capture-animation-assets.c"
 #undef MCM_ANIMATION_EMBEDDED
 #include "capture-collision-world.c"
+#include "capture-frame-environment.c"
 
 static const DWORD addresses[] = {0x4a54b6, 0x4ad0e1, 0x4ad5a2, 0x4bf195, 0x40e990, 0x42ce38};
 static const BYTE expected[][6] = {{0xd9, 0x86, 0xc8, 0x08, 0, 0},
@@ -116,12 +117,14 @@ static int export_checkpoint(DWORD bike) {
     const char *path=getenv("MCM_CHECKPOINT");
     const char *animations=getenv("MCM_ANIMATIONS");
     const char *world=getenv("MCM_COLLISION_WORLD");
+    const char *environment=getenv("MCM_FRAME_ENVIRONMENT");
     if(getenv("MCM_COLLISION_ACTORS")&&!(world&&*world))return 0;
-    if(!path||!*path)return !(animations&&*animations)&&!(world&&*world);
+    if(!path||!*path)return !(animations&&*animations)&&!(world&&*world)&&!(environment&&*environment);
     char capture_id[17]={0};
-    if((animations&&*animations)||(world&&*world)){
+    if((animations&&*animations)||(world&&*world)||(environment&&*environment)){
         LARGE_INTEGER stamp;if(!QueryPerformanceCounter(&stamp))return 0;
         snprintf(capture_id,sizeof capture_id,"%08lx%08lx",(DWORD)stamp.HighPart,stamp.LowPart);
+        if(environment&&*environment&&!capture_mcm_frame_environment(process,bike,environment,capture_id,player_frame,export_boundary))return 0;
         if(animations&&*animations&&!capture_mcm_animation_assets(process,bike,animations,capture_id))return 0;
         if(world&&*world&&!capture_mcm_collision_world(process,bike,world,capture_id,player_frame,export_boundary))return 0;
     }
