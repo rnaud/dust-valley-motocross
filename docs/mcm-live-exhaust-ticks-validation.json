@@ -1,0 +1,21 @@
+{
+  "scope": "Two separate player exhaust ticks after bike frames 50 and 51. Actual external dt retained; full emitter, particle count and all 1000 particle records compared. Not connected retained-world replay.",
+  "reports": [
+    {
+      "frame": 50,
+      "dt": 0.10300000756978989,
+      "playerActive": 0,
+      "emitted": 1,
+      "words": 14289,
+      "differences": []
+    },
+    {
+      "frame": 51,
+      "dt": 0.14500001072883606,
+      "playerActive": 0,
+      "emitted": 2,
+      "words": 14289,
+      "differences": []
+    }
+  ]
+}
