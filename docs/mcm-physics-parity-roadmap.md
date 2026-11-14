@@ -1,5 +1,11 @@
 # Motocross Madness physics parity roadmap
 
+## Stateblock matrix expression recovered (2026-11-14)
+
+The final float writer in the observed third indexed draw is now identified: Wine `wined3d` RVA `0xc308b`, `movhps %xmm4,0x8(%eax)`. Stateblock application calls helper RVA `0x7f5a0`, which multiplies the matrices at state offsets `0x2c94` and `0x6c14` into its local array. Output word 2 overlaps player scratch `0x22f038`. A ten-frame capture contains 30 products; the recovered SSE arithmetic matches **480/480 output words** from the input matrices. Nine initialized overlapping stores were observed immediately before/after the instruction and remained unchanged through their original draw returns. Frame zero had no identified player scratch and is not counted as an overlapping-store observation.
+
+This closes the instruction/expression question for that path, superseding the unknown-final-writer statement in the preceding milestone. The matrix routine is kept separate from the original game's x87 composer because SSE rounds each operation to binary32. It is **not connected to retained physics yet**: the original transform state, render gates, ordering, and other writers must be derived from retained world state first. The negative-steering mismatch remains. No recorded outputs are injected and preview handling is unchanged. Evidence: `mcm-stateblock-product-validation.json`; raw matrices, store boundaries, and output words are retained in the regression fixture.
+
 ## Draw inputs and Wine stateblock boundary (2026-11-14)
 
 Captured 60 indexed draws with complete vertex/index arrays: the observed batches contain 12/24, 280/894, and 247/738 vertices/indices. The retained scratch word never matches an aligned input vertex word. A separate version-guarded capture resolves `DDRAW!DrawIndexedPrimitive` through Wine's device wrappers to `wined3d_device_apply_stateblock`; all 12 initialized calls change the word across stateblock application. The first uninitialized capture prefix is explicitly excluded. All indices, stack cleanup and caller identities are validated.
