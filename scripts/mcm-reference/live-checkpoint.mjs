@@ -26,8 +26,12 @@ export function loadLiveEngine(checkpoint){
  const f=o=>m.f32(address+o),u=o=>m.u32(address+o),gearCount=u(0x84);
  if(gearCount<1||gearCount>5)throw Error('Unsupported captured gear count');
  const array=(offset,stride=4)=>Array.from({length:gearCount},(_,i)=>f(offset+i*stride));
+ // 0x4ad980 scans the captured drive curve and also reads the endpoint at
+ // index knotCount when demand exceeds every knot. Preserve that memory word.
+ const knotCount=u(0x88);if(knotCount>15)throw Error('Unsupported captured drive curve count');
+ const curve=offset=>Array.from({length:knotCount+1},(_,i)=>f(offset+4*i));
  const filterAddress=u(4);
- return {address,engine:{gearCount,ratios:array(8),thresholdBases:array(0x20,8),thresholdRanges:array(0x50),speedThresholds:array(0x64),
+ return {address,engine:{knotCount,knots:curve(0x8c),samples:curve(0xc8),slopes:curve(0x104),gearCount,ratios:array(8),thresholdBases:array(0x20,8),thresholdRanges:array(0x50),speedThresholds:array(0x64),
   downshiftRpm:f(0x78),previousRpmDemand:f(0x7c),shiftDuration:f(0x80),maxRpm:u(0x148),topGearLimitDisabled:!!u(0x14c),
   released:u(0x150),shiftThreshold:f(0x154),gear:u(0x158),rpmDemand:f(0x15c),state:f(0x160),shiftTimer:f(0x168),
   analogFilter:{value:m.f32(filterAddress),duration:m.f32(filterAddress+4)},randomScale:1/32768},memory:m};

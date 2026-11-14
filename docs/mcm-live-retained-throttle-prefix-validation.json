@@ -1,0 +1,59 @@
+{
+  "scope": "Retained modeled bike state, initialized once. Only explicit throttle input changes between frames. Unmodeled bytes are assumed unchanged within each frame using its observed entry bytes; this is not a complete world replay. Visual/animation allocations are compared only at boundaries containing them. External rider and emitter ticks are not substituted.",
+  "frames": 52,
+  "comparedWords": 188423,
+  "matchingFrames": 51,
+  "differences": 3,
+  "firstMismatch": {
+    "frame": 51,
+    "scope": "Connected retained frame 51 scheduler through frame return from captured state and real terrain. Bike allocation, observed engine prefix and body local matrix compared. Other component allocations, uncaptured transforms and stack outputs are not covered by this report. The rider-controller allocation is also compared. Rider effect and random state are compared. Three visual-emitter allocations and terrain-query count, return and start coordinates are compared. The acceleration-filter value and duration allocation is also compared. No complete-frame or trajectory parity.",
+    "stages": [
+      "entry",
+      "recovery",
+      "input",
+      "steering",
+      "reset",
+      "terrain",
+      "engine",
+      "contact",
+      "response",
+      "tires",
+      "motion",
+      "controls",
+      "event",
+      "rider",
+      "finish",
+      "before-filter",
+      "effects",
+      "filter",
+      "frame-rider",
+      "before-return",
+      "return"
+    ],
+    "comparedWords": 1526,
+    "changedWords": 71,
+    "differences": 3,
+    "firstDifferences": [
+      {
+        "object": "visual-emitter-2",
+        "offset": "48",
+        "original": 1042200658,
+        "recovered": 1048576000
+      },
+      {
+        "object": "visual-emitter-2",
+        "offset": "68",
+        "original": 15,
+        "recovered": 14
+      },
+      {
+        "object": "visual-emitter-2",
+        "offset": "478",
+        "original": 65,
+        "recovered": 64
+      }
+    ],
+    "frontContact": 1,
+    "rearContact": 1
+  }
+}
