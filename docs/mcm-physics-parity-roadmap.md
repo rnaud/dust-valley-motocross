@@ -1,5 +1,11 @@
 # Motocross Madness physics parity roadmap
 
+## Camera target-point update recovered (2026-11-14)
+
+Original `0x47a3d0` now derives camera forward/up from eye and target, preserving the exact-equality early return, vertical-direction special case, original inverse-square-root normalization, validity flags, and refresh-counter wraparound. An isolated full-function oracle with immediate-mode camera state matches **14,000/14,000 words across 1,000 cases**, including 100 unchanged-target cases. The original setter's audio-listener globals and nonzero `camera+0x140` retained-mode forwarding remain outside the modeled output.
+
+A native ten-frame trace verifies the chase camera's actual virtual target resolves to this routine. **Nine calls / 126 words** match, and their computed values feed **54 subsequent views / 864 words**. The same capture validates nine view submissions and 27 downstream renderer products (432 words); leading observations without initialized provenance are counted separately. Thus the target-to-view-to-renderer expression path is validated with observed chase inputs. **Eye position, roll, and target points still come from native observations, not a retained chase-controller implementation.** The next source is original chase routine `0x47b0c0`, which supplies the eye/roll setter at `0x47d9dd` and target call at `0x47d9f1`. No preview handling change or closure of the negative-steering mismatch is claimed. See `mcm-camera-target-validation.json`.
+
 ## Original camera matrix expression recovered (2026-11-14)
 
 Original `0x475760` is now recovered separately from the renderer's SSE multiply. Its input is **ten** floats: eye, forward, up, and roll. The original independently normalizes forward/up with its table inverse-square-root, keeps their cross product unscaled, and optionally composes a roll rotation using x87 operation order. An isolated oracle executes the full original function and matches **15,856/15,856 words across 991 cases**, including signed-zero roll, parallel/zero vectors, broad direction magnitudes, and large finite roll angles.

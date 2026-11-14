@@ -1,0 +1,113 @@
+{
+  "scope": "Original camera aim expression and live view/renderer chain; chase controller and world scheduling are not retained.",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "modules": {
+    "ddraw": {
+      "sha256": "be2964ddd67d148bcf87c4a1eedf8cf5e1ccc39eb7c87f3079df181d80fbea29",
+      "base": "0x7aa90000",
+      "imageSize": "0x69000",
+      "timestamp": "0x69e0eaba",
+      "device2DrawIndexedPrimitiveRva": "0x98d0",
+      "device7Rva": "0xf530",
+      "stateblockApplyIatRva": "0x60544"
+    },
+    "wined3d": {
+      "sha256": "25feee6100619bd123fc00568d4e5107a3a20d60f62d160e12c368731fa32f1c",
+      "base": "0x7a770000",
+      "applyStateblockRva": "0x1bd500"
+    }
+  },
+  "fixtureSha256": "277883da580e76c7eed6dea6c11370afb45d25fe049c6850216b588db2305167",
+  "inputSha256": "738c36ec5cb75bb5b65942e62d59105014870c1cfa0f1b046a492274615cb0f4",
+  "outputSha256": "7b72b1db6646160fec89638980df29f63af92e231c5e09984bf40bf1c3a41b80",
+  "liveRawSha256": "0e87a5a2e6f52c52ac6aaa1dcae3a94aacef08e92cc058d2c7bb19b297575444",
+  "sources": {
+    "src/physics/mcm/camera-target.js": "b72323c9dcc11ad5eb4c78999120c5a0c089e587020d776fb4cd8bb36517b0fb",
+    "scripts/mcm-reference/camera-target-oracle.c": "f4a4c5a330618560c4efe1660b26c20d3a6bcf2bb2b8be6b2f90b8e972794b31",
+    "scripts/mcm-reference/capture-camera-target.c": "1c6bb8e57fb3d7a678aa15f82adf56d9eb79a3eb6cb40ba7f2d42263a6dff994"
+  },
+  "isolated": {
+    "cases": 1000,
+    "words": 14000,
+    "unchanged": 100,
+    "differences": 0,
+    "examples": []
+  },
+  "live": {
+    "pairs": 9,
+    "words": 126,
+    "views": 54,
+    "viewWords": 864,
+    "ignoredViews": 2
+  },
+  "rendererChain": {
+    "viewPairs": 56,
+    "viewWords": 896,
+    "viewSubmissions": 9,
+    "products": 27,
+    "productWords": 432,
+    "ignoredViewSubmissions": 0,
+    "ignoredProducts": 3
+  },
+  "addresses": {
+    "targetFunction": "0x47a3d0",
+    "originalCall": "0x47d9f1",
+    "originalReturn": "0x47d9f4",
+    "chaseController": "0x47b0c0",
+    "cameraFields": "eye+0x144 forward+0x150 up+0x15c roll+0x168",
+    "upValid": "0x1c4",
+    "forwardValid": "0x1c8",
+    "refreshCounter": "0x1bc"
+  },
+  "coverage": [
+    "100 exact eye/target equal cases preserve previous state and return zero",
+    "positive and negative vertical target special cases",
+    "general target vectors and nonzero initial flags",
+    "owner counter wrapping from 0xffffffff to zero",
+    "full original function executed with camera+0x140 zero and x87 CW 0x027f"
+  ],
+  "cleanup": [
+    "00467fc8 restored=1",
+    "00445f85 restored=1",
+    "00445f88 restored=1",
+    "00467fcb restored=1",
+    "7aa9b340 restored=1",
+    "7aa9b3b3 restored=1",
+    "7aa9b3dc restored=1",
+    "7aa9ebfe restored=1",
+    "7aa9ec30 restored=1",
+    "7aa91588 restored=1",
+    "7aa9ebf6 restored=1",
+    "7aa9ea3f restored=1",
+    "7aa9eaa5 restored=1",
+    "7aa9eae1 restored=1",
+    "7aa9eb19 restored=1",
+    "7aa9eb4f restored=1",
+    "7aa9eb76 restored=1",
+    "7aa9eb88 restored=1",
+    "7aa9eb9a restored=1",
+    "7aa9ebb4 restored=1",
+    "7aa9ebd8 restored=1",
+    "7aa9ebee restored=1",
+    "7a93103a restored=1",
+    "7a931042 restored=1",
+    "7a83308b restored=1",
+    "7a964500 restored=1",
+    "0047a6cd restored=1",
+    "0047a6e5 restored=1",
+    "0047a670 restored=1",
+    "0047a240 restored=1",
+    "0047d9f1 restored=1",
+    "0047d9f4 restored=1",
+    "004a54b6 restored=1",
+    "debugger=0 clean=1"
+  ],
+  "remaining": [
+    "Chase controller eye position, roll, and target points remain observed inputs.",
+    "The target helper global audio-listener updates are not modeled; camera+0x140 nonzero retained-mode forwarding is excluded.",
+    "Two leading live views precede a reconstructed target state and are explicitly excluded.",
+    "Renderer world setters and frame ordering/gates are still observed rather than retained.",
+    "No default captured-scratch injection and no preview handling change; negative-steering mismatch remains.",
+    "Native instrumentation perturbs timing; these are expression and caller-chain checks, not controlled repeated full-world trajectories."
+  ]
+}
