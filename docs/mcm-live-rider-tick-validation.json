@@ -1,0 +1,25 @@
+{
+  "scope": "Separate rider tick in the active crash-animation/no-terrain-hit branch. Captured collision world, all animation assets, child actor and global timestep compared. Free-rider integration, active particles and crossfade remain explicit unsupported branches; not retained trajectory parity.",
+  "comparedWords": 320799,
+  "changedWords": 776,
+  "reports": [
+    {
+      "scope": "Separate rider tick in the active crash-animation/no-terrain-hit branch. Captured collision world, all animation assets, child actor and global timestep compared. Free-rider integration, active particles and crossfade remain explicit unsupported branches; not retained trajectory parity.",
+      "frame": 104,
+      "result": 1,
+      "callbackTrace": [],
+      "comparedWords": 160496,
+      "changedWords": 398,
+      "differences": []
+    },
+    {
+      "scope": "Separate rider tick in the active crash-animation/no-terrain-hit branch. Captured collision world, all animation assets, child actor and global timestep compared. Free-rider integration, active particles and crossfade remain explicit unsupported branches; not retained trajectory parity.",
+      "frame": 105,
+      "result": 1,
+      "callbackTrace": [],
+      "comparedWords": 160303,
+      "changedWords": 378,
+      "differences": []
+    }
+  ]
+}
