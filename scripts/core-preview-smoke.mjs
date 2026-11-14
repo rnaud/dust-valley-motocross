@@ -29,6 +29,7 @@ try{
     await page.keyboard.up(key);await page.keyboard.up('KeyW');
    }
    await page.keyboard.press('KeyR');await page.keyboard.press('Escape');assert.equal((await snapshot(page)).phase,'paused');await page.click('#photo');await page.screenshot({path:'/tmp/mcm-core-preview-bike.png'});await page.keyboard.press('Escape');await page.click('#home');
+   await page.click('[data-mode=race]');await page.click('#start');await page.waitForFunction(()=>__game.snapshot().phase==='playing');await frames(page,3);assert.equal((await snapshot(page)).backend,'recovered-core');await page.screenshot({path:'/tmp/mcm-core-preview-circuit.png'});await page.keyboard.press('Escape');await page.click('#home');
    await page.selectOption('#physics-mode','classic');await page.click('#start');await page.waitForFunction(()=>__game.snapshot().phase==='playing');assert.equal((await snapshot(page)).backend,undefined);
   }
   assert.deepEqual(errors,[]);console.log(JSON.stringify({touch,gas,errors}));await page.close();

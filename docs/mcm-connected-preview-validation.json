@@ -17,7 +17,7 @@
   },
   "displayHeightValidation": {
     "points": 2000,
-    "toleranceMetres": 0.00001
+    "toleranceMetres": 1e-05
   },
   "browserChecks": [
     "backend selection",
@@ -26,7 +26,8 @@
     "touch gas/straight/release",
     "sand-enabled touch",
     "pause/photo/reset",
-    "classic fallback"
+    "classic fallback",
+    "circuit startup and terrain-aligned gates, stakes and tyre stacks"
   ],
   "sand": "Optional extension; recovered suspension loads in newtons drive bounded deformation, sampled by the recovered terrain solver.",
   "remaining": [

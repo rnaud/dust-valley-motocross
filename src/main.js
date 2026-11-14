@@ -257,7 +257,7 @@ const gates=[];for(let i=0;i<12;i++){const a=i/12*TAU,p=track(a),g=new THREE.Gro
 const tyreStacks=new THREE.Group(),tyreParts=[];
 for(const [a,side] of [[0,-15],[0,15],[.28,-15],[.28,15]]){
  const p=track(a*TAU),x=p.x+p.tz*side,z=p.z-p.tx*side,y=terrain(x,z);
- for(let k=0;k<3;k++){const t=new THREE.Mesh(new THREE.TorusGeometry(.5,.18,8,16),materials.dark);t.rotation.x=Math.PI/2;t.position.set(x,y+.2+k*.34,z);tyreParts.push(t);}
+ for(let k=0;k<3;k++){const t=new THREE.Mesh(new THREE.TorusGeometry(.5,.18,8,16),materials.dark);t.rotation.x=Math.PI/2;t.position.set(x,y+.2+k*.34,z);t.userData.groundOffset=.2+k*.34;tyreParts.push(t);}
 }
 tyreStacks.add(...batchMeshes(tyreParts,tyreStacks));scene.add(tyreStacks);
 function makeBike(){
@@ -461,6 +461,12 @@ function updateEnvironment(){
   for(let i=0;i<pos.count;i++)pos.setY(i,terrain(pos.getX(i),pos.getZ(i)));
   pos.needsUpdate=true;groundGeo.computeVertexNormals();groundGeo.computeBoundingSphere();
   gates.forEach(g=>{g.group.position.y=terrain(g.p.x,g.p.z);});
+  let marker=0;
+  for(let i=0;i<160;i++){const p=track(i/160*TAU);for(const side of [-1,1]){const x=p.x+p.tz*11*side,z=p.z-p.tx*11*side;stakes.setMatrixAt(marker++,stakeMatrix.makeTranslation(x,terrain(x,z)+.6,z));}}
+  stakes.instanceMatrix.needsUpdate=true;stakes.computeBoundingSphere();
+  tyreParts.forEach(t=>{t.position.y=terrain(t.position.x,t.position.z)+t.userData.groundOffset;});
+  for(const child of [...tyreStacks.children]){tyreStacks.remove(child);child.geometry.dispose();}
+  batchMeshes(tyreParts,tyreStacks);
   mountains.forEach(groundMountain);rebuildMountainBatches();
   placeBoulders();placeHeroRocks();placeGrass();arch.position.y=terrain(arch.position.x,arch.position.z);groundDetail.update(state.x,state.z,true);
   decorations.forEach(o=>{o.position.y=terrain(o.position.x,o.position.z)+o.userData.groundOffset;o.visible=mode==='free'?!inJumpZone(o.position.x,o.position.z):!o.userData.onTrack;});
