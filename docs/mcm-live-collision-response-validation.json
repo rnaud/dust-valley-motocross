@@ -1,0 +1,22 @@
+{
+  "originalExeSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "playerFrame": 120,
+  "scope": "Original type-1 dynamic response from captured player collider, stopping before notification at 0x49e37f. Callback gating, notification, subsequent grid refresh and full trajectories excluded.",
+  "actors": 4,
+  "transformNodes": 48,
+  "comparedWords": 35363,
+  "changedWords": 18,
+  "differences": 0,
+  "firstDifferences": [],
+  "boundary": [
+    1,
+    1108965725,
+    1
+  ],
+  "artifacts": {
+    "mcm-actor-transforms-checkpoint.json": "aa36ec8d0b6e75b21c227bd1559c9b79f5e7d8d9bd02bb529f2c53deb802b71a",
+    "mcm-actor-transforms-observation.json": "3f013f22fc6a21ebce8d71c119bcfe5dec0ca4e5c47b9d5479dea8c5fadaad2c",
+    "mcm-actor-response-input.bin": "c397a2dac35ba19517af68b2b051f896054621b824207b99b633baa0d8467933",
+    "mcm-actor-response-output.bin": "d89bf89a2511203f16f8793486c9ff0202647a981a0c21bdbf42f29280eda4ad"
+  }
+}

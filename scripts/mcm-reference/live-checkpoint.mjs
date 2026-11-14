@@ -56,8 +56,8 @@ export function loadLiveRider(checkpoint){
 
 // Shared object/scene layout used by original animation callbacks. Cache state
 // and graph identity are loaded as captured; no transform is recomputed here.
-export function loadLiveVisuals(checkpoint,{extraRoots=[]}={}){
- const memory=checkpointMemory(checkpoint),nodes=new Map();
+export function loadLiveVisuals(checkpoint,{extraRoots=[],nodes=new Map()}={}){
+ const memory=checkpointMemory(checkpoint);
  const loadNode=address=>{
   if(!address)return null;
   if(nodes.has(address))return nodes.get(address);

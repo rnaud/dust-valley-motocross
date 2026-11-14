@@ -18,7 +18,7 @@ int main(int argc,char**argv){
  if(argc!=4)return 2;
  map_image(argv[1]);((void (__cdecl *)(void))0x20001720)();LIVE_COLLISION_SETUP();
  FILE*in=fopen(argv[2],"rb"),*out=fopen(argv[3],"wb");if(!in||!out)fail("open");uint32_t manager,count;
- if(fread(&manager,4,1,in)!=1||fread(&count,4,1,in)!=1||!count||count>183)fail("header");
+ if(fread(&manager,4,1,in)!=1||fread(&count,4,1,in)!=1||!count||count>4096)fail("header");
  uint32_t*addresses=calloc(count,4),*sizes=calloc(count,4);if(!addresses||!sizes)fail("alloc");
  for(uint32_t i=0;i<count;i++){
   if(fread(addresses+i,4,1,in)!=1||fread(sizes+i,4,1,in)!=1||!sizes[i]||sizes[i]>1048576||addresses[i]<0x10000||addresses[i]+sizes[i]<addresses[i])fail("block");

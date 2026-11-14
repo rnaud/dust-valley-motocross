@@ -852,3 +852,39 @@ compressed fixture retain the evidence. Actor response, event/transform
 resource dependencies, full-frame progression and trajectory parity remain
 unvalidated by this experiment. These capture and validation changes do not
 alter browser preview handling.
+
+## Captured actor transforms and dynamic impulse response
+
+`MCM_COLLISION_TRANSFORMS=1` requires actor capture and adds every registered
+bike's component table, transform graph, rider proxy and proxy components to the
+same paused world observation. Parent, child and sibling links are followed with
+deduplication and a bounded block count. It does not expand replay restoration.
+`loadLiveVisuals` accepts a shared node map so all actor graphs retain pointer
+identity; the collision loader rejects uncaptured nodes and inconsistent links.
+
+A new callback-only replay completed 1,600 records and captured another real
+contact at scheduler counter 120. Its 69 world blocks contain four actors and
+48 transform nodes. Both bikes' transform and rider-proxy dependencies are now
+present, including the previously missing non-player graph.
+
+`live-collision-response-oracle.c` executes original `0x49d900` on the captured
+player collider with its captured type-1 rider contact. It stops at `0x49e37f`,
+before dereferencing the notification owner or calling `0x427110`; the recovered
+response stops at its corresponding notification adapter. This is a direct
+response-stage comparison, not continuation of the interrupted rider callback
+or execution of bike callback gates. Neither side substitutes a notification
+implementation or proceeds past the boundary.
+
+All 35,363 compared words match, including 18 changed memory words and the
+notification impulse/type boundary. ARM64 and x64 agree. Every captured actor,
+transform and collision-world block is compared, not only velocity fields.
+[Response report](mcm-live-collision-response-validation.json) contains artifact
+hashes; the compressed regression fixture retains the exact input and native
+output. Missing transforms and corrupted oracle output are rejected. The
+original debugger detached and both rider/contact hook instructions were
+restored after capture.
+
+Notification ownership and side effects, callback gates, subsequent grid
+refresh, event progression and whole-bike trajectories remain to be connected
+and validated. This milestone does not alter browser preview handling. Raw
+artifacts are archived under `player-validation/live-collision-response-2026-11-13/`.
