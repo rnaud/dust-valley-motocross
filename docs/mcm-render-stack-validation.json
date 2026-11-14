@@ -1,0 +1,181 @@
+{
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "fixtureSha256": "f4476b843f0d1ca763bd63ef9663266f9aef3419f3599bdaf16c4ec988205a7f",
+  "rawSha256": "349e26599b96a6146ba742f3fc6d1badc74d057bca470097bcd9038120682383",
+  "outerRawSha256": "0bf0969afa1d5ac20a23fa5d48256bd5e35df3dbb5e5ad98c8131727d3fbf42c",
+  "renderCaptureSourceSha256": "2389fd719c40c9913b90d96747da96343090f9c60d167806cbe9083554364e83",
+  "outerCaptureSourceSha256": "0b2556b98e647dc3133df5871ef0d7e3ad4ed7e37fa638599aa0fa4279937891",
+  "callerChain": [
+    "0x467fc8 -> 0x467a90",
+    "0x467c55 -> 0x4206c0",
+    "0x4206f6 -> child vtable+0x24"
+  ],
+  "outerChangedFrames": 40,
+  "cleanup": [
+    "004206f6 restored=1",
+    "004206f9 restored=1",
+    "004207b6 restored=1",
+    "004207b9 restored=1",
+    "00420808 restored=1",
+    "0042080b restored=1",
+    "00423b63 restored=1",
+    "00423bc9 restored=1",
+    "00423c64 restored=1",
+    "00423f52 restored=1",
+    "00423f58 restored=1",
+    "004590b0 restored=1",
+    "0045910d restored=1",
+    "00467ba5 restored=1",
+    "00467bb0 restored=1",
+    "00467c03 restored=1",
+    "00467c41 restored=1",
+    "00467c48 restored=1",
+    "00467c55 restored=1",
+    "00467c58 restored=1",
+    "00467c88 restored=1",
+    "00467d2f restored=1",
+    "00467d3a restored=1",
+    "00467e11 restored=1",
+    "00467f40 restored=1",
+    "00467f65 restored=1",
+    "00467f96 restored=1",
+    "00467fb4 restored=1",
+    "00467fc4 restored=1",
+    "00467fc8 restored=1",
+    "00467fcb restored=1",
+    "00467fd0 restored=1",
+    "00467fd8 restored=1",
+    "004a52c0 restored=1",
+    "004a54b6 restored=1",
+    "004ad0e1 restored=1",
+    "debugger=0 clean=1"
+  ],
+  "scope": "Observed call boundaries, not recovered rendering or modeled caller scratch. A changed leaf contains a write; its internal writer is not yet identified.",
+  "ignoredLeadingPartialRows": 123,
+  "frames": 19,
+  "calls": 1292,
+  "maxDepth": 5,
+  "changedFrames": 19,
+  "changedCalls": {
+    "0x00446220": 19,
+    "0x00475560": 19,
+    "0x0044faf0": 57,
+    "0x004206c0": 19,
+    "0x00422f50": 16,
+    "0x00423c80": 16,
+    "0x00481300": 19,
+    "0x0043b3a0": 14
+  },
+  "changedLeafCalls": {
+    "0x00446220": 19,
+    "0x0044faf0": 38,
+    "0x00422f50": 16,
+    "0x0043b3a0": 14
+  },
+  "endWords": {
+    "1114112": 3,
+    "2289848": 16
+  },
+  "changes": [
+    {
+      "frame": 1,
+      "before": 0,
+      "after": 2289848
+    },
+    {
+      "frame": 2,
+      "before": 0,
+      "after": 2289848
+    },
+    {
+      "frame": 3,
+      "before": 0,
+      "after": 2289848
+    },
+    {
+      "frame": 4,
+      "before": 0,
+      "after": 2289848
+    },
+    {
+      "frame": 5,
+      "before": 0,
+      "after": 2289848
+    },
+    {
+      "frame": 6,
+      "before": 0,
+      "after": 2289848
+    },
+    {
+      "frame": 7,
+      "before": 1118136928,
+      "after": 2289848
+    },
+    {
+      "frame": 8,
+      "before": 1124610901,
+      "after": 2289848
+    },
+    {
+      "frame": 9,
+      "before": 1125260900,
+      "after": 1114112
+    },
+    {
+      "frame": 10,
+      "before": 0,
+      "after": 1114112
+    },
+    {
+      "frame": 11,
+      "before": 1124610539,
+      "after": 1114112
+    },
+    {
+      "frame": 12,
+      "before": 1127277815,
+      "after": 2289848
+    },
+    {
+      "frame": 13,
+      "before": 0,
+      "after": 2289848
+    },
+    {
+      "frame": 14,
+      "before": 0,
+      "after": 2289848
+    },
+    {
+      "frame": 15,
+      "before": 0,
+      "after": 2289848
+    },
+    {
+      "frame": 16,
+      "before": 0,
+      "after": 2289848
+    },
+    {
+      "frame": 17,
+      "before": 0,
+      "after": 2289848
+    },
+    {
+      "frame": 18,
+      "before": 0,
+      "after": 2289848
+    },
+    {
+      "frame": 19,
+      "before": 0,
+      "after": 2289848
+    }
+  ],
+  "limits": [
+    "Instrumentation changes timing and active render paths; outer and detailed captures finish with different scratch values.",
+    "Call containment does not identify the exact internal writing instruction.",
+    "No renderer scratch replay or constant substitution is integrated; negative steering parity remains unresolved."
+  ]
+}

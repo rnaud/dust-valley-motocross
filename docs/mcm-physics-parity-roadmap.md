@@ -1,5 +1,9 @@
 # Motocross Madness physics parity roadmap
 
+## Renderer caller-stack writes (2026-11-14)
+
+The follow-up capture identifies `0x467fc8 -> 0x467a90` after world updates as another real writer to the reused bike slot: all 40 observed calls changed it. Inside that call, `0x467c55 -> 0x4206c0` traverses rendering children through `0x4206f6`. A detailed capture validates 19 complete frames and 1,292 paired child calls; changed leaf calls include `0x446220`, `0x44faf0`, `0x43b3a0`, and `0x422f50`. Instrumentation changes timing and active render paths: the outer capture retained float-like words while the detailed capture ended with integer/pointer-like words. Neither a HUD-only zero reset nor one constant renderer value is supported. The next step is recovering the internal writing instructions and their native render gates, then capturing the same dependencies with controlled negative steering. See `mcm-render-stack-validation.json`. These are observed dependencies, not integrated physics fixes.
+
 ## Ordered world stack capture (2026-11-14)
 
 A combined native capture now records true bike function entry, pre-scheduler and exit boundaries for player/AI, HUD clock updates, and DrawText calls. Across 200 updates, the retained HUD clock matches 1,200 words and predicts all ten refreshes (20 drawing calls, six nonzero scratch clears). All 199 observed HUD-to-next-player intervals overwrite the scratch word again before true bike entry; the bike prologue itself preserves it in this sample. Therefore a HUD-only reset would not reproduce this live session. The next target is the caller interval between HUD completion and player function entry. This is evidence capture, not a fix for the negative-steering mismatch or full parity. See `mcm-world-stack-order-validation.json`; two regression tests validate the native sequence and reject incomplete/contradictory captures.
