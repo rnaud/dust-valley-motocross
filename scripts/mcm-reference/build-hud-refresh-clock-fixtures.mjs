@@ -1,0 +1,18 @@
+import fs from 'node:fs';
+import {createHash} from 'node:crypto';
+import {brotliCompressSync} from 'node:zlib';
+import {compareHudRefreshClock} from './compare-hud-refresh-clock.mjs';
+import {compareLiveHudRefreshClock} from './compare-live-hud-refresh-clock.mjs';
+const [exe,inputPath,outputPath,livePath]=process.argv.slice(2);
+if(!livePath)throw Error('Usage: build-hud-refresh-clock-fixtures.mjs mcm.exe input.bin output.bin live.jsonl');
+const hash=b=>createHash('sha256').update(b).digest('hex'),executableSha256=hash(fs.readFileSync(exe));
+if(executableSha256!=='e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b')throw Error('Unrecognized original');
+const input=fs.readFileSync(inputPath),output=fs.readFileSync(outputPath),liveBytes=fs.readFileSync(livePath),rows=liveBytes.toString().trim().split('\n').map(JSON.parse);
+const isolated=compareHudRefreshClock(input,output),live=compareLiveHudRefreshClock(rows);
+if(isolated.differences.length||live.differences.length)throw Error('HUD clock comparison failed');
+const save=(path,value)=>fs.writeFileSync(new URL(path,import.meta.url),brotliCompressSync(Buffer.from(JSON.stringify(value))));
+save('../../tests/fixtures/mcm/hud-refresh-clock-wine11.json.br',{input:input.toString('base64'),output:output.toString('base64')});
+save('../../tests/fixtures/mcm/live-hud-refresh-clock-wine11.json.br',rows);
+const report={scope:'Recovered HUD clock scheduling only. Isolated oracle replaces the graphics refresh with an invocation counter; live comparison retains clock state but does not simulate graphics or scratch writes.',executableSha256,inputSha256:hash(input),outputSha256:hash(output),liveCaptureSha256:hash(liveBytes),oracleSourceSha256:hash(fs.readFileSync(new URL('./hud-refresh-clock-oracle.c',import.meta.url))),isolated,live};
+fs.writeFileSync(new URL('../../docs/mcm-hud-refresh-clock-validation.json',import.meta.url),JSON.stringify(report,null,2)+'\n');
+console.log({isolated,live});

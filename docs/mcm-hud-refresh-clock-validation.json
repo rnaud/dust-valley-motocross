@@ -1,0 +1,33 @@
+{
+  "scope": "Recovered HUD clock scheduling only. Isolated oracle replaces the graphics refresh with an invocation counter; live comparison retains clock state but does not simulate graphics or scratch writes.",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "inputSha256": "037ff7213e60ebc7930ea401f864361c272121dbb428d864b77bae508430567b",
+  "outputSha256": "8d243f3fb386b0d9792462558132ebb683f5fb77d2950680afbe7ce257eaeb28",
+  "liveCaptureSha256": "d986c76b78d1b14b6da71ca3fe82e2f5f23c9dd13c94adfe1b4053c8911fbc18",
+  "oracleSourceSha256": "40ddaf01b9a5b49b63076b343633766b802f01e14dcfb837573f7d96264d63a8",
+  "isolated": {
+    "cases": 131,
+    "steps": 1328,
+    "comparedWords": 5312,
+    "changedWords": 3235,
+    "refreshes": 289,
+    "differences": []
+  },
+  "live": {
+    "scope": "HUD clock initialized once, consuming captured world deltas and enabled gates. Graphics execution and inherited bike scratch remain observed only, not simulated.",
+    "frames": 80,
+    "comparedWords": 480,
+    "predictedRefreshes": 4,
+    "changedScratchWords": 1,
+    "scratchChanges": [
+      {
+        "frame": 2,
+        "refreshed": true,
+        "address": 2289720,
+        "before": 1091216115,
+        "after": 0
+      }
+    ],
+    "differences": []
+  }
+}

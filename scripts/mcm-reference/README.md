@@ -545,3 +545,26 @@ handling. Compares 32 words including root matrix/cache, angular velocity, axis
 scratch and correction state. Covers mask gates, target floor/clamp order, rate
 limits and both pivot rotations. Geometry/state are supplied; whole-bike
 sequencing and the following helper remain excluded.
+
+## HUD clock dependency
+
+`generate-hud-refresh-clock.mjs` creates isolated clock inputs. Compile
+`hud-refresh-clock-oracle.c` with `i686-w64-mingw32-gcc -O0 -Wall -Wextra
+-Werror -Wl,--image-base,0x10000000 -Wl,--disable-dynamicbase`, then
+run `oracle.exe mcm.exe input.bin output.bin` under the reference prefix. The
+oracle executes original `0x423b63..0x423bc9`; a counting stub replaces the HUD
+refresh, so this validates its scheduler rather than graphics or stack effects.
+`compare-hud-refresh-clock.mjs input.bin output.bin` compares every retained step.
+
+For live observation, compile `capture-hud-refresh-clock.c` with
+`i686-w64-mingw32-gcc -O0 -Wall -Wextra -Werror`. With the verified original
+running, invoke `capture.exe WINDOWS_PID new-output.jsonl frame-count`. It
+observes clock entry/exit and the player stack address, without changing input
+or timing. Restore a minimized game window before capturing. It uses three
+temporary breakpoints and detaches after the bounded capture; unrecoverable
+context/cleanup errors stop the reference rather than leaving armed hooks.
+`compare-live-hud-refresh-clock.mjs new-output.jsonl` retains the clock from one
+initialization and reports scratch changes separately. It never feeds those
+observed scratch words into the model. `build-hud-refresh-clock-fixtures.mjs`
+accepts the pinned executable, isolated input/output and live JSONL to regenerate
+the regression fixtures and validation report.
