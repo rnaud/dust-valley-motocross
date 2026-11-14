@@ -1,0 +1,13 @@
+import fs from 'node:fs';
+import {createHash} from 'node:crypto';
+import {brotliCompressSync} from 'node:zlib';
+import {compareExhaustTick} from './compare-exhaust-tick.mjs';
+const [exe,inputPath,outputPath,fixturePath,reportPath]=process.argv.slice(2);
+if(!reportPath)throw Error('Usage: build-exhaust-tick-fixture.mjs mcm.exe input.bin output.bin fixture.br report.json');
+const executableSha256=createHash('sha256').update(fs.readFileSync(exe)).digest('hex');
+if(executableSha256!=='e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b')throw Error('Wrong original executable');
+const input=fs.readFileSync(inputPath),output=fs.readFileSync(outputPath),report=compareExhaustTick(input,output);
+if(report.differences.length)throw Error(JSON.stringify(report.differences.slice(0,10)));
+fs.writeFileSync(fixturePath,brotliCompressSync(Buffer.from(JSON.stringify({input:input.toString('base64'),output:output.toString('base64')}))));
+fs.writeFileSync(reportPath,JSON.stringify({scope:'Isolated original 0x43a6d0 exhaust tick and 0x43b160 particle insertion, complete emitter and 1000 particle records compared. Live world ordering and timestep capture are not yet connected.',executableSha256,controlWord:639,...report},null,2)+'\n');
+console.log(report);
