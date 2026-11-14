@@ -90,7 +90,9 @@ export function readMcmTerrain(bytes) {
     if(at<rootOffset||at+60>bytes.length)throw new Error('Invalid terrain node offset');
     const level=bytes.readUInt32LE(at+20),shift=bytes.readUInt32LE(at+24),bankIndex=bytes.readUInt32LE(at+40),table=bytes.readUInt32LE(at+56);
     if(level>2||shift>30)throw new Error('Unsupported terrain node level/shift');
-    const node={offset:at,level,shift,bankIndex,bias:bytes.readFloatLE(at),scale:bytes.readFloatLE(at+4),...bank(bankIndex)};
+    const node={offset:at,level,shift,bankIndex,bias:bytes.readFloatLE(at),scale:bytes.readFloatLE(at+4),
+      minimumHeight:bytes.readInt32LE(at+8),maximumHeight:bytes.readInt32LE(at+12),
+      originX:bytes.readInt32LE(at+28),originY:bytes.readInt32LE(at+32),...bank(bankIndex)};
     nodes.set(at,node);pending.add(at);
     if(table){
       if(table<rootOffset||table+1024>bytes.length)throw new Error('Invalid terrain child table');

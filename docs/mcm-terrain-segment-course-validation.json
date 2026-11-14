@@ -1,0 +1,12 @@
+{
+  "scope": "Complete original terrain segment wrapper, cell splitting, recursive traversal and triangle intersection on dunes. Original tile deserialization uses host stdio/allocation adapters. Out-of-bank reads use explicitly observed adjacent allocation bytes from this isolated process, not assumed live-game memory. No whole-bike trajectory parity.",
+  "nodeWordComparisons": 3350004,
+  "capturedNodes": 5846,
+  "queries": 2105,
+  "hits": 228,
+  "wordComparisons": 10525,
+  "differences": [],
+  "heightReads": 14252,
+  "readDifferences": 0,
+  "adjacentReads": 33
+}
