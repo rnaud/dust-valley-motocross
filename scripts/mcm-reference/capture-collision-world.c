@@ -60,8 +60,18 @@ static int capture_mcm_collision_world(HANDLE process,DWORD bike,const char*path
    SAVE(proxy,0x438);if(!collision_components(process,blocks,&count,proxy))goto done;
   }
  }
+ if(getenv("MCM_COLLISION_NOTIFICATION_GATES")){
+  if(!getenv("MCM_COLLISION_ACTORS"))goto done;
+  for(DWORD i=0;i<objects;i++){
+   DWORD object=collision_word(blocks[0].bytes,8+i*4),kind,actor,owner,notification,world;
+   if(!collision_world_read(process,object+0x104,&kind,4))goto done;
+   if(kind!=0)continue;
+   if(!collision_world_read(process,object+0x94,&actor,4)||!collision_world_read(process,actor+0x41c,&owner,4)||!owner||!collision_world_read(process,owner+0x3c,&notification,4)||!notification||!collision_world_read(process,notification+0x3c,&world,4)||!world)goto done;
+   SAVE(owner+0x3c,4);SAVE(notification+0x3c,4);SAVE(world+0x1ec,4);
+  }
+ }
  out=fopen(path,"wx");if(!out)goto done;
- fprintf(out,"{\"schemaVersion\":1,\"kind\":\"mcm-collision-world-observation\",\"bikeAddress\":%lu,\"managerAddress\":%lu,\"captureId\":\"%s\",\"captureBoundary\":\"%s\",\"playerFrame\":%lu,\"transformsCaptured\":%s,\"actorsCaptured\":%s,\"blockCount\":%u,\"blocks\":[",bike,manager,id,boundary,frame,getenv("MCM_COLLISION_TRANSFORMS")?"true":"false",getenv("MCM_COLLISION_ACTORS")?"true":"false",count);
+ fprintf(out,"{\"schemaVersion\":1,\"kind\":\"mcm-collision-world-observation\",\"bikeAddress\":%lu,\"managerAddress\":%lu,\"captureId\":\"%s\",\"captureBoundary\":\"%s\",\"playerFrame\":%lu,\"notificationGatesCaptured\":%s,\"transformsCaptured\":%s,\"actorsCaptured\":%s,\"blockCount\":%u,\"blocks\":[",bike,manager,id,boundary,frame,getenv("MCM_COLLISION_NOTIFICATION_GATES")?"true":"false",getenv("MCM_COLLISION_TRANSFORMS")?"true":"false",getenv("MCM_COLLISION_ACTORS")?"true":"false",count);
  for(unsigned i=0;i<count;i++){CollisionWorldBlock*b=&blocks[i];fprintf(out,"%s{\"address\":%lu,\"size\":%lu,\"hex\":\"",i?",":"",b->address,b->size);for(DWORD j=0;j<b->size;j++)fprintf(out,"%02x",b->bytes[j]);fprintf(out,"\"}");}
  fprintf(out,"]}\n");ok=!ferror(out);
  done:

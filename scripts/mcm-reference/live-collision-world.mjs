@@ -46,6 +46,14 @@ export function loadLiveCollisionWorld(checkpoint,observation){
   }
   for(const address of transformNodes.keys())used.add(address);
  }
+ if(observation.notificationGatesCaptured){
+  if(!observation.actorsCaptured)throw Error('Notification gates require captured actors');
+  for(const actor of actors.values())if(actor.kind==='bike'){
+   const owner=u(actor.address+0x41c),notification=u(owner+0x3c),world=u(notification+0x3c),player=u(world+0x1ec);
+   used.add(owner+0x3c);used.add(notification+0x3c);used.add(world+0x1ec);
+   actor.notification={owner,address:notification,world,player};
+  }
+ }
  const bikeObject=objects.find(o=>o.address===local.u32(checkpoint.bikeAddress+0xc88)),rider=local.u32(checkpoint.bikeAddress+0x874),riderObject=objects.find(o=>o.address===local.u32(rider+0x34));
  if(bikeObject?.ownerAddress!==checkpoint.bikeAddress||riderObject?.ownerAddress!==rider)throw Error('Player collision object ownership differs');
  for(const n of nodes.values()){
