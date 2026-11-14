@@ -1,0 +1,23 @@
+{
+  "originalExeSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "captureBoundary": "collision-before-primary",
+  "playerFrame": 120,
+  "capturedPrimary": 1,
+  "capturedSecondary": 0,
+  "replayOrder": "Manager order starting at object 0, stopping before first gameplay callback; not continuation of the interrupted object-1 dispatch.",
+  "scope": "Captured live dispatch through first gameplay callback, where execution stops; actor response is not substituted or validated.",
+  "dispatched": 1,
+  "stoppedAtCallback": true,
+  "callbackOwner": 85756408,
+  "callbackKind": 0,
+  "actors": 4,
+  "comparedWords": 30743,
+  "changedWords": 29,
+  "differences": 0,
+  "firstDifferences": [],
+  "artifacts": {
+    "checkpoint.json": "b0fc3c824df3d93574f5c61b3dc53d533b5913768f7d551f531ae744aaa0cab5",
+    "observation.json": "b56f1d9d2c9a74abfce818cca824dffb2861f5440f8bfd52ba2705292644adb0",
+    "output": "389938a2fa735709be8cc000864fb832dca5233992e24e6539d39c9bb00005be"
+  }
+}

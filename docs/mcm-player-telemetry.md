@@ -814,3 +814,41 @@ This validates one initialized engine/contact-preparation slice. Terrain contact
 queries, forces, chassis integration and full-frame progression have not been
 included in this comparison. Raw native input/output and sources are archived
 under `player-validation/substep-start-2026-11-13/`.
+
+## Live collision contact and actor capture
+
+`MCM_COLLISION_ACTORS=1` extends the paused collision-world observation with
+both registered bike allocations (`0xcc8` bytes) and rider controllers (`0x3ac`).
+The loader validates actor class, collider back-references and reciprocal
+bike/rider ownership. Manager capture now includes its dispatch scratch through
+`0x3988`, and both grid and dispatch enable flags are retained.
+
+`MCM_CAPTURE_FRAME=N` exports a later player entry without replacing the initial
+replay checkpoint. `MCM_CAPTURE_CONTACT=1` instead waits at original `0x42ce38`,
+after successful contact copies and before the primary gameplay callback. It
+requires scripted checkpoint/world output and excludes animation export. The
+snapshot is labelled `collision-before-primary`; `playerFrame` is the scheduler
+counter at that boundary, not a claim that a player update is in progress.
+
+The contact experiment restored the 43-block callback checkpoint, fixed bike
+and rider intervals to `.02`, and completed 1,600 boundary records. It captured
+player rider object 1 contacting bike object 0 at counter 120, with penetration
+`.4921875`. Earlier frame-entry snapshots at counters 0 and 105 produced no
+callback or changed words, so they do not establish active-contact coverage.
+
+The isolated dispatcher oracle reruns `0x42ccc0` in manager order starting at
+object 0. This is explicitly a new dispatch from the captured world, **not** a
+continuation of the interrupted object-1 call. Both implementations stop at the
+first gameplay callback, before any actor response. Original callback addresses
+are restored before comparing memory. The recovered dispatcher agrees on all
+30,743 words (including three callback-boundary words), with 29 changed memory
+words and a primary callback for the player bike. ARM64 and x64 agree; the
+previous grid oracle still produces byte-identical output after the shared
+oracle changes. All debugger hooks were restored and the original remained
+running, detached from the debugger.
+
+[Contact dispatch report](mcm-live-collision-dispatch-validation.json) and the
+compressed fixture retain the evidence. Actor response, event/transform
+resource dependencies, full-frame progression and trajectory parity remain
+unvalidated by this experiment. These capture and validation changes do not
+alter browser preview handling.
