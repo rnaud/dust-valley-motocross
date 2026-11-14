@@ -13,7 +13,7 @@ export function loadLiveRiderTick({world,animations,child,terrain}){
 }
 export function connectLiveRiderTick({ordered,bikeAddress,visuals,assets,animation,child,terrain}){
  const m=ordered.memory,bike=ordered.actors.get(bikeAddress),rider=ordered.actors.get(bike.riderAddress),proxy=bike.proxyAddress,vector=o=>[0,4,8].map(i=>m.f32(rider.address+o+i));
- rider.previousPosition=vector(0x4c);rider.field138=m.u32(rider.address+0x138);rider.field144=m.u32(rider.address+0x144);rider.region=m.u32(rider.address+0x3a4);
+ rider.previousPosition=vector(0x4c);rider.field138=m.u32(rider.address+0x138);rider.field144=m.u32(rider.address+0x144);rider.region=m.u32(rider.address+0x3a4);rider.field39c=m.u32(rider.address+0x39c);
  for(const [key,field] of [['fieldf8','extentScale'],['field140','flag140'],['field154','contactClass']])Object.defineProperty(rider,key,{get:()=>rider[field],set:value=>{rider[field]=value;}});
  const childBytes=Buffer.from(child.hex,'hex');
  if(childBytes.length!==0x610||m.u32(rider.address+0x14)!==child.address||childBytes.readUInt32LE(0)!==0x4d729c||childBytes.readUInt32LE(0x18)!==rider.address||childBytes.readUInt32LE(0x10)||childBytes.readUInt32LE(0x2c)||child.ownerGate!==0||child.updateAddress!==0x43a0c0)throw Error('Unmapped rider child update branch');

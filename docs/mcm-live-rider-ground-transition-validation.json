@@ -1,0 +1,25 @@
+{
+  "scope": "Separate rider tick during active crash animation, including the first ground-contact transition. Captured collision world, all animation assets, child actor and global timestep compared. Free-rider integration, active particles and crossfade remain explicit unsupported branches; not retained trajectory parity.",
+  "comparedWords": 160110,
+  "changedWords": 438,
+  "reports": [
+    {
+      "scope": "Separate rider tick during active crash animation, including the first ground-contact transition. Captured collision world, all animation assets, child actor and global timestep compared. Free-rider integration, active particles and crossfade remain explicit unsupported branches; not retained trajectory parity.",
+      "frame": 119,
+      "result": 1,
+      "callbackTrace": [
+        [
+          85841456,
+          2
+        ],
+        [
+          85756408,
+          1
+        ]
+      ],
+      "comparedWords": 160110,
+      "changedWords": 438,
+      "differences": []
+    }
+  ]
+}

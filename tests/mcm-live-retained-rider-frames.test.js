@@ -9,12 +9,12 @@ function fixture(){
   if(raw.children)n.children=new Proxy(raw.children,{get(target,key){if(!Object.hasOwn(target,key))throw Error('Unobserved terrain edge');return node(target[key]);}});return n;};
  return {...f,input:{...f.input,terrain:{root:node(f.terrain.root),heightScale:f.terrain.heightScale,worldToGrid:f.terrain.worldToGrid}}};
 }
-test('retained bike and external rider ticks match until the first ground-contact dependency',()=>{
+test('retained bike and external rider ticks match until the first free-rider integration dependency',()=>{
  const f=fixture(),r=compare(f.input,f.rows,f.events);
- assert.equal(r.bikeFrames,120);assert.equal(r.riderTicks,119);
- assert.equal(r.comparedWords,413751);assert.equal(r.externalWords,74256);
- assert.equal(r.physicsDifferences,0);assert.equal(r.visualDifferences,515);
- assert.deepEqual(r.pendingExternalTick,{frame:119,reason:'Rider ground contact requires free-rider integration'});
+ assert.equal(r.bikeFrames,121);assert.equal(r.riderTicks,120);
+ assert.equal(r.comparedWords,415277);assert.equal(r.externalWords,74880);
+ assert.equal(r.physicsDifferences,0);assert.equal(r.visualDifferences,525);
+ assert.deepEqual(r.pendingExternalTick,{frame:120,reason:'Free-rider integration is not connected'});
  assert.equal(r.reports[51].visualDifferences,3);
 });
 test('retained validation detects changed input and missing external rider ticks',()=>{

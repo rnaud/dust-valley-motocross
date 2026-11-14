@@ -31,7 +31,8 @@ export function loadLiveOrderedDispatch(checkpoint,observation,options){
     else respondMcmRiderSecondary(actor,o);
    };
   };
-  o.onPrimary=callback(o.callbackAddresses[0]);o.onSecondary=callback(o.callbackAddresses[1]);
+  o.setCallbacks=addresses=>{o.callbackAddresses=[...addresses];o.onPrimary=callback(addresses[0]);o.onSecondary=callback(addresses[1]);};
+  o.setCallbacks(o.callbackAddresses);
  }
  return {...w,trace};
 }

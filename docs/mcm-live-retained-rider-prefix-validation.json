@@ -1,14 +1,14 @@
 {
   "scope": "Retained modeled bike/rider state initialized once, using explicit throttle and external rider timing/gates. Visual emitter differences remain reported separately. Unmodeled bytes use each observed entry as an unchanged-within-call baseline. External rider output checks cover rider/child/global delta, not all transforms/world allocations. This is not full trajectory parity.",
-  "bikeFrames": 120,
-  "riderTicks": 119,
-  "comparedWords": 413751,
-  "externalWords": 74256,
+  "bikeFrames": 121,
+  "riderTicks": 120,
+  "comparedWords": 415277,
+  "externalWords": 74880,
   "physicsDifferences": 0,
-  "visualDifferences": 515,
+  "visualDifferences": 525,
   "pendingExternalTick": {
-    "frame": 119,
-    "reason": "Rider ground contact requires free-rider integration"
+    "frame": 120,
+    "reason": "Free-rider integration is not connected"
   },
   "reports": [
     {
@@ -4129,6 +4129,75 @@
           "recovered": 106
         }
       ]
+    },
+    {
+      "frame": 120,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 10,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "38",
+          "original": 1143732671,
+          "recovered": 1140457472
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "40",
+          "original": 1051728477,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "60",
+          "original": 1051728477,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 11,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
     }
   ],
   "riderReports": [
@@ -4724,6 +4793,11 @@
     },
     {
       "frame": 118,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 119,
       "comparedWords": 624,
       "differences": []
     }
