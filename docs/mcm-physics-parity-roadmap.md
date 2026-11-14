@@ -1,5 +1,11 @@
 # Motocross Madness physics parity roadmap
 
+## Runtime camera-offset rotation recovered (2026-11-14)
+
+The upstream camera call `0x4bcb90` resolves through IAT `0x5278b8` to the pinned `d3drm.dll` export `D3DRMVectorRotate` (RVA `0x1fd0`). Its 416 loaded instruction bytes match the pinned DLL after relocation. This routine normalizes the caller's axis in place, performs two float32 quaternion products, and normalizes the result; zero-length normalization returns `[1, 0, 0]`. It is distinct from the game's x87 matrix rotation.
+
+The recovered helper matches **9,216/9,216 native words across 1,024 cases**, including mutated axis and unchanged source vector, zero vectors/axes, scales from `1e-4` to `1e4`, and finite angles up to 500,000 radians in magnitude. General trig-library equivalence, exceptional inputs, caller gates and retained upstream controller evolution remain unproven. Next: connect `0x47d166..0x47d211`, preserving mode-5/null gates and mode-3 bank rotation. Preview handling and the negative-steering mismatch remain unchanged. Evidence: `mcm-runtime-vector-rotation-validation.json`.
+
 ## Chase target preparation and initialization recovered (2026-11-14)
 
 Original `0x47d211..0x47d477` now constructs the target with the original float32 stores, mode-6 scale, vertical offset, and actor-dependent six-filter initialization. A full cross-product of eight modes, four actor types, initialized/uninitialized records, and five timestep groups matches **9,920/9,920 native words across 320 cases**. Running preparation and smoothing together through `0x47d606`, retaining records between steps, matches **118,400/118,400 words across 3,200 updates**.

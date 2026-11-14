@@ -1,0 +1,33 @@
+{
+  "scope": "Pinned runtime D3DRMVectorRotate arithmetic and axis mutation; caller not yet connected.",
+  "dllSha256": "7edb1ed218aececbb44f4d92d5b0880f0ff1777dc525e555140f987015d8be1a",
+  "fixtureSha256": "d9dca837fa2792d39b003e9b1a83f510d418fcf9ef9f5441a36aae72404e60fe",
+  "inputSha256": "afe493e38e0efafff30dc5731a697551577876a93795b720befb1f306c8e4680",
+  "outputSha256": "42972ce7696cb251b75a5ad0c180173866813023f42e5deeef0ad729a1439432",
+  "native": {
+    "cases": 1024,
+    "words": 9216,
+    "differences": 0,
+    "examples": []
+  },
+  "source": "d3drm.dll RVA 0x1fd0",
+  "originalImport": "0x4bcb90 -> IAT 0x5278b8 -> live 0x7a5d1fd0",
+  "loadedCodeSha256": "a189a40e4a3f9d6ab7802f527b2607a789809502642d7d68ee6e999c238ac215",
+  "coverage": [
+    "1024 deterministic cases, vector and axis scales 1e-4 through 1e4",
+    "Zero vectors and axes; zero angles; positive and negative finite angles up to 500000 radians",
+    "All nine words: rotated result, mutated axis, unchanged source vector"
+  ],
+  "arithmetic": [
+    "float32 half-angle; runtime sine/cosine rounded to float32",
+    "Axis normalized in place using float32 sum/sqrt/reciprocal",
+    "Two quaternion products with SSE float32 order",
+    "Result normalized; zero length maps to [1,0,0]"
+  ],
+  "remaining": [
+    "Finite generated coverage does not prove arbitrary NaN payloads, overflow, underflow or all trigonometric inputs.",
+    "Math.sin/cos matches captured finite native cases; full runtime math-library equivalence remains unproven.",
+    "Caller mode gates, source vectors, bank angle and retained camera/world evolution are not yet connected.",
+    "No preview handling change or closure of the negative-steering mismatch."
+  ]
+}
