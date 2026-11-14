@@ -27,6 +27,10 @@ export function loadLiveNormalRider(checkpoint,observation,{visuals:sharedVisual
   const pointers=[address,visuals.rider.address].flatMap(p=>[0x18,0x1c,0x20].map(o=>m.u32(p+o)));
   if(pointers.some((p,i)=>p!==observation.retainedFrames[i]))throw Error('Retained animation pointers differ from checkpoint');
  }
+ if(observation.boundsFrames){
+  const pointers=[address,visuals.rider.address].map(p=>m.u32(p+0x23c));
+  if(pointers.some((p,i)=>p!==observation.boundsFrames[i]))throw Error('Bounds animation pointers differ from checkpoint');
+ }
  const context={bike,records:assets.records,bikeAnimation:animation(address),riderAnimation:animation(visuals.rider.address),
   bodyNode:visuals.bike.bodyNode,riderBodyNode:visuals.rider.bodyNode,
   applyBike:child=>applyMcmAnimationChild(visuals.bike.bodyNode,visuals.bike.components,child),

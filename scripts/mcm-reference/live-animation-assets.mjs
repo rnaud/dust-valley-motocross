@@ -38,9 +38,10 @@ export function loadLiveAnimationAssets(observation){
   }
   if(address)throw Error('Long frame chain');previous.next=null;records.set(token,record);
  }
- if(observation.retainedFrames!==undefined){
-  if(!Array.isArray(observation.retainedFrames)||observation.retainedFrames.length!==6)throw Error('Invalid retained frame pointers');
-  for(const token of observation.retainedFrames){
+ for(const [field,count] of [['retainedFrames',6],['boundsFrames',2]]){
+  if(observation[field]===undefined)continue;
+  if(!Array.isArray(observation[field])||observation[field].length!==count)throw Error(`Invalid ${field} pointers`);
+  for(const token of observation[field]){
    if(!Number.isInteger(token)||token<0||token>0xffffffff)throw Error('Invalid retained frame pointer');
    if(!token||frames.has(token))continue;
    const raw=read(token,0x34);

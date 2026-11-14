@@ -38,14 +38,16 @@ static int capture_mcm_animation_assets(HANDLE process,DWORD bike,const char*pat
   if(address)return animation_fail("long frame chain");
  }
  // Preserve displayed/previous/blend frames even when their old record is no
- // longer in the normal pose table. These frames need not form a full sequence.
- DWORD retained[6],proxy;
+ // longer in the normal pose table, plus the current bounds frame at +0x23c.
+ // These frames need not form a full sequence.
+ DWORD retained[8],proxy;
  if(!animation_read(bike+0xc8c,&proxy,4))return animation_fail("proxy");
  for(unsigned object=0;object<2;object++){
   DWORD owner=object?proxy:bike;
   if(!animation_read(owner+0x18,retained+object*3,12))return animation_fail("retained frame pointers");
+  if(!animation_read(owner+0x23c,retained+6+object,4))return animation_fail("bounds frame pointer");
  }
- for(unsigned i=0;i<6;i++)if(retained[i]){
+ for(unsigned i=0;i<8;i++)if(retained[i]){
   AnimationBlock*frame=animation_save(retained[i],0x34);if(!frame)return animation_fail("retained frame");
   DWORD child=animation_word(frame->bytes,0xc);unsigned children=0;
   while(child){
@@ -59,6 +61,7 @@ static int capture_mcm_animation_assets(HANDLE process,DWORD bike,const char*pat
  if(capture_id)fprintf(out,"\"captureId\":\"%s\",\"captureBoundary\":\"player-frame-entry\",",capture_id);
  fprintf(out,"\"records\":[");for(unsigned i=0;i<21;i++)fprintf(out,"%s%lu",i?",":"",table[i]);
  fprintf(out,"],\"retainedFrames\":[");for(unsigned i=0;i<6;i++)fprintf(out,"%s%lu",i?",":"",retained[i]);
+ fprintf(out,"],\"boundsFrames\":[%lu,%lu",retained[6],retained[7]);
  fprintf(out,"],\"blockCount\":%u,\"blocks\":[",animation_count);
  for(unsigned i=0;i<animation_count;i++){AnimationBlock*b=&animation_blocks[i];fprintf(out,"%s{\"address\":%lu,\"size\":%lu,\"hex\":\"",i?",":"",b->address,b->size);for(DWORD j=0;j<b->size;j++)fprintf(out,"%02x",b->bytes[j]);fprintf(out,"\"}");}
  fprintf(out,"]}\n");const int failed=ferror(out);const int closed=fclose(out);return !failed&&!closed;

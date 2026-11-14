@@ -4886,3 +4886,21 @@ The actual graph, checkpoint and native output are retained in
 `mcm-live-collision-grid-validation.json`. Next: extend the live world adapter
 to collision dispatch and actor inputs, and capture populated ordinary cells
 before claiming complete shared-world parity.
+
+### Captured bounds frames for retained-frame continuation
+
+The animation exporter now includes the bike and rider proxy frame pointers at
+`+0x23c` as `boundsFrames`, together with their frame and child allocations.
+These are distinct from displayed/previous/blend history and can lie outside
+all 21 normal animation records. The loader preserves shared child identity,
+rejects missing allocations, and checks the two pointers against the atomic
+checkpoint before combining observations.
+
+The original frame-entry capture `0000012d253b5804` contains bounds frames
+`0x019a4740` and `0x01b05e60`, for 666 frames and 8,149 children in total.
+The compact checkpoint/animation evidence is retained in
+`live-bounds-animation-wine11.json.br`. Focused checks pass on ARM and x64.
+A fresh comparison through motion still matches all 925 checked words with
+24 changed words and zero differences. This supplies dependencies needed by
+rider/event continuation; it does not yet execute those later stages, establish
+whole-bike trajectory parity, or alter browser preview handling.
