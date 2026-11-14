@@ -1,5 +1,9 @@
 # Motocross Madness physics parity roadmap
 
+## Ordered world stack capture (2026-11-14)
+
+A combined native capture now records true bike function entry, pre-scheduler and exit boundaries for player/AI, HUD clock updates, and DrawText calls. Across 200 updates, the retained HUD clock matches 1,200 words and predicts all ten refreshes (20 drawing calls, six nonzero scratch clears). All 199 observed HUD-to-next-player intervals overwrite the scratch word again before true bike entry; the bike prologue itself preserves it in this sample. Therefore a HUD-only reset would not reproduce this live session. The next target is the caller interval between HUD completion and player function entry. This is evidence capture, not a fix for the negative-steering mismatch or full parity. See `mcm-world-stack-order-validation.json`; two regression tests validate the native sequence and reject incomplete/contradictory captures.
+
 Written November 12, 2026, against the current Dust Valley implementation.
 
 ## Current tally — November 14, 2026

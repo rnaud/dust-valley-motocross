@@ -582,3 +582,7 @@ wine /tmp/draw-text-stack-probe.exe Z:/tmp/new-draw-stack.bin
 ```
 
 Use the configured reference Wine prefix. Output paths must be new. The second program is an isolated API stack-footprint experiment with its own font/DC, not a replay of the original game or a proof that every DrawTextA call has this footprint. The compressed `hud-draw-text-stack-wine11.json.br` fixture stores raw observations and a 65,536-byte isolated stack snapshot. See the validation report for hashes, call offsets, observed transitions and remaining scheduling/implementation limits.
+
+### Ordered world scratch lifetime
+
+`capture-world-stack-order.c` combines guarded bike function-entry/pre-scheduler/exit, HUD clock and DrawText boundaries without changing controls or physics state. Compile with `i686-w64-mingw32-gcc -O0 -Wall -Wextra -Werror`, then run under the reference Wine prefix with arguments `PID output.jsonl HUD_UPDATE_COUNT`. Verify the pinned executable and no existing debugger first. The hook overhead changes observed timing. `node scripts/mcm-reference/analyze-world-stack-order.mjs output.jsonl` retains the HUD clock once, checks observed drawing against predicted refreshes, and reports unmodeled scratch transitions. It does not substitute captured scratch into physics. The committed native fixture and `tests/mcm-world-stack-order.test.js` preserve the unresolved caller interval explicitly.

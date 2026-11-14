@@ -1,0 +1,156 @@
+{
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "rawSha256": "fa2624f0ba5c5d3da7d75d322cf4822a9875e81faef6dfe1249588b6f03e5d01",
+  "fixtureSha256": "c9892aca237028b674bac48e5efe936e148ec6ff9a8ad7f1d6b7bc52c4e7d212",
+  "sourceSha256": "1319180a296852ad35796ac211eb4e269fa8a9b60fdf262a76ecbf6dae794689",
+  "cleanup": [
+    "00423b63 restored=1",
+    "00423bc9 restored=1",
+    "004a54b6 restored=1",
+    "004ad0e1 restored=1",
+    "00423f52 restored=1",
+    "00423f58 restored=1",
+    "004a52c0 restored=1",
+    "debugger=0 clean=1"
+  ],
+  "scope": "Read-only ordered observations; unresolved intervals are not modeled or injected.",
+  "events": 1640,
+  "playerUpdates": 200,
+  "aiUpdates": 200,
+  "drawCalls": 20,
+  "drawClears": 6,
+  "drawsPerRefresh": [
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+  ],
+  "clockComparison": {
+    "scope": "HUD clock initialized once, consuming captured world deltas and enabled gates. Graphics execution and inherited bike scratch remain observed only, not simulated.",
+    "frames": 200,
+    "comparedWords": 1200,
+    "predictedRefreshes": 10,
+    "changedScratchWords": 6,
+    "scratchChanges": [
+      {
+        "frame": 11,
+        "refreshed": true,
+        "address": 2289720,
+        "before": 1133757734,
+        "after": 0
+      },
+      {
+        "frame": 31,
+        "refreshed": true,
+        "address": 2289720,
+        "before": 1127016018,
+        "after": 0
+      },
+      {
+        "frame": 50,
+        "refreshed": true,
+        "address": 2289720,
+        "before": 1126539776,
+        "after": 0
+      },
+      {
+        "frame": 70,
+        "refreshed": true,
+        "address": 2289720,
+        "before": 1126697340,
+        "after": 0
+      },
+      {
+        "frame": 110,
+        "refreshed": true,
+        "address": 2289720,
+        "before": 1127602049,
+        "after": 0
+      },
+      {
+        "frame": 129,
+        "refreshed": true,
+        "address": 2289720,
+        "before": 1125967967,
+        "after": 0
+      }
+    ],
+    "differences": []
+  },
+  "transitions": {
+    "bike-before -> bike-after": 320,
+    "after -> bike-entry": 199,
+    "draw-before -> draw-after": 6
+  },
+  "unresolvedIntervals": 199,
+  "unresolvedExamples": [
+    {
+      "sequence": 8,
+      "from": "after",
+      "to": "bike-entry",
+      "before": 0,
+      "after": 1063244210
+    },
+    {
+      "sequence": 16,
+      "from": "after",
+      "to": "bike-entry",
+      "before": 1134028267,
+      "after": 1063244210
+    },
+    {
+      "sequence": 24,
+      "from": "after",
+      "to": "bike-entry",
+      "before": 1135268007,
+      "after": 1063244210
+    },
+    {
+      "sequence": 32,
+      "from": "after",
+      "to": "bike-entry",
+      "before": 1135413599,
+      "after": 1063244210
+    },
+    {
+      "sequence": 40,
+      "from": "after",
+      "to": "bike-entry",
+      "before": 0,
+      "after": 1063244210
+    },
+    {
+      "sequence": 48,
+      "from": "after",
+      "to": "bike-entry",
+      "before": 0,
+      "after": 1063244210
+    },
+    {
+      "sequence": 56,
+      "from": "after",
+      "to": "bike-entry",
+      "before": 1135022006,
+      "after": 1063244210
+    },
+    {
+      "sequence": 64,
+      "from": "after",
+      "to": "bike-entry",
+      "before": 1134703537,
+      "after": 1063244210
+    }
+  ],
+  "limits": [
+    "Read-only live session, not a controlled negative-steering trajectory.",
+    "Debugger changes elapsed world time.",
+    "The writer after HUD return and before player function entry remains unidentified.",
+    "No observed scratch values are injected into the recovered simulation; the negative steering mismatch remains."
+  ]
+}
