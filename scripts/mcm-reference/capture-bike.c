@@ -28,7 +28,7 @@ static unsigned lengths[] = {6, 6, 2, 3, 4, 4, 6, 2};
 static BYTE saved[8];
 static int armed[8];
 static HANDLE process;
-static int capture_effects;
+static int capture_effects,capture_filter;
 static DWORD effect_query_count,effect_query_result;
 static BYTE effect_query_start[12],effect_query_output[12];
 static int capture_tires,capture_motion,capture_controls,capture_loop_rider,capture_finish;
@@ -186,6 +186,9 @@ static int observe_rider_collision(FILE *out,DWORD rider) {
 }
 
 static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CONTEXT *context) {
+    // At 0x4ad078 the rider delta has been pushed. Normalize only the observation.
+    CONTEXT observed=*context;
+    if(capture_filter&&phase==6){observed.Esp+=4;context=&observed;}
     DWORD frame, carry, nominal, cap, dt, steps, engine, transform, rider;
     unsigned char matrix[64], rider_state[0x3ac], frame_stack[0xc00];
     unsigned char engine_state[0x16c];
@@ -207,7 +210,7 @@ static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CON
     fprintf(out, "{\"phase\":\"%s\",\"sequence\":%lu,\"bike\":\"%08lx\","
                  "\"thread\":%lu,\"cw\":%lu,\"frameBits\":%lu,\"carryBits\":%lu,"
                  "\"nominalBits\":%lu,\"cap\":%lu,\"dtBits\":%lu,\"steps\":%lu,\"stateHex\":\"",
-            capture_effects?(phase==6?"after-frame-effects":phase?"before-frame-effects":"before-update"):phase ? (capture_tires?"after-tires":capture_motion?"after-motion":capture_controls?"after-controls":capture_loop_rider?"after-loop-rider":capture_finish?"after-finish":"after-update") : "before-update", sequence, context->Esi,
+            capture_effects?(phase==6?(capture_filter?"after-filter":"after-frame-effects"):phase?"before-frame-effects":"before-update"):phase ? (capture_tires?"after-tires":capture_motion?"after-motion":capture_controls?"after-controls":capture_loop_rider?"after-loop-rider":capture_finish?"after-finish":"after-update") : "before-update", sequence, context->Esi,
             thread, context->FloatSave.ControlWord, frame, carry, nominal, cap, dt, steps);
     for (unsigned i = 0; i < sizeof object; i++) fprintf(out, "%02x", object[i]);
     fprintf(out, "\",\"engineAddress\":\"%08lx\",\"engineHex\":\"", engine);
@@ -222,6 +225,11 @@ static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CON
         fprintf(out,",\"effectAddress\":%lu,\"effectHex\":\"",effect);for(unsigned i=0;i<16;i++)fprintf(out,"%02x",bytes[i]);fprintf(out,"\"");
     }
     if(capture_finish&&phase&&!capture_mcm_collision_world(process,context->Esi,getenv("MCM_FINISH_WORLD"),frame_capture_id,0,"player-substep-finish"))return 0;
+    if(capture_filter){
+        DWORD address;BYTE bytes[8];if(!read_memory(context->Esi+0x900,&address,4)||!read_memory(address,bytes,8))return 0;
+        fprintf(out,",\"accelerationFilterAddress\":%lu,\"accelerationFilterHex\":\"",address);
+        for(unsigned i=0;i<8;i++){fprintf(out,"%02x",bytes[i]);}fprintf(out,"\"");
+    }
     if(capture_effects){
     fprintf(out,",\"visualEffects\":[");
     for(unsigned k=0;k<3;k++){
@@ -311,13 +319,15 @@ int main(int argc, char **argv) {
         if(!scripted||limit!=2||capture_contact||capture_tires||capture_motion||capture_controls||capture_loop_rider||getenv("MCM_CAPTURE_FRAME")||!getenv("MCM_FINISH_WORLD")||!getenv("MCM_CHECKPOINT")||!getenv("MCM_COLLISION_WORLD")){fprintf(stderr,"Finish capture requires scripted first frame, two records and world output.\n");return 2;}
         addresses[1]=0x4ac95a;lengths[1]=2;const BYTE bytes[]={0x33,0xff};memcpy(expected[1],bytes,2);
     }
-    capture_effects=getenv("MCM_CAPTURE_EFFECTS")!=NULL;
+    capture_filter=getenv("MCM_CAPTURE_FILTER")!=NULL;
+    capture_effects=capture_filter||getenv("MCM_CAPTURE_EFFECTS")!=NULL;
     if(capture_effects){
         if(!scripted||!capture_stack||limit!=3||capture_tires||capture_motion||capture_controls||capture_loop_rider||capture_finish||capture_contact||getenv("MCM_CAPTURE_FRAME")||!getenv("MCM_CHECKPOINT")||!getenv("MCM_FRAME_ENVIRONMENT")||!getenv("MCM_ANIMATIONS")||!getenv("MCM_COLLISION_WORLD")){
             fprintf(stderr,"Effects capture requires scripted first frame, stack, three records and checkpoint/environment/animation/world outputs.\n");return 2;
         }
         hook_count=8;addresses[1]=0x4ac95a;lengths[1]=2;expected[1][0]=0x33;expected[1][1]=0xff;
     }
+    if(capture_filter){addresses[6]=0x4ad078;lengths[6]=2;expected[6][0]=0x8b;expected[6][1]=0xce;}
     const char*frame_arg=getenv("MCM_CAPTURE_FRAME");
     if(frame_arg&&capture_contact){fprintf(stderr,"Choose frame or contact capture, not both.\n");return 2;}
     if(frame_arg){char*end;capture_frame=strtoul(frame_arg,&end,10);if(!*frame_arg||*end||!scripted||capture_frame>399||limit<2*(capture_frame+1)){fprintf(stderr,"Invalid requested capture frame.\n");return 2;}}

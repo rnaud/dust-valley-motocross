@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {brotliDecompressSync} from 'node:zlib';
 import {loadLiveFrameBootstrap} from '../scripts/mcm-reference/live-frame-bootstrap.mjs';
-import {compareLiveFrameTires,compareLiveFrameMotion,compareLiveFrameControls,compareLiveFrameLoopRider,compareLiveFrameFinish,compareLiveFrameEffects} from '../scripts/mcm-reference/compare-live-frame-tires.mjs';
+import {compareLiveFrameTires,compareLiveFrameMotion,compareLiveFrameControls,compareLiveFrameLoopRider,compareLiveFrameFinish,compareLiveFrameEffects,compareLiveFrameFilter} from '../scripts/mcm-reference/compare-live-frame-tires.mjs';
 import {advanceMcmRetainedFrame} from '../src/physics/mcm/retained-frame.js';
 function fixture(boundary='tires'){
  const f=JSON.parse(brotliDecompressSync(fs.readFileSync(new URL(`./fixtures/mcm/live-frame-${boundary}-wine11.json.br`,import.meta.url)))),cache=new Map();
@@ -126,4 +126,16 @@ test('effects comparison rejects emitter and query corruption and unavailable ta
  assert.equal(compareLiveFrameEffects(f.input,after).differences,1);
  const input={...f.input,row:structuredClone(f.input.row)};input.row.effectsEnvironment.shape++;
  assert.throws(()=>loadLiveFrameBootstrap(input),/target differs/);
+});
+
+
+test('connected frame acceleration filter matches normal and triggered original execution',()=>{
+ for(const [name,changed] of [['filter',37],['filter-trigger',59]]){
+  const f=fixture(name),report=compareLiveFrameFilter(f.input,f.after);
+  assert.equal(report.comparedWords,1526);assert.equal(report.changedWords,changed);assert.equal(report.differences,0);
+  assert.equal(report.stages.at(-1),'filter');
+ }
+ const f=fixture('filter'),bytes=Buffer.from(f.after.accelerationFilterHex,'hex');bytes[0]^=1;
+ const mismatch=compareLiveFrameFilter(f.input,{...f.after,accelerationFilterHex:bytes.toString('hex')});
+ assert.equal(mismatch.differences,1);assert.equal(mismatch.firstDifferences[0].object,'acceleration-filter');
 });

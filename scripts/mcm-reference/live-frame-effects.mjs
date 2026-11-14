@@ -22,7 +22,7 @@ export function connectLiveFrameEffects(c,{memory:m,checkpoint,row}){
   return loadFrameEmitter(record,i===2);
  });
  for(const offset of [0x8c0,0xc90,0xca4,0xca8,0xcac,0xcb0,0xcb4,0xcbc,0xcc0])c.bike[`field${offset.toString(16)}`]=m.u32(a+offset);
- c.bike.fieldcb8=m.f32(a+0xcb8);
+ for(const offset of [0x850,0x854,0xcb8])c.bike[`field${offset.toString(16)}`]=m.f32(a+offset);
  if(c.bike.fieldca8!==environment.shape)throw new Error('Frame-effects target differs from checkpoint');
  const target=Buffer.from(environment.targetHex,'hex');if(target.length!==12)throw new Error('Wrong frame-effects target size');
  const inputs={};
@@ -34,5 +34,7 @@ export function connectLiveFrameEffects(c,{memory:m,checkpoint,row}){
  c.frameEffects={enabled:environment.enabled,occlusion:environment.occlusion,selectedPlayer:environment.selectedBike===a,
   settingsDisabled:environment.disabled,eventState:environment.eventState,emitters,inputs,queryTrace:[],
   resolveTarget:address=>{if(address!==environment.shape)throw new Error('Uncaptured frame-effects target');return [0,4,8].map(o=>target.readFloatLE(o));}};
- const filter=m.u32(a+0x900);c.frameTail={frameDelta:0,filter:{value:m.f32(filter),duration:m.f32(filter+4)}};
+ const filter=m.u32(a+0x900);
+ if(row.accelerationFilterAddress!==undefined&&row.accelerationFilterAddress!==filter)throw new Error('Acceleration filter address differs from checkpoint');
+ c.frameTail={frameDelta:0,filter:{value:m.f32(filter),duration:m.f32(filter+4)}};
 }

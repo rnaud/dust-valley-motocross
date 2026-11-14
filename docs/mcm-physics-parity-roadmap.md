@@ -5134,3 +5134,30 @@ The retained runner now reaches frame filtering, where additional live bike
 fields still require connection and endpoint validation. Frame-end rider
 animation, return, active collision responses, retained acceleration/release
 trajectories and complete preview integration remain unfinished.
+
+
+### Connected frame-end acceleration filter
+
+The captured runner now initializes bike +850/+854 from the checkpoint and
+continues through the original frame-end acceleration filter (4acfd8..4ad078).
+`MCM_CAPTURE_FILTER=1` captures entry, pre-effects, and post-filter boundaries,
+including the filter allocation's value and duration. The endpoint has already
+pushed the rider delta; only the observation context's stack pointer is adjusted
+by four bytes. The running original context is not adjusted.
+
+Normal and controlled rider-trigger captures each compare 1,526 words with zero
+differences, including all 818 bike words, the filter allocation, existing engine,
+body, rider, emitters, effect, RNG and query observations. They contain 37 and 59
+changed words respectively. Fixtures/reports use `live-frame-filter` and
+`live-frame-filter-trigger`; the effects fixture builder also supports this
+endpoint. A corruption check verifies detection of a changed filter output.
+
+The next observed missing dependency is frame-end rider animation's component
+position flags (`frameRider.positionFlags`). Frame-end rider/return integration,
+retained acceleration/release trajectories, and full playable-preview integration
+remain unfinished. This milestone does not change browser handling or establish
+complete-frame parity.
+
+Validation: all 411 tests and the production build pass. The 13 connected-frame
+tests also pass on x64. Native captures and hook-cleanup evidence are archived
+outside git under `live-frame-filter-2026-11-13`.
