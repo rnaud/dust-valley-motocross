@@ -7,13 +7,13 @@ import {queryMcmRiderTerrain} from './rider-terrain-query.js';
 import {mcmSqrtLookup} from './math.js';
 import {compensateMcmRiderGroundTransform} from './rider-ground-transform.js';
 import {setMcmWorldMatrix} from './proxy-transform.js';
-import {advanceMcmFreeRider} from './free-rider.js';
+import {advanceMcmFreeRider,blendMcmRiderAnimation} from './free-rider.js';
 import {seekMcmAnimation} from './animation-seek.js';
 const f=Math.fround;
 
 // Separate 0x40e990 actor tick through active crash animation, ground contact,
-// and free-rider integration. Stopped airborne/crash-animation transitions
-// remain explicit; settled contact animations seek their final pose.
+// and free-rider integration. Finished airborne animations blend into the next
+// crash record; settled contact animations seek their final pose.
 export function advanceMcmRiderTick(c,dt){
  c.updateChildren(dt);
  if(c.paused)return 1;
@@ -27,25 +27,23 @@ export function advanceMcmRiderTick(c,dt){
  }
  beginMcmRiderTick({rider:r,animation:a,selectedRecord:c.selectedRecord});
  if(r.field140){
-  if(a.stopped)throw Error('Stopped crash animation requires free-rider integration');
-  advanceMcmInterpolatedAnimation(a,dt,c.applyChild);
+  const stopped=!!a.stopped;
+  if(!stopped)advanceMcmInterpolatedAnimation(a,dt,c.applyChild);
   r.matrix=[...resolveMcmWorldMatrix(bodyNode)];
+  let contact=stopped;
   if(o){
-   c.manager.pairs[o.owner][c.bikeCollider.owner]=c.manager.pairs[c.bikeCollider.owner][o.owner]=3;
+   c.manager.pairs[o.owner][c.bikeCollider.owner]=c.manager.pairs[c.bikeCollider.owner][o.owner]=stopped?2:3;
    const [x,y,z]=r.center,m=o.matrix;
    r.matrix.splice(12,3,f(((m[0]*x+m[4]*y)+m[8]*z)+m[12]),f(((m[1]*x+m[5]*y)+m[9]*z)+m[13]),f(((m[2]*x+m[6]*y)+m[10]*z)+m[14]));
-   if(queryMcmRiderTerrain({rider:r,points:c.points,bodyNode,terrain:c.terrain,output:c.queryOutput})){
-    o.setCallbacks([0x40bb20,0x40bb30]);
-    c.manager.pairs[o.owner][c.bikeCollider.owner]=c.manager.pairs[c.bikeCollider.owner][o.owner]=2;
-    r.field140=0;r.field138=1;r.field39c=1;
-    r.velocity=[...r.alternateVelocity];r.angular=[...r.alternateAngular];
-   }
+   if(!stopped)contact=!!queryMcmRiderTerrain({rider:r,points:c.points,bodyNode,terrain:c.terrain,output:c.queryOutput});
+   if(contact){o.setCallbacks([0x40bb20,0x40bb30]);c.manager.pairs[o.owner][c.bikeCollider.owner]=c.manager.pairs[c.bikeCollider.owner][o.owner]=2;}
   }
+  if(contact){r.field140=0;r.field138=1;r.field39c=1;r.velocity=[...r.alternateVelocity];r.angular=[...r.alternateAngular];}
  }
  if(r.field138){
-  if(a.stopped&&!r.field144)throw Error('Free-rider integration is not connected: stopped airborne animation');
   if(!r.field39c&&c.damping===undefined)throw Error('Free-rider integration is not connected');
   r.fieldf8=Math.min(1,f(dt*.75+r.fieldf8));
+  if(a.stopped&&!r.field144)blendMcmRiderAnimation(a,c.animationRecord(r.selected[1]),1);
   if(!r.field39c){
    if(a.stopped)seekMcmAnimation(a,c.animationRecord(r.selected[2]),1,c.applyChild);
    else {advanceMcmInterpolatedAnimation(a,dt,c.applyChild);r.center=[...a.boundsMin];r.extents=[...a.boundsMax];}

@@ -3,8 +3,9 @@ import {mcmMultiply as mul,mcmSubtract as sub} from './x87-arithmetic.js';
 import {invalidateMcmTransform} from './event-orientation.js';
 const f=Math.fround,signed=v=>floatBits(v)|0;
 
-// Physical-state tail of 0x40fbb0. A present visual object also requires its
-// original reparent/callback restoration; callers must provide that operation.
+// Physical-state tail of 0x40fbb0. Legacy visualPresent actually denotes the
+// collider at rider+0x34. The callback restores pair mode 3 and normal collision
+// callbacks (0x40b9e0/0x40ba00); this routine does not reparent scene transforms.
 export function clearMcmCrashRider(c){
  const r=c.rider;
  if(r.visualPresent){
