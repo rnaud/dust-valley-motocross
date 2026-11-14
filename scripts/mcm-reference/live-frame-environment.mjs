@@ -1,3 +1,4 @@
+import {loadLiveFrameActions} from './live-frame-actions.mjs';
 import {checkpointMemory} from './live-checkpoint.mjs';
 
 // Captured dependencies for 0x4b0610. This does not emulate device polling;
@@ -24,7 +25,8 @@ export function loadLiveFrameEnvironment(checkpoint,observation){
   if(steeringDevice){deviceKind=memory.u32(steeringDevice+0x30);deviceByte=memory.read(steeringDevice+0x5c,4).readUInt8(1);used.push(steeringDevice+0x30,steeringDevice+0x5c);}
   input={analogBits:memory.u32(world+0x12fc),longitudinalBits:memory.u32(world+0x12e8),steerBits:memory.u32(world+0x12d4),devicePresent:!!steeringDevice,deviceByte,deviceKind};
  }
- if(observation.blocks.length!==used.length||observation.blocks.some(b=>b.size!==4||!used.includes(b.address)))throw Error('Unexpected frame environment blocks');
- return {worldAddress:world,ownerAddress:owner,controllerAddress:controller,deviceAddress:device,resetAction,input,
+ const actions=observation.actionsCaptured?loadLiveFrameActions(memory,controller,used):null;
+ if(observation.blocks.length!==new Set(used).size||observation.blocks.some(b=>b.size!==4||!used.includes(b.address)))throw Error('Unexpected frame environment blocks');
+ return {worldAddress:world,ownerAddress:owner,controllerAddress:controller,deviceAddress:device,resetAction,input,actions,
   resetDecision:{setting:flags.readUInt16LE(0),mode:flags.readUInt16LE(2),worldScale:memory.f32(owner+0x18bc),controllerPresent:!!controller,queryReset:()=>resetAction===1},memory};
 }
