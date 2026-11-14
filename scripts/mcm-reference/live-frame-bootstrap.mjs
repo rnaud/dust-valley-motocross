@@ -1,4 +1,5 @@
 import {connectLiveFrameFinish} from './live-frame-finish.mjs';
+import {connectLiveFrameEffects} from './live-frame-effects.mjs';
 import {connectLiveFrameEvents} from './live-frame-events.mjs';
 import {checkpointMemory,loadLiveVisuals,loadLiveRider} from './live-checkpoint.mjs';
 import {loadLiveNormalRider} from './live-normal-rider.mjs';
@@ -69,5 +70,6 @@ export function loadLiveFrameBootstrap({checkpoint,animations,environment,collis
   contactScratch:Object.fromEntries(['resampleNormal','rearResampleNormal','probeNormals','refinedNormals'].map(k=>[k,contact.context[k]]))},'context');
  const random=connectLiveFrameEvents(context,{checkpoint,memory:m,animation,environment:env,row,strict});
  const ordered=connectLiveFrameFinish(context,{checkpoint,memory:m,collision,world,environment:env});
+ connectLiveFrameEffects(context,{checkpoint,memory:m,row});
  return {context,random,ordered,input:env.input,mode:env.resetDecision.mode,visuals,world,animation,environment:env,stack:contact.stack};
 }

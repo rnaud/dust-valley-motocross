@@ -1,0 +1,7 @@
+{
+  "scope": "Original full frame-effects slice with occlusion disabled. Original helper routines execute; pointer fields are adapted only to isolated allocations.",
+  "cases": 256,
+  "comparedWords": 304128,
+  "changedWords": 3874,
+  "differences": []
+}

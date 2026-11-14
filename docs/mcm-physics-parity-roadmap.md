@@ -5090,3 +5090,47 @@ archived outside git under `terrain-segment-traversal-2026-11-13`.
 Enabled frame-effects integration, frame-end filtering/animation/return,
 active collision callbacks and repeatable acceleration/release trajectory
 validation remain unfinished. Preview handling is unchanged.
+
+### Connected enabled frame-effects tail
+
+The captured frame runner now executes `0x4ac95a..0x4acfd8`: the real recovered
+terrain occlusion query, emitter position history, engine-level transition
+flags, contact emission, signed-float-bit velocity caps and emitter shutdown.
+The live adapter shares the running bike, engine, body transform, terrain and
+contact state. Emitter properties write into observed allocation bytes. This
+stage runs before frame acceleration filtering and emits an `effects` boundary.
+
+`MCM_CAPTURE_EFFECTS=1` records scheduler entry, effects entry and effects exit
+in one player frame, plus actual terrain-query return/count, start coordinates,
+effect allocations and settings. It requires three records, scripted input,
+stack capture and checkpoint/environment/animation/world outputs. The new
+capture mode was compiled and exercised against the running original; capture
+breakpoints are restored afterward. The helper still requires a cached query
+target; it does not invent an uncaptured scene target list.
+
+Normal and controlled rider-transition captures each match 1,524 words on the
+connected prefix through effects, with 35 and 56 changed words respectively.
+The comparison includes bike, observed engine prefix, body local matrix, rider,
+rider effect, random state, all three emitter allocations, and terrain-query
+count, return and start. These cases both query the real terrain and return a
+miss. Unobserved transforms, caller stack outputs and the entire collision world
+after this endpoint are not compared here. The earlier substep-finish world
+comparison remains separate evidence.
+
+An isolated original-code oracle separately covers 256 controlled cases with
+occlusion explicitly disabled, exercising contact branches, throttle rise/fall,
+speed thresholds, cached-color reset, disabled effects and shutdown. It invokes
+the original emitter helpers unchanged: 304,128 word comparisons, 3,874 changed
+words and zero differences. It adapts pointers to private allocations and checks
+that other initialization words are unchanged. This evidence does not cover the
+scene-target cache lookup or an integrated occlusion-hit color transition.
+
+Fixtures/reports use `live-frame-effects`, `live-frame-effects-trigger` and
+`frame-effects` names. `build-live-frame-effects-fixture.mjs` regenerates a live
+fixture from its raw capture prefix and the original course. Raw evidence is
+archived outside git under `live-frame-effects-2026-11-13`.
+
+The retained runner now reaches frame filtering, where additional live bike
+fields still require connection and endpoint validation. Frame-end rider
+animation, return, active collision responses, retained acceleration/release
+trajectories and complete preview integration remain unfinished.

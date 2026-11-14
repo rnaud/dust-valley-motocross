@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {brotliDecompressSync} from 'node:zlib';
 import {loadLiveFrameBootstrap} from '../scripts/mcm-reference/live-frame-bootstrap.mjs';
-import {compareLiveFrameTires,compareLiveFrameMotion,compareLiveFrameControls,compareLiveFrameLoopRider,compareLiveFrameFinish} from '../scripts/mcm-reference/compare-live-frame-tires.mjs';
+import {compareLiveFrameTires,compareLiveFrameMotion,compareLiveFrameControls,compareLiveFrameLoopRider,compareLiveFrameFinish,compareLiveFrameEffects} from '../scripts/mcm-reference/compare-live-frame-tires.mjs';
 import {advanceMcmRetainedFrame} from '../src/physics/mcm/retained-frame.js';
 function fixture(boundary='tires'){
  const f=JSON.parse(brotliDecompressSync(fs.readFileSync(new URL(`./fixtures/mcm/live-frame-${boundary}-wine11.json.br`,import.meta.url)))),cache=new Map();
@@ -109,4 +109,21 @@ test('finish adapter shares player actor, rider state, transforms and grid ident
  c.bike.velocity=[6,7,8];assert.equal(actor.velocity,c.bike.velocity);
  c.rider.flag13c=1;assert.equal(rider.flag13c,1);rider.alternateVelocity=[1,2,3];assert.equal(rider.alternateVelocity,c.rider.velocity);
  rider.angular=[4,5,6];assert.equal(rider.angular,c.rider.baseAngularVelocity);
+});
+
+test('connected normal and triggered frames match enabled effects and the real terrain query',()=>{
+ for(const [name,changed] of [['effects',35],['effects-trigger',56]]){
+  const f=fixture(name),report=compareLiveFrameEffects(f.input,f.after);
+  assert.equal(report.comparedWords,1524);assert.equal(report.changedWords,changed);assert.equal(report.differences,0);
+  assert.equal(report.stages.at(-1),'effects');assert.equal(f.after.effectQueryCount,1);
+ }
+});
+test('effects comparison rejects emitter and query corruption and unavailable targets',()=>{
+ const f=fixture('effects'),after=structuredClone(f.after);
+ const bytes=Buffer.from(after.visualEffects[2].hex,'hex');bytes[0x4c]^=1;after.visualEffects[2].hex=bytes.toString('hex');
+ assert.equal(compareLiveFrameEffects(f.input,after).differences,1);
+ after.visualEffects=f.after.visualEffects;after.effectQueryCount=0;
+ assert.equal(compareLiveFrameEffects(f.input,after).differences,1);
+ const input={...f.input,row:structuredClone(f.input.row)};input.row.effectsEnvironment.shape++;
+ assert.throws(()=>loadLiveFrameBootstrap(input),/target differs/);
 });

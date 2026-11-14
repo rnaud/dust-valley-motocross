@@ -21,13 +21,16 @@
 #include "capture-collision-world.c"
 #include "capture-frame-environment.c"
 
-static DWORD addresses[] = {0x4a54b6, 0x4ad0e1, 0x4ad5a2, 0x4bf195, 0x40e990, 0x42ce38};
+static DWORD addresses[] = {0x4a54b6, 0x4ad0e1, 0x4ad5a2, 0x4bf195, 0x40e990, 0x42ce38, 0x4acfd8, 0x4acaad};
 static BYTE expected[][6] = {{0xd9, 0x86, 0xc8, 0x08, 0, 0},
-                                  {0x8b, 0x86, 0xf8, 0x04, 0, 0}, {0x85, 0xc0}, {0x8b, 0x48, 0x14}, {0x8b,0x44,0x24,0x04}, {0x8b,0x44,0xbe,0x08}};
-static unsigned lengths[] = {6, 6, 2, 3, 4, 4};
-static BYTE saved[6];
-static int armed[6];
+                                  {0x8b, 0x86, 0xf8, 0x04, 0, 0}, {0x85, 0xc0}, {0x8b, 0x48, 0x14}, {0x8b,0x44,0x24,0x04}, {0x8b,0x44,0xbe,0x08}, {0x8d,0x86,0x10,0x05,0,0}, {0x8b,0xf8}};
+static unsigned lengths[] = {6, 6, 2, 3, 4, 4, 6, 2};
+static BYTE saved[8];
+static int armed[8];
 static HANDLE process;
+static int capture_effects;
+static DWORD effect_query_count,effect_query_result;
+static BYTE effect_query_start[12],effect_query_output[12];
 static int capture_tires,capture_motion,capture_controls,capture_loop_rider,capture_finish;
 static char frame_capture_id[17];
 static int scripted, capture_stack, capture_rider_timing, fixed_rider, capture_collision, checkpoint_collision_callbacks, checkpoint_collision_pairs;
@@ -204,7 +207,7 @@ static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CON
     fprintf(out, "{\"phase\":\"%s\",\"sequence\":%lu,\"bike\":\"%08lx\","
                  "\"thread\":%lu,\"cw\":%lu,\"frameBits\":%lu,\"carryBits\":%lu,"
                  "\"nominalBits\":%lu,\"cap\":%lu,\"dtBits\":%lu,\"steps\":%lu,\"stateHex\":\"",
-            phase ? (capture_tires?"after-tires":capture_motion?"after-motion":capture_controls?"after-controls":capture_loop_rider?"after-loop-rider":capture_finish?"after-finish":"after-update") : "before-update", sequence, context->Esi,
+            capture_effects?(phase==6?"after-frame-effects":phase?"before-frame-effects":"before-update"):phase ? (capture_tires?"after-tires":capture_motion?"after-motion":capture_controls?"after-controls":capture_loop_rider?"after-loop-rider":capture_finish?"after-finish":"after-update") : "before-update", sequence, context->Esi,
             thread, context->FloatSave.ControlWord, frame, carry, nominal, cap, dt, steps);
     for (unsigned i = 0; i < sizeof object; i++) fprintf(out, "%02x", object[i]);
     fprintf(out, "\",\"engineAddress\":\"%08lx\",\"engineHex\":\"", engine);
@@ -214,11 +217,41 @@ static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CON
     fprintf(out,"\",\"riderAddress\":\"%08lx\",\"riderHex\":\"",rider);
     for(unsigned i=0;i<sizeof rider_state;i++)fprintf(out,"%02x",rider_state[i]);
     fprintf(out,"\"");
-    if(capture_loop_rider||capture_finish){
+    if(capture_loop_rider||capture_finish||capture_effects){
         DWORD effect;BYTE bytes[16];if(!read_memory(context->Esi+0x904,&effect,4)||!read_memory(effect,bytes,16))return 0;
         fprintf(out,",\"effectAddress\":%lu,\"effectHex\":\"",effect);for(unsigned i=0;i<16;i++)fprintf(out,"%02x",bytes[i]);fprintf(out,"\"");
     }
     if(capture_finish&&phase&&!capture_mcm_collision_world(process,context->Esi,getenv("MCM_FINISH_WORLD"),frame_capture_id,0,"player-substep-finish"))return 0;
+    if(capture_effects){
+    fprintf(out,",\"visualEffects\":[");
+    for(unsigned k=0;k<3;k++){
+        DWORD address,offsets[]={0xc94,0xc98,0xca0},sizes[]={0x84,0x84,0x480};BYTE bytes[0x480];
+        if(!read_memory(context->Esi+offsets[k],&address,4)||!read_memory(address,bytes,sizes[k]))return 0;
+        fprintf(out,"%s{\"address\":%lu,\"size\":%lu,\"hex\":\"",k?",":"",address,sizes[k]);
+        for(DWORD i=0;i<sizes[k];i++){fprintf(out,"%02x",bytes[i]);}fprintf(out,"\"}");
+    }
+    fprintf(out,"]");
+
+    {DWORD world,owner,event,settings,shape,enabled,occlusion,selected,state,disabled;BYTE target[12];
+     if(!read_memory(0x4e4fb4,&world,4)||!read_memory(world+0x718,&enabled,4)||!read_memory(world+0x714,&occlusion,4)||
+        !read_memory(context->Esi+0xc84,&owner,4)||!read_memory(owner+0x44,&event,4)||!read_memory(owner+0x48,&settings,4)||
+        !read_memory(event+0x1ec,&selected,4)||!read_memory(event+0x1f4,&state,4)||!read_memory(settings+0x20,&disabled,4)||
+        !read_memory(context->Esi+0xca8,&shape,4)||!shape||!read_memory(shape+0x34,target,12))return 0;
+     fprintf(out,",\"effectsEnvironment\":{\"world\":%lu,\"enabled\":%lu,\"occlusion\":%lu,\"selectedBike\":%lu,\"eventState\":%lu,\"disabled\":%lu,\"shape\":%lu,\"targetHex\":\"",world,enabled,occlusion,selected,state,disabled,shape);
+     for(unsigned i=0;i<12;i++)fprintf(out,"%02x",target[i]);
+     fprintf(out,"\"},\"effectQueryCount\":%lu,\"effectQueryResult\":%lu",effect_query_count,effect_query_result);
+    }
+
+    {DWORD owner,terrain,root;BYTE scale[4],node[0x38];
+     if(!read_memory(context->Esi+0xc84,&owner,4)||!read_memory(owner+0x40,&terrain,4)||
+        !read_memory(terrain+0x40,scale,4)||!read_memory(terrain+0x44,&root,4)||!read_memory(root,node,sizeof node))return 0;
+     fprintf(out,",\"terrainQuery\":{\"terrain\":%lu,\"root\":%lu,\"scaleHex\":\"",terrain,root);
+     for(unsigned i=0;i<4;i++)fprintf(out,"%02x",scale[i]);
+     fprintf(out,"\",\"rootHex\":\"");for(unsigned i=0;i<sizeof node;i++)fprintf(out,"%02x",node[i]);
+     fprintf(out,"\",\"startHex\":\"");for(unsigned i=0;i<12;i++)fprintf(out,"%02x",effect_query_start[i]);
+     fprintf(out,"\",\"outputHex\":\"");for(unsigned i=0;i<12;i++)fprintf(out,"%02x",effect_query_output[i]);fprintf(out,"\"}");
+    }
+    }
     if(capture_collision&&!observe_rider_collision(out,rider))return 0;
     if(capture_stack){
         fprintf(out,",\"stackAddress\":\"%08lx\",\"stackHex\":\"",context->Esp);
@@ -233,7 +266,7 @@ static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CON
 
 int main(int argc, char **argv) {
     if (argc != 4) {
-        fprintf(stderr, "Usage: capture-live.exe WINDOWS_PID output.jsonl even-record-count\n");
+        fprintf(stderr, "Usage: capture-live.exe WINDOWS_PID output.jsonl record-count\n");
         return 2;
     }
     scripted = getenv("MCM_SCRIPTED") != NULL;
@@ -278,10 +311,17 @@ int main(int argc, char **argv) {
         if(!scripted||limit!=2||capture_contact||capture_tires||capture_motion||capture_controls||capture_loop_rider||getenv("MCM_CAPTURE_FRAME")||!getenv("MCM_FINISH_WORLD")||!getenv("MCM_CHECKPOINT")||!getenv("MCM_COLLISION_WORLD")){fprintf(stderr,"Finish capture requires scripted first frame, two records and world output.\n");return 2;}
         addresses[1]=0x4ac95a;lengths[1]=2;const BYTE bytes[]={0x33,0xff};memcpy(expected[1],bytes,2);
     }
+    capture_effects=getenv("MCM_CAPTURE_EFFECTS")!=NULL;
+    if(capture_effects){
+        if(!scripted||!capture_stack||limit!=3||capture_tires||capture_motion||capture_controls||capture_loop_rider||capture_finish||capture_contact||getenv("MCM_CAPTURE_FRAME")||!getenv("MCM_CHECKPOINT")||!getenv("MCM_FRAME_ENVIRONMENT")||!getenv("MCM_ANIMATIONS")||!getenv("MCM_COLLISION_WORLD")){
+            fprintf(stderr,"Effects capture requires scripted first frame, stack, three records and checkpoint/environment/animation/world outputs.\n");return 2;
+        }
+        hook_count=8;addresses[1]=0x4ac95a;lengths[1]=2;expected[1][0]=0x33;expected[1][1]=0xff;
+    }
     const char*frame_arg=getenv("MCM_CAPTURE_FRAME");
     if(frame_arg&&capture_contact){fprintf(stderr,"Choose frame or contact capture, not both.\n");return 2;}
     if(frame_arg){char*end;capture_frame=strtoul(frame_arg,&end,10);if(!*frame_arg||*end||!scripted||capture_frame>399||limit<2*(capture_frame+1)){fprintf(stderr,"Invalid requested capture frame.\n");return 2;}}
-    if (!pid || limit < 2 || limit > 10000 || (limit & 1)) return 2;
+    if (!pid || limit < 2 || limit > 10000 || (!capture_effects && (limit & 1))) return 2;
     FILE *out = fopen(argv[2], "wx");
     if (!out) return 2;
     setbuf(out, NULL);
@@ -349,7 +389,7 @@ int main(int argc, char **argv) {
                     TerminateProcess(process, 5);
                     done = 2;
                 } else {
-                    if(matched==5){
+                    if(matched==7){if(player_active){effect_query_count++;effect_query_result=context.Eax;if(!read_memory(context.Esp+0x834,effect_query_start,12)||!read_memory(context.Esp+0xb88,effect_query_output,12))done=2;}} else if(matched==5){
                         if(capture_contact&&!contact_exported&&player_frame){DWORD collider,owner,kind,bike,ai;
                             if(!read_memory(context.Esi+8+context.Edi*4,&collider,4)||!read_memory(collider+0x94,&owner,4)||!read_memory(collider+0x104,&kind,4))done=2;
                             else if(kind<=1){bike=owner;if(kind==1&&!read_memory(owner+0x15c,&bike,4))done=2;
@@ -397,7 +437,7 @@ int main(int argc, char **argv) {
                             }
                         }
                     }
-                    if(matched==1)player_active=0;
+                    if(matched==(capture_effects?6:1))player_active=0;
                     }
                     write_byte(addresses[matched], saved[matched]);
                     armed[matched] = 0;
