@@ -1,0 +1,29 @@
+{
+  "scope": "Connected first-frame scheduler through physics substep finish from captured state and real terrain. Bike allocation, observed engine prefix and body local matrix compared. Other component allocations, uncaptured transforms and stack outputs are not covered by this report. The rider-controller allocation is also compared. Rider effect and random state are compared. All captured collision-world blocks are also compared, including overlapping bike/rider/transform words; total counts include those repeated checks. No complete-frame or trajectory parity.",
+  "callbackTrace": [],
+  "stages": [
+    "entry",
+    "recovery",
+    "input",
+    "steering",
+    "reset",
+    "terrain",
+    "engine",
+    "contact",
+    "response",
+    "tires",
+    "motion",
+    "controls",
+    "event",
+    "rider",
+    "finish"
+  ],
+  "comparedWords": 36543,
+  "changedWords": 146,
+  "differences": 0,
+  "firstDifferences": [],
+  "frontContact": 1,
+  "rearContact": 1,
+  "terrainNodes": 3,
+  "case": "Controlled modified input: imported bike+0x86c upright threshold set to float32(2); not an untouched live riding snapshot."
+}
