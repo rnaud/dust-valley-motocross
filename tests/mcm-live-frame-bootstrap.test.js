@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {brotliDecompressSync} from 'node:zlib';
 import {loadLiveFrameBootstrap} from '../scripts/mcm-reference/live-frame-bootstrap.mjs';
-import {compareLiveFrameTires,compareLiveFrameMotion,compareLiveFrameControls,compareLiveFrameLoopRider,compareLiveFrameFinish,compareLiveFrameEffects,compareLiveFrameFilter,compareLiveFrameRider} from '../scripts/mcm-reference/compare-live-frame-tires.mjs';
+import {compareLiveFrameTires,compareLiveFrameMotion,compareLiveFrameControls,compareLiveFrameLoopRider,compareLiveFrameFinish,compareLiveFrameEffects,compareLiveFrameFilter,compareLiveFrameRider,compareLiveFrameReturn} from '../scripts/mcm-reference/compare-live-frame-tires.mjs';
 import {advanceMcmRetainedFrame} from '../src/physics/mcm/retained-frame.js';
 function fixture(boundary='tires'){
  const f=JSON.parse(brotliDecompressSync(fs.readFileSync(new URL(`./fixtures/mcm/live-frame-${boundary}-wine11.json.br`,import.meta.url)))),cache=new Map();
@@ -157,5 +157,21 @@ test('connected frame-end normal and crash animation match original visual graph
  const loaded=loadLiveFrameBootstrap(f.input);
  assert.equal(loaded.context.frameRider.components,loaded.visuals.bike.components);
  assert.equal(loaded.context.frameRider.applyRider,loaded.animation.context.applyRider);
- assert.throws(()=>advanceMcmRetainedFrame(loaded.context,{delta:Math.fround(.02),mode:loaded.mode,input:loaded.input}),/Unmapped live frame dependency: context.frameReturn/);
+ assert.equal(advanceMcmRetainedFrame(loaded.context,{delta:Math.fround(.02),mode:loaded.mode,input:loaded.input}).status,'returned');
+});
+
+
+test('connected frame return matches original normal, crash and changed-history captures',()=>{
+ for(const [name,changed] of [['return',202],['return-trigger',105],['return-history',205]]){
+  const f=fixture(name),report=compareLiveFrameReturn(f.input,f.after);
+  assert.equal(report.comparedWords,110597);assert.equal(report.changedWords,changed);assert.equal(report.differences,0);
+  assert.deepEqual(report.stages.slice(-2),['before-return','return']);
+ }
+ const f=fixture('return-history'),before=Buffer.from(f.input.row.stateHex,'hex'),after=Buffer.from(f.after.stateHex,'hex');
+ assert.deepEqual([0,4,8].map(o=>before.readFloatLE(0x56c+o)),[-123,456,-789]);
+ for(const o of [0,4,8])assert.equal(after.readUInt32LE(0x56c+o),after.readUInt32LE(0x4f8+o));
+ after[0x56c]^=1;
+ const mismatch=compareLiveFrameReturn(f.input,{...f.after,stateHex:after.toString('hex')});
+ assert.equal(mismatch.differences,1);assert.equal(mismatch.firstDifferences[0].offset,'56c');
+ assert.throws(()=>compareLiveFrameReturn(f.input,{...f.after,phase:'after-update'}),/boundary differs/);
 });

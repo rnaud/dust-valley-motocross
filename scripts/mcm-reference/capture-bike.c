@@ -28,7 +28,7 @@ static unsigned lengths[] = {6, 6, 2, 3, 4, 4, 6, 2};
 static BYTE saved[8];
 static int armed[8];
 static HANDLE process;
-static int capture_effects,capture_filter,capture_frame_rider;
+static int capture_effects,capture_filter,capture_frame_rider,capture_return;
 static DWORD effect_query_count,effect_query_result;
 static BYTE effect_query_start[12],effect_query_output[12];
 static int capture_tires,capture_motion,capture_controls,capture_loop_rider,capture_finish;
@@ -188,6 +188,7 @@ static int observe_rider_collision(FILE *out,DWORD rider) {
 static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CONTEXT *context) {
     // At 0x4ad078 the rider delta has been pushed. Normalize only the observation.
     CONTEXT observed=*context;
+    if(capture_return&&phase==6){observed.Esi-=0x56c;observed.Esp-=8;context=&observed;}
     if(capture_filter&&!capture_frame_rider&&phase==6){observed.Esp+=4;context=&observed;}
     DWORD frame, carry, nominal, cap, dt, steps, engine, transform, rider;
     unsigned char matrix[64], rider_state[0x3ac], frame_stack[0xc00];
@@ -210,7 +211,7 @@ static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CON
     fprintf(out, "{\"phase\":\"%s\",\"sequence\":%lu,\"bike\":\"%08lx\","
                  "\"thread\":%lu,\"cw\":%lu,\"frameBits\":%lu,\"carryBits\":%lu,"
                  "\"nominalBits\":%lu,\"cap\":%lu,\"dtBits\":%lu,\"steps\":%lu,\"stateHex\":\"",
-            capture_effects?(phase==6?(capture_frame_rider?"after-frame-rider":capture_filter?"after-filter":"after-frame-effects"):phase?"before-frame-effects":"before-update"):phase ? (capture_tires?"after-tires":capture_motion?"after-motion":capture_controls?"after-controls":capture_loop_rider?"after-loop-rider":capture_finish?"after-finish":"after-update") : "before-update", sequence, context->Esi,
+            capture_effects?(phase==6?(capture_return?"after-return":capture_frame_rider?"after-frame-rider":capture_filter?"after-filter":"after-frame-effects"):phase?"before-frame-effects":"before-update"):phase ? (capture_tires?"after-tires":capture_motion?"after-motion":capture_controls?"after-controls":capture_loop_rider?"after-loop-rider":capture_finish?"after-finish":"after-update") : "before-update", sequence, context->Esi,
             thread, context->FloatSave.ControlWord, frame, carry, nominal, cap, dt, steps);
     for (unsigned i = 0; i < sizeof object; i++) fprintf(out, "%02x", object[i]);
     fprintf(out, "\",\"engineAddress\":\"%08lx\",\"engineHex\":\"", engine);
@@ -337,7 +338,8 @@ int main(int argc, char **argv) {
         if(!scripted||limit!=2||capture_contact||capture_tires||capture_motion||capture_controls||capture_loop_rider||getenv("MCM_CAPTURE_FRAME")||!getenv("MCM_FINISH_WORLD")||!getenv("MCM_CHECKPOINT")||!getenv("MCM_COLLISION_WORLD")){fprintf(stderr,"Finish capture requires scripted first frame, two records and world output.\n");return 2;}
         addresses[1]=0x4ac95a;lengths[1]=2;const BYTE bytes[]={0x33,0xff};memcpy(expected[1],bytes,2);
     }
-    capture_frame_rider=getenv("MCM_CAPTURE_FRAME_RIDER")!=NULL;
+    capture_return=getenv("MCM_CAPTURE_RETURN")!=NULL;
+    capture_frame_rider=capture_return||getenv("MCM_CAPTURE_FRAME_RIDER")!=NULL;
     capture_filter=capture_frame_rider||getenv("MCM_CAPTURE_FILTER")!=NULL;
     capture_effects=capture_filter||getenv("MCM_CAPTURE_EFFECTS")!=NULL;
     if(capture_effects){
@@ -348,6 +350,7 @@ int main(int argc, char **argv) {
     }
     if(capture_filter){addresses[6]=0x4ad078;lengths[6]=2;expected[6][0]=0x8b;expected[6][1]=0xce;}
     if(capture_frame_rider){addresses[6]=0x4ad07f;lengths[6]=6;const BYTE bytes[]={0x8b,0x86,0x84,0x0c,0,0};memcpy(expected[6],bytes,6);}
+    if(capture_return){addresses[6]=0x4ad10d;lengths[6]=6;const BYTE bytes[]={0x5e,0x5b,0x81,0xc4,0xe8,0x0b};memcpy(expected[6],bytes,6);}
     const char*frame_arg=getenv("MCM_CAPTURE_FRAME");
     if(frame_arg&&capture_contact){fprintf(stderr,"Choose frame or contact capture, not both.\n");return 2;}
     if(frame_arg){char*end;capture_frame=strtoul(frame_arg,&end,10);if(!*frame_arg||*end||!scripted||capture_frame>399||limit<2*(capture_frame+1)){fprintf(stderr,"Invalid requested capture frame.\n");return 2;}}
@@ -440,6 +443,7 @@ int main(int argc, char **argv) {
                         if(scripted&&player_active){SIZE_T n;DWORD seed=random_state;if(!WriteProcessMemory(process,(void*)(uintptr_t)(context.Eax+0x14),&seed,4,&n)||n!=4)done=2;random_state=random_state*214013u+2531011u;}
                     } else {
                     DWORD bike = context.Esi, ai = 1;
+                    if(capture_return&&matched==6)bike-=0x56c;
                     if (matched == 2 && !read_memory(context.Esi, &bike, 4)) done = 2;
                     if (!read_memory(bike + 0x614, &ai, 4)) done = 2;
                     if(matched==0)player_active=ai==0;

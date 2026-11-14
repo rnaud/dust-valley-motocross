@@ -9,12 +9,14 @@ export const compareLiveFrameTires=(inputs,after)=>compareLiveFrameBoundary(inpu
 export const compareLiveFrameMotion=(inputs,after)=>compareLiveFrameBoundary(inputs,after,'motion');
 export const compareLiveFrameControls=(inputs,after)=>compareLiveFrameBoundary(inputs,after,'controls');
 export const compareLiveFrameLoopRider=(inputs,after)=>compareLiveFrameBoundary(inputs,after,'loop-rider');
+export const compareLiveFrameReturn=(inputs,after)=>compareLiveFrameBoundary(inputs,after,'return');
 export const compareLiveFrameRider=(inputs,after)=>compareLiveFrameBoundary(inputs,after,'frame-rider');
 export const compareLiveFrameFilter=(inputs,after)=>compareLiveFrameBoundary(inputs,after,'filter');
 export const compareLiveFrameEffects=(inputs,after)=>compareLiveFrameBoundary(inputs,after,'frame-effects');
 export const compareLiveFrameFinish=(inputs,after)=>compareLiveFrameBoundary(inputs,after,'finish');
 function compareLiveFrameBoundary(inputs,after,boundary){
- const hasEvents=boundary==='loop-rider'||boundary==='finish'||(boundary==='frame-effects'||(boundary==='filter'||boundary==='frame-rider'));
+ const hasRider=boundary==='frame-rider'||boundary==='return',hasFilter=boundary==='filter'||hasRider,hasEffects=boundary==='frame-effects'||hasFilter;
+ const hasEvents=boundary==='loop-rider'||boundary==='finish'||hasEffects;
  const stopStage=boundary==='loop-rider'?'rider':boundary==='frame-effects'?'effects':boundary;
  const {row}=inputs;
  if(after.phase!==`after-${boundary}`||after.playerFrame!==0||after.pass!==0||after.bike!==row.bike||after.frameBits!==row.frameBits)throw Error('Tire observation boundary differs');
@@ -29,7 +31,8 @@ for(const [key,value] of Object.entries(loaded.context.bike)){if(/^field[0-9a-f]
 for(const [key,o] of Object.entries({position:0x4f8,velocity:0x510,forward:0x4c0,up:0x4cc,tangent:0x578,rearTangent:0x584,normal:0x54c,offset:0x540,referencePosition:0x504,angularVelocity:0x534,worldAngularVelocity:0x528,localLever:0x654,acceleration:0x51c}))loaded.context.bike[key].forEach((v,i)=>expected.writeUInt32LE(floatBits(v),o+i*4));
 expected.writeUInt32LE(floatBits(loaded.context.bike.mass),0x558);expected.writeUInt32LE(floatBits(loaded.context.bike.inverseMass),0x55c);
 if(hasEvents)for(const [key,o] of Object.entries({savedHeading:0x898,boundsMin:0x218,boundsMax:0x224}))loaded.context.bike[key].forEach((v,i)=>expected.writeUInt32LE(floatBits(v),o+i*4));
-if(boundary==='frame-rider')writeFrameAnimation(expected,loaded.context.frameRider.bikeAnimation);
+if(hasRider)writeFrameAnimation(expected,loaded.context.frameRider.bikeAnimation);
+if(boundary==='return')loaded.context.bike.savedPosition.forEach((v,i)=>expected.writeUInt32LE(floatBits(v),0x56c+4*i));
 const differences=[];let changed=0;for(let o=0;o<actual.length;o+=4){if(before.readUInt32LE(o)!==actual.readUInt32LE(o))changed++;if(expected.readUInt32LE(o)!==actual.readUInt32LE(o))differences.push({offset:o.toString(16),original:actual.readUInt32LE(o),recovered:expected.readUInt32LE(o)});}
 
  let comparedWords=actual.length/4;
@@ -41,11 +44,11 @@ const differences=[];let changed=0;for(let o=0;o<actual.length;o+=4){if(before.r
    if(original.length!==recovered.length||previous.length!==recovered.length)throw Error('Wrong motion observation size');
    for(let o=0;o<original.length;o+=4){comparedWords++;const word=original.readUInt32LE(o);if(previous.readUInt32LE(o)!==word)changed++;if(recovered.readUInt32LE(o)!==word)differences.push({object:name,offset:o.toString(16),original:word,recovered:recovered.readUInt32LE(o)});}
   };
-  if(boundary==='frame-rider')compareFrameRiderVisuals(loaded,row,after,compare);
+  if(hasRider)compareFrameRiderVisuals(loaded,row,after,compare);
   const engine=Buffer.from(row.engineHex,'hex'),e=loaded.context.engine;
   for(const [key,offset,integer] of [['shiftTimer',0x168],['released',0x150,true],['state',0x160],['rpmDemand',0x15c],['previousRpmDemand',0x7c],['shiftThreshold',0x154],['gear',0x158,true]])engine.writeUInt32LE(integer?e[key]>>>0:floatBits(e[key]),offset);
   compare('engine',row.engineHex,after.engineHex,engine);
-  if(boundary==='frame-effects'||(boundary==='filter'||boundary==='frame-rider')){
+  if(hasEffects){
    if(after.visualEffects?.length!==3)throw Error('Missing emitter observations');
    for(let i=0;i<3;i++){
     const emitter=loaded.context.frameEffects.emitters[i];
@@ -63,7 +66,7 @@ const differences=[];let changed=0;for(let o=0;o<actual.length;o+=4){if(before.r
     if(last.result){const point=Buffer.alloc(12);last.point.forEach((x,i)=>point.writeFloatLE(x,i*4));compare('effect-query-hit',row.terrainQuery.outputHex,after.terrainQuery.outputHex,point);}
    }
   }
-  if((boundary==='filter'||boundary==='frame-rider')){
+  if(hasFilter){
    if(row.accelerationFilterAddress!==after.accelerationFilterAddress)throw Error('Acceleration filter address differs');
    const bytes=Buffer.alloc(8),filter=loaded.context.frameTail.filter;
    bytes.writeFloatLE(filter.value,0);bytes.writeFloatLE(filter.duration,4);
@@ -87,7 +90,7 @@ const differences=[];let changed=0;for(let o=0;o<actual.length;o+=4){if(before.r
     loaded.context.rider.selected.forEach((v,i)=>rider.writeUInt32LE(v>>>0,0x160+i*4));
     for(const [key,o] of [['flag13c',0x13c],['field140',0x140],['active16c',0x16c],['kind',0x170]])rider.writeUInt32LE(loaded.context.rider[key]>>>0,o);
    }
-   if(boundary==='finish'||(boundary==='frame-effects'||(boundary==='filter'||boundary==='frame-rider')))loaded.context.rider.baseAngularVelocity.forEach((v,i)=>rider.writeUInt32LE(floatBits(v),0x64+i*4));
+   if(boundary==='finish'||hasEffects)loaded.context.rider.baseAngularVelocity.forEach((v,i)=>rider.writeUInt32LE(floatBits(v),0x64+i*4));
    compare('rider-controller',row.riderHex,after.riderHex,rider);
    if(boundary==='finish'){
     const report=compareLiveFinishWorld(loaded,inputs.collision,inputs.afterWorld,expected,rider);
@@ -95,5 +98,5 @@ const differences=[];let changed=0;for(let o=0;o<actual.length;o+=4){if(before.r
    }
   }
  }
- return {scope:`Connected first-frame scheduler through ${boundary==='tires'?'tire accumulation':boundary==='controls'?'normal control/alignment (grounded normal branch)':boundary==='loop-rider'?'event and rider handling':boundary==='finish'?'physics substep finish':(boundary==='frame-effects'||(boundary==='filter'||boundary==='frame-rider'))?(boundary==='frame-rider'?'frame-end rider animation':boundary==='filter'?'frame acceleration filter':'enabled frame effects'):'motion integration'} from captured state and real terrain. ${boundary!=='tires'?'Bike allocation, observed engine prefix and body local matrix compared. Other component allocations, uncaptured transforms and stack outputs are not covered':'All 818 bike words compared. Engine, component allocations, transforms and stack outputs are not covered'} by this report. ${boundary==='controls'||hasEvents?'The rider-controller allocation is also compared. ':''}${hasEvents?'Rider effect and random state are compared. ':''}${(boundary==='frame-effects'||(boundary==='filter'||boundary==='frame-rider'))?'Three visual-emitter allocations and terrain-query count, return and start coordinates are compared. ':''}${(boundary==='filter'||boundary==='frame-rider')?'The acceleration-filter value and duration allocation is also compared. ':''}${boundary==='frame-rider'?'Captured visual transform allocations, rider visual object and all captured animation asset blocks are also compared. ':''}${boundary==='finish'?'All captured collision-world blocks are also compared, including overlapping bike/rider/transform words; total counts include those repeated checks. ':''}No complete-frame or trajectory parity.`,...(boundary==='finish'?{callbackTrace:loaded.ordered.trace}:{}),stages,comparedWords,changedWords:changed,differences:differences.length,firstDifferences:differences.slice(0,20),frontContact:loaded.context.contactPhase.frontContact,rearContact:loaded.context.contactPhase.rearContact};
+ return {scope:`Connected first-frame scheduler through ${boundary==='tires'?'tire accumulation':boundary==='controls'?'normal control/alignment (grounded normal branch)':boundary==='loop-rider'?'event and rider handling':boundary==='finish'?'physics substep finish':hasEffects?(boundary==='return'?'frame return':boundary==='frame-rider'?'frame-end rider animation':boundary==='filter'?'frame acceleration filter':'enabled frame effects'):'motion integration'} from captured state and real terrain. ${boundary!=='tires'?'Bike allocation, observed engine prefix and body local matrix compared. Other component allocations, uncaptured transforms and stack outputs are not covered':'All 818 bike words compared. Engine, component allocations, transforms and stack outputs are not covered'} by this report. ${boundary==='controls'||hasEvents?'The rider-controller allocation is also compared. ':''}${hasEvents?'Rider effect and random state are compared. ':''}${hasEffects?'Three visual-emitter allocations and terrain-query count, return and start coordinates are compared. ':''}${hasFilter?'The acceleration-filter value and duration allocation is also compared. ':''}${hasRider?'Captured visual transform allocations, rider visual object and all captured animation asset blocks are also compared. ':''}${boundary==='finish'?'All captured collision-world blocks are also compared, including overlapping bike/rider/transform words; total counts include those repeated checks. ':''}No complete-frame or trajectory parity.`,...(boundary==='finish'?{callbackTrace:loaded.ordered.trace}:{}),stages,comparedWords,changedWords:changed,differences:differences.length,firstDifferences:differences.slice(0,20),frontContact:loaded.context.contactPhase.frontContact,rearContact:loaded.context.contactPhase.rearContact};
 }
