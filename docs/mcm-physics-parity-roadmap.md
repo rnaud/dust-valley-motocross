@@ -1,5 +1,11 @@
 # Motocross Madness physics parity roadmap
 
+## Original camera matrix expression recovered (2026-11-14)
+
+Original `0x475760` is now recovered separately from the renderer's SSE multiply. Its input is **ten** floats: eye, forward, up, and roll. The original independently normalizes forward/up with its table inverse-square-root, keeps their cross product unscaled, and optionally composes a roll rotation using x87 operation order. An isolated oracle executes the full original function and matches **15,856/15,856 words across 991 cases**, including signed-zero roll, parallel/zero vectors, broad direction magnitudes, and large finite roll angles.
+
+A ten-frame native capture validates **56 view calculations / 896 words**, then retains their computed outputs through **nine actual view submissions** and **41 renderer products / 656 words**. Three leading products precede a reconstructed view and are explicitly excluded. This connects the recovered expression to the actual rendering path, but **the camera inputs and world setters remain observed inputs**. The camera controller, render ordering/gates, and other stack writers still need retention before the negative-steering mismatch can be closed. Preview handling is unchanged. See `mcm-view-matrix-validation.json` and the native fixture; all probe instructions were restored and debugger detachment verified.
+
 ## Stateblock matrix expression recovered (2026-11-14)
 
 The final float writer in the observed third indexed draw is now identified: Wine `wined3d` RVA `0xc308b`, `movhps %xmm4,0x8(%eax)`. Stateblock application calls helper RVA `0x7f5a0`, which multiplies the matrices at state offsets `0x2c94` and `0x6c14` into its local array. Output word 2 overlaps player scratch `0x22f038`. A ten-frame capture contains 30 products; the recovered SSE arithmetic matches **480/480 output words** from the input matrices. Nine initialized overlapping stores were observed immediately before/after the instruction and remained unchanged through their original draw returns. Frame zero had no identified player scratch and is not counted as an overlapping-store observation.

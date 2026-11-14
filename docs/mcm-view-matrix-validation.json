@@ -1,0 +1,102 @@
+{
+  "scope": "Recovered original camera matrix expression and observed setter/product chain; camera controller and render schedule remain unmodeled.",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "modules": {
+    "ddraw": {
+      "sha256": "be2964ddd67d148bcf87c4a1eedf8cf5e1ccc39eb7c87f3079df181d80fbea29",
+      "base": "0x7aa90000",
+      "imageSize": "0x69000",
+      "timestamp": "0x69e0eaba",
+      "device2DrawIndexedPrimitiveRva": "0x98d0",
+      "device7Rva": "0xf530",
+      "stateblockApplyIatRva": "0x60544"
+    },
+    "wined3d": {
+      "sha256": "25feee6100619bd123fc00568d4e5107a3a20d60f62d160e12c368731fa32f1c",
+      "base": "0x7a770000",
+      "applyStateblockRva": "0x1bd500"
+    }
+  },
+  "fixtureSha256": "632d9abeceb5ed5a8010871cf86ce94d2010ca52a560ecb7e3e9d47f02e03bfa",
+  "inputSha256": "10c0538fe2761c342cd9fc488a61a10e30b539b90fa744fc6a932c73cccf504f",
+  "outputSha256": "9653c4702a8cb7ac89aa5b10b483f704357c40a874ff81b66b386755b8866d3c",
+  "liveRawSha256": "8462fc43fccceaac75c5804403333dc5b41b9e8918fbad3803919443d08d83ce",
+  "sources": {
+    "src/physics/mcm/view-matrix.js": "e44ac8a40b4de672704b46c36f7fa7584f752a24fe7b8be9e4076754151ad27a",
+    "scripts/mcm-reference/view-matrix-oracle.c": "7c6cef618f1f2fc9f56187f65b427bc5cf020506a08eb440fd8d041427d7162b",
+    "scripts/mcm-reference/capture-view-matrix.c": "03e8fdae35e0eaeb7f625916af76306558b3ff3748700be8c682f3b2076d3db9"
+  },
+  "isolated": {
+    "cases": 991,
+    "words": 15856,
+    "differences": 0,
+    "examples": []
+  },
+  "live": {
+    "viewPairs": 56,
+    "viewWords": 896,
+    "viewSubmissions": 9,
+    "products": 41,
+    "productWords": 656,
+    "ignoredViewSubmissions": 0,
+    "ignoredProducts": 3
+  },
+  "addresses": {
+    "viewExpression": "0x475760",
+    "viewRebuild": "0x47a670",
+    "captureInput": "0x47a6cd",
+    "captureOutput": "0x47a6e5",
+    "viewSubmission": "0x479e22",
+    "worldSubmissionReturn": "0x4458ee",
+    "cameraInputs": "camera+0x144, ten float32 values",
+    "cameraView": "camera+0x70",
+    "wineSetTransformRva": "0x1f4500"
+  },
+  "coverage": [
+    "zero and nonzero roll, including signed zero",
+    "parallel and zero forward/up vectors",
+    "direction magnitudes from 1e-12 to 1e12",
+    "roll through positive and negative 1e12 radians",
+    "native x87 control word 0x027f"
+  ],
+  "cleanup": [
+    "00467fc8 restored=1",
+    "00445f85 restored=1",
+    "00445f88 restored=1",
+    "00467fcb restored=1",
+    "7aa9b340 restored=1",
+    "7aa9b3b3 restored=1",
+    "7aa9b3dc restored=1",
+    "7aa9ebfe restored=1",
+    "7aa9ec30 restored=1",
+    "7aa91588 restored=1",
+    "7aa9ebf6 restored=1",
+    "7aa9ea3f restored=1",
+    "7aa9eaa5 restored=1",
+    "7aa9eae1 restored=1",
+    "7aa9eb19 restored=1",
+    "7aa9eb4f restored=1",
+    "7aa9eb76 restored=1",
+    "7aa9eb88 restored=1",
+    "7aa9eb9a restored=1",
+    "7aa9ebb4 restored=1",
+    "7aa9ebd8 restored=1",
+    "7aa9ebee restored=1",
+    "7a93103a restored=1",
+    "7a931042 restored=1",
+    "7a83308b restored=1",
+    "7a964500 restored=1",
+    "0047a6cd restored=1",
+    "0047a6e5 restored=1",
+    "004a54b6 restored=1",
+    "debugger=0 clean=1"
+  ],
+  "remaining": [
+    "Camera eye/forward/up/roll inputs are observed, not evolved from retained player/world state.",
+    "World transform setters are observed inputs; shared render state and gates remain unmodeled.",
+    "Three leading products precede a reconstructed view and are explicitly excluded from the chained live comparison.",
+    "No default observed-scratch injection, no preview handling change, and negative steering remains mismatched.",
+    "Extreme nonfinite/overflow inputs and all alternate runtime floating-point modes are outside this validation.",
+    "Hook overhead changes native timing; live capture is not a controlled repeated acceleration/steering trajectory."
+  ]
+}
