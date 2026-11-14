@@ -1,8 +1,9 @@
 import {resolveMcmWorldMatrix,inverseRotateMcmVector} from './world-transform.js';
+import {updateMcmFrameEffects} from './frame-effects.js';
 import {mcmAdd as add,mcmSubtract as sub,mcmMultiply as mul,mcmDivide as div} from './x87-arithmetic.js';
 
 // Original 0x4ac95a..0x4ac968, before optional visual-effect processing.
-export function beginMcmPostLoop(c){c.bike.field8c0=0;}
+export function beginMcmPostLoop(c){c.bike.field8c0=0;if('frameEffects' in c)updateMcmFrameEffects(c);}
 
 // Original 0x4acfd8..0x4ad078. frameDelta denotes the stored interval at
 // stack+0x64: incoming delta plus prior carry, or the nominal step on the

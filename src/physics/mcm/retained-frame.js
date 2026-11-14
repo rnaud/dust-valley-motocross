@@ -54,6 +54,7 @@ export function advanceMcmRetainedFrame(c,{delta,mode,input},observe){
  }
  c.frameTail.frameDelta=scheduler.storedInterval;
  emit('before-filter');beginMcmPostLoop(c);
+ if('frameEffects' in c)emit('effects');
  const filter=updateMcmFrameAcceleration(c);emit('filter',{...filter,substeps});
  const rider=updateMcmRetainedFrameRider(c,delta);emit('frame-rider',rider);
  emit('before-return');finishMcmFrame(c);emit('return');
