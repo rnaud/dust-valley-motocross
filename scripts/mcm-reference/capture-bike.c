@@ -400,6 +400,8 @@ int main(int argc, char **argv) {
         if (event.dwDebugEventCode == LOAD_DLL_DEBUG_EVENT && event.u.LoadDll.hFile)
             CloseHandle(event.u.LoadDll.hFile);
         if (event.dwDebugEventCode == EXIT_PROCESS_DEBUG_EVENT) {
+            fprintf(stderr, "Reference exited: code=%08lx thread=%lu records=%lu\n",
+                    event.u.ExitProcess.dwExitCode, event.dwThreadId, count);
             done = 2;
             ContinueDebugEvent(event.dwProcessId, event.dwThreadId, status);
             break;
@@ -505,7 +507,15 @@ int main(int argc, char **argv) {
                     armed[pending] = 1;
                 }
                 pending = -1;
-            } else if (code != EXCEPTION_BREAKPOINT) status = DBG_EXCEPTION_NOT_HANDLED;
+            } else if (code != EXCEPTION_BREAKPOINT) {
+                const EXCEPTION_RECORD *exception = &event.u.Exception.ExceptionRecord;
+                fprintf(stderr, "Unhandled reference exception: code=%08lx address=%08lx thread=%lu firstChance=%lu pendingHook=%d records=%lu",
+                        code, address, event.dwThreadId, event.u.Exception.dwFirstChance, pending, count);
+                for (DWORD i = 0; i < exception->NumberParameters && i < EXCEPTION_MAXIMUM_PARAMETERS; i++)
+                    fprintf(stderr, " parameter%lu=%08lx", i, (DWORD)exception->ExceptionInformation[i]);
+                fprintf(stderr, "\n");
+                status = DBG_EXCEPTION_NOT_HANDLED;
+            }
         }
         // Menu RNG calls can produce debug events continuously. Check the
         // no-record deadline even when WaitForDebugEvent never times out.

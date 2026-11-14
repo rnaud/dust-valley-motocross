@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "scope": "Native caller-stack lifetime investigation; no recovered physics implementation or full-parity claim. Fresh-session captures omit animation assets and are not accepted trajectory fixtures.",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "captures": [
+    {
+      "name": "callers2",
+      "boundaryRecords": 80,
+      "completed": true,
+      "boundarySha256": "a06ce75c2dd6fafdb137f29a79cc187f676668d08524ed354b032b3b364c7796",
+      "logSha256": "9077e8143225951b743ef407073ebccd87f38849656015847cb8226158dc4990",
+      "sourceSha256": "efc7b0a60d14aa4d628ba146f63a41dc47dfabcd4d557e37b77a3d04fc5aa27f"
+    },
+    {
+      "name": "dispatch",
+      "boundaryRecords": 80,
+      "completed": true,
+      "boundarySha256": "642b111e0947e575e9d3fcdf774e14607ff46a26cef87e0037a98631dc97aaf9",
+      "logSha256": "d2d142c946d10c65056440ddf4dd008ca62ac66b7f9feadb562b11e4058a9e37",
+      "sourceSha256": "eef89c293eb049fbedfd62caf3518ca32266f123335cac11ae942e52f62943f4"
+    },
+    {
+      "name": "viewport",
+      "boundaryRecords": 80,
+      "completed": true,
+      "boundarySha256": "04b2e70ab0b1d29ead060fb9e1fcd94af06c7108157325fb2b04c3907d53fe94",
+      "logSha256": "d8528b0bd1667d66e793393bdd547d46dfe55a6b907fc933814f0295e3227acb",
+      "sourceSha256": "b54f0c7a51c35c5c9b8f4cd44ec21d9763e40dc0d2dcd177d6687398f63c61d4"
+    }
+  ],
+  "finding": {
+    "scratchAddress": "0x0022f038",
+    "bikeStackOffset": "0x54",
+    "sampledBetweenPlayerFrames": [
+      37,
+      38
+    ],
+    "ownerUpdate": "0x00423b50",
+    "refreshCall": "0x00423b98 -> 0x00423a10",
+    "lastUnchangedInstructionBoundary": "0x00423b69",
+    "firstChangedInstructionBoundary": "0x00423bff",
+    "beforeBits": "0x4306a684",
+    "afterBits": "0x00000000",
+    "nativeGates": [
+      "float32(owner+0x100 + worldDelta) reaches 0.5 under the original signed-bit comparison",
+      "world+0x6f4 is nonzero"
+    ],
+    "evidence": [
+      "VIEWPORT hook=21 ip=00423b64 esp=0022fbe4 object=00000000 target=00000000 value=4306a684",
+      "STACK_CHANGE previous_ip=00423b69 previous_esp=0022fbe4 ip=00423c00 esp=0022fbe4 old=4306a684 value=00000000",
+      "VIEWPORT hook=24 ip=00423c00 esp=0022fbe4 object=00000000 target=00000000 value=00000000",
+      "VIEWPORT hook=25 ip=00423c4d esp=0022fbe4 object=01b27e40 target=00420530 value=00000000",
+      "VIEWPORT hook=26 ip=00423c50 esp=0022fbe4 object=01b27e40 target=00000000 value=00000000",
+      "VIEWPORT hook=28 ip=00423c59 esp=0022fbe4 object=01b27e40 target=00000000 value=00000000",
+      "VIEWPORT hook=27 ip=00423c56 esp=0022fbe4 object=01b28100 target=00420540 value=00000000",
+      "VIEWPORT hook=28 ip=00423c59 esp=0022fbe4 object=01b28100 target=00000000 value=00000000",
+      "VIEWPORT hook=29 ip=00423c65 esp=0022fbe4 object=01b28100 target=00000000 value=00000000"
+    ]
+  },
+  "limits": [
+    "The exact nested instruction writing the word remains unidentified.",
+    "The HUD refresh includes graphics/DC and drawing calls; these captures do not attribute the write to a specific renderer or Wine routine.",
+    "Other-bike updates also reuse the slot. These samples do not prove this is its only external writer.",
+    "The committed opposite-steering fixture still has 41 modeled-physics differences at frame 38; no observed scratch substitution was promoted to default behavior."
+  ],
+  "failedProbe": {
+    "name": "hud",
+    "completed": false,
+    "records": 2,
+    "processExitCode": "0xc0000005",
+    "faultInstruction": "not captured",
+    "note": "Original subsequently relaunched with recorded settings; eight fresh bike boundaries and 41 original hook instructions verified."
+  },
+  "archive": "player-validation/caller-stack-hud-2026-11-14"
+}
