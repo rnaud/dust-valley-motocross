@@ -19,13 +19,24 @@ static AnimationBlock* animation_save(DWORD address,DWORD size){
  AnimationBlock*b=&animation_blocks[animation_count++];b->address=address;b->size=size;
  return animation_read(address,b->bytes,size)?b:NULL;
 }
+static int animation_add_record(DWORD*table,unsigned*count,DWORD address){
+ if(!address)return 1;
+ for(unsigned i=0;i<*count;i++)if(table[i]==address)return 1;
+ if(*count>=146)return animation_fail("record table capacity");
+ table[(*count)++]=address;return 1;
+}
 static int capture_mcm_animation_assets_at(HANDLE process,DWORD bike,const char*path,const char*capture_id,const char*boundary){
- animation_process=process;animation_count=0;DWORD table[26],vtable;unsigned record_count=21;
+ animation_process=process;animation_count=0;DWORD table[146],vtable;unsigned record_count=21;
  if(!animation_read(bike,&vtable,4)||vtable!=0x4d9a94||!animation_read(bike+0x740,table,21*4))return animation_fail("bike table");
  DWORD proxy;
  if(getenv("MCM_CAPTURE_RIDER_ANIMATIONS")){DWORD rider,extra[5];
  if(!animation_read(bike+0x874,&rider,4)||!animation_read(bike+0xc8c,&proxy,4)||!animation_read(rider+0x160,extra,12)||!animation_read(proxy+0x10,extra+3,4)||!animation_read(bike+0x10,extra+4,4))return animation_fail("extra records");
- for(unsigned i=0;i<5;i++)if(extra[i]){int seen=0;for(unsigned j=0;j<record_count;j++)if(table[j]==extra[i])seen=1;if(!seen)table[record_count++]=extra[i];}
+ for(unsigned i=0;i<5;i++)if(!animation_add_record(table,&record_count,extra[i]))return 0;
+ if(getenv("MCM_CAPTURE_ALL_RIDER_ANIMATIONS"))for(unsigned kind=0;kind<6;kind++)for(unsigned group=0;group<3;group++){
+  const unsigned offsets[]={0,0x18,0x30},capacities[]={5,5,10};DWORD count,records[10],address=rider+0x174+kind*0x5c+offsets[group];
+  if(!animation_read(address,&count,4)||count>capacities[group]||(count&&!animation_read(address+4,records,count*4)))return animation_fail("rider event records");
+  for(unsigned i=0;i<count;i++)if(!animation_add_record(table,&record_count,records[i]))return 0;
+ }
  }
  for(unsigned r=0;r<record_count;r++){
   AnimationBlock*record=animation_save(table[r],0x78);if(!record)return animation_fail("record");
