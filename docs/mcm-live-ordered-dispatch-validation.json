@@ -1,0 +1,105 @@
+{
+  "originalExeSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "captured": {
+    "scope": "Dispatch from captured current primary through original rider and bike callbacks, with callback order and all captured memory compared. Re-executes dispatch from the snapshot; not continuation of the interrupted native stack. Active audio/tag transfer and whole trajectories excluded.",
+    "startObject": 1,
+    "callbackTrace": [
+      [
+        85841456,
+        2
+      ],
+      [
+        85756408,
+        1
+      ]
+    ],
+    "comparedWords": 35635,
+    "changedWords": 42,
+    "differences": 0,
+    "firstDifferences": []
+  },
+  "variants": [
+    {
+      "name": "bike-primary",
+      "scope": "Dispatch from captured current primary through original rider and bike callbacks, with callback order and all captured memory compared. Re-executes dispatch from the snapshot; not continuation of the interrupted native stack. Active audio/tag transfer and whole trajectories excluded.",
+      "startObject": 0,
+      "callbackTrace": [
+        [
+          85756408,
+          0
+        ],
+        [
+          85841456,
+          3
+        ]
+      ],
+      "comparedWords": 35635,
+      "changedWords": 53,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "name": "bike-8ac-suppression",
+      "scope": "Dispatch from captured current primary through original rider and bike callbacks, with callback order and all captured memory compared. Re-executes dispatch from the snapshot; not continuation of the interrupted native stack. Active audio/tag transfer and whole trajectories excluded.",
+      "startObject": 1,
+      "callbackTrace": [
+        [
+          85841456,
+          2
+        ],
+        [
+          85756408,
+          1
+        ]
+      ],
+      "comparedWords": 35635,
+      "changedWords": 22,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "name": "bike-618-suppression",
+      "scope": "Dispatch from captured current primary through original rider and bike callbacks, with callback order and all captured memory compared. Re-executes dispatch from the snapshot; not continuation of the interrupted native stack. Active audio/tag transfer and whole trajectories excluded.",
+      "startObject": 1,
+      "callbackTrace": [
+        [
+          85841456,
+          2
+        ],
+        [
+          85756408,
+          1
+        ]
+      ],
+      "comparedWords": 35635,
+      "changedWords": 22,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "name": "rider-class-sentinel",
+      "scope": "Dispatch from captured current primary through original rider and bike callbacks, with callback order and all captured memory compared. Re-executes dispatch from the snapshot; not continuation of the interrupted native stack. Active audio/tag transfer and whole trajectories excluded.",
+      "startObject": 1,
+      "callbackTrace": [
+        [
+          85841456,
+          2
+        ],
+        [
+          85756408,
+          1
+        ]
+      ],
+      "comparedWords": 35635,
+      "changedWords": 41,
+      "differences": 0,
+      "firstDifferences": []
+    }
+  ],
+  "artifacts": {
+    "mcm-ordered-dispatch-checkpoint.json": "f78788f24a79a779e2b70736a88c3dd21ee98a945015a8840b6d74db92a6a739",
+    "mcm-ordered-dispatch-observation.json": "5046a1ad59bf1e93c46d95816ffedcc5866ecb34ce30e2333006666f4340a6ca",
+    "mcm-ordered-dispatch-input.bin": "86f4ac4e0a4d60ce814d950c018f1c3a7766650d5057de9313df08f064de77fe",
+    "mcm-ordered-dispatch-output.bin": "9a367d86f8dbf86ced68cec294ce4f9469914a2d245950f396513c2d5ffe88cd"
+  }
+}

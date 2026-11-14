@@ -81,8 +81,14 @@ static int capture_mcm_collision_world(HANDLE process,DWORD bike,const char*path
    SAVE(owner+0x44,8);SAVE(settings+0x20,4);SAVE(event+0x1f4,4);
   }
  }
+ if(getenv("MCM_COLLISION_BIKE_GATES")){
+  DWORD world,tag,context;
+  SAVE(0x4e4fb4,4);if(!collision_world_read(process,0x4e4fb4,&world,4)||!world)goto done;
+  SAVE(world+0x608,4);if(!collision_world_read(process,world+0x608,&tag,4))goto done;
+  if(tag){SAVE(tag+0x3c,4);if(!collision_world_read(process,tag+0x3c,&context,4)||!context)goto done;SAVE(context+0x30,4);SAVE(tag+0x80,4);}
+ }
  out=fopen(path,"wx");if(!out)goto done;
- fprintf(out,"{\"schemaVersion\":1,\"kind\":\"mcm-collision-world-observation\",\"bikeAddress\":%lu,\"managerAddress\":%lu,\"captureId\":\"%s\",\"captureBoundary\":\"%s\",\"playerFrame\":%lu,\"riderResponseCaptured\":%s,\"notificationGatesCaptured\":%s,\"transformsCaptured\":%s,\"actorsCaptured\":%s,\"blockCount\":%u,\"blocks\":[",bike,manager,id,boundary,frame,getenv("MCM_COLLISION_RIDER_RESPONSE")?"true":"false",getenv("MCM_COLLISION_NOTIFICATION_GATES")?"true":"false",getenv("MCM_COLLISION_TRANSFORMS")?"true":"false",getenv("MCM_COLLISION_ACTORS")?"true":"false",count);
+ fprintf(out,"{\"schemaVersion\":1,\"kind\":\"mcm-collision-world-observation\",\"bikeAddress\":%lu,\"managerAddress\":%lu,\"captureId\":\"%s\",\"captureBoundary\":\"%s\",\"playerFrame\":%lu,\"bikeCallbackGatesCaptured\":%s,\"riderResponseCaptured\":%s,\"notificationGatesCaptured\":%s,\"transformsCaptured\":%s,\"actorsCaptured\":%s,\"blockCount\":%u,\"blocks\":[",bike,manager,id,boundary,frame,getenv("MCM_COLLISION_BIKE_GATES")?"true":"false",getenv("MCM_COLLISION_RIDER_RESPONSE")?"true":"false",getenv("MCM_COLLISION_NOTIFICATION_GATES")?"true":"false",getenv("MCM_COLLISION_TRANSFORMS")?"true":"false",getenv("MCM_COLLISION_ACTORS")?"true":"false",count);
  for(unsigned i=0;i<count;i++){CollisionWorldBlock*b=&blocks[i];fprintf(out,"%s{\"address\":%lu,\"size\":%lu,\"hex\":\"",i?",":"",b->address,b->size);for(DWORD j=0;j<b->size;j++)fprintf(out,"%02x",b->bytes[j]);fprintf(out,"\"}");}
  fprintf(out,"]}\n");ok=!ferror(out);
  done:
