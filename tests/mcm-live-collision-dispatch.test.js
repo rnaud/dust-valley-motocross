@@ -13,6 +13,9 @@ test('contact snapshot retains both bikes, their riders and shared collision ide
  assert.equal(checkpoint.playerFrame,120);assert.equal(observation.captureBoundary,'collision-before-primary');assert.equal(w.dispatch.currentA,1);assert.equal(w.dispatch.currentB,0);assert.equal(w.dispatch.depth,.4921875);assert.equal(w.actors.size,4);
  for(const a of w.actors.values())if(a.kind==='bike'){assert.equal(a.rider.bike,a);assert.equal(a.collision.ownerAddress,a.address);assert.equal(a.rider.collision.ownerAddress,a.rider.address);}
  assert.equal(w.objects[1].other,w.objects[0]);
+ // Original 0x49dc34..0x49dd1f selects +58/+64 with both flags clear,
+ // and +70/+7c when either rider flag is set.
+ for(const a of w.actors.values())if(a.kind==='rider')for(const [key,offset] of [['velocity',0x58],['angular',0x64],['alternateVelocity',0x70],['alternateAngular',0x7c]])assert.deepEqual(a[key],[0,4,8].map(i=>w.memory.f32(a.address+offset+i)));
 });
 test('dispatch capture rejects mixed frames, missing actors and broken owner links',()=>{
  const a=fixture();a.observation.playerFrame++;assert.throws(()=>loadLiveCollisionDispatch(a.checkpoint,a.observation),/boundary/);

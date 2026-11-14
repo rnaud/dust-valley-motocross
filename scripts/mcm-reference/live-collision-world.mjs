@@ -29,7 +29,7 @@ export function loadLiveCollisionWorld(checkpoint,observation){
    memory.read(address,kind==='bike'?0xcc8:0x3ac);used.add(address);
    if(!actors.has(address))actors.set(address,{address,kind,collision:object,
     ...(kind==='bike'?{riderAddress:u(address+0x874),position:vector(address+0x4f8,3),velocity:vector(address+0x510,3),angularVelocity:vector(address+0x534,3),worldAngularVelocity:vector(address+0x528,3),state844:u(address+0x844),inverseMass:f(address+0x55c),inverseInertia:vector(address+0x5f0,3),alternateInertia:vector(address+0x5fc,3),riderInertia:vector(address+0x608,3),alternateMass:f(address+0x678),riderMass:f(address+0x67c),transformAddress:u(address+0x434),proxyAddress:u(address+0xc8c)}:
-    {bikeAddress:u(address+0x15c),position:vector(address+0x40,3),alternateVelocity:vector(address+0x58,3),alternateAngular:vector(address+0x64,3),velocity:vector(address+0x70,3),angular:vector(address+0x7c,3),flag13c:u(address+0x13c),flag140:u(address+0x140)})});
+    {bikeAddress:u(address+0x15c),position:vector(address+0x40,3),alternateVelocity:vector(address+0x70,3),alternateAngular:vector(address+0x7c,3),velocity:vector(address+0x58,3),angular:vector(address+0x64,3),flag13c:u(address+0x13c),flag140:u(address+0x140)})});
    if(u(address+(kind==='bike'?0xc88:0x34))!==object.address)throw Error('Collision actor back-reference differs');
   }
   for(const a of actors.values())if(a.kind==='rider'){
