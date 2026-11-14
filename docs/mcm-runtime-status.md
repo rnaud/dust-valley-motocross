@@ -1,6 +1,10 @@
 # Original runtime status — November 13, 2026
 
-## Current verified state
+## November 14 session recovery
+
+The steering caller-stack instruction trace ended the prior reference process without identifying the writer. After intermittent startup failures, the exact recorded `renderer=gl,csmt=0` and audio-isolated settings returned the original to dunes practice. Native menu callbacks completed, eight fresh bike boundaries were captured, and 18 diagnostic/menu hook locations contained their original instructions with no debugger attached. The new session again reports Windows PID 292/thread 296 and player `0x051c89f8`; saved allocation addresses/checkpoints still require validation before reuse. Evidence is archived under `player-validation/steering-2026-11-14/`. Desktop rendering and physical input were not revalidated by this recovery check.
+
+## Prior verified state
 
 A fresh original session now executes healthy player physics under Wine 11.
 The November 13 run used builtin DirectDraw/Direct3D, OpenGL, `csmt=0`, and
