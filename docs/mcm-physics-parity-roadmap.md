@@ -4851,3 +4851,38 @@ live manager. The next complete collision capture must include the manager,
 all cell sentinels and all linked object entries consistently, plus any actor
 state consumed by callbacks. Current diagnostic restoration does not close
 those dependencies.
+
+### Atomic shared collision graph and live grid refresh
+
+`MCM_COLLISION_WORLD=path` exports the collision manager and graph while stopped
+at the same player frame-entry breakpoint as `MCM_CHECKPOINT`. Both files share
+a capture ID. The exporter reads the 0x394c-byte manager, all grid sentinels,
+the global enable flag, every registered 0x110-byte object, and each object's
+0x18-byte entries. It is an observation sidecar, not additional restored state.
+Current bounds are 60 objects, grid dimensions 1–128, and 4,096 entries/object.
+
+The live capture contains four type-1 objects, 16 entries, 4,097 sentinels and
+11 addressed blocks. `loadLiveCollisionWorld` checks capture identity, player
+ownership, overlapping checkpoint bytes, entry ownership, dangling links,
+cycles, previous/next consistency, cell membership, orphaned active entries and
+unreferenced blocks. It retains shared node identity for recovered grid updates.
+This loader currently supports captured type-0/1 objects with four entries each;
+other layouts fail explicitly. Actor state referenced by collision callbacks
+is outside this loader.
+
+The isolated native oracle maps the captured heap graph at its original
+addresses and refreshes each object in manager order through original
+`0x42a550/0x42a6e0`. The global enable flag is mapped to its relocated original
+image address, not reserved over an unrelated page in the helper process.
+Recovered refresh matches all 28,618 words, including six changed link words,
+on ARM and x64 Node. All four active entries are in the overflow cell (4096)
+in this snapshot; their linked order changes from [0,2,1,3] to [0,1,2,3].
+This result does not cover ordinary-cell movement, collision dispatch, actor
+response or full-bike trajectories. Existing synthetic grid fixtures remain
+separate evidence for other geometry branches.
+
+The actual graph, checkpoint and native output are retained in
+`live-collision-grid-wine11.json.br`; hashes and scope are recorded in
+`mcm-live-collision-grid-validation.json`. Next: extend the live world adapter
+to collision dispatch and actor inputs, and capture populated ordinary cells
+before claiming complete shared-world parity.

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "fixtureSha256": "d8e2d432e47882f8545ac174875ebaf2297b606d0f7b6eec353fe91c6ef9d6af",
+  "checkpointSha256": "e0bbd068bced8927e5735eadb8b1422656d3bf4fcea15f089d7f7e63d8a9f34e",
+  "observationSha256": "d547331881267a5ad786389e8fbdfc920e273241d699d35b00e747054b43878d",
+  "nativeOutputSha256": "9143012745d4d86cd5e7954337781e304d442207ea3c2b82a0596eba369ff1ad",
+  "nativeSourceSha256": "019c757e7b7a819c4e154d87f23d9bebc68a0cebea70f99586128331dc25a02b",
+  "captureSourceSha256": "7f7fd034503d43ca190789db83e9194199e967f2e2d209748876339aa17547cb",
+  "coverageNote": "All four active entries initially occupy the overflow cell (4096). Original changes six link words; no broadphase restoration or actor response is claimed.",
+  "scope": "Original grid refresh 0x42a550/0x42a6e0 for each captured type 0/1 object in manager order. Shared graph and all captured bytes compared; collision dispatch, actor response and trajectories excluded.",
+  "objects": 4,
+  "cells": 4097,
+  "entries": 16,
+  "blocks": 11,
+  "comparedWords": 28618,
+  "changedWords": 6,
+  "differences": 0,
+  "firstDifferences": []
+}

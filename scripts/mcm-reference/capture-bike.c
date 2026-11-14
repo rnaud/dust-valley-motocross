@@ -18,6 +18,7 @@
 #define MCM_ANIMATION_EMBEDDED
 #include "capture-animation-assets.c"
 #undef MCM_ANIMATION_EMBEDDED
+#include "capture-collision-world.c"
 
 static const DWORD addresses[] = {0x4a54b6, 0x4ad0e1, 0x4ad5a2, 0x4bf195, 0x40e990};
 static const BYTE expected[][6] = {{0xd9, 0x86, 0xc8, 0x08, 0, 0},
@@ -111,12 +112,14 @@ end:
 static int export_checkpoint(DWORD bike) {
     const char *path=getenv("MCM_CHECKPOINT");
     const char *animations=getenv("MCM_ANIMATIONS");
-    if(!path||!*path)return !(animations&&*animations);
+    const char *world=getenv("MCM_COLLISION_WORLD");
+    if(!path||!*path)return !(animations&&*animations)&&!(world&&*world);
     char capture_id[17]={0};
-    if(animations&&*animations){
+    if((animations&&*animations)||(world&&*world)){
         LARGE_INTEGER stamp;if(!QueryPerformanceCounter(&stamp))return 0;
         snprintf(capture_id,sizeof capture_id,"%08lx%08lx",(DWORD)stamp.HighPart,stamp.LowPart);
-        if(!capture_mcm_animation_assets(process,bike,animations,capture_id))return 0;
+        if(animations&&*animations&&!capture_mcm_animation_assets(process,bike,animations,capture_id))return 0;
+        if(world&&*world&&!capture_mcm_collision_world(process,bike,world,capture_id))return 0;
     }
     FILE *out=fopen(path,"wx");if(!out)return 0;
     fprintf(out,"{\"schemaVersion\":1,\"kind\":\"mcm-partial-local-checkpoint\",\"bikeAddress\":%lu,\"blockCount\":%u,\"blocks\":[",bike,block_count);
