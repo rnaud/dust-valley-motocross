@@ -1,0 +1,84 @@
+{
+  "captured": {
+    "scope": "Original player-input slice 0x4a5672..0x4a57c0 with captured world values and steering-device metadata; no input polling, AI/scripted controller or full-frame parity.",
+    "branch": "player",
+    "blocks": 54,
+    "comparedWords": 3719,
+    "changedWords": 0,
+    "differences": 0,
+    "firstDifferences": []
+  },
+  "variantScope": "Counterfactual copies of captured state; not observed trajectories.",
+  "variants": [
+    {
+      "name": "linear",
+      "scope": "Original player-input slice 0x4a5672..0x4a57c0 with captured world values and steering-device metadata; no input polling, AI/scripted controller or full-frame parity.",
+      "branch": "player",
+      "blocks": 54,
+      "comparedWords": 3719,
+      "changedWords": 3,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "name": "cubic-two",
+      "scope": "Original player-input slice 0x4a5672..0x4a57c0 with captured world values and steering-device metadata; no input polling, AI/scripted controller or full-frame parity.",
+      "branch": "player",
+      "blocks": 54,
+      "comparedWords": 3719,
+      "changedWords": 3,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "name": "cubic-three",
+      "scope": "Original player-input slice 0x4a5672..0x4a57c0 with captured world values and steering-device metadata; no input polling, AI/scripted controller or full-frame parity.",
+      "branch": "player",
+      "blocks": 54,
+      "comparedWords": 3719,
+      "changedWords": 3,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "name": "device-four-bypass",
+      "scope": "Original player-input slice 0x4a5672..0x4a57c0 with captured world values and steering-device metadata; no input polling, AI/scripted controller or full-frame parity.",
+      "branch": "player",
+      "blocks": 54,
+      "comparedWords": 3719,
+      "changedWords": 3,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "name": "analog",
+      "scope": "Original player-input slice 0x4a5672..0x4a57c0 with captured world values and steering-device metadata; no input polling, AI/scripted controller or full-frame parity.",
+      "branch": "player",
+      "blocks": 54,
+      "comparedWords": 3719,
+      "changedWords": 3,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "name": "negative-zero-analog",
+      "scope": "Original player-input slice 0x4a5672..0x4a57c0 with captured world values and steering-device metadata; no input polling, AI/scripted controller or full-frame parity.",
+      "branch": "player",
+      "blocks": 54,
+      "comparedWords": 3719,
+      "changedWords": 3,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "name": "stopped-rider-transition",
+      "scope": "Original player-input slice 0x4a5672..0x4a57c0 with captured world values and steering-device metadata; no input polling, AI/scripted controller or full-frame parity.",
+      "branch": "player",
+      "blocks": 54,
+      "comparedWords": 3719,
+      "changedWords": 2,
+      "differences": 0,
+      "firstDifferences": []
+    }
+  ]
+}
