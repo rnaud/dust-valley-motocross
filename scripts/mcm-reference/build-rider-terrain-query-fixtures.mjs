@@ -1,0 +1,23 @@
+import fs from 'node:fs';
+import {createHash} from 'node:crypto';
+import {brotliCompressSync} from 'node:zlib';
+import {compareRiderTerrainQuery} from './compare-rider-terrain-query.mjs';
+import {compareLiveRiderTerrainQuery} from './compare-live-rider-terrain-query.mjs';
+import {readMcmTerrain} from './terrain-data.mjs';
+const [exe,inputPath,outputPath,tracePath,course,fixtureDir,reportDir]=process.argv.slice(2);
+if(!reportDir)throw Error('Usage: build-rider-terrain-query-fixtures.mjs mcm.exe input.bin output.bin trace.jsonl course.trn fixture-dir report-dir');
+const executableSha256=createHash('sha256').update(fs.readFileSync(exe)).digest('hex');
+if(executableSha256!=='e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b')throw Error('Wrong original executable');
+const input=fs.readFileSync(inputPath),output=fs.readFileSync(outputPath),isolated=compareRiderTerrainQuery(input,output);
+if(isolated.differences.length)throw Error(JSON.stringify(isolated.differences.slice(0,10)));
+const rows=fs.readFileSync(tracePath,'utf8').trim().split('\n').map(JSON.parse),terrain=readMcmTerrain(fs.readFileSync(course)),recorded=new Map();
+if(!rows.length||rows.length%2)throw Error('Incomplete live query pairs');
+function observe(node){if(!node)return null;if(recorded.has(node.offset))return recorded.get(node.offset).proxy;
+ const data={offset:node.offset,minimumHeight:node.minimumHeight,maximumHeight:node.maximumHeight,originX:node.originX,originY:node.originY,level:node.level,shift:node.shift,bias:node.bias,scale:node.scale,heights:node.heights,normals:node.normals},proxy={...data};recorded.set(node.offset,{data,proxy});
+ if(node.children){data.children={};proxy.children=new Proxy(node.children,{get(target,key){if(/^\d+$/.test(String(key))){const n=target[key];data.children[key]=n?.offset??null;return observe(n);}return Reflect.get(target,key);}});}return proxy;}
+const live=[];for(let i=0;i<rows.length;i+=2)live.push(compareLiveRiderTerrainQuery(rows[i],rows[i+1],{...terrain,root:observe(terrain.root)}));
+if(live.some(r=>r.differences.length))throw Error(JSON.stringify(live));
+const save=(name,fixture,report)=>{fs.writeFileSync(fixtureDir+'/'+name+'-wine11.json.br',brotliCompressSync(Buffer.from(JSON.stringify(fixture))));fs.writeFileSync(reportDir+'/mcm-'+name+'-validation.json',JSON.stringify({executableSha256,...report},null,2)+'\n');};
+save('rider-terrain-query',{input:input.toString('base64'),output:output.toString('base64')},{scope:'Complete original 0x40bb40 query with eleven original transform conversions and terrain height/normal queries. Whole rider allocation, all transform nodes, output vectors and return checked. Isolated calls; not a full rider tick.',...isolated});
+save('live-rider-terrain-query',{rows,terrain:{heightScale:terrain.heightScale,worldToGrid:terrain.worldToGrid,root:terrain.root.offset,nodes:Object.fromEntries([...recorded].map(([k,v])=>[k,v.data]))}},{scope:'Live separate-rider terrain queries after bike frames 104 and 105. Whole rider, all 16 parent/child transform nodes, outputs and return checked against real terrain. Neither live case hits terrain; isolated cases cover hits.',reports:live});
+console.log({isolated,live});

@@ -5310,3 +5310,25 @@ constants. Replacing them with the bike delta fails the regression test.
 it does not extend the retained trajectory claim. Original checkpoint restoration
 and breakpoint cleanup follow capture. Raw trace and capture sources are archived
 under `player-validation/exhaust-tick-2026-11-14` in the local reference store.
+
+### Crash-rider terrain query recovered (2026-11-14)
+
+Recovered complete `0x40bb40`: eleven animated body nodes converted relative to
+the rider body, transformed around its current center, and queried against the
+original terrain height and smooth normals. Deepest penetration selects one of
+four body regions. No-hit preserves all caller outputs and the previous region.
+Original x87 transform addition order and the stored-versus-retained Z delta
+are preserved; this uses the existing recovered transform and terrain routines.
+
+The complete original routine, including real transform conversions and terrain
+sampling, matches 176 isolated cases: 154 hits, all four regions, 188,848 words,
+2,126 changed words, zero differences. Live separate-rider calls after bike
+frames 104 and 105 also match: 2,698 words, 390 changed words, zero differences,
+including all 16 parent/child transform allocations. Both live calls return no
+terrain contact. ARM64 and x64 regression tests pass. See
+`mcm-rider-terrain-query-validation.json` and
+`mcm-live-rider-terrain-query-validation.json` for exact scope.
+
+This removes a dependency of the separate rider tick; it is not yet a retained
+whole-rider or trajectory claim. Live query capture sources and raw observations
+are archived under `player-validation/rider-terrain-query-2026-11-14`.

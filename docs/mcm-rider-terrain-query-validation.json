@@ -1,0 +1,15 @@
+{
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "scope": "Complete original 0x40bb40 query with eleven original transform conversions and terrain height/normal queries. Whole rider allocation, all transform nodes, output vectors and return checked. Isolated calls; not a full rider tick.",
+  "cases": 176,
+  "hits": 154,
+  "regions": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "comparedWords": 188848,
+  "changedWords": 2126,
+  "differences": []
+}
