@@ -11,7 +11,7 @@ export function compareLiveRetainedRiderFrames(inputs,rows,events){
  const loaded=loadLiveFrameBootstrap({...inputs,row:rows[0]}),c=loaded.context;
  const external=connectLiveRiderTick({ordered:loaded.ordered,bikeAddress:inputs.checkpoint.bikeAddress,visuals:loaded.visuals,assets:loaded.animation.assets,animation:c.frameRider.riderAnimation,child:events[0],terrain:inputs.terrain}),r=external.context.rider;
  if(events[0].rider!==r.address)throw Error('Retained rider ownership differs');
- for(const [key,field]of [['extentScale','fieldf8'],['field138','field138'],['field144','field144'],['contactClass','field154']])Object.defineProperty(r,key,{get:()=>c.rider[field],set:value=>{c.rider[field]=value;}});
+ for(const [key,field]of [['extentScale','fieldf8'],['field138','field138'],['field144','field144'],['contactClass','field154'],['selected','selected'],['eventKind','kind']])Object.defineProperty(r,key,{get:()=>c.rider[field],set:value=>{c.rider[field]=value;}});
  Object.defineProperty(external.context,'selectedRecord',{get:()=>{const token=c.rider.selected[0],record=loaded.animation.assets.records.find(a=>a.token===token);if(token&&!record)throw Error('Missing retained selected animation');return record;}});
  let eventIndex=1,visualDifferences=0,physicsDifferences=0,comparedWords=0,externalWords=0,pendingExternalTick=null;const reports=[],riderReports=[];
  for(let i=0;i<rows.length;i+=2){
@@ -32,7 +32,7 @@ export function compareLiveRetainedRiderFrames(inputs,rows,events){
    catch(error){if(!/requires free-rider integration|Free-rider integration is not connected/.test(error.message))throw error;pendingExternalTick={frame,reason:error.message};break;}
    const bytes=Buffer.from(before.riderHex,'hex');if(bytes.length!==0x3ac)throw Error('Wrong retained rider size');
    for(const [offset,values]of [[0x40,r.position],[0x4c,r.previousPosition],[0x58,r.velocity],[0x64,r.angular],[0x70,r.alternateVelocity],[0x7c,r.alternateAngular],[0xa0,r.center],[0xac,r.extents],[0xb8,r.matrix]])values.forEach((v,j)=>bytes.writeFloatLE(v,offset+j*4));
-   for(const [offset,value]of [[0x138,r.field138],[0x13c,r.flag13c],[0x140,r.field140],[0x144,r.field144],[0x154,r.field154],[0x16c,c.rider.active16c],[0x170,c.rider.kind],[0x3a4,r.region]])bytes.writeUInt32LE(value>>>0,offset);
+   for(const [offset,value]of [[0x138,r.field138],[0x13c,r.flag13c],[0x140,r.field140],[0x144,r.field144],[0x148,r.field148],[0x14c,r.field14c],[0x39c,r.field39c],[0x154,r.field154],[0x16c,c.rider.active16c],[0x170,c.rider.kind],[0x3a4,r.region]])bytes.writeUInt32LE(value>>>0,offset);
    c.rider.selected.forEach((v,j)=>bytes.writeUInt32LE(v>>>0,0x160+j*4));bytes.writeFloatLE(r.fieldf8,0xf8);
    const differences=[];let words=1;
    for(const [name,expected,hex]of [['rider',bytes,next.riderHex],['child',external.childBytes,next.hex]]){

@@ -72,7 +72,7 @@ static int capture_mcm_collision_world(HANDLE process,DWORD bike,const char*path
  }
  if(getenv("MCM_COLLISION_RIDER_RESPONSE")){
   if(!getenv("MCM_COLLISION_ACTORS"))goto done;
-  SAVE(0x4e21a4,24);SAVE(0x4ede98,12);
+  SAVE(0x4e21a4,getenv("MCM_CAPTURE_FREE_RIDER")?28:24);SAVE(0x4ede98,12);
   for(DWORD i=0;i<objects;i++){
    DWORD object=collision_word(blocks[0].bytes,8+i*4),kind,actor,owner,settings,event;
    if(!collision_world_read(process,object+0x104,&kind,4))goto done;
