@@ -1017,3 +1017,28 @@ frame runner still needs a complete live context, shared scratch and controller
 initialization before consecutive whole-bike acceleration/release comparisons.
 Playable preview handling is unchanged. See
 [memory comparison](mcm-retained-animation-initialization-validation.json).
+
+### Captured frame environment and real reset-action lookup
+
+`MCM_FRAME_ENVIRONMENT` now exports a separate, atomic observation alongside the
+local checkpoint. It captures global `0x4e4fb4`, world WORDs `+0x1070/+0x1072`,
+course owner `+0x18bc`, controller `+0x24`, and the reset action flag at device
+`+0x3b4`. These world/controller blocks are observations, not added to the memory
+restored by the local replay checkpoint. Capture them with the same invocation
+as animation and collision observations to preserve the shared boundary ID.
+
+The original call `0x4526d0(15, 0, NULL)` bypasses the option filter and returns
+true only when action state equals 1. The loader uses that captured state, not a
+synthetic always-false reset callback. It verifies frame identity and rejects
+missing memory. The observed setting/mode are 0/0, world scale 3, controller
+present, reset action 0. Device polling and future input transitions are not
+reconstructed by loading one snapshot.
+
+`live-frame-reset-oracle.c` executes original `0x4b0610` and the unmodified action
+lookup against the captured state. Its result plus every captured word match
+(3,713 words, 48 blocks). Seven counterfactual copies also match, covering action
+values 1, 2 and -1, elapsed reset, boundary reset and modes 2/3. Active button and
+boundary cases change two/three words. These are copied-state validations, not
+observed riding trajectories. Crashed/forced-position cleanup is explicitly
+rejected by this comparator; full retained-frame initialization and playable
+integration remain outstanding. See [comparison report](mcm-live-frame-reset-validation.json).
