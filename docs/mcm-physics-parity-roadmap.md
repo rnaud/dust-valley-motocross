@@ -1,5 +1,13 @@
 # Motocross Madness physics parity roadmap
 
+## Active eye construction and filter-reset gates joined (2026-11-14)
+
+The active path from `0x47c7d2` now computes eye position from two runtime rotations and base/distance, applies eye-filter reset gates, updates camera state, then enters the validated offset/target/smoothing chain through `0x47d606`. It preserves the signed integer speed-bit comparison, strict coordinate-distance thresholds, reset flag behavior, crash scaling, and mode-6 camera-update bypass.
+
+An isolated native oracle matches **622,080/622,080 words across 13,824 retained updates in 3,456 cases**, including **384 filter resets**. Cases cross eight modes, three actor types, both control gates, reset/crash states, three speed patterns and three eye geometries. A live capture matches **80 updates / 3,760 words**, retaining and checking camera state, axis and filters between entries. This live mode-0 sequence has no resets; reset evidence comes from isolated native execution. All hooks were restored and debugger detachment passed. See `mcm-chase-active-validation.json`.
+
+Earlier source/base/heading/control construction and alternate eye paths remain supplied or unmodeled. Full controller reachability, live reset transitions, terrain/camera collision and the negative-steering scratch dependency remain unresolved. No preview handling change is claimed.
+
 ## Offset-to-smoothing controller chain recovered (2026-11-14)
 
 Original `0x47d166..0x47d606` now joins offset rotation, target construction, filter initialization and retained smoothing. Mode 3 adds the original bank rotation. Mode 5 and the disabled gate preserve the upstream target and bypass construction. The shared mutable axis is retained; its original initializer `0x47e310` establishes `[0, 1, 0]`.

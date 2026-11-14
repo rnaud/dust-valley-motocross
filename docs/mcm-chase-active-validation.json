@@ -1,0 +1,54 @@
+{
+  "scope": "Active eye construction, filter reset gates and camera updates joined through offset/target/smoothing; original 0x47c7d2..0x47d606 along this path.",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "runtimeDllSha256": "7edb1ed218aececbb44f4d92d5b0880f0ff1777dc525e555140f987015d8be1a",
+  "fixtureSha256": "d3c619fefebaeb6af55e7be055b06bef5497cfd8f4a7f2a6c4f98e3c44e1c88d",
+  "inputSha256": "9731e6ff7c112b7e84eabbf7c309dddf7eefc062694ec8f4c85d02642a18b402",
+  "outputSha256": "7ec365637116525b0ceaebe5e40280708d1ad5663d6bf90dcb92c830b35bdfb6",
+  "liveRawSha256": "6aa0162723250ff833aac75a5cbdc5738a4f3597134a7337c6d10f12049931c2",
+  "sources": {
+    "src/physics/mcm/chase-active-eye.js": "044560c3e9bc2c1cd9961b751fcb1530dfc1d020f4e70d6829c8cc3b84873a80",
+    "scripts/mcm-reference/chase-active-chain-oracle.c": "a01c6bc570944fabd68624e18a7df746047c94ab67c665c8a0a8389302d20674",
+    "scripts/mcm-reference/capture-chase-active.c": "32839276ff4fe71e7b0798dda8fe7fd7dccf32c01d0d571ab602e430e5c4c829"
+  },
+  "isolated": {
+    "cases": 3456,
+    "steps": 13824,
+    "words": 622080,
+    "active": 4032,
+    "bypassed": 9792,
+    "resets": 384,
+    "differences": 0,
+    "examples": []
+  },
+  "live": {
+    "pairs": 80,
+    "words": 3760,
+    "active": 80,
+    "bypassed": 0,
+    "resets": 0,
+    "modes": [
+      0
+    ]
+  },
+  "coverage": [
+    "Eight modes, actor types0/1/3, both EBX/EDI gates, reset flag0/1, crash flag0/1, three speed bit patterns and three geometries",
+    "Four retained updates per case, initialized filters, .02 timestep",
+    "Signed integer speed-bit comparison at 0x3ba3d70a; strict coordinate-distance thresholds10 and float32 .01",
+    "Reset overwrites eye filter values and times; preserves record bounds",
+    "Live mode0 existing filters; no reset fires in this capture; isolated native cases exercise384 resets",
+    "Camera flag, orbit angle and backup fields retained and checked at every live entry"
+  ],
+  "cleanup": [
+    "0047c7d2 restored=1",
+    "0047d606 restored=1",
+    "debugger=0 clean=1"
+  ],
+  "remaining": [
+    "Earlier base/source/heading and control gates remain supplied; full controller entry and mode reachability are not modeled.",
+    "Original alternate eye paths including 0x47d0e5 and 0x47ca31 are not integrated.",
+    "Live reset transitions, allocation, terrain/camera collision and broader movement remain unvalidated.",
+    "General exceptional/trigonometric runtime coverage remains unproven.",
+    "Negative-steering scratch lifetime remains unresolved; preview handling unchanged."
+  ]
+}
