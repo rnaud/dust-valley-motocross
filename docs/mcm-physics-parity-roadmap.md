@@ -2,6 +2,29 @@
 
 Written November 12, 2026, against the current Dust Valley implementation.
 
+## Current tally — November 14, 2026
+
+This section is the current status. The original planning checkboxes and dated entries below are historical evidence, not a current completion tally. Update this section when a milestone changes the connected path or its validation boundary. A routine is not finished merely because it has been translated: distinguish isolated native checks, connected replay, and playable-preview integration. Do not re-port validated routines without a failing case or new branch evidence.
+
+**Planning estimate: approximately 60% overall, with roughly ±15 percentage points of uncertainty.** This is an engineering estimate of remaining work, not measured simulation equivalence or a percentage of native instructions. Core recovery is farther along than continuous validation and preview integration. Finite passing fixtures do not establish 100% equivalence.
+
+| Workstream | Current state | Remaining exit condition |
+|---|---|---|
+| Runnable reference and telemetry | Done for the pinned original installation: Wine gameplay, player identification, deterministic inputs, raw state capture, oracle harness | Preserve evidence and extend capture dependencies when a new branch requires them |
+| Numeric and geometry foundations | Substantial native-validated coverage: original float behavior, math, transforms, terrain traversal and contact queries | Validate additional branches exposed by new scenarios |
+| Bike update core | Engine/drivetrain, suspension, tire/contact forces, braking, controls, integration, collisions and frame-end paths recovered and tested; connected original frame return exists | Retain all required shared state across long real riding histories |
+| Separate rider/crash path | Crash animation, terrain probes, first ground transition and free-rider ground motion shipped. Active particles and crossfade match live ticks 121/122; milestone checks pass and this change ships them | Remaining stopped-animation/recovery branches; broader crash and interaction scenarios |
+| Continuous original comparison | Retained modeled physics matches 121 bike calls and 120 separate rider ticks. 525 visual differences remain reported; the retained fixture lacks the next drag dependency | Reach and match complete acceleration AND throttle-release histories without resetting modeled state from observations; connect shared-world scheduling/effects |
+| Scenario coverage | Isolated and live fixtures exist; latest milestone suite has 435 passing tests | Steering/braking/jumps/landing/crash/reset, other-rider/obstacle interactions, all intended bike/settings/terrain cases |
+| Playable MCM preview | Playable assisted hybrid; recovered engine/tire/load/brake/air-control/linear-motion helpers integrated; touch neutral-steering fix shipped | Replace remaining adapted chassis/contact/steering/rider paths with the validated connected core and rerun browser/mobile acceptance |
+| Shipping | Validated milestones pushed to main; reference, retained-rider, ground-contact and free-rider deployments succeeded | Continue tests/build/deployment verification for each milestone |
+
+**Next queue (in order):** refresh retained captures with the newly identified dependencies and advance to the next actual mismatch; complete acceleration/release comparison; close remaining branch/scenario gaps; integrate the validated core into preview and repeat the same acceptance traces there. Shared-world state may expose further dependencies, so this is not a claim that every remaining routine is already enumerated.
+
+Recent evidence: [retained rider prefix](mcm-live-retained-rider-prefix-validation.json), [ground transition](mcm-live-rider-ground-transition-validation.json), [free-rider motion](mcm-live-free-rider-tick-validation.json). Active rider particles match 160 native cases (2,782,560 words); complete live ticks 121 and 122 each match 283,386 words after correcting premature rounding of horizontal drag.
+
+## Historical baseline and detailed milestone log
+
 ## Objective and honest starting point
 
 Reproduce the supplied Motocross Madness build's simulation: the same initial state, terrain, settings, input sequence and elapsed-time sequence should produce matching motion and gameplay events.
@@ -5379,3 +5402,9 @@ The retained fixture now reaches 121 bike calls and 120 separate rider ticks, wi
 Recovered `0x40cd60` and the `0x430a60` animation transition, connecting captured drag, gravity, angular integration, terrain contact, the previously recovered rider impulse, contact-animation selection, proxy/collider updates, and contact-emitter activation. The full original frame-120 rider tick matches 264,335 words, including all 386 changed words, with no differences. The capture includes all rider event animation records and the previously missing drag coefficient at `0x4e21bc`; neither is supplied from output state.
 
 This is one complete live tick, not broad branch coverage or continuous parity. The next active-particle update and animation crossfade remain explicit dependencies. The earlier retained fixture still stops at frame 120 because its initial capture lacks the drag coefficient; it is not silently supplemented with executable defaults.
+
+### Active rider particles and crash-animation crossfade (2026-11-14)
+
+Recovered active `0x43a0c0` particle creation and the crossfade branch of `0x45bcd0`. The isolated particle oracle matches 160 cases across 2,782,560 words (2,123 changed), including reset/inactive paths, fractional emission, negative/zero timestep, pool exhaustion, and index boundaries. Native table index 32 reads its own index word and eight bytes beyond the advertised child allocation; those bytes are captured explicitly rather than replaced with an invented wrapped entry.
+
+Independent complete rider ticks 121/122 match all 566,772 captured words (878 changed), including full shared-pool headers and all 1,000 particle records per tick. Each tick emits two particles. The original pool counts differ between consecutive entries because other world updates occur between these ticks; these are independently initialized observations, not continuous pool parity. A one-bit Z-velocity difference exposed premature rounding of the drag factor; removing that store follows the original x87 instructions and preserves the prior frame-120 match. Stopped-animation/recovery paths and complete retained shared-world scheduling remain outstanding.

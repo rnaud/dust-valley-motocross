@@ -23,7 +23,7 @@ export function advanceMcmFreeRider(c,dt){
  for(let i=0;i<=count;i++){
   const step=i===count?remainder:f(.0125);if((floatBits(step)|0)<=0)continue;
   r.velocity[1]=f(step*f(-32.2)+r.velocity[1]);
-  r.velocity[0]=f((1-c.damping*step)*r.velocity[0]);r.velocity[2]=f(f(1-c.damping*step)*r.velocity[2]);
+  r.velocity[0]=f((1-c.damping*step)*r.velocity[0]);r.velocity[2]=f((1-c.damping*step)*r.velocity[2]);
   for(let j=0;j<3;j++)r.matrix[12+j]=f(r.velocity[j]*step+r.matrix[12+j]);
   const [x,y,z]=r.angular,inverse=mcmInverseSqrtLookup(f((x*x+y*y)+z*z)),axis=r.angular.map(v=>f(v*inverse));
   let speed=mcmSqrtLookup(f((y*y+z*z)+x*x));

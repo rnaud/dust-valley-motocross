@@ -11,7 +11,7 @@ import {advanceMcmFreeRider} from './free-rider.js';
 const f=Math.fround;
 
 // Separate 0x40e990 actor tick through active crash animation, ground contact,
-// and free-rider integration. Stopped-animation and crossfade paths remain explicit.
+// and free-rider integration. Stopped-animation paths remain explicit.
 export function advanceMcmRiderTick(c,dt){
  c.updateChildren(dt);
  if(c.paused)return 1;
