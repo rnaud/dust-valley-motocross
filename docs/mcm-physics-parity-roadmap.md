@@ -5361,3 +5361,9 @@ was not separately traced. The captured owner render gate is zero. Both cases pa
 This is whole observed rider-tick coverage for that branch, not a continuous
 bike trajectory or coverage of the unsupported branches. Raw captures and
 sources are archived under `player-validation/rider-tick-2026-11-14`.
+
+### Retained external rider milestone (2026-11-14)
+
+The retained comparison now connects the separate rider tick without reloading modeled state between bike frames. The pinned-original fixture covers 120 bike calls (frames 0–119) and 119 separate rider ticks (0–118): 413,751 bike-comparison words and 74,256 rider/child/global-delta words, with zero physics differences. All 515 visual-emitter differences remain explicitly reported. The next external tick stops at rider ground contact in frame 119; free-rider integration remains unsupported.
+
+This is a diagnostic projection, not full trajectory parity: unmodeled bytes use each observed entry as an unchanged-within-call baseline, and external output checks do not cover all transforms or world allocations. The fixture includes all captured rider event animation records so later selection does not substitute observed state. Regression tests also reject changed throttle, missing external ticks, and corrupted observed timing. See `mcm-live-retained-rider-prefix-validation.json`.

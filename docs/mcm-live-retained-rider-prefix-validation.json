@@ -1,0 +1,4731 @@
+{
+  "scope": "Retained modeled bike/rider state initialized once, using explicit throttle and external rider timing/gates. Visual emitter differences remain reported separately. Unmodeled bytes use each observed entry as an unchanged-within-call baseline. External rider output checks cover rider/child/global delta, not all transforms/world allocations. This is not full trajectory parity.",
+  "bikeFrames": 120,
+  "riderTicks": 119,
+  "comparedWords": 413751,
+  "externalWords": 74256,
+  "physicsDifferences": 0,
+  "visualDifferences": 515,
+  "pendingExternalTick": {
+    "frame": 119,
+    "reason": "Rider ground contact requires free-rider integration"
+  },
+  "reports": [
+    {
+      "frame": 0,
+      "comparedWords": 232088,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 1,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 2,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 3,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 4,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 5,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 6,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 7,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 8,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 9,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 10,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 11,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 12,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 13,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 14,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 15,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 16,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 17,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 18,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 19,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 20,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 21,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 22,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 23,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 24,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 25,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 26,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 27,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 28,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 29,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 30,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 31,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 32,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 33,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 34,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 35,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 36,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 37,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 38,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 39,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 40,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 41,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 42,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 43,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 44,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 45,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 46,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 47,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 48,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 49,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 50,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 0,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": []
+    },
+    {
+      "frame": 51,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 3,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 1035623988,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 17,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 107,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 52,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 5,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 40,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 3178611348,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 53,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 2,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 40,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 54,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 4,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 40,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 55,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 6,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 42,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 56,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 8,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 44,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 57,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 10,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 29,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 58,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 44,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 59,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 3,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 42,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 60,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 6,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 39,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 61,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 9,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 39,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 62,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 38,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 63,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 4,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 40,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 64,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 8,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 43,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 65,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "70",
+          "original": 603979776,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 66,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 5,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 38,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 67,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 10,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 34,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 68,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 2,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 69,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 8,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 42,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 70,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 6,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 71,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 7,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 72,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 29,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 73,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 7,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 29,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 74,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 6,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 29,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 75,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 8,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 44,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 76,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 3,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 42,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 77,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 11,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 42,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 78,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 6,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 38,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 79,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 8,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "70",
+          "original": 2759852032,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 2,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 38,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 80,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 11,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 37,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 81,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 7,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 32,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 82,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 4,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 38,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 83,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 6,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 37,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 84,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 11,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 39,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 85,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 10,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 29,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 86,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 9,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 32,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 87,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 9,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "40",
+          "original": 1039799641,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "60",
+          "original": 1039799641,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 7,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 32,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 88,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 9,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "40",
+          "original": 1045283890,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "60",
+          "original": 1045283890,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 3,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 89,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 10,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "38",
+          "original": 1148196320,
+          "recovered": 1140457472
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "40",
+          "original": 1056299254,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "60",
+          "original": 1056299254,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 6,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 90,
+      "comparedWords": 1529,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 11,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 91,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 10,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 92,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 10,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "38",
+          "original": 1148408667,
+          "recovered": 1140457472
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "40",
+          "original": 1056516697,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "60",
+          "original": 1056516697,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 3,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 42,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 93,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 8,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 35,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 94,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 9,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 29,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 95,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 9,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "38",
+          "original": 1144852269,
+          "recovered": 1140457472
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "40",
+          "original": 1052874946,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "60",
+          "original": 1052874946,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 96,
+      "comparedWords": 1529,
+      "physicsDifferences": 0,
+      "visualDifferences": 11,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "38",
+          "original": 1144852269,
+          "recovered": 1140457472
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "40",
+          "original": 1052874946,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "54",
+          "original": 1167746681,
+          "recovered": 1167745438
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "58",
+          "original": 3243927860,
+          "recovered": 3244266706
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "5c",
+          "original": 1158680040,
+          "recovered": 1158680056
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "60",
+          "original": 1052874946,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 97,
+      "comparedWords": 1529,
+      "physicsDifferences": 0,
+      "visualDifferences": 11,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "38",
+          "original": 1144852269,
+          "recovered": 1140457472
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "40",
+          "original": 1052874946,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "54",
+          "original": 1167746681,
+          "recovered": 1167745438
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "58",
+          "original": 3243927860,
+          "recovered": 3244266706
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "5c",
+          "original": 1158680040,
+          "recovered": 1158680056
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "60",
+          "original": 1052874946,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 98,
+      "comparedWords": 1529,
+      "physicsDifferences": 0,
+      "visualDifferences": 8,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "38",
+          "original": 1144852269,
+          "recovered": 1140457472
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "40",
+          "original": 1052874946,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "60",
+          "original": 1052874946,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 99,
+      "comparedWords": 1529,
+      "physicsDifferences": 0,
+      "visualDifferences": 9,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "38",
+          "original": 1144852269,
+          "recovered": 1140457472
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "40",
+          "original": 1052874946,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "60",
+          "original": 1052874946,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 34,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 100,
+      "comparedWords": 1529,
+      "physicsDifferences": 0,
+      "visualDifferences": 10,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "38",
+          "original": 1143694480,
+          "recovered": 1140457472
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "40",
+          "original": 1051689370,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "60",
+          "original": 1051689370,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 4,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 101,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 9,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "38",
+          "original": 1143694480,
+          "recovered": 1140457472
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "40",
+          "original": 1051689370,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "60",
+          "original": 1051689370,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 4,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 102,
+      "comparedWords": 1526,
+      "physicsDifferences": 0,
+      "visualDifferences": 10,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "38",
+          "original": 1143694480,
+          "recovered": 1140457472
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "40",
+          "original": 1051689370,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "60",
+          "original": 1051689370,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 4,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 103,
+      "comparedWords": 1529,
+      "physicsDifferences": 0,
+      "visualDifferences": 10,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "38",
+          "original": 1144756980,
+          "recovered": 1140457472
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "40",
+          "original": 1052777370,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "60",
+          "original": 1052777370,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 7,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 31,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 104,
+      "comparedWords": 1529,
+      "physicsDifferences": 0,
+      "visualDifferences": 10,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "38",
+          "original": 1148718142,
+          "recovered": 1140457472
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "40",
+          "original": 1056833599,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "60",
+          "original": 1056833599,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 10,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 31,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 105,
+      "comparedWords": 1529,
+      "physicsDifferences": 0,
+      "visualDifferences": 10,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "38",
+          "original": 1148846080,
+          "recovered": 1140457472
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "40",
+          "original": 1062871258,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "60",
+          "original": 1062871258,
+          "recovered": 1036831949
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 106,
+      "comparedWords": 1529,
+      "physicsDifferences": 0,
+      "visualDifferences": 8,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "70",
+          "original": 620756992,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 4,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 107,
+      "comparedWords": 1529,
+      "physicsDifferences": 0,
+      "visualDifferences": 6,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 4,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 108,
+      "comparedWords": 1529,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 4,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 109,
+      "comparedWords": 1529,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 4,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 110,
+      "comparedWords": 1529,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 4,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 111,
+      "comparedWords": 1529,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 4,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 112,
+      "comparedWords": 1529,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 5,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 113,
+      "comparedWords": 1529,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 6,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 114,
+      "comparedWords": 1529,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 5,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 115,
+      "comparedWords": 1529,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 4,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 116,
+      "comparedWords": 1529,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 3,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 117,
+      "comparedWords": 1529,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 2,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 118,
+      "comparedWords": 1529,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 5,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    },
+    {
+      "frame": 119,
+      "comparedWords": 1529,
+      "physicsDifferences": 0,
+      "visualDifferences": 7,
+      "firstPhysicsDifferences": [],
+      "firstVisualDifferences": [
+        {
+          "object": "visual-emitter-0",
+          "offset": "68",
+          "original": 1,
+          "recovered": 0
+        },
+        {
+          "object": "visual-emitter-0",
+          "offset": "74",
+          "original": 8,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-1",
+          "offset": "70",
+          "original": 30,
+          "recovered": 41
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "48",
+          "original": 0,
+          "recovered": 1048576000
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "68",
+          "original": 15,
+          "recovered": 16
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "70",
+          "original": 0,
+          "recovered": 1
+        },
+        {
+          "object": "visual-emitter-2",
+          "offset": "478",
+          "original": 109,
+          "recovered": 106
+        }
+      ]
+    }
+  ],
+  "riderReports": [
+    {
+      "frame": 0,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 1,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 2,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 3,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 4,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 5,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 6,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 7,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 8,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 9,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 10,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 11,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 12,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 13,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 14,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 15,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 16,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 17,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 18,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 19,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 20,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 21,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 22,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 23,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 24,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 25,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 26,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 27,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 28,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 29,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 30,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 31,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 32,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 33,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 34,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 35,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 36,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 37,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 38,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 39,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 40,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 41,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 42,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 43,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 44,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 45,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 46,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 47,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 48,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 49,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 50,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 51,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 52,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 53,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 54,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 55,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 56,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 57,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 58,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 59,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 60,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 61,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 62,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 63,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 64,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 65,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 66,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 67,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 68,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 69,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 70,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 71,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 72,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 73,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 74,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 75,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 76,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 77,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 78,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 79,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 80,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 81,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 82,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 83,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 84,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 85,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 86,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 87,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 88,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 89,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 90,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 91,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 92,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 93,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 94,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 95,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 96,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 97,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 98,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 99,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 100,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 101,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 102,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 103,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 104,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 105,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 106,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 107,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 108,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 109,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 110,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 111,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 112,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 113,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 114,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 115,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 116,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 117,
+      "comparedWords": 624,
+      "differences": []
+    },
+    {
+      "frame": 118,
+      "comparedWords": 624,
+      "differences": []
+    }
+  ]
+}
