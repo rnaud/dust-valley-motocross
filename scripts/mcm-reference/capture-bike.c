@@ -119,6 +119,7 @@ static int export_checkpoint(DWORD bike) {
     const char *world=getenv("MCM_COLLISION_WORLD");
     const char *environment=getenv("MCM_FRAME_ENVIRONMENT");
     if(getenv("MCM_COLLISION_ACTORS")&&!(world&&*world))return 0;
+    if(getenv("MCM_FRAME_INPUT")&&!(environment&&*environment))return 0;
     if(!path||!*path)return !(animations&&*animations)&&!(world&&*world)&&!(environment&&*environment);
     char capture_id[17]={0};
     if((animations&&*animations)||(world&&*world)||(environment&&*environment)){

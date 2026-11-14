@@ -14,8 +14,14 @@ static int capture_mcm_frame_environment(HANDLE process,DWORD bike,const char*pa
   // 0x4526d0(action=15, option=0, output=NULL) reads only this action flag.
   ENV_SAVE(device+0x288+15*20,4);
  }
+ if(getenv("MCM_FRAME_INPUT")){
+  DWORD steering_device;
+  ENV_SAVE(world+0x12d4,4);ENV_SAVE(world+0x12e4,4);ENV_SAVE(world+0x12e8,4);ENV_SAVE(world+0x12fc,4);
+  if(!collision_world_read(process,world+0x12e4,&steering_device,4))goto done;
+  if(steering_device){ENV_SAVE(steering_device+0x30,4);ENV_SAVE(steering_device+0x5c,4);}
+ }
  out=fopen(path,"wx");if(!out)goto done;
- fprintf(out,"{\"schemaVersion\":1,\"kind\":\"mcm-frame-environment-observation\",\"bikeAddress\":%lu,\"captureId\":\"%s\",\"captureBoundary\":\"%s\",\"playerFrame\":%lu,\"blockCount\":%u,\"blocks\":[",bike,id,boundary,frame,count);
+ fprintf(out,"{\"schemaVersion\":1,\"kind\":\"mcm-frame-environment-observation\",\"bikeAddress\":%lu,\"captureId\":\"%s\",\"captureBoundary\":\"%s\",\"playerFrame\":%lu,\"inputCaptured\":%s,\"blockCount\":%u,\"blocks\":[",bike,id,boundary,frame,getenv("MCM_FRAME_INPUT")?"true":"false",count);
  for(unsigned i=0;i<count;i++){CollisionWorldBlock*b=&blocks[i];fprintf(out,"%s{\"address\":%lu,\"size\":%lu,\"hex\":\"",i?",":"",b->address,b->size);for(DWORD j=0;j<b->size;j++)fprintf(out,"%02x",b->bytes[j]);fprintf(out,"\"}");}
  fprintf(out,"]}\n");ok=!ferror(out);
  done:

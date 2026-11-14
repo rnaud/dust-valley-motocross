@@ -1042,3 +1042,29 @@ boundary cases change two/three words. These are copied-state validations, not
 observed riding trajectories. Crashed/forced-position cleanup is explicitly
 rejected by this comparator; full retained-frame initialization and playable
 integration remain outstanding. See [comparison report](mcm-live-frame-reset-validation.json).
+
+### Original frame-input observation
+
+With `MCM_FRAME_ENVIRONMENT`, `MCM_FRAME_INPUT=1` additionally captures world
+`+0x12d4/+0x12e8/+0x12fc` (steering, longitudinal and analog input words), the
+steering-device pointer at `+0x12e4`, its kind at `+0x30`, and the DWORD containing
+its byte at `+0x5d`. The raw inputs map directly to `prepareMcmFrameInput`'s input
+argument. No values are inferred from later bike state. Older environment
+observations return `input: null`; an input comparison rejects that absence.
+
+The pinned original helper at `0x4ad300` simply loads the float at its argument.
+`live-frame-input-oracle.c` runs the original `0x4a5672..0x4a57c0` instruction
+slice with the captured global values and actual device metadata. The captured
+neutral-input state matches all 3,719 words (54 blocks plus analog scratch).
+Seven counterfactual copies also match, covering nonzero longitudinal input,
+linear/cubic steering, device-byte bypass, analog selection including a negative
+zero enable word, signed-zero steering, and the stopped-rider transition. These
+copies change two or three captured bike words each. See the
+[comparison report](mcm-live-frame-input-validation.json).
+
+This is initialization evidence, not device polling or input-stream replay.
+The controlled digital throttle override is a separate later input path; it
+must remain explicit when assembling the full retained-frame runner. The
+same-boundary checkpoint, animation/history, collision graph and input/settings
+observations are archived together. Full-frame scratch/contact initialization
+and consecutive trajectory comparisons remain open. Preview handling is unchanged.
