@@ -1,5 +1,11 @@
 # Motocross Madness physics parity roadmap
 
+## Retained chase-camera smoothing recovered (2026-11-14)
+
+Original `0x47d477..0x47d606` now updates the six persistent camera filters with the original comparison, division, addition order, and float32 stores. The upper/lower fields are preserved but are not clamps in this block. An isolated native oracle matches **124,800/124,800 words across 4,160 updates in 192 cases**, including repeated histories, short/negative/zero timesteps, zero/negative time constants, and signed invalid-result NaNs. Float32 record storage is required: ordinary JavaScript arrays can canonicalize a negative NaN during representation changes.
+
+A two-breakpoint live probe reduces timing overhead. Retaining the filters from a single initialization matches **40 idle updates / 1,200 words**, then **160 updates / 4,800 words** in a separate synchronized OS throttle-pulse capture. All live updates have timesteps below their filter time constants; the latter includes six actual gradual component changes. This is filter-stage validation with supplied targets/deltas, **not whole-bike acceleration parity or retained chase-controller input construction**. The earlier unsynchronized pulse attempt had no moving values and is not counted as motion validation. Upstream eye/target construction, terrain/camera collision, mode gates, and initialization remain. No preview handling change or closure of negative steering is claimed. See `mcm-chase-smoothing-validation.json`.
+
 ## Camera target-point update recovered (2026-11-14)
 
 Original `0x47a3d0` now derives camera forward/up from eye and target, preserving the exact-equality early return, vertical-direction special case, original inverse-square-root normalization, validity flags, and refresh-counter wraparound. An isolated full-function oracle with immediate-mode camera state matches **14,000/14,000 words across 1,000 cases**, including 100 unchanged-target cases. The original setter's audio-listener globals and nonzero `camera+0x140` retained-mode forwarding remain outside the modeled output.

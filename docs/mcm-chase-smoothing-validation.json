@@ -1,0 +1,69 @@
+{
+  "scope": "Six retained chase-camera filters; upstream targets and whole-controller evolution remain unmodeled.",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "fixtureSha256": "b9b220bb5b4337b6d8c4a1b841422bde85a32230bbe9771df2849b0335c04c09",
+  "inputSha256": "eec2019e0157c749899fa171a357c036733e3fe04555022e5241d149b796a6cc",
+  "outputSha256": "c5fa1dac2abd70e467d7716fa3f53c2331652cb4043485d3d47c2c3817d03904",
+  "idleRawSha256": "1d336b3c9433bb47b0057165743330bf262d0836c3adbed5555e9abf2dc6e5a9",
+  "pulseRawSha256": "f73a87fd37803ea3f744b34b753c17a7054a92b3db9838adf8c2b1cfd3601574",
+  "sources": {
+    "src/physics/mcm/chase-smoothing.js": "b54430dbcb32815648281e2131fc9063d660d4fd8c04526ae7cf2498000536a0",
+    "scripts/mcm-reference/chase-smoothing-oracle.c": "fffa45ace9d83b2fee0ee63cb89529dd02cbff9d5cbcb7235b8b21956c71ea90",
+    "scripts/mcm-reference/capture-chase-smoothing.c": "28979592b4c4439b7385c82e4cdc8217cec9e17fd832979a9402a88f19b363a1"
+  },
+  "isolated": {
+    "cases": 192,
+    "steps": 4160,
+    "words": 124800,
+    "differences": 0,
+    "examples": []
+  },
+  "idle": {
+    "pairs": 40,
+    "words": 1200,
+    "shortUpdates": 240,
+    "gradualChanges": 0,
+    "minDelta": 0.021000001579523087,
+    "maxDelta": 0.029000001028180122
+  },
+  "pulse": {
+    "pairs": 160,
+    "words": 4800,
+    "shortUpdates": 960,
+    "gradualChanges": 6,
+    "minDelta": 0.021000001579523087,
+    "maxDelta": 0.046000003814697266
+  },
+  "addresses": {
+    "entry": "0x47d477",
+    "exit": "0x47d606",
+    "filterPointers": "camera+0x210..0x224",
+    "record": "four float32 words: value, time, upper, lower",
+    "targetOutput": "camera+0x22c..0x234",
+    "eyeOutput": "EBP-0x7c..-0x74"
+  },
+  "coverage": [
+    "Repeated 32-step histories without reseeding output state",
+    "Short, zero, negative, equal-time and over-time deltas",
+    "Positive, zero, negative-zero and negative time constants",
+    "Unused bounds remain unchanged and do not clamp this block",
+    "Canonical negative indefinite NaN retained in Float32 storage"
+  ],
+  "pulseInput": {
+    "method": "One-second OS Up Arrow press after the capture produced its first row, then release",
+    "releaseLog": "down=1 up=1 released=1",
+    "scope": "Not frame-aligned whole-bike telemetry; only observed filter targets and movement are validated."
+  },
+  "cleanup": [
+    "0047d477 restored=1",
+    "0047d606 restored=1",
+    "debugger=0 clean=1"
+  ],
+  "remaining": [
+    "Upstream eye/target construction, terrain/camera collision, input gates, and controller initialization remain unmodeled.",
+    "Live targets and deltas are supplied; only filter state is retained across the compared history.",
+    "Live pointer identity and entry state are checked; external changes to filter records are not silently reseeded.",
+    "The pulse recording contains six gradual component changes, not broad driving coverage.",
+    "No preview handling change or captured-scratch injection; negative-steering mismatch remains."
+  ]
+}
