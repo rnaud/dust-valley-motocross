@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "scope": "Read-only original DrawTextA boundary observations plus isolated Wine API stack-footprint evidence. Not a retained trajectory fixture.",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "import": {
+    "dll": "USER32.dll",
+    "name": "DrawTextA",
+    "iatAddress": "0x00527870",
+    "callInstruction": "0x00423f52",
+    "returnInstruction": "0x00423f58"
+  },
+  "refreshes": 20,
+  "calls": 40,
+  "nonzeroToZero": 5,
+  "changes": [
+    {
+      "refresh": 0,
+      "before": 1126113638,
+      "after": 0
+    },
+    {
+      "refresh": 5,
+      "before": 1124821155,
+      "after": 0
+    },
+    {
+      "refresh": 6,
+      "before": 1099546960,
+      "after": 0
+    },
+    {
+      "refresh": 10,
+      "before": 1132584573,
+      "after": 0
+    },
+    {
+      "refresh": 13,
+      "before": 1121986514,
+      "after": 0
+    }
+  ],
+  "offsetsBelowCallEsp": [
+    2448
+  ],
+  "targets": [
+    2073304160
+  ],
+  "scratchAddress": "0x0022f038",
+  "playerFrameOffset": "0x54",
+  "stackDistance": {
+    "belowCallerEspBeforeArguments": 2468,
+    "belowCallEsp": 2448,
+    "belowCalleeEntryEsp": 2444
+  },
+  "isolated": {
+    "log": "result=14 deepest=3976 targetOffset=2468 targetWord=00000000",
+    "font": "Separately created Arial height 13; native capture returned text height 13, helper returned 14.",
+    "nativeReturnHeights": [
+      13
+    ],
+    "targetWord": 0
+  },
+  "hashes": {
+    "captureSource": "7183f075c114ef315e9aab8c42d6bc487df273139d4336caefb53361a2d23e19",
+    "captureRows": "c302e186a503c4b61a8716914f70cc4160f08fdd585af3043355bbead832a966",
+    "probeSource": "9bb888918a40f1faf47ee0bd7046ee87f12a94eba5c7849a904977b3fc5ae073",
+    "probeStack": "126ec60a1c745a194057f7bb0c97aa6589bb30ec35eddf310b7230818a07b812",
+    "fixture": "2d54ee8cd899751f8db7526553f769e70f856639faa7a156248570e11bc1d584"
+  },
+  "cleanup": [
+    "00423a7d restored=1",
+    "00423d55 restored=1",
+    "00423e85 restored=1",
+    "00423f24 restored=1",
+    "00423f52 restored=1",
+    "00423f58 restored=1",
+    "00423b22 restored=1",
+    "004a54b6 restored=1",
+    "debugger=0 clean=1"
+  ],
+  "limits": [
+    "The internal Wine instruction performing the write is not identified.",
+    "The isolated helper is supporting evidence, not an exact replica of the original font/DC.",
+    "HUD refresh scheduling and other shared-stack writers must be initialized and retained before this can drive default physics.",
+    "The existing negative-steering frame-38 mismatch is unchanged; no observed word substitution was added."
+  ]
+}

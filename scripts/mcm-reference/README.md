@@ -568,3 +568,17 @@ initialization and reports scratch changes separately. It never feeds those
 observed scratch words into the model. `build-hud-refresh-clock-fixtures.mjs`
 accepts the pinned executable, isolated input/output and live JSONL to regenerate
 the regression fixtures and validation report.
+
+### HUD DrawTextA stack-reuse probe
+
+`capture-hud-stack.c` observes eight guarded boundaries in the pinned original, including the player stack location and HUD text call arguments. It does not change inputs or physics state. Use one debugger at a time, verify the executable hash, and select the existing game process. It restores breakpoints and trap state on completion; unrecoverable cleanup stops the reference rather than leaving armed instructions.
+
+```sh
+i686-w64-mingw32-gcc -O0 -Wall -Wextra -Werror scripts/mcm-reference/capture-hud-stack.c -o /tmp/capture-hud-stack.exe
+wine /tmp/capture-hud-stack.exe PID Z:/tmp/new-hud-stack.jsonl 20
+node scripts/mcm-reference/analyze-hud-stack.mjs /tmp/new-hud-stack.jsonl
+i686-w64-mingw32-gcc -O0 -Wall -Wextra -Werror scripts/mcm-reference/draw-text-stack-probe.c -o /tmp/draw-text-stack-probe.exe -lgdi32 -luser32
+wine /tmp/draw-text-stack-probe.exe Z:/tmp/new-draw-stack.bin
+```
+
+Use the configured reference Wine prefix. Output paths must be new. The second program is an isolated API stack-footprint experiment with its own font/DC, not a replay of the original game or a proof that every DrawTextA call has this footprint. The compressed `hud-draw-text-stack-wine11.json.br` fixture stores raw observations and a 65,536-byte isolated stack snapshot. See the validation report for hashes, call offsets, observed transitions and remaining scheduling/implementation limits.

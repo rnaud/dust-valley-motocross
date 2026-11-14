@@ -71,5 +71,9 @@
     "faultInstruction": "not captured",
     "note": "Original subsequently relaunched with recorded settings; eight fresh bike boundaries and 41 original hook instructions verified."
   },
-  "archive": "player-validation/caller-stack-hud-2026-11-14"
+  "archive": "player-validation/caller-stack-hud-2026-11-14",
+  "followUp": {
+    "report": "mcm-hud-draw-text-stack-validation.json",
+    "finding": "Original call 0x423f52 through USER32!DrawTextA clears the reused word in every observed nonzero call; internal Wine write and retained scheduling remain open."
+  }
 }
