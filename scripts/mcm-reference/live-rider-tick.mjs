@@ -1,3 +1,4 @@
+import {loadLiveParticlePool} from './live-particle-pool.mjs';
 import {loadLiveOrderedDispatch} from './live-ordered-dispatch.mjs';
 import {loadLiveAnimationAssets,loadLiveAnimationState} from './live-animation-assets.mjs';
 import {loadLiveVisuals} from './live-checkpoint.mjs';
@@ -18,13 +19,9 @@ export function connectLiveRiderTick({ordered,bikeAddress,visuals,assets,animati
  for(const [key,field] of [['fieldf8','extentScale'],['field140','flag140'],['field154','contactClass']])Object.defineProperty(rider,key,{get:()=>rider[field],set:value=>{rider[field]=value;}});
  const childBytes=Buffer.from(child.hex,'hex');
  if(![0x610,0x618].includes(childBytes.length)||m.u32(rider.address+0x14)!==child.address||childBytes.readUInt32LE(0)!==0x4d729c||childBytes.readUInt32LE(0x18)!==rider.address||childBytes.readUInt32LE(0x10)||childBytes.readUInt32LE(0x2c)||child.ownerGate!==0||child.updateAddress!==0x43a0c0)throw Error('Unmapped rider child update branch');
- let pool,poolBytes,particleBytes;
- if(child.poolHex!==undefined||child.particlesHex!==undefined||child.poolAddress!==undefined){
-  poolBytes=Buffer.from(child.poolHex,'hex');particleBytes=Buffer.from(child.particlesHex,'hex');
-  if(child.poolAddress!==childBytes.readUInt32LE(0x34)||poolBytes.length!==0x2004||particleBytes.length!==1000*0x44||poolBytes.readUInt32LE(0x30)>1000)throw Error('Invalid rider particle pool capture');
-  const addresses=Array.from({length:1000},(_,i)=>poolBytes.readUInt32LE(0x44+i*4));if(addresses.some(a=>!a)||new Set(addresses).size!==1000)throw Error('Invalid rider particle allocation ownership');
-  pool={get count(){return poolBytes.readUInt32LE(0x30);},set count(v){poolBytes.writeUInt32LE(v,0x30);},particle:n=>new DataView(particleBytes.buffer,particleBytes.byteOffset+n*0x44,0x44)};
- }
+ let particles={};
+ if(child.poolHex!==undefined||child.particlesHex!==undefined||child.poolAddress!==undefined)particles=loadLiveParticlePool(child,childBytes.readUInt32LE(0x34));
+ const {pool}=particles;
  const point=offset=>{const n=ordered.transformNodes.get(m.u32(rider.address+offset));if(!n)throw Error('Missing rider probe transform');return n;};
  const selected=m.u32(rider.address+0x160),selectedRecord=assets.records.find(a=>a.token===selected);
  if(selected&&!selectedRecord)throw Error('Missing selected rider animation');
@@ -36,5 +33,5 @@ export function connectLiveRiderTick({ordered,bikeAddress,visuals,assets,animati
   points:[0xfc,0x100,0x104,0x10c,0x110,0x118,0x11c,0x120,0x128,0x12c,0x134].map(point),terrain,queryOutput:{point:[0,0,0],normal:[0,0,0],penetration:[0,0,0]},
   applyChild:record=>applyMcmAnimationChild(bike.riderTransform,visuals.rider.components,record),
   updateChildren(dt){if(childBytes.readUInt32LE(0x20)&&!childBytes.readUInt32LE(0x28))tickMcmRiderParticles(new DataView(childBytes.buffer,childBytes.byteOffset,childBytes.length),{dt,paused:context.paused,pool});}};
- return {context,ordered,assets,childBytes,poolBytes,particleBytes,proxy,dt:bitsFloat(child.dtBits)};
+ return {context,ordered,assets,childBytes,...particles,proxy,dt:bitsFloat(child.dtBits)};
 }
