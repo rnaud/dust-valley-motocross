@@ -1,0 +1,22 @@
+{
+  "scope": "Connected first-frame scheduler through tire accumulation from captured state and real terrain. All 818 bike words compared. Engine, component allocations, transforms and stack outputs are not covered by this report; no complete-frame or trajectory parity.",
+  "stages": [
+    "entry",
+    "recovery",
+    "input",
+    "steering",
+    "reset",
+    "terrain",
+    "engine",
+    "contact",
+    "response",
+    "tires"
+  ],
+  "comparedWords": 818,
+  "changedWords": 14,
+  "differences": 0,
+  "firstDifferences": [],
+  "frontContact": 1,
+  "rearContact": 1,
+  "terrainNodes": 3
+}

@@ -21,13 +21,14 @@
 #include "capture-collision-world.c"
 #include "capture-frame-environment.c"
 
-static const DWORD addresses[] = {0x4a54b6, 0x4ad0e1, 0x4ad5a2, 0x4bf195, 0x40e990, 0x42ce38};
-static const BYTE expected[][6] = {{0xd9, 0x86, 0xc8, 0x08, 0, 0},
+static DWORD addresses[] = {0x4a54b6, 0x4ad0e1, 0x4ad5a2, 0x4bf195, 0x40e990, 0x42ce38};
+static BYTE expected[][6] = {{0xd9, 0x86, 0xc8, 0x08, 0, 0},
                                   {0x8b, 0x86, 0xf8, 0x04, 0, 0}, {0x85, 0xc0}, {0x8b, 0x48, 0x14}, {0x8b,0x44,0x24,0x04}, {0x8b,0x44,0xbe,0x08}};
-static const unsigned lengths[] = {6, 6, 2, 3, 4, 4};
+static unsigned lengths[] = {6, 6, 2, 3, 4, 4};
 static BYTE saved[6];
 static int armed[6];
 static HANDLE process;
+static int capture_tires;
 static int scripted, capture_stack, capture_rider_timing, fixed_rider, capture_collision, checkpoint_collision_callbacks, checkpoint_collision_pairs;
 static unsigned hook_count=4;
 static DWORD rider_update_count, rider_dt_bits, rider_observed_dt_bits;
@@ -201,7 +202,7 @@ static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CON
     fprintf(out, "{\"phase\":\"%s\",\"sequence\":%lu,\"bike\":\"%08lx\","
                  "\"thread\":%lu,\"cw\":%lu,\"frameBits\":%lu,\"carryBits\":%lu,"
                  "\"nominalBits\":%lu,\"cap\":%lu,\"dtBits\":%lu,\"steps\":%lu,\"stateHex\":\"",
-            phase ? "after-update" : "before-update", sequence, context->Esi,
+            phase ? (capture_tires?"after-tires":"after-update") : "before-update", sequence, context->Esi,
             thread, context->FloatSave.ControlWord, frame, carry, nominal, cap, dt, steps);
     for (unsigned i = 0; i < sizeof object; i++) fprintf(out, "%02x", object[i]);
     fprintf(out, "\",\"engineAddress\":\"%08lx\",\"engineHex\":\"", engine);
@@ -245,6 +246,11 @@ int main(int argc, char **argv) {
     capture_contact=getenv("MCM_CAPTURE_CONTACT")!=NULL;
     if(capture_contact){if(!scripted||!getenv("MCM_COLLISION_WORLD")||!getenv("MCM_CHECKPOINT")||getenv("MCM_ANIMATIONS")){fprintf(stderr,"Contact capture requires scripted world/checkpoint output and excludes animation export.\n");return 2;}hook_count=6;capture_rider_timing=1;}
     DWORD pid = strtoul(argv[1], NULL, 0), limit = strtoul(argv[3], NULL, 0);
+    capture_tires=getenv("MCM_CAPTURE_TIRES")!=NULL;
+    if(capture_tires){
+        if(!scripted||limit!=2||capture_contact||getenv("MCM_CAPTURE_FRAME")){fprintf(stderr,"Tire boundary capture requires scripted first frame and exactly two records.\n");return 2;}
+        addresses[1]=0x4a8be0;lengths[1]=4;const BYTE bytes[]={0xd9,0x44,0x24,0x74};memcpy(expected[1],bytes,4);
+    }
     const char*frame_arg=getenv("MCM_CAPTURE_FRAME");
     if(frame_arg&&capture_contact){fprintf(stderr,"Choose frame or contact capture, not both.\n");return 2;}
     if(frame_arg){char*end;capture_frame=strtoul(frame_arg,&end,10);if(!*frame_arg||*end||!scripted||capture_frame>399||limit<2*(capture_frame+1)){fprintf(stderr,"Invalid requested capture frame.\n");return 2;}}

@@ -4,14 +4,14 @@ import {applyMcmAnimationChild} from '../../src/physics/mcm/animation-seek.js';
 
 // Initializes the normal pose branch. Extended captures also preserve animation
 // history for later retained-frame wiring; this is not a complete frame context.
-export function loadLiveNormalRider(checkpoint,observation){
+export function loadLiveNormalRider(checkpoint,observation,{visuals:sharedVisuals}={}){
  if(!/^[0-9a-f]{16}$/.test(checkpoint.captureId??'')||checkpoint.captureId!==observation.captureId||
     checkpoint.captureBoundary!=='player-frame-entry'||observation.captureBoundary!==checkpoint.captureBoundary||
     observation.bikeAddress!==checkpoint.bikeAddress)throw Error('Animation/checkpoint boundary differs');
  const m=checkpointMemory(checkpoint),address=checkpoint.bikeAddress;
  if(m.u32(address+0x844)||m.u32(address+0x710)||m.u32(address+0xbfc)===2)throw Error('Unsupported normal rider state');
  for(let i=0;i<21;i++)if(observation.records[i]!==m.u32(address+0x740+i*4))throw Error('Animation table differs from checkpoint');
- const assets=loadLiveAnimationAssets(observation),visuals=loadLiveVisuals(checkpoint);
+ const assets=loadLiveAnimationAssets(observation),visuals=sharedVisuals??loadLiveVisuals(checkpoint);
  const vec=(p,o)=>[0,4,8].map(i=>m.f32(p+o+i));
  const animation=p=>{
   if(observation.retainedFrames)return loadLiveAnimationState(m,p,assets);
