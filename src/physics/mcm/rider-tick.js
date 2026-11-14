@@ -8,10 +8,12 @@ import {mcmSqrtLookup} from './math.js';
 import {compensateMcmRiderGroundTransform} from './rider-ground-transform.js';
 import {setMcmWorldMatrix} from './proxy-transform.js';
 import {advanceMcmFreeRider} from './free-rider.js';
+import {seekMcmAnimation} from './animation-seek.js';
 const f=Math.fround;
 
 // Separate 0x40e990 actor tick through active crash animation, ground contact,
-// and free-rider integration. Stopped-animation paths remain explicit.
+// and free-rider integration. Stopped airborne/crash-animation transitions
+// remain explicit; settled contact animations seek their final pose.
 export function advanceMcmRiderTick(c,dt){
  c.updateChildren(dt);
  if(c.paused)return 1;
@@ -41,10 +43,14 @@ export function advanceMcmRiderTick(c,dt){
   }
  }
  if(r.field138){
-  if(a.stopped)throw Error('Free-rider integration is not connected: stopped animation');
+  if(a.stopped&&!r.field144)throw Error('Free-rider integration is not connected: stopped airborne animation');
   if(!r.field39c&&c.damping===undefined)throw Error('Free-rider integration is not connected');
   r.fieldf8=Math.min(1,f(dt*.75+r.fieldf8));
-  if(!r.field39c){advanceMcmInterpolatedAnimation(a,dt,c.applyChild);r.center=[...a.boundsMin];r.extents=[...a.boundsMax];advanceMcmFreeRider(c,dt);}
+  if(!r.field39c){
+   if(a.stopped)seekMcmAnimation(a,c.animationRecord(r.selected[2]),1,c.applyChild);
+   else {advanceMcmInterpolatedAnimation(a,dt,c.applyChild);r.center=[...a.boundsMin];r.extents=[...a.boundsMax];}
+   advanceMcmFreeRider(c,dt);
+  }
   else {
   const previousJoint=[...resolveMcmWorldMatrix(c.points[6])];
   advanceMcmInterpolatedAnimation(a,dt,c.applyChild);
