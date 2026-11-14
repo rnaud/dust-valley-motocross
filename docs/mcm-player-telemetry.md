@@ -1068,3 +1068,35 @@ must remain explicit when assembling the full retained-frame runner. The
 same-boundary checkpoint, animation/history, collision graph and input/settings
 observations are archived together. Full-frame scratch/contact initialization
 and consecutive trajectory comparisons remain open. Preview handling is unchanged.
+
+### Shared live frame bootstrap through tire accumulation
+
+`live-frame-bootstrap.mjs` joins same-boundary bike, animation/history,
+world/input, collision and caller-stack captures with real Dunes terrain. The
+visual, wheel-contact, suspension and collision loaders share the same transform
+objects. Bike scalars are explicitly typed; contact, balance, suspension and
+tire scratch values come from captured stack offsets. Digital brake/throttle
+responses remain explicit inputs. Missing mapped dependencies throw instead of
+silently becoming undefined numeric inputs. The bootstrap is incomplete: an
+uninterrupted call currently reaches the missing chassis-response context after
+tires. It does not yet return a complete frame or support consecutive frames.
+
+`MCM_CAPTURE_TIRES=1` captures exactly the first scripted frame's entry and
+`0x4a8be0` tire-accumulation endpoint. It requires two records and excludes later
+frame/contact capture modes. The endpoint is labeled `after-tires`, never
+`after-update`. Original execution resumes after the snapshot; all breakpoint
+bytes were restored and the debugger detached.
+
+The connected recovered runner traverses scheduler, recovery, input, steering,
+reset decision, terrain, engine, wheel contacts, contact response and tire forces
+without reseeding intermediate state. At the captured endpoint all 818 bike
+words match, including 14 changed words, with both wheel-contact flags set.
+This report does not compare engine/component allocations, transform outputs or
+stack outputs; it is not whole-frame/trajectory parity. See
+[connected prefix comparison](mcm-live-frame-tires-validation.json).
+
+The compact test fixture records three visited original terrain nodes and only
+the visited child edges. Accessing an unrecorded terrain edge throws. This keeps
+the regression tied to observed course geometry without including the complete
+course asset. Full original assets and the atomic capture remain in the external
+validation archive. Preview handling is unchanged by this milestone.
