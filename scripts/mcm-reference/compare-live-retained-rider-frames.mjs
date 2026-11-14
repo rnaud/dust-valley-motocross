@@ -1,9 +1,6 @@
+import {createCapturedFrameRuntime} from './captured-frame-runtime.mjs';
 import {decodeFrameStack} from './decode-frame-stack.mjs';
-import {tickMcmParticlePool} from '../../src/physics/mcm/particle-pool-tick.js';
-import {loadLiveFrameBootstrap} from './live-frame-bootstrap.mjs';
-import {connectLiveRiderTick} from './live-rider-tick.mjs';
 import {compareLiveFrameReturn} from './compare-live-frame-tires.mjs';
-import {advanceMcmRiderTick} from '../../src/physics/mcm/rider-tick.js';
 import {bitsFloat,floatBits} from '../../src/physics/mcm/math.js';
 
 // Diagnostic projection: physics and effects mismatches are counted separately,
@@ -11,11 +8,7 @@ import {bitsFloat,floatBits} from '../../src/physics/mcm/math.js';
 export function compareLiveRetainedRiderFrames(inputs,rows,events,{observedCallerDriveScratch=false}={}){
  if(!rows.length||rows.length%2||events[0]?.phase!=='initial-rider'||events[0].frame!==0||events[0].bike!==inputs.checkpoint.bikeAddress)throw Error('Missing retained rider initialization');
  if(events[0].eventSequence!==undefined&&events.some((e,i)=>e.eventSequence!==i))throw Error('Retained world event sequence differs');
- const loaded=loadLiveFrameBootstrap({...inputs,row:rows[0]}),c=loaded.context;
- const external=connectLiveRiderTick({ordered:loaded.ordered,bikeAddress:inputs.checkpoint.bikeAddress,visuals:loaded.visuals,assets:loaded.animation.assets,animation:c.frameRider.riderAnimation,child:events[0],terrain:inputs.terrain}),r=external.context.rider;
- if(events[0].rider!==r.address)throw Error('Retained rider ownership differs');
- for(const [key,field]of [['extentScale','fieldf8'],['field138','field138'],['field144','field144'],['contactClass','field154'],['selected','selected'],['eventKind','kind']])Object.defineProperty(r,key,{get:()=>c.rider[field],set:value=>{c.rider[field]=value;}});
- Object.defineProperty(external.context,'selectedRecord',{get:()=>{const token=c.rider.selected[0],record=loaded.animation.assets.records.find(a=>a.token===token);if(token&&!record)throw Error('Missing retained selected animation');return record;}});
+ const runtime=createCapturedFrameRuntime(inputs,rows[0],events[0]),{loaded,external}=runtime,c=loaded.context,r=external.context.rider;
  let eventIndex=1,visualDifferences=0,physicsDifferences=0,comparedWords=0,externalWords=0,particleComparedWords=0,particleDifferences=0,pendingExternalTick=null,pendingBikeFrame=null;const reports=[],riderReports=[],poolReports=[];
  for(let i=0;i<rows.length;i+=2){
   const row=rows[i],after=rows[i+1],frame=i/2;
@@ -45,7 +38,7 @@ export function compareLiveRetainedRiderFrames(inputs,rows,events,{observedCalle
    if(events[eventIndex].phase==='before-pool'){
     const before=events[eventIndex++],next=events[eventIndex++];
     if(!external.stableParticleOrder||external.particleStride!==72||next?.phase!=='after-pool'||next.frame!==frame||before.playerActive||next.playerActive||before.poolAddress!==events[0].poolAddress||next.poolAddress!==before.poolAddress||before.dtBits!==next.dtBits||before.paused!==next.paused||next.eventSequence!==before.eventSequence+1)throw Error('Unexpected retained pool event');
-    tickMcmParticlePool(external.pool,{dt:bitsFloat(before.dtBits),paused:before.paused});
+    runtime.stepPool({delta:bitsFloat(before.dtBits),paused:before.paused});
     let words=0,errors=0;const firstDifferences=[];
     for(const [name,recovered,hex]of [['particle-pool',external.poolBytes,next.poolHex],['particles',external.particleBytes,next.particlesHex]]){
      const original=Buffer.from(hex,'hex');if(original.length!==recovered.length)throw Error('Wrong retained pool allocation size');
@@ -56,8 +49,7 @@ export function compareLiveRetainedRiderFrames(inputs,rows,events,{observedCalle
    }
    const before=events[eventIndex++],next=events[eventIndex++];tickCount++;
    if(before.phase!=='before-rider'||next?.phase!=='after-rider'||next.frame!==frame||before.playerActive||next.playerActive||before.ownerGate||next.ownerGate||before.updateAddress!==0x43a0c0||next.updateAddress!==before.updateAddress||before.dtBits!==next.dtBits||before.paused!==next.paused||before.address!==events[0].address||next.address!==before.address||before.rider!==r.address||next.rider!==r.address)throw Error('Unexpected external rider event');
-   external.context.paused=before.paused;
-   try{advanceMcmRiderTick(external.context,bitsFloat(before.dtBits));}
+   try{runtime.stepRider({delta:bitsFloat(before.dtBits),paused:before.paused});}
    catch(error){if(!/requires free-rider integration|Free-rider integration is not connected/.test(error.message))throw error;pendingExternalTick={frame,reason:error.message};break;}
    const bytes=Buffer.from(before.riderHex,'hex');if(bytes.length!==0x3ac)throw Error('Wrong retained rider size');
    for(const [offset,values]of [[0x40,r.position],[0x4c,r.previousPosition],[0x58,r.velocity],[0x64,r.angular],[0x70,r.alternateVelocity],[0x7c,r.alternateAngular],[0xa0,r.center],[0xac,r.extents],[0xb8,r.matrix]])values.forEach((v,j)=>bytes.writeFloatLE(v,offset+j*4));

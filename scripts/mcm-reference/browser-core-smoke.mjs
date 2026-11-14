@@ -25,7 +25,7 @@ async function run(f, base) {
  const words={};
  for(const [key,value] of Object.entries(loaded.context.bike)){
   if(typeof value==='number')words[key]=floatBits(value);
-  else if(Array.isArray(value)&&value.every(v=>typeof v==='number'))words[key]=value.map(floatBits);
+  else if((Array.isArray(value)||ArrayBuffer.isView(value))&&value.every(v=>typeof v==='number'))words[key]=Array.from(value,floatBits);
  }
  return {result,stages,words};
 }
