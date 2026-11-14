@@ -1,0 +1,24 @@
+{
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "scope": "Live separate-rider terrain queries after bike frames 104 and 105. Whole rider, all 16 parent/child transform nodes, outputs and return checked against real terrain. Neither live case hits terrain; isolated cases cover hits.",
+  "reports": [
+    {
+      "frame": 104,
+      "hit": 0,
+      "region": 3,
+      "nodes": 16,
+      "comparedWords": 1349,
+      "changedWords": 195,
+      "differences": []
+    },
+    {
+      "frame": 105,
+      "hit": 0,
+      "region": 3,
+      "nodes": 16,
+      "comparedWords": 1349,
+      "changedWords": 195,
+      "differences": []
+    }
+  ]
+}
