@@ -1,0 +1,50 @@
+{
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "fixtureSha256": "c8523e5e084f7359a31215e9426f7e4f16a09ea73ae4d389965a0b3ffbdb824a",
+  "rawSha256": "867d61c9d6a6b6c23f6de825ac104c3b03e45d23c2a1bc55622b0698176ae6f2",
+  "sourceSha256": "2422fa5c2a4c9dfecf54919b31bab1a8a762113f38e97cc1988cedc8912be3db",
+  "scope": "Call-boundary observations; no scratch injection and no exact internal writer claim.",
+  "frames": 20,
+  "calls": {
+    "0x004b7a00": 80,
+    "0x0044f870": 80,
+    "0x0047e8a0": 80,
+    "0x004465b0": 40,
+    "0x004206c0": 80
+  },
+  "changedCalls": {
+    "0x004465b0": 40,
+    "0x004206c0": 20
+  },
+  "debuggerIsolation": {
+    "scope": "Wine 11 on this host; not a claim about every Wine version or Windows.",
+    "safeMovBeforeDirectCall": "before ip=00401525 sp=0032f854 cx=00000040 ax=0032f864 dx=0032f8a4\r\nstep ip=00401526 sp=0032f854 cx=0032f8a4 ax=0032f864 dx=0032f8a4\r\ncalls=100 childExit=0",
+    "directCall": "exception=c0000005 at=004014bd first=1\r\nexception=c0000005 at=004014bd first=0\r\nbefore ip=00401527 sp=0032f854 cx=0032f8a4 ax=0032f864 dx=0032f8a4\r\nstep ip=004014b0 sp=0032f84c cx=0032f8a4 ax=0032f864 dx=0032f8a4\r\ncalls=1 childExit=3221225477",
+    "indirectCall": "before ip=00401527 sp=0032f854 cx=0032f8a4 ax=0032f864 dx=0032f8a4\r\nstep ip=004014b0 sp=0032f850 cx=0032f8a4 ax=0032f864 dx=0032f8a4\r\ncalls=100 childExit=0",
+    "finding": "Direct CALL single-step decremented ESP by 8 instead of 4; child faulted copying to the displaced argument. Non-CALL predecessor and indirect CALL controls each passed 100 copies.",
+    "sourceSha256": "d77f58166eb6e835b86b4f087c210e7692d3be763f048d8457d25b04cf7af6a5"
+  },
+  "cleanup": [
+    "00467fc8 restored=1",
+    "0044fb04 restored=1",
+    "0044fb0c restored=1",
+    "0044fb1c restored=1",
+    "0044fb27 restored=1",
+    "0044fee0 restored=1",
+    "0044feec restored=1",
+    "0044ff44 restored=1",
+    "0044ff4f restored=1",
+    "0044ff5c restored=1",
+    "0044ff64 restored=1",
+    "0044ff89 restored=1",
+    "0044ff90 restored=1",
+    "00467fcb restored=1",
+    "004a54b6 restored=1",
+    "debugger=0 clean=1"
+  ],
+  "remaining": [
+    "Recover internal writes in 0x4465b0 and other renderer leaves.",
+    "Retain actual rendering gates and clock/order in controlled player histories.",
+    "Negative-steering mismatch is unchanged; no renderer outputs are injected."
+  ]
+}

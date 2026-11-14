@@ -60,6 +60,7 @@ int main(int argc, char **argv) {
     }
     DWORD pid = strtoul(argv[1], NULL, 0), limit = strtoul(argv[3], NULL, 0);
     if (!pid || limit < 2 || limit > 10000 || (limit & 1)) return 2;
+    for(unsigned i=0;i<2;i++)if(expected[i][0]==0xe8){fprintf(stderr,"Unsupported direct-CALL hook under Wine; use an adjacent instruction before enabling this experimental probe.\n");return 2;}
     FILE *out = fopen(argv[2], "wx");
     if (!out) return 2;
     setbuf(out, NULL);

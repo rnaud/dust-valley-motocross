@@ -21,7 +21,7 @@ int main(int argc,char**argv){
  if(argc!=4)return 2;
  DWORD pid=strtoul(argv[1],0,0),limit=strtoul(argv[3],0,0);if(!pid||!limit||limit>10000)return 2;
  process=OpenProcess(PROCESS_ALL_ACCESS,FALSE,pid);if(!process)return 2;
- for(unsigned i=0;i<HOOK_COUNT;i++){BYTE b[8];if(!readmem(addresses[i],b,lengths[i])||memcmp(b,instructions[i],lengths[i])){fprintf(stderr,"Instruction guard failed %08lx\n",addresses[i]);CloseHandle(process);return 2;}}
+ for(unsigned i=0;i<HOOK_COUNT;i++){BYTE b[8];if(instructions[i][0]==0xe8){fprintf(stderr,"Unsafe Wine direct-CALL single-step hook; use an adjacent instruction\n");CloseHandle(process);return 2;}if(!readmem(addresses[i],b,lengths[i])||memcmp(b,instructions[i],lengths[i])){fprintf(stderr,"Instruction guard failed %08lx\n",addresses[i]);CloseHandle(process);return 2;}}
  FILE*out=fopen(argv[2],"wx");if(!out){CloseHandle(process);return 2;}setbuf(out,NULL);
  if(!DebugActiveProcess(pid)){fclose(out);CloseHandle(process);return 2;}DebugSetProcessKillOnExit(FALSE);
  int installed=0,pending=-1,done=0;DWORD pending_thread=0,frame=0,scratch=0,start=GetTickCount();
