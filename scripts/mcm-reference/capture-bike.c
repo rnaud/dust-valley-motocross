@@ -20,16 +20,19 @@
 #undef MCM_ANIMATION_EMBEDDED
 #include "capture-collision-world.c"
 
-static const DWORD addresses[] = {0x4a54b6, 0x4ad0e1, 0x4ad5a2, 0x4bf195, 0x40e990};
+static const DWORD addresses[] = {0x4a54b6, 0x4ad0e1, 0x4ad5a2, 0x4bf195, 0x40e990, 0x42ce38};
 static const BYTE expected[][6] = {{0xd9, 0x86, 0xc8, 0x08, 0, 0},
-                                  {0x8b, 0x86, 0xf8, 0x04, 0, 0}, {0x85, 0xc0}, {0x8b, 0x48, 0x14}, {0x8b,0x44,0x24,0x04}};
-static const unsigned lengths[] = {6, 6, 2, 3, 4};
-static BYTE saved[5];
-static int armed[5];
+                                  {0x8b, 0x86, 0xf8, 0x04, 0, 0}, {0x85, 0xc0}, {0x8b, 0x48, 0x14}, {0x8b,0x44,0x24,0x04}, {0x8b,0x44,0xbe,0x08}};
+static const unsigned lengths[] = {6, 6, 2, 3, 4, 4};
+static BYTE saved[6];
+static int armed[6];
 static HANDLE process;
 static int scripted, capture_stack, capture_rider_timing, fixed_rider, capture_collision, checkpoint_collision_callbacks, checkpoint_collision_pairs;
 static unsigned hook_count=4;
 static DWORD rider_update_count, rider_dt_bits, rider_observed_dt_bits;
+static int capture_contact,contact_exported;
+static const char*export_boundary="player-frame-entry";
+static DWORD capture_frame;
 static DWORD player_frame, requested_throttle, pass, random_state=12345;
 static int player_active;
 
@@ -113,24 +116,33 @@ static int export_checkpoint(DWORD bike) {
     const char *path=getenv("MCM_CHECKPOINT");
     const char *animations=getenv("MCM_ANIMATIONS");
     const char *world=getenv("MCM_COLLISION_WORLD");
+    if(getenv("MCM_COLLISION_ACTORS")&&!(world&&*world))return 0;
     if(!path||!*path)return !(animations&&*animations)&&!(world&&*world);
     char capture_id[17]={0};
     if((animations&&*animations)||(world&&*world)){
         LARGE_INTEGER stamp;if(!QueryPerformanceCounter(&stamp))return 0;
         snprintf(capture_id,sizeof capture_id,"%08lx%08lx",(DWORD)stamp.HighPart,stamp.LowPart);
         if(animations&&*animations&&!capture_mcm_animation_assets(process,bike,animations,capture_id))return 0;
-        if(world&&*world&&!capture_mcm_collision_world(process,bike,world,capture_id))return 0;
+        if(world&&*world&&!capture_mcm_collision_world(process,bike,world,capture_id,player_frame,export_boundary))return 0;
     }
     FILE *out=fopen(path,"wx");if(!out)return 0;
-    fprintf(out,"{\"schemaVersion\":1,\"kind\":\"mcm-partial-local-checkpoint\",\"bikeAddress\":%lu,\"blockCount\":%u,\"blocks\":[",bike,block_count);
+    fprintf(out,"{\"schemaVersion\":1,\"kind\":\"mcm-partial-local-checkpoint\",\"bikeAddress\":%lu,\"playerFrame\":%lu,\"blockCount\":%u,\"blocks\":[",bike,player_frame,block_count);
     for(unsigned i=0;i<block_count;i++){
         const Block*b=&blocks[i];
         fprintf(out,"%s{\"address\":%lu,\"size\":%lu,\"hex\":\"",i?",":"",b->address,b->size);
         for(DWORD j=0;j<b->size;j++)fprintf(out,"%02x",b->bytes[j]);
         fprintf(out,"\"}");
     }
-    fprintf(out,"]");if(capture_id[0])fprintf(out,",\"captureId\":\"%s\",\"captureBoundary\":\"player-frame-entry\"",capture_id);
+    fprintf(out,"]");if(capture_id[0])fprintf(out,",\"captureId\":\"%s\",\"captureBoundary\":\"%s\"",capture_id,export_boundary);
     fprintf(out,"}\n");const int failed=ferror(out);return fclose(out)==0&&!failed;
+}
+
+// Export a later observed boundary without replacing the initial replay state.
+static int export_current_checkpoint(DWORD bike){
+ Block*saved_blocks=malloc(sizeof blocks);if(!saved_blocks)return 0;
+ const unsigned saved_count=block_count;memcpy(saved_blocks,blocks,sizeof blocks);block_count=0;
+ const int ok=checkpoint(bike,0)&&export_checkpoint(bike);
+ memcpy(blocks,saved_blocks,sizeof blocks);block_count=saved_count;free(saved_blocks);return ok;
 }
 
 static void write_byte(DWORD address, BYTE value) {
@@ -226,7 +238,12 @@ int main(int argc, char **argv) {
     if(fixed_rider&&!scripted){fprintf(stderr,"MCM_FIXED_RIDER requires MCM_SCRIPTED.\n");return 2;}
     if(fixed_rider)capture_rider_timing=1;
     if(capture_rider_timing)hook_count=5;
+    capture_contact=getenv("MCM_CAPTURE_CONTACT")!=NULL;
+    if(capture_contact){if(!scripted||!getenv("MCM_COLLISION_WORLD")||!getenv("MCM_CHECKPOINT")||getenv("MCM_ANIMATIONS")){fprintf(stderr,"Contact capture requires scripted world/checkpoint output and excludes animation export.\n");return 2;}hook_count=6;capture_rider_timing=1;}
     DWORD pid = strtoul(argv[1], NULL, 0), limit = strtoul(argv[3], NULL, 0);
+    const char*frame_arg=getenv("MCM_CAPTURE_FRAME");
+    if(frame_arg&&capture_contact){fprintf(stderr,"Choose frame or contact capture, not both.\n");return 2;}
+    if(frame_arg){char*end;capture_frame=strtoul(frame_arg,&end,10);if(!*frame_arg||*end||!scripted||capture_frame>399||limit<2*(capture_frame+1)){fprintf(stderr,"Invalid requested capture frame.\n");return 2;}}
     if (!pid || limit < 2 || limit > 10000 || (limit & 1)) return 2;
     FILE *out = fopen(argv[2], "wx");
     if (!out) return 2;
@@ -295,7 +312,15 @@ int main(int argc, char **argv) {
                     TerminateProcess(process, 5);
                     done = 2;
                 } else {
-                    if(matched==4) {
+                    if(matched==5){
+                        if(capture_contact&&!contact_exported&&player_frame){DWORD collider,owner,kind,bike,ai;
+                            if(!read_memory(context.Esi+8+context.Edi*4,&collider,4)||!read_memory(collider+0x94,&owner,4)||!read_memory(collider+0x104,&kind,4))done=2;
+                            else if(kind<=1){bike=owner;if(kind==1&&!read_memory(owner+0x15c,&bike,4))done=2;
+                                if(!done&&!read_memory(bike+0x614,&ai,4))done=2;
+                                if(!done&&ai==0){export_boundary="collision-before-primary";if(!export_current_checkpoint(bike))done=2;else contact_exported=1;export_boundary="player-frame-entry";}
+                            }
+                        }
+                    } else if(matched==4) {
                         DWORD owner,ai;
                         if(!read_memory(context.Ecx+0x15c,&owner,4)||!read_memory(owner+0x614,&ai,4))done=2;
                         else if(ai==0){
@@ -318,8 +343,9 @@ int main(int argc, char **argv) {
                             if (scripted) context.Eax = requested_throttle;
                         } else {
                             if (matched == 0) {
-                                if(scripted && player_frame==0 && (!checkpoint(bike,0)||!import_checkpoint(bike)||!export_checkpoint(bike)))done=2;
+                                if(scripted && player_frame==0 && (!checkpoint(bike,0)||!import_checkpoint(bike)||(!capture_contact&&capture_frame==0&&!export_checkpoint(bike))))done=2;
                                 if(scripted && player_frame==400){if(!checkpoint(bike,1))done=2;player_frame=0;pass++;random_state=12345;}
+                                if(scripted&&!capture_contact&&pass==0&&capture_frame>0&&player_frame==capture_frame&&!export_current_checkpoint(bike))done=2;
                                 requested_throttle = player_frame >= 50 && player_frame < 200;
                                 if (scripted) {
                                     DWORD dt_bits = 0x3ca3d70a;
@@ -362,7 +388,7 @@ int main(int argc, char **argv) {
                     }
                 }
                 if (thread) CloseHandle(thread);
-                if (!done && count >= limit) done = 1;
+                if (!done && count >= limit){done=capture_contact&&!contact_exported?2:1;if(done==2)fprintf(stderr,"No requested contact boundary captured.\n");}
                 if (!done) {
                     write_byte(addresses[pending], 0xcc);
                     armed[pending] = 1;
