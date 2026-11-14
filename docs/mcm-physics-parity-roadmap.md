@@ -1,5 +1,13 @@
 # Motocross Madness physics parity roadmap
 
+## Source and base construction bridged into retained camera state (2026-11-14)
+
+Original source selection/normalization at `0x47b107..0x47b1fe` and base prediction at `0x47b452..0x47b4e5` now have recovered helpers. Source preserves the signed speed-bit threshold, velocity sign gate and zero-vector fallback. Base preserves the signed timestep clamp, previous-target branch and different X/Y/Z rounding boundaries. Isolated native execution matches **3,072/3,072 source words across 768 cases** and **6,144/6,144 base words across 1,536 cases**.
+
+A six-boundary live capture checks both computed values at their native exits and again at heading entry in the same frame, then feeds those computed values into the retained heading chain. **30 frames match 360 spatial words and 1,560 downstream words**. The previous computed target persists and matches all 29 later base entries. Regression checks reject corrupted boundary outputs, reordered or missing stages, and changed retained target/filter state. All six original instructions were restored and debugger detachment verified. See `mcm-chase-spatial-validation.json`.
+
+This bridges separated blocks; intervening initialization, backup restoration and camera input controls remain unmodeled. Raw bike direction/velocity/node position still come from observations, and live coverage is mode 0 only. Whole-world scheduling, alternate camera branches and the negative-steering scratch mismatch remain open. Preview handling is unchanged. Next: recover the intervening controller gates and multiplier before claiming a continuous retained camera controller.
+
 ## Heading and enable gates connected through actual active dispatch (2026-11-14)
 
 Original `0x47c30c..0x47c3e6` now derives angle, heading and enable from camera yaw, bike/controller fields, rider conditions and multiplier. The dispatcher preserves fixed-target, alternate-eye and rider-position branches; those remain unrecovered and are rejected instead of silently using active chase. Mode 4's original camera-settings writes are retained.

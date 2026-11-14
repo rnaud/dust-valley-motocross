@@ -1,0 +1,67 @@
+{
+  "scope": "Computed source/base inputs bridged into the retained heading chain in the same native frames; intervening controller blocks remain unmodeled.",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "fixtureSha256": "db91535414b8c47bdf0b64c4c7a66c6c37b560e39888e303796264de8cdadd6d",
+  "sourceInputSha256": "d6e15378c6ef8645650e54dcf43e0e6d3b67b676ce3bc10ff10129288126598f",
+  "sourceOutputSha256": "2824dce383a9809f0dd5bc413e0713ffb888eacb77a30508190252bb4ea56cd0",
+  "baseInputSha256": "9e3960b4deefa4cd3eec216d5e3947200b6680393a5cbd9381e049ca422b961d",
+  "baseOutputSha256": "e4ee1a0fe87a87e68e145f8b775f70ef622790af95d8c5ff7094b46ca6c60fb3",
+  "liveRawSha256": "87998230942371fc531b68b1d94e7bb28489c5b03bbc7115d5f9b9c03c738b33",
+  "sources": {
+    "src/physics/mcm/chase-spatial-inputs.js": "2e2ff5661347b5f85860eac5c598f7430df82a58331428a455684019de5d275e",
+    "scripts/mcm-reference/chase-source-oracle.c": "93d8c066b4ff9b584103a93a9b95030b78801deba13718274f4b50e4c5ce48d8",
+    "scripts/mcm-reference/chase-base-oracle.c": "725ef5f431cc38677072d3d6e668a561d34403303d981b902cc7fd6b6e7b365f",
+    "scripts/mcm-reference/capture-chase-spatial-chain.c": "15f76a8f53bdb75a074c0c08e9054680b3e446c2ac561ddaecb144c262e20156"
+  },
+  "source": {
+    "cases": 768,
+    "words": 3072,
+    "differences": 0,
+    "examples": []
+  },
+  "base": {
+    "cases": 1536,
+    "words": 6144,
+    "differences": 0,
+    "examples": []
+  },
+  "live": {
+    "pairs": 30,
+    "downstreamWords": 1560,
+    "spatialWords": 360,
+    "retainedTargetChecks": 29,
+    "active": 30,
+    "bypassed": 0,
+    "resets": 0,
+    "modes": [
+      0
+    ]
+  },
+  "addresses": {
+    "source": "0x47b107..0x47b1fe",
+    "base": "0x47b452..0x47b4e5",
+    "downstream": "0x47c30c..0x47d606"
+  },
+  "coverage": [
+    "Direction/velocity threshold and sign flag, zero fallback, original inverse-square-root normalization",
+    "Base prediction timestep clamp, signed zero, previous-target branch and distinct X/Y/Z rounding",
+    "Six ordered native stages per frame; source/base checked at exits and later heading entry",
+    "Computed source/base feed heading chain; previous computed target retained and checked at 29 later base entries"
+  ],
+  "cleanup": [
+    "0047b107 restored=1",
+    "0047b1fe restored=1",
+    "0047b452 restored=1",
+    "0047b4e5 restored=1",
+    "0047c30c restored=1",
+    "0047d606 restored=1",
+    "debugger=0 clean=1"
+  ],
+  "remaining": [
+    "This is a staged bridge, not execution of every instruction between source entry and smoothing exit.",
+    "Camera initialization, backup restoration, input controls and other intervening state changes remain unmodeled; live data has no observed such changes.",
+    "Bike direction, velocity and node position are supplied observations; world scheduling and full retained-bike-to-camera integration remain incomplete.",
+    "Live mode0 only; broader movement, alternate camera modes and exceptional inputs remain unvalidated.",
+    "Negative-steering scratch dependency remains; preview handling unchanged."
+  ]
+}
