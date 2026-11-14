@@ -5240,3 +5240,40 @@ release. The menu explicitly describes the preview as assisted handling.
 Validation: all 415 tests and the production build pass. Desktop browser checks
 passed through recovery/classic fallback; the corrected multi-touch Free Ride
 check passes on a mobile viewport with no runtime errors.
+
+### Retained throttle onset and separate rider-tick crash entry
+
+The live engine loader now reads its original drive-curve count and knot/sample/
+slope tables, including the lookup endpoint. Bike +b6c is initialized for crash
+input clearing. A supported retained comparator initializes the model once and
+supplies only explicit throttle changes on subsequent frames. It does not replace
+rider or emitter state with each frame's observations.
+
+Frames 0–50 of the captured throttle script match 186,897 observed word checks,
+including the first throttle-on frame. Frame 51 deliberately remains a reported
+failure: three exhaust-emitter words (+48/+68/+478) changed outside bike update.
+The fixture includes that failure, and a regression test verifies it stays visible.
+Unmodeled bytes are assumed unchanged within each frame using observed entry
+bytes; this is not a full-world checkpoint or full retained trajectory proof.
+Visual/animation blocks are only compared on frames containing those observations.
+
+A separate native trace brackets 40e990 and its 40ea7c..40ec1a transition after
+bike frames 104/105. Every observed rider tick occurs outside player bike update.
+The selected-animation crash-entry branch clears +13c, sets +f8 to .25, clears
++144/+138, sets contact class +154 to -1, starts the selected animation and sets
++140. The recovered transition matches 505 words for both pending and already-
+started captures (6 and 0 changed words). The null-selected-animation branch
+remains explicitly unsupported. This helper is not inserted into the retained
+runner as a substitute for the complete rider tick: its preceding bounds/collider
+work and following animation/physics work remain to be connected.
+
+The exploratory longer run reaches frame 105 after separating emitter mismatches,
+where the inter-frame rider-state changes become observable. That diagnostic does
+not establish throttle-release or continuous crash parity. Raw captures and trace
+sources are retained outside git; browser handling is unchanged by this milestone.
+
+Validation: all 419 tests and the production build pass; the 19 focused frame,
+retained-prefix and rider-transition tests also pass on x64. The reusable fixture
+builder reproduces the retained fixture byte-for-byte. Trace sources, captured
+boundaries and restored-hook evidence are archived under
+`retained-rider-entry-2026-11-14` outside git.

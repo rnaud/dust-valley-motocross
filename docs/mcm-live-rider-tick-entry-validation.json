@@ -1,0 +1,20 @@
+{
+  "reports": [
+    {
+      "scope": "Selected-animation crash entry of the separate original rider tick. Complete observed rider and proxy allocations compared; not the complete rider tick, collision world or retained crash trajectory.",
+      "entered": true,
+      "comparedWords": 505,
+      "changedWords": 6,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "scope": "Selected-animation crash entry of the separate original rider tick. Complete observed rider and proxy allocations compared; not the complete rider tick, collision world or retained crash trajectory.",
+      "entered": false,
+      "comparedWords": 505,
+      "changedWords": 0,
+      "differences": 0,
+      "firstDifferences": []
+    }
+  ]
+}

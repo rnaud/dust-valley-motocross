@@ -2,26 +2,26 @@ import {writeFrameAnimation,compareFrameRiderVisuals} from './compare-live-frame
 import {compareLiveFinishWorld} from './compare-live-finish-world.mjs';
 import {loadLiveFrameBootstrap} from './live-frame-bootstrap.mjs';
 import {advanceMcmRetainedFrame} from '../../src/physics/mcm/retained-frame.js';
-import {floatBits} from '../../src/physics/mcm/math.js';
-// First original frame only, stopped at the real 0x4a8be0 tire boundary.
-// The uninitialized remainder of the retained runner is not skipped silently.
+import {floatBits,bitsFloat} from '../../src/physics/mcm/math.js';
+// First-frame boundaries by default; retained callers supply one shared context.
+// Missing runner dependencies are never skipped silently.
 export const compareLiveFrameTires=(inputs,after)=>compareLiveFrameBoundary(inputs,after,'tires');
 export const compareLiveFrameMotion=(inputs,after)=>compareLiveFrameBoundary(inputs,after,'motion');
 export const compareLiveFrameControls=(inputs,after)=>compareLiveFrameBoundary(inputs,after,'controls');
 export const compareLiveFrameLoopRider=(inputs,after)=>compareLiveFrameBoundary(inputs,after,'loop-rider');
-export const compareLiveFrameReturn=(inputs,after)=>compareLiveFrameBoundary(inputs,after,'return');
+export const compareLiveFrameReturn=(inputs,after,options)=>compareLiveFrameBoundary(inputs,after,'return',options);
 export const compareLiveFrameRider=(inputs,after)=>compareLiveFrameBoundary(inputs,after,'frame-rider');
 export const compareLiveFrameFilter=(inputs,after)=>compareLiveFrameBoundary(inputs,after,'filter');
 export const compareLiveFrameEffects=(inputs,after)=>compareLiveFrameBoundary(inputs,after,'frame-effects');
 export const compareLiveFrameFinish=(inputs,after)=>compareLiveFrameBoundary(inputs,after,'finish');
-function compareLiveFrameBoundary(inputs,after,boundary){
+function compareLiveFrameBoundary(inputs,after,boundary,options={}){
  const hasRider=boundary==='frame-rider'||boundary==='return',hasFilter=boundary==='filter'||hasRider,hasEffects=boundary==='frame-effects'||hasFilter;
  const hasEvents=boundary==='loop-rider'||boundary==='finish'||hasEffects;
  const stopStage=boundary==='loop-rider'?'rider':boundary==='frame-effects'?'effects':boundary;
  const {row}=inputs;
- if(after.phase!==`after-${boundary}`||after.playerFrame!==0||after.pass!==0||after.bike!==row.bike||after.frameBits!==row.frameBits)throw Error('Tire observation boundary differs');
- const loaded=loadLiveFrameBootstrap(inputs),stop={},stages=[];
- try{advanceMcmRetainedFrame(loaded.context,{delta:loaded.stack.f32(0xbfc),mode:loaded.mode,input:loaded.input},stage=>{stages.push(stage);if(stage===stopStage)throw stop;});}
+ if(after.phase!==`after-${boundary}`||after.playerFrame!==(options.retained?row.playerFrame:0)||after.pass!==0||after.bike!==row.bike||after.frameBits!==row.frameBits)throw Error('Tire observation boundary differs');
+ const loaded=options.loaded??loadLiveFrameBootstrap(inputs),stop={},stages=[];
+ try{advanceMcmRetainedFrame(loaded.context,{delta:bitsFloat(row.frameBits),mode:loaded.mode,input:loaded.input},stage=>{stages.push(stage);if(stage===stopStage)throw stop;});}
  catch(error){if(error!==stop)throw error;}
  if(stages.at(-1)!==stopStage)throw Error('Tire boundary not reached');
 
@@ -44,7 +44,7 @@ const differences=[];let changed=0;for(let o=0;o<actual.length;o+=4){if(before.r
    if(original.length!==recovered.length||previous.length!==recovered.length)throw Error('Wrong motion observation size');
    for(let o=0;o<original.length;o+=4){comparedWords++;const word=original.readUInt32LE(o);if(previous.readUInt32LE(o)!==word)changed++;if(recovered.readUInt32LE(o)!==word)differences.push({object:name,offset:o.toString(16),original:word,recovered:recovered.readUInt32LE(o)});}
   };
-  if(hasRider)compareFrameRiderVisuals(loaded,row,after,compare);
+  if(hasRider&&(!options.retained||after.visualState))compareFrameRiderVisuals(loaded,row,after,compare);
   const engine=Buffer.from(row.engineHex,'hex'),e=loaded.context.engine;
   for(const [key,offset,integer] of [['shiftTimer',0x168],['released',0x150,true],['state',0x160],['rpmDemand',0x15c],['previousRpmDemand',0x7c],['shiftThreshold',0x154],['gear',0x158,true]])engine.writeUInt32LE(integer?e[key]>>>0:floatBits(e[key]),offset);
   compare('engine',row.engineHex,after.engineHex,engine);
@@ -98,5 +98,5 @@ const differences=[];let changed=0;for(let o=0;o<actual.length;o+=4){if(before.r
    }
   }
  }
- return {scope:`Connected first-frame scheduler through ${boundary==='tires'?'tire accumulation':boundary==='controls'?'normal control/alignment (grounded normal branch)':boundary==='loop-rider'?'event and rider handling':boundary==='finish'?'physics substep finish':hasEffects?(boundary==='return'?'frame return':boundary==='frame-rider'?'frame-end rider animation':boundary==='filter'?'frame acceleration filter':'enabled frame effects'):'motion integration'} from captured state and real terrain. ${boundary!=='tires'?'Bike allocation, observed engine prefix and body local matrix compared. Other component allocations, uncaptured transforms and stack outputs are not covered':'All 818 bike words compared. Engine, component allocations, transforms and stack outputs are not covered'} by this report. ${boundary==='controls'||hasEvents?'The rider-controller allocation is also compared. ':''}${hasEvents?'Rider effect and random state are compared. ':''}${hasEffects?'Three visual-emitter allocations and terrain-query count, return and start coordinates are compared. ':''}${hasFilter?'The acceleration-filter value and duration allocation is also compared. ':''}${hasRider?'Captured visual transform allocations, rider visual object and all captured animation asset blocks are also compared. ':''}${boundary==='finish'?'All captured collision-world blocks are also compared, including overlapping bike/rider/transform words; total counts include those repeated checks. ':''}No complete-frame or trajectory parity.`,...(boundary==='finish'?{callbackTrace:loaded.ordered.trace}:{}),stages,comparedWords,changedWords:changed,differences:differences.length,firstDifferences:differences.slice(0,20),frontContact:loaded.context.contactPhase.frontContact,rearContact:loaded.context.contactPhase.rearContact};
+ return {scope:`Connected ${options.retained?'retained frame '+row.playerFrame:'first-frame'} scheduler through ${boundary==='tires'?'tire accumulation':boundary==='controls'?'normal control/alignment (grounded normal branch)':boundary==='loop-rider'?'event and rider handling':boundary==='finish'?'physics substep finish':hasEffects?(boundary==='return'?'frame return':boundary==='frame-rider'?'frame-end rider animation':boundary==='filter'?'frame acceleration filter':'enabled frame effects'):'motion integration'} from captured state and real terrain. ${boundary!=='tires'?'Bike allocation, observed engine prefix and body local matrix compared. Other component allocations, uncaptured transforms and stack outputs are not covered':'All 818 bike words compared. Engine, component allocations, transforms and stack outputs are not covered'} by this report. ${boundary==='controls'||hasEvents?'The rider-controller allocation is also compared. ':''}${hasEvents?'Rider effect and random state are compared. ':''}${hasEffects?'Three visual-emitter allocations and terrain-query count, return and start coordinates are compared. ':''}${hasFilter?'The acceleration-filter value and duration allocation is also compared. ':''}${hasRider&&after.visualState?'Captured visual transform allocations, rider visual object and all captured animation asset blocks are also compared. ':''}${boundary==='finish'?'All captured collision-world blocks are also compared, including overlapping bike/rider/transform words; total counts include those repeated checks. ':''}No complete-frame or trajectory parity.`,...(boundary==='finish'?{callbackTrace:loaded.ordered.trace}:{}),stages,comparedWords,changedWords:changed,differences:differences.length,firstDifferences:differences.slice(0,20),frontContact:loaded.context.contactPhase.frontContact,rearContact:loaded.context.contactPhase.rearContact};
 }
