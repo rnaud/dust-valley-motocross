@@ -1,0 +1,23 @@
+{
+  "scope": "Connected first-frame scheduler through motion integration from captured state and real terrain. Bike allocation, observed engine prefix and body local matrix compared. Other component allocations, transforms and stack outputs are not covered by this report; no complete-frame or trajectory parity.",
+  "stages": [
+    "entry",
+    "recovery",
+    "input",
+    "steering",
+    "reset",
+    "terrain",
+    "engine",
+    "contact",
+    "response",
+    "tires",
+    "motion"
+  ],
+  "comparedWords": 925,
+  "changedWords": 24,
+  "differences": 0,
+  "firstDifferences": [],
+  "frontContact": 1,
+  "rearContact": 1,
+  "terrainNodes": 3
+}

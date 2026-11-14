@@ -1100,3 +1100,27 @@ the visited child edges. Accessing an unrecorded terrain edge throws. This keeps
 the regression tied to observed course geometry without including the complete
 course asset. Full original assets and the atomic capture remain in the external
 validation archive. Preview handling is unchanged by this milestone.
+
+### Shared live frame through chassis response and motion
+
+The live bootstrap now maps chassis-contact/impulse state, suspension forces,
+single/paired contact forces, contact correction, angular/linear integration,
+and wheel/body motion state from the captured bike allocations and caller stack.
+Contact correction reads the shared rider controller fields. The current first
+unmapped continuation is `contactPhase.controllerHandoff`; this supersedes the
+previous tire-stage stopping point. The runner still cannot complete a frame.
+
+`MCM_CAPTURE_MOTION=1` observes the first scripted frame at `0x4ab7fd`, before
+controller handoff. Like tire capture it requires exactly two records and excludes
+other endpoint modes. The row is explicitly labeled `after-motion`. The original
+process resumes normally after capture, with debugger detached and hook bytes
+restored.
+
+The connected recovered prefix matches 925 words: the complete bike allocation,
+the observed 0x16c-byte engine prefix, and the body local transform. There are 24
+changed words and zero differences on ARM and x64. Both wheels are in contact.
+Other component allocations, the rest of the transform graph and stack outputs
+are outside this comparison. See [motion comparison](mcm-live-frame-motion-validation.json).
+The compact fixture again records only visited original terrain paths and rejects
+unobserved edges. This is one initial frame prefix, not acceleration/release or
+whole-frame parity. Preview handling is unchanged.
