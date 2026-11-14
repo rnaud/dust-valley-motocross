@@ -54,6 +54,17 @@ export function loadLiveCollisionWorld(checkpoint,observation){
    actor.notification={owner,address:notification,world,player};
   }
  }
+ let riderResponse;
+ if(observation.riderResponseCaptured){
+  if(!observation.actorsCaptured)throw Error('Rider response requires captured actors');
+  used.add(0x4e21a4);used.add(0x4ede98);
+  riderResponse={coefficients:vector(0x4e21a4,6),zero:vector(0x4ede98,3)};
+  for(const actor of actors.values())if(actor.kind==='bike'){
+   const owner=u(actor.address+0xc84),event=u(owner+0x44),settings=u(owner+0x48);
+   actor.riderEffect={owner,event,settings,disabled:u(settings+0x20),eventKind:u(event+0x1f4)};
+   used.add(owner+0x44);used.add(settings+0x20);used.add(event+0x1f4);
+  }
+ }
  const bikeObject=objects.find(o=>o.address===local.u32(checkpoint.bikeAddress+0xc88)),rider=local.u32(checkpoint.bikeAddress+0x874),riderObject=objects.find(o=>o.address===local.u32(rider+0x34));
  if(bikeObject?.ownerAddress!==checkpoint.bikeAddress||riderObject?.ownerAddress!==rider)throw Error('Player collision object ownership differs');
  for(const n of nodes.values()){
@@ -71,5 +82,5 @@ export function loadLiveCollisionWorld(checkpoint,observation){
  }
  for(const object of objects)for(const n of object.entries)if(n.active?!reached.has(n):(n.previous||n.next))throw Error('Orphaned collision entry');
  if(observation.blocks.some(b=>!used.has(b.address))||observation.blocks.length!==used.size)throw Error('Unreferenced collision world block');
- return {memory,manager,objects,nodes,actors,transformNodes,enabled:u(0x4e3754),grid:{dimension,cellSize:f(manager+0x3944),centerX:f(manager+0x3938),centerZ:f(manager+0x393c),cells}};
+ return {memory,manager,objects,nodes,actors,transformNodes,riderResponse,enabled:u(0x4e3754),grid:{dimension,cellSize:f(manager+0x3944),centerX:f(manager+0x3938),centerZ:f(manager+0x393c),cells}};
 }
