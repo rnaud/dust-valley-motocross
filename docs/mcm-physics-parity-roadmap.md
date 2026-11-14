@@ -5277,3 +5277,25 @@ retained-prefix and rider-transition tests also pass on x64. The reusable fixtur
 builder reproduces the retained fixture byte-for-byte. Trace sources, captured
 boundaries and restored-hook evidence are archived under
 `retained-rider-entry-2026-11-14` outside git.
+
+### Separate exhaust tick recovered (2026-11-14)
+
+The retained frame-51 mismatch is in the independently scheduled exhaust actor,
+whose vtable update is `0x43a6d0`. Recovered that complete update and its original
+particle insertion helper `0x43b160`, including timer expiry, first-position reset,
+stopping emissions, particle-pool exhaustion, and both counter wraparounds.
+The implementation preserves x87 arithmetic/store order and checks the original
+signed float-bit gates rather than replacing them with numeric comparisons.
+
+`docs/mcm-exhaust-tick-validation.json` records 160 isolated executions of the
+pinned original under Wine: 2,286,240 compared words, 5,260 changed words, zero
+differences. Checks include the full emitter and all 1,000 particle records,
+including untouched fields. The fixture passes on ARM64 and x64 Node.
+Reproduction sources are `generate-exhaust-tick.mjs`, `exhaust-tick-oracle.c`,
+`compare-exhaust-tick.mjs`, and `build-exhaust-tick-fixture.mjs` in the reference
+scripts directory. The builder verifies the pinned executable SHA-256.
+
+This helper is not yet connected to retained replay: live actor ordering,
+actual actor delta time, particle-pool state and other actor ticks must be
+captured first. The retained comparison still honestly stops at frame 51.
+No trajectory or full-physics parity is claimed by this isolated validation.

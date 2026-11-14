@@ -1,0 +1,9 @@
+{
+  "scope": "Isolated original 0x43a6d0 exhaust tick and 0x43b160 particle insertion, complete emitter and 1000 particle records compared. Live world ordering and timestep capture are not yet connected.",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "controlWord": 639,
+  "cases": 160,
+  "comparedWords": 2286240,
+  "changedWords": 5260,
+  "differences": []
+}
