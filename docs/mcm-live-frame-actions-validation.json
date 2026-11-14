@@ -1,0 +1,82 @@
+[
+  {
+    "name": "captured",
+    "scope": "Original 0x454f70 option-zero logical actions 4–9 with captured keyboard/secondary-device mappings and state. Joystick routing is unsupported. No OS polling, full-frame or trajectory parity.",
+    "actions": {
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0,
+      "8": 0,
+      "9": 0
+    },
+    "comparedWords": 3750,
+    "changedWords": 0,
+    "differences": 0,
+    "firstDifferences": []
+  },
+  {
+    "name": "all-keyboard-pressed",
+    "scope": "Original 0x454f70 option-zero logical actions 4–9 with captured keyboard/secondary-device mappings and state. Joystick routing is unsupported. No OS polling, full-frame or trajectory parity.",
+    "actions": {
+      "4": 1,
+      "5": 1,
+      "6": 1,
+      "7": 1,
+      "8": 1,
+      "9": 1
+    },
+    "comparedWords": 3750,
+    "changedWords": 0,
+    "differences": 0,
+    "firstDifferences": []
+  },
+  {
+    "name": "event-flag-two",
+    "scope": "Original 0x454f70 option-zero logical actions 4–9 with captured keyboard/secondary-device mappings and state. Joystick routing is unsupported. No OS polling, full-frame or trajectory parity.",
+    "actions": {
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0,
+      "8": 0,
+      "9": 0
+    },
+    "comparedWords": 3750,
+    "changedWords": 0,
+    "differences": 0,
+    "firstDifferences": []
+  },
+  {
+    "name": "secondary-event",
+    "scope": "Original 0x454f70 option-zero logical actions 4–9 with captured keyboard/secondary-device mappings and state. Joystick routing is unsupported. No OS polling, full-frame or trajectory parity.",
+    "actions": {
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0,
+      "8": 1,
+      "9": 0
+    },
+    "comparedWords": 3751,
+    "changedWords": 0,
+    "differences": 0,
+    "firstDifferences": []
+  },
+  {
+    "name": "both-event",
+    "scope": "Original 0x454f70 option-zero logical actions 4–9 with captured keyboard/secondary-device mappings and state. Joystick routing is unsupported. No OS polling, full-frame or trajectory parity.",
+    "actions": {
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0,
+      "8": 1,
+      "9": 0
+    },
+    "comparedWords": 3751,
+    "changedWords": 0,
+    "differences": 0,
+    "firstDifferences": []
+  }
+]

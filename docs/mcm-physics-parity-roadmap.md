@@ -4928,3 +4928,30 @@ Evidence is in `live-frame-controls-wine11.json.br` and
 in the rider velocity and reject a wrong endpoint. Event input mapping,
 rider/event setup, finish/collision dispatch, retained trajectories and browser
 integration remain unfinished. Preview handling is unchanged by this milestone.
+
+### Captured logical actions for event/rider continuation
+
+`MCM_FRAME_ACTIONS=1` extends the atomic frame-environment observation with
+controller device pointers, device owners, logical-action mappings, and mapped
+button flags for actions 4–9. Keyboard and secondary-device routing follow
+original `0x454f70`, `0x452670`, and `0x454760`; option zero reads retained flags
+without OS polling. Joystick routes currently fail explicitly. These bytes are
+observations, not additions to the replay-restored world state.
+
+The captured keyboard codes for actions 4–9 are 200, 208, 44, 45, 28, and 57.
+All secondary mappings are unassigned in this snapshot, and all six actions
+are released. The isolated oracle calls unmodified original `0x454f70` with
+these allocations at their captured addresses. Captured, all-keyboard-pressed,
+flag-two, secondary-event, and both-device-event cases match all 3,750 or 3,751
+checked words (six return values plus allocation words), with zero memory
+changes and zero differences on ARM and x64. Modified cases are counterfactual
+inputs, not additional live riding captures. Native image-global observations
+are mapped into the relocated image; they must not be reserved over oracle
+process memory.
+
+Evidence is retained in `live-frame-actions-wine11.json.br` and
+`mcm-live-frame-actions-validation.json`. The expanded capture also matches the
+existing 1,160-word comparison through normal controls. The environment loader
+now exposes decoded actions, but event/rider continuation and full retained
+trajectories still need integration. Scripted throttle overrides remain separate
+from the observed frame-entry button state. Preview handling is unchanged.
