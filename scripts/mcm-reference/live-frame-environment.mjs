@@ -25,8 +25,10 @@ export function loadLiveFrameEnvironment(checkpoint,observation){
   if(steeringDevice){deviceKind=memory.u32(steeringDevice+0x30);deviceByte=memory.read(steeringDevice+0x5c,4).readUInt8(1);used.push(steeringDevice+0x30,steeringDevice+0x5c);}
   input={analogBits:memory.u32(world+0x12fc),longitudinalBits:memory.u32(world+0x12e8),steerBits:memory.u32(world+0x12d4),devicePresent:!!steeringDevice,deviceByte,deviceKind};
  }
+ let terrainMode=null;
+ if(observation.eventsCaptured){const address=local.u32(bike+0x8f4)+0x954;terrainMode=memory.u32(address);used.push(address);}
  const actions=observation.actionsCaptured?loadLiveFrameActions(memory,controller,used):null;
  if(observation.blocks.length!==new Set(used).size||observation.blocks.some(b=>b.size!==4||!used.includes(b.address)))throw Error('Unexpected frame environment blocks');
- return {worldAddress:world,ownerAddress:owner,controllerAddress:controller,deviceAddress:device,resetAction,input,actions,
+ return {worldAddress:world,ownerAddress:owner,controllerAddress:controller,deviceAddress:device,resetAction,input,actions,terrainMode,
   resetDecision:{setting:flags.readUInt16LE(0),mode:flags.readUInt16LE(2),worldScale:memory.f32(owner+0x18bc),controllerPresent:!!controller,queryReset:()=>resetAction===1},memory};
 }

@@ -4955,3 +4955,36 @@ existing 1,160-word comparison through normal controls. The environment loader
 now exposes decoded actions, but event/rider continuation and full retained
 trajectories still need integration. Scripted throttle overrides remain separate
 from the observed frame-entry button state. Preview handling is unchanged.
+
+### Connected captured frame through event and rider handling
+
+`MCM_FRAME_EVENTS=1` captures terrain `+0x954`, the original mode used by the
+front-contact event threshold. The shared bootstrap connects this setting,
+validated logical actions, animation frame/bounds, rider event records and the
+captured random-stream seed to event setup and rider handling. Controller kind
+writes update the same rider object through the correction-stage accessor.
+Missing trick/nearby assets and other-bike event state still fail explicitly.
+
+`MCM_CAPTURE_LOOP_RIDER=1` observes the common `0x4ac6cd` boundary after rider
+handling, before post-state/collision work. It verifies the six original
+instruction bytes, restricts capture to the first scripted frame and two rows,
+and also records the 16-byte rider-effect allocation. The connected recovered
+prefix matches 1,165 words on ARM and x64: the bike allocation, observed engine
+prefix, body local matrix, rider-controller allocation, rider effect and tracked
+random state. There are 25 changed words and zero differences. This snapshot
+does not trigger a crash event or a trick. A separate controlled case raises
+the upright threshold to 2 in the imported partial checkpoint. Original and
+recovered execution then select event kind 3/reason 6, activate the rider,
+select the same three records, and advance the shared random stream through
+three draws to 3837989202. All 1,165 words match with 46 changed words. This
+modified-input case exercises event setup; it is not a naturally occurring
+crash capture or active-trick proof.
+
+Evidence is retained in `live-frame-loop-rider-wine11.json.br` and
+`mcm-live-frame-loop-rider-validation.json`; the modified case uses the
+corresponding `loop-rider-trigger` fixture and report. Tests detect effect/random-state
+corruption and reject missing event inputs. The retained runner now reaches
+post-state, then stops at the next unmapped dependency (`bike.fieldc7c`).
+Post-state/collision completion, end-of-frame integration and retained
+acceleration/release trajectories remain unfinished. Preview handling is
+unchanged; this is not whole-bike parity.

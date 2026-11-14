@@ -1,3 +1,4 @@
+import {connectLiveFrameEvents} from './live-frame-events.mjs';
 import {checkpointMemory,loadLiveVisuals,loadLiveRider} from './live-checkpoint.mjs';
 import {loadLiveNormalRider} from './live-normal-rider.mjs';
 import {loadLiveFrameEnvironment} from './live-frame-environment.mjs';
@@ -54,7 +55,7 @@ export function loadLiveFrameBootstrap({checkpoint,animations,environment,collis
   frontSuspension:strict({displacement:sv(0x4a4),velocity:sv(0x84c),compression:stack.f32(0x88),travel:stack.f32(0x23c),contactLimited:stack.u32(0x3c),active:stack.u32(0xa8)},'frontSuspension'),
   frontMountNode:visuals.nodes.get(m.u32(component)),chassisLocal:[0x630,0x63c,0x648].map(o=>vec(a,o)),
   chassisWorld:[0x36c,0x3e4].map(sv),chassisSurface:[0x2a0,0x2c4].map(sv),chassisNormals:[0x4b0,0x6d8].map(sv),chassisDepth:[stack.f32(0xbc),stack.f32(0x194)],
-  responseScratch:[0x264,0x260,0x1c0,0x1bc].map(o=>stack.f32(o)),suspensionForces:strict({front:{force:sv(1032),dampingForce:sv(2196)},rear:{force:sv(1044),dampingForce:sv(2184)}},'suspensionForces'),traction:strict({scratch:[68,104,192,592,588,420,416,424,276,584,280,412].map(o=>stack.f32(o)),tire:strict({magnitude:stack.f32(268),force:sv(1212)},'rearTire')},'traction'),frontLoad:strict({arm:sv(1020),angularCross:sv(1104),scratch354:sv(852),force:sv(684)},'frontLoad'),contactCorrection:strict({acceleration:sv(948),get controller170(){return rider.kind;},get controller140(){return rider.field140;},set controller140(value){rider.field140=value;}},'contactCorrection'),frontTire:strict({magnitude:stack.f32(272),force:sv(1224),direction:sv(1932)},'frontTire')},'contactPhase');
+  responseScratch:[0x264,0x260,0x1c0,0x1bc].map(o=>stack.f32(o)),suspensionForces:strict({front:{force:sv(1032),dampingForce:sv(2196)},rear:{force:sv(1044),dampingForce:sv(2184)}},'suspensionForces'),traction:strict({scratch:[68,104,192,592,588,420,416,424,276,584,280,412].map(o=>stack.f32(o)),tire:strict({magnitude:stack.f32(268),force:sv(1212)},'rearTire')},'traction'),frontLoad:strict({arm:sv(1020),angularCross:sv(1104),scratch354:sv(852),force:sv(684)},'frontLoad'),contactCorrection:strict({acceleration:sv(948),get controller170(){return rider.kind;},set controller170(value){rider.kind=value;},get controller140(){return rider.field140;},set controller140(value){rider.field140=value;}},'contactCorrection'),frontTire:strict({magnitude:stack.f32(272),force:sv(1224),direction:sv(1932)},'frontTire')},'contactPhase');
  const context=strict({bike:strict(bike,'bike'),bodyNode:visuals.bike.bodyNode,proxy:visuals.rider.bodyNode,
   frameRider,loopRider:strict({},'loopRider'),resetDecision:env.resetDecision,
   rider,engine:start.context.engine,engineEntry:start.context,suspension:start.suspension,
@@ -65,5 +66,6 @@ export function loadLiveFrameBootstrap({checkpoint,animations,environment,collis
   componentAxis:contact.context.componentAxis,componentAngle:contact.context.componentAngle,riderComponentLimit:m.f32(component+0x48),
   frontRadius:contact.context.radius,rearRadius:contact.context.rearRadius,points:contact.context.points,heights:contact.context.heights,
   contactScratch:Object.fromEntries(['resampleNormal','rearResampleNormal','probeNormals','refinedNormals'].map(k=>[k,contact.context[k]]))},'context');
- return {context,input:env.input,mode:env.resetDecision.mode,visuals,world,animation,environment:env,stack:contact.stack};
+ const random=connectLiveFrameEvents(context,{checkpoint,memory:m,animation,environment:env,row,strict});
+ return {context,random,input:env.input,mode:env.resetDecision.mode,visuals,world,animation,environment:env,stack:contact.stack};
 }

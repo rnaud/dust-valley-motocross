@@ -28,7 +28,7 @@ static unsigned lengths[] = {6, 6, 2, 3, 4, 4};
 static BYTE saved[6];
 static int armed[6];
 static HANDLE process;
-static int capture_tires,capture_motion,capture_controls;
+static int capture_tires,capture_motion,capture_controls,capture_loop_rider;
 static int scripted, capture_stack, capture_rider_timing, fixed_rider, capture_collision, checkpoint_collision_callbacks, checkpoint_collision_pairs;
 static unsigned hook_count=4;
 static DWORD rider_update_count, rider_dt_bits, rider_observed_dt_bits;
@@ -202,7 +202,7 @@ static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CON
     fprintf(out, "{\"phase\":\"%s\",\"sequence\":%lu,\"bike\":\"%08lx\","
                  "\"thread\":%lu,\"cw\":%lu,\"frameBits\":%lu,\"carryBits\":%lu,"
                  "\"nominalBits\":%lu,\"cap\":%lu,\"dtBits\":%lu,\"steps\":%lu,\"stateHex\":\"",
-            phase ? (capture_tires?"after-tires":capture_motion?"after-motion":capture_controls?"after-controls":"after-update") : "before-update", sequence, context->Esi,
+            phase ? (capture_tires?"after-tires":capture_motion?"after-motion":capture_controls?"after-controls":capture_loop_rider?"after-loop-rider":"after-update") : "before-update", sequence, context->Esi,
             thread, context->FloatSave.ControlWord, frame, carry, nominal, cap, dt, steps);
     for (unsigned i = 0; i < sizeof object; i++) fprintf(out, "%02x", object[i]);
     fprintf(out, "\",\"engineAddress\":\"%08lx\",\"engineHex\":\"", engine);
@@ -212,6 +212,10 @@ static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CON
     fprintf(out,"\",\"riderAddress\":\"%08lx\",\"riderHex\":\"",rider);
     for(unsigned i=0;i<sizeof rider_state;i++)fprintf(out,"%02x",rider_state[i]);
     fprintf(out,"\"");
+    if(capture_loop_rider){
+        DWORD effect;BYTE bytes[16];if(!read_memory(context->Esi+0x904,&effect,4)||!read_memory(effect,bytes,16))return 0;
+        fprintf(out,",\"effectAddress\":%lu,\"effectHex\":\"",effect);for(unsigned i=0;i<16;i++)fprintf(out,"%02x",bytes[i]);fprintf(out,"\"");
+    }
     if(capture_collision&&!observe_rider_collision(out,rider))return 0;
     if(capture_stack){
         fprintf(out,",\"stackAddress\":\"%08lx\",\"stackHex\":\"",context->Esp);
@@ -260,6 +264,11 @@ int main(int argc, char **argv) {
     if(capture_controls){
         if(!scripted||limit!=2||capture_contact||capture_tires||capture_motion||getenv("MCM_CAPTURE_FRAME")){fprintf(stderr,"Controls capture requires scripted first frame and exactly two records.\n");return 2;}
         addresses[1]=0x4ac5c5;lengths[1]=4;const BYTE bytes[]={0x8b,0x44,0x24,0x10};memcpy(expected[1],bytes,4);
+    }
+    capture_loop_rider=getenv("MCM_CAPTURE_LOOP_RIDER")!=NULL;
+    if(capture_loop_rider){
+        if(!scripted||limit!=2||capture_contact||capture_tires||capture_motion||capture_controls||getenv("MCM_CAPTURE_FRAME")){fprintf(stderr,"Loop rider capture requires scripted first frame and exactly two records.\n");return 2;}
+        addresses[1]=0x4ac6cd;lengths[1]=6;const BYTE bytes[]={0x8d,0x86,0xf8,0x04,0,0};memcpy(expected[1],bytes,6);
     }
     const char*frame_arg=getenv("MCM_CAPTURE_FRAME");
     if(frame_arg&&capture_contact){fprintf(stderr,"Choose frame or contact capture, not both.\n");return 2;}

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {brotliDecompressSync} from 'node:zlib';
 import {loadLiveFrameBootstrap} from '../scripts/mcm-reference/live-frame-bootstrap.mjs';
-import {compareLiveFrameTires,compareLiveFrameMotion,compareLiveFrameControls} from '../scripts/mcm-reference/compare-live-frame-tires.mjs';
+import {compareLiveFrameTires,compareLiveFrameMotion,compareLiveFrameControls,compareLiveFrameLoopRider} from '../scripts/mcm-reference/compare-live-frame-tires.mjs';
 import {advanceMcmRetainedFrame} from '../src/physics/mcm/retained-frame.js';
 function fixture(boundary='tires'){
  const f=JSON.parse(brotliDecompressSync(fs.readFileSync(new URL(`./fixtures/mcm/live-frame-${boundary}-wine11.json.br`,import.meta.url)))),cache=new Map();
@@ -53,4 +53,37 @@ test('connected control boundary matches original bike, controller, engine and b
  const mismatch=compareLiveFrameControls(f.input,{...f.after,riderHex:raw.toString('hex')});
  assert.equal(mismatch.differences,1);assert.equal(mismatch.firstDifferences[0].object,'rider-controller');
  assert.throws(()=>compareLiveFrameControls(f.input,{...f.after,phase:'after-motion'}),/boundary differs/);
+});
+
+test('connected captured event/rider prefix matches original allocations, effect and random stream',()=>{
+ const f=fixture('loop-rider'),report=compareLiveFrameLoopRider(f.input,f.after);
+ assert.equal(report.comparedWords,1165);assert.equal(report.changedWords,25);assert.equal(report.differences,0);
+ assert.deepEqual(report.stages.slice(-2),['event','rider']);
+ const loaded=loadLiveFrameBootstrap(f.input);
+ assert.equal(loaded.context.contactPhase.normalEventDecision.inputResult,loaded.environment.actions[8]);
+ assert.equal(loaded.context.contactPhase.normalEventDecision.terrainMode,loaded.environment.terrainMode);
+ assert.throws(()=>advanceMcmRetainedFrame(loaded.context,{delta:Math.fround(.02),mode:loaded.mode,input:loaded.input}),/Unmapped live frame dependency: bike.fieldc7c/);
+ const raw=Buffer.from(f.after.effectHex,'hex');raw.writeUInt32LE((raw.readUInt32LE(4)^1)>>>0,4);
+ const mismatch=compareLiveFrameLoopRider(f.input,{...f.after,effectHex:raw.toString('hex')});
+ assert.equal(mismatch.differences,1);assert.equal(mismatch.firstDifferences[0].object,'rider-effect');
+ assert.equal(compareLiveFrameLoopRider(f.input,{...f.after,randomState:f.after.randomState^1}).differences,1);
+});
+test('event bootstrap rejects absent action state and terrain-mode memory',()=>{
+ const {input}=fixture('loop-rider');
+ assert.throws(()=>loadLiveFrameBootstrap({...input,environment:{...input.environment,actionsCaptured:false}}));
+ const environment=structuredClone(input.environment);
+ const local=Buffer.from(input.checkpoint.blocks.find(b=>b.address===input.checkpoint.bikeAddress).hex,'hex'),terrain=local.readUInt32LE(0x8f4);
+ environment.blocks=environment.blocks.filter(b=>b.address!==terrain+0x954);environment.blockCount=environment.blocks.length;
+ assert.throws(()=>loadLiveFrameBootstrap({...input,environment}),/Missing checkpoint memory/);
+});
+
+test('connected event setup matches a deliberate original crash trigger and shared random draws',()=>{
+ const f=fixture('loop-rider-trigger'),report=compareLiveFrameLoopRider(f.input,f.after);
+ assert.equal(report.comparedWords,1165);assert.equal(report.changedWords,46);assert.equal(report.differences,0);
+ const loaded=loadLiveFrameBootstrap(f.input),stop={};
+ try{advanceMcmRetainedFrame(loaded.context,{delta:Math.fround(.02),mode:loaded.mode,input:loaded.input},stage=>{if(stage==='rider')throw stop;});}catch(e){if(e!==stop)throw e;}
+ assert.equal(loaded.context.bike.field844,1);assert.equal(loaded.context.bike.field8b8,3);assert.equal(loaded.context.bike.field8b4,6);
+ assert.equal(loaded.random.state,3837989202);assert.equal(loaded.random.calls,3);
+ assert.deepEqual(loaded.context.rider.selected,[27620160,27153472,27541184]);
+ assert.equal(loaded.context.rider.kind,3);assert.equal(loaded.context.rider.flag13c,1);assert.equal(loaded.context.rider.active16c,1);
 });

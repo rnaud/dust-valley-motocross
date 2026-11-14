@@ -1,0 +1,26 @@
+{
+  "scope": "Connected first-frame scheduler through event and rider handling from captured state and real terrain. Bike allocation, observed engine prefix and body local matrix compared. Other component allocations, transforms and stack outputs are not covered by this report. The rider-controller allocation is also compared. Rider effect and random state are compared. No complete-frame or trajectory parity.",
+  "stages": [
+    "entry",
+    "recovery",
+    "input",
+    "steering",
+    "reset",
+    "terrain",
+    "engine",
+    "contact",
+    "response",
+    "tires",
+    "motion",
+    "controls",
+    "event",
+    "rider"
+  ],
+  "comparedWords": 1165,
+  "changedWords": 25,
+  "differences": 0,
+  "firstDifferences": [],
+  "frontContact": 1,
+  "rearContact": 1,
+  "terrainNodes": 3
+}
