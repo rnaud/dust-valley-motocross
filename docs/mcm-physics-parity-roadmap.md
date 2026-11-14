@@ -1,5 +1,13 @@
 # Motocross Madness physics parity roadmap
 
+## Heading and enable gates connected through actual active dispatch (2026-11-14)
+
+Original `0x47c30c..0x47c3e6` now derives angle, heading and enable from camera yaw, bike/controller fields, rider conditions and multiplier. The dispatcher preserves fixed-target, alternate-eye and rider-position branches; those remain unrecovered and are rejected instead of silently using active chase. Mode 4's original camera-settings writes are retained.
+
+Direct native comparison matches **6,144/6,144 words across 2,048 gate combinations**. The actual native active path from `0x47c30c` through `0x47d606` matches **508,032/508,032 words across 10,368 updates**, covering modes 0/1/2/4/6/7 with enable true, including 288 resets. No intermediate branch jumps are patched. A live mode-0 capture matches **80 updates / 4,160 words**, retaining camera, settings, axis and filters. Corrupting captured heading/angle/enable locals does not affect the comparison. See `mcm-chase-heading-validation.json`.
+
+This establishes active dispatch, not alternate-mode parity or full controller reachability. Earlier source/base/control construction and multiplier remain supplied; whole-world scheduling, alternate branches, terrain/camera collision and the negative-steering scratch dependency remain open. Preview handling is unchanged.
+
 ## Velocity-derived camera factor recovered (2026-11-14)
 
 Original `0x47c685..0x47c7d2` now computes the camera target-distance factor from velocity projection, camera angles/radius, control gate, original denominators and the upstream multiplier. The factor is computed before the retained active-eye/reset/offset/smoothing chain; the captured factor is no longer consumed.

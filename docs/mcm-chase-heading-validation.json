@@ -1,0 +1,67 @@
+{
+  "scope": "Heading and enable gates0x47c30c..0x47c3e6, with actual active dispatch through0x47d606 and mode4 settings writes.",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "fixtureSha256": "00d1e8596ebd81660be18866f372655849c3ffc032874644db483d39273347d2",
+  "inputSha256": "eec2a71f245d9b6f022a0fc1fecab1766f1af068e21c8f8f8245e56d14542fc2",
+  "outputSha256": "3caf957ea48283dbe7f34535b9dae77546700741d1f47aafb1e1bf4cbb29b7aa",
+  "chainInputSha256": "456b251010b1fd3bc84062ce8adab810c8d7b11902b8593c0992aef1608a58cc",
+  "chainOutputSha256": "89d18f6274db06ee729201a2b21f887223f5dcd659d23d35b88d53c3245890f3",
+  "liveRawSha256": "3dd8eb58efcf68e918d1b528d86dfca697048e7a52fe73110ddabe1ca0322449",
+  "sources": {
+    "src/physics/mcm/chase-heading.js": "d9810ef6b3f608648e6f1565a61c0304a82b512463c063052143e997eb54e1ba",
+    "scripts/mcm-reference/chase-heading-oracle.c": "cec85fbff9769021d27840f46a2350a3d496ea2584b17556178646f849ec372b",
+    "scripts/mcm-reference/chase-heading-chain-oracle.c": "c35ad5a98bc66ffe7e578379e985574b3ccebec85ec69823487b571c1ca04ceb",
+    "scripts/mcm-reference/capture-chase-heading-chain.c": "8f926974399822488e2280457700cdf9e26476d2f792c50635bec18c686ad7cf"
+  },
+  "isolated": {
+    "cases": 2048,
+    "words": 6144,
+    "paths": {
+      "active": 1176,
+      "alternate-eye": 432,
+      "rider-position": 184,
+      "fixed-target": 256
+    },
+    "differences": 0,
+    "examples": []
+  },
+  "chain": {
+    "cases": 2592,
+    "steps": 10368,
+    "words": 508032,
+    "active": 10368,
+    "bypassed": 0,
+    "resets": 288,
+    "differences": 0,
+    "examples": []
+  },
+  "live": {
+    "pairs": 80,
+    "words": 4160,
+    "active": 80,
+    "bypassed": 0,
+    "resets": 0,
+    "modes": [
+      0
+    ]
+  },
+  "coverage": [
+    "Direct angle/heading/enable outputs across eight modes and 256 crash/control/rider gate combinations",
+    "Combined actual native path in modes0/1/2/4/6/7 with enable true; no patched branch jumps",
+    "Mode4 saves camera radius,pitch,yaw,zoom to retained manager settings",
+    "Camera/axis/filter/settings state retained across chain updates; live mode0 only",
+    "Recorded heading, angle and enable values ignored by combined implementation"
+  ],
+  "cleanup": [
+    "0047c30c restored=1",
+    "0047d606 restored=1",
+    "debugger=0 clean=1"
+  ],
+  "remaining": [
+    "Isolated paths counts classify dispatch only; alternate-eye, rider-position and fixed-target implementations remain incomplete and are explicitly rejected by this active-chain wrapper.",
+    "Earlier base/source/control inputs and multiplier remain supplied; whole-controller reachability and world scheduling remain unmodeled.",
+    "Live coverage is mode0 without resets or mode transitions.",
+    "General exceptional/trigonometric runtime coverage remains unproven.",
+    "Negative-steering scratch dependency remains; preview handling unchanged."
+  ]
+}
