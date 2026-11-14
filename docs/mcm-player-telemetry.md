@@ -888,3 +888,34 @@ Notification ownership and side effects, callback gates, subsequent grid
 refresh, event progression and whole-bike trajectories remain to be connected
 and validated. This milestone does not alter browser preview handling. Raw
 artifacts are archived under `player-validation/live-collision-response-2026-11-13/`.
+
+## Complete captured crash response through notification and grid refresh
+
+`MCM_COLLISION_NOTIFICATION_GATES=1` adds the observed notification chain for
+registered bikes: bike `+0x41c` → owner `+0x3c` → notification `+0x3c` → world
+player `+0x1ec`. These are addressed DWORD captures taken at the same paused
+contact as the actor and transform blocks. Shared fields are deduplicated.
+Only the notification gates are captured; active audio resources are not.
+
+The new 72-block observation again occurred at scheduler counter 120 during a
+1,600-record controlled replay. The player was already in crash state 1, and the
+notification's player pointer was the actual player bike. Original `0x427110`
+therefore returns through its crash gate before audio. This observed condition
+allows `live-collision-response-complete-oracle.c` to call the complete original
+`0x49d900` without patching or replacing notification. The oracle then returns
+normally, after speed recomputation and collision-grid refresh.
+
+The recovered complete comparison requires those same captured gates and
+rejects active-player notification state. It matches all 35,366 words, including
+24 changed memory words, on ARM64 and x64. All captured actor, transform, world,
+notification and linked-list bytes are compared. A regression also corrupts the
+post-notification speed output to verify the extended comparison sees it.
+[Complete-response report](mcm-live-collision-response-complete-validation.json)
+records hashes and scope. Raw artifacts are archived under
+`player-validation/live-collision-response-complete-2026-11-13/`.
+
+This proves a complete response for this captured crash-state contact, entered
+directly at the response routine. Bike/rider callback gating, active audio,
+normal-state collision events, full dispatch progression and whole-bike
+trajectories remain separate integration and validation work. Preview handling
+is unchanged. The debugger detached and all capture hooks were restored.

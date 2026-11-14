@@ -1,0 +1,22 @@
+{
+  "originalExeSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "playerFrame": 120,
+  "scope": "Complete original type-1 dynamic response for the captured crashed player, including original notification early return and grid refresh. Callback gating, active audio, event transitions and full trajectories excluded.",
+  "actors": 4,
+  "transformNodes": 48,
+  "comparedWords": 35366,
+  "changedWords": 24,
+  "differences": 0,
+  "firstDifferences": [],
+  "boundary": [
+    1,
+    1,
+    1
+  ],
+  "artifacts": {
+    "mcm-notification-checkpoint.json": "aabab2efaf87425dac0f16cf0c90947d4801bc290d3b46b8da136da823892a6e",
+    "mcm-notification-observation.json": "908c19400fc1db2e1daa4c105ca5ccfefe2f4890443da4831a83be36064be113",
+    "mcm-response-complete-input.bin": "0f826146031147c810060d4e256b0a030859a3f8979e7f5eff0ce1a8ee62d6c1",
+    "mcm-response-complete-output.bin": "c0234e7e5e98ff5f353c54da2f9834c0aff5e5ef739d55194c9a3a6dc77ad60e"
+  }
+}
