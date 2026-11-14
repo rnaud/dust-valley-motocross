@@ -997,3 +997,23 @@ It does not validate active audio/tag transfer, normal rider callbacks,
 normal-state events, whole-frame scheduling or full-bike trajectories. Browser
 preview handling is unchanged. The original debugger detached and hook bytes
 were verified after capture.
+
+### Retained animation initialization from live frame entry
+
+The animation exporter now captures the bike and rider proxy's displayed,
+previous and blend-frame pointers (`+0x18/+0x1c/+0x20`), including child records
+when those historical frames are outside the 21 normal animation records.
+A fresh atomic frame-entry capture found two such frames and 30 additional
+children. The loader preserves shared identity, null pointers, stopped/blending
+flags, fractional time, blend timing, `+0x30`, and bounds. Missing non-null
+references and checkpoint/observation pointer disagreement fail explicitly.
+Existing captures without this extension retain their normal-pose-only scope.
+
+The original normal-rider routine executed against the extended capture matches
+110,493 words across 8,855 blocks, including 22 changed words, with no differences.
+This proves the extended observation remains valid for that routine; it does not
+exercise historical blending or prove whole-frame advancement. The retained
+frame runner still needs a complete live context, shared scratch and controller
+initialization before consecutive whole-bike acceleration/release comparisons.
+Playable preview handling is unchanged. See
+[memory comparison](mcm-retained-animation-initialization-validation.json).

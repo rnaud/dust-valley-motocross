@@ -1,0 +1,9 @@
+{
+  "scope": "One original normal frame-rider update from a shared live checkpoint. All captured blocks compared, including unchanged bytes. Not complete bike-frame or trajectory parity.",
+  "captureId": "0000012489075cd0",
+  "blocks": 8855,
+  "comparedWords": 110493,
+  "changedWords": 22,
+  "differences": 0,
+  "firstDifferences": []
+}

@@ -38,8 +38,33 @@ export function loadLiveAnimationAssets(observation){
   }
   if(address)throw Error('Long frame chain');previous.next=null;records.set(token,record);
  }
+ if(observation.retainedFrames!==undefined){
+  if(!Array.isArray(observation.retainedFrames)||observation.retainedFrames.length!==6)throw Error('Invalid retained frame pointers');
+  for(const token of observation.retainedFrames){
+   if(!Number.isInteger(token)||token<0||token>0xffffffff)throw Error('Invalid retained frame pointer');
+   if(!token||frames.has(token))continue;
+   const raw=read(token,0x34);
+   // Historical frames are pose references, not independently advanced chains.
+   frames.set(token,{token,index:raw.readUInt32LE(0),boundsMin:vec(raw,0x1c),boundsMax:vec(raw,0x28),firstChild:childChain(raw.readUInt32LE(0xc))});
+  }
+ }
  if(used.size!==observation.blocks.length)throw Error('Unreferenced animation blocks');
  return {records:observation.records.map(p=>records.get(p)),frames,children};
+}
+// Original animation object prefix, shared by bike and rider proxy. Null
+// history pointers stay null; non-null missing assets must never become defaults.
+export function loadLiveAnimationState(memory,address,assets){
+ const u=o=>memory.u32(address+o),f=o=>memory.f32(address+o);
+ const frame=o=>{const p=u(o);if(!p)return null;const value=assets.frames.get(p);if(!value)throw Error(`Missing retained animation frame at 0x${p.toString(16)}`);return value;};
+ const pointer=u(0x10),record=pointer?assets.records.find(r=>r.token===pointer):null;
+ if(pointer&&!record)throw Error('Missing active animation record');
+ const state={stopped:u(4),remainder:f(8),record,frame:frame(0x14),displayedFrame:frame(0x18),previousFrame:frame(0x1c),blendFrame:frame(0x20),
+  blendTime:f(0x24),blendDuration:f(0x28),blending:u(0x2c),field30:u(0x30),
+  boundsMin:[0,4,8].map(o=>f(0x218+o)),boundsMax:[0,4,8].map(o=>f(0x224+o))};
+ if(!state.stopped&&(!record||!state.frame))throw Error('Incomplete running animation');
+ if(state.blending&&!state.blendFrame)throw Error('Missing blend animation frame');
+ if(record&&state.frame){let belongs=false;for(let p=record.firstFrame;p;p=p.next)if(p===state.frame)belongs=true;if(!belongs)throw Error('Active animation frame belongs to another record');}
+ return state;
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
  const observation=JSON.parse(fs.readFileSync(process.argv[2])),loaded=loadLiveAnimationAssets(observation);
