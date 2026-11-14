@@ -1,3 +1,4 @@
+import {tickMcmParticlePool} from '../../src/physics/mcm/particle-pool-tick.js';
 import {loadLiveFrameBootstrap} from './live-frame-bootstrap.mjs';
 import {connectLiveRiderTick} from './live-rider-tick.mjs';
 import {compareLiveFrameReturn} from './compare-live-frame-tires.mjs';
@@ -8,12 +9,13 @@ import {bitsFloat,floatBits} from '../../src/physics/mcm/math.js';
 // never removed. One initialization; only recorded input/timing/gates thereafter.
 export function compareLiveRetainedRiderFrames(inputs,rows,events){
  if(!rows.length||rows.length%2||events[0]?.phase!=='initial-rider'||events[0].frame!==0||events[0].bike!==inputs.checkpoint.bikeAddress)throw Error('Missing retained rider initialization');
+ if(events[0].eventSequence!==undefined&&events.some((e,i)=>e.eventSequence!==i))throw Error('Retained world event sequence differs');
  const loaded=loadLiveFrameBootstrap({...inputs,row:rows[0]}),c=loaded.context;
  const external=connectLiveRiderTick({ordered:loaded.ordered,bikeAddress:inputs.checkpoint.bikeAddress,visuals:loaded.visuals,assets:loaded.animation.assets,animation:c.frameRider.riderAnimation,child:events[0],terrain:inputs.terrain}),r=external.context.rider;
  if(events[0].rider!==r.address)throw Error('Retained rider ownership differs');
  for(const [key,field]of [['extentScale','fieldf8'],['field138','field138'],['field144','field144'],['contactClass','field154'],['selected','selected'],['eventKind','kind']])Object.defineProperty(r,key,{get:()=>c.rider[field],set:value=>{c.rider[field]=value;}});
  Object.defineProperty(external.context,'selectedRecord',{get:()=>{const token=c.rider.selected[0],record=loaded.animation.assets.records.find(a=>a.token===token);if(token&&!record)throw Error('Missing retained selected animation');return record;}});
- let eventIndex=1,visualDifferences=0,physicsDifferences=0,comparedWords=0,externalWords=0,particleComparedWords=0,particleDifferences=0,pendingExternalTick=null,pendingBikeFrame=null;const reports=[],riderReports=[];
+ let eventIndex=1,visualDifferences=0,physicsDifferences=0,comparedWords=0,externalWords=0,particleComparedWords=0,particleDifferences=0,pendingExternalTick=null,pendingBikeFrame=null;const reports=[],riderReports=[],poolReports=[];
  for(let i=0;i<rows.length;i+=2){
   const row=rows[i],after=rows[i+1],frame=i/2;
   if(row.phase!=='before-update'||row.playerFrame!==frame||row.pass!==0||row.bike!==rows[0].bike||![0,1].includes(row.requestedThrottle))throw Error('Retained capture sequence differs');
@@ -32,6 +34,18 @@ export function compareLiveRetainedRiderFrames(inputs,rows,events){
   if(physics.length)break;
   let tickCount=0;
   while(events[eventIndex]?.frame===frame){
+   if(events[eventIndex].phase==='before-pool'){
+    const before=events[eventIndex++],next=events[eventIndex++];
+    if(!external.stableParticleOrder||external.particleStride!==72||next?.phase!=='after-pool'||next.frame!==frame||before.playerActive||next.playerActive||before.poolAddress!==events[0].poolAddress||next.poolAddress!==before.poolAddress||before.dtBits!==next.dtBits||before.paused!==next.paused||next.eventSequence!==before.eventSequence+1)throw Error('Unexpected retained pool event');
+    tickMcmParticlePool(external.pool,{dt:bitsFloat(before.dtBits),paused:before.paused});
+    let words=0,errors=0;const firstDifferences=[];
+    for(const [name,recovered,hex]of [['particle-pool',external.poolBytes,next.poolHex],['particles',external.particleBytes,next.particlesHex]]){
+     const original=Buffer.from(hex,'hex');if(original.length!==recovered.length)throw Error('Wrong retained pool allocation size');
+     for(let o=0;o<original.length;o+=4){words++;const actual=original.readUInt32LE(o),value=recovered.readUInt32LE(o);if(actual!==value){errors++;if(firstDifferences.length<20)firstDifferences.push({object:name,offset:o,original:actual,recovered:value});}}
+    }
+    externalWords+=words;particleComparedWords+=words;particleDifferences+=errors;visualDifferences+=errors;
+    poolReports.push({frame,dtBits:before.dtBits,comparedWords:words,visualDifferences:errors,firstDifferences});continue;
+   }
    const before=events[eventIndex++],next=events[eventIndex++];tickCount++;
    if(before.phase!=='before-rider'||next?.phase!=='after-rider'||next.frame!==frame||before.playerActive||next.playerActive||before.ownerGate||next.ownerGate||before.updateAddress!==0x43a0c0||next.updateAddress!==before.updateAddress||before.dtBits!==next.dtBits||before.paused!==next.paused||before.address!==events[0].address||next.address!==before.address||before.rider!==r.address||next.rider!==r.address)throw Error('Unexpected external rider event');
    external.context.paused=before.paused;
@@ -61,5 +75,5 @@ export function compareLiveRetainedRiderFrames(inputs,rows,events){
   if(pendingExternalTick||physicsDifferences)break;
   if(frame<rows.length/2-1&&tickCount!==1)throw Error('Missing or repeated external rider tick');
  }
- return {scope:'Retained modeled bike/rider state initialized once, using explicit throttle, optional captured brake responses and external rider timing/gates. Visual emitter differences remain reported separately. Unmodeled bytes use each observed entry as an unchanged-within-call baseline. External rider output checks cover rider/child/global delta and, when captured, the retained particle pool. Pool differences from unconnected shared-world updates remain reported as visual differences; not all transforms/world allocations are checked. This is not full trajectory parity.',bikeFrames:reports.length,riderTicks:riderReports.length,comparedWords,externalWords,particleComparedWords,particleDifferences,physicsDifferences,visualDifferences,pendingExternalTick,pendingBikeFrame,reports,riderReports};
+ return {scope:'Retained modeled bike/rider state initialized once, using explicit throttle, optional captured brake responses and external rider timing/gates. Visual emitter differences remain reported separately. Unmodeled bytes use each observed entry as an unchanged-within-call baseline. External rider output checks cover rider/child/global delta and, when captured, the retained particle pool. Captured pool ticks execute with their own observed timing when available. Pool differences from unconnected shared-world updates remain reported as visual differences; not all transforms/world allocations are checked. This is not full trajectory parity.',bikeFrames:reports.length,riderTicks:riderReports.length,comparedWords,externalWords,particleComparedWords,particleDifferences,physicsDifferences,visualDifferences,pendingExternalTick,pendingBikeFrame,reports,riderReports,...(poolReports.length?{poolTicks:poolReports.length,poolReports}:{})};
 }

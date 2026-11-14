@@ -1,0 +1,9 @@
+{
+  "scope": "Isolated original 0x43b200 particle-pool aging/integration/removal. Count, pointer permutation and all 1000 complete 72-byte particle allocations compared; live shared-world scheduling is not yet connected.",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "controlWord": 639,
+  "cases": 96,
+  "comparedWords": 1824096,
+  "changedWords": 28951,
+  "differences": []
+}
