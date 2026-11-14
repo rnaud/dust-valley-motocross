@@ -1,0 +1,25 @@
+{
+  "scope": "Separate rider tick during crash animation, first ground contact, and free-rider motion. Captured collision world, all animation assets, child actor, optional complete particle pool and global timestep compared. Active particles and crossfade are connected when captured. Stopped airborne/crash-animation transitions remain unsupported; independently initialized ticks do not establish retained trajectory parity.",
+  "comparedWords": 566772,
+  "changedWords": 638,
+  "reports": [
+    {
+      "scope": "Separate rider tick during crash animation, first ground contact, and free-rider motion. Captured collision world, all animation assets, child actor, optional complete particle pool and global timestep compared. Active particles and crossfade are connected when captured. Stopped airborne/crash-animation transitions remain unsupported; independently initialized ticks do not establish retained trajectory parity.",
+      "frame": 218,
+      "result": 1,
+      "callbackTrace": [],
+      "comparedWords": 283386,
+      "changedWords": 372,
+      "differences": []
+    },
+    {
+      "scope": "Separate rider tick during crash animation, first ground contact, and free-rider motion. Captured collision world, all animation assets, child actor, optional complete particle pool and global timestep compared. Active particles and crossfade are connected when captured. Stopped airborne/crash-animation transitions remain unsupported; independently initialized ticks do not establish retained trajectory parity.",
+      "frame": 219,
+      "result": 1,
+      "callbackTrace": [],
+      "comparedWords": 283386,
+      "changedWords": 266,
+      "differences": []
+    }
+  ]
+}

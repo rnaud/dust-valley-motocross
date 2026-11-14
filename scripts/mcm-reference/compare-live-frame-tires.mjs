@@ -84,6 +84,8 @@ const differences=[];let changed=0;for(let o=0;o<actual.length;o+=4){if(before.r
   if(boundary==='controls'||hasEvents){
    if(after.riderAddress!==row.riderAddress)throw Error('Controller address differs');
    const rider=Buffer.from(row.riderHex,'hex');
+   for(const [key,o]of [['field138',0x138],['field144',0x144],['field154',0x154]])rider.writeUInt32LE(loaded.context.rider[key]>>>0,o);
+   rider.writeFloatLE(loaded.context.rider.fieldf8,0xf8);
    for(const [key,offset] of [['velocity',0x70],['angularVelocity',0x7c]])loaded.context.rider[key].forEach((v,i)=>rider.writeUInt32LE(floatBits(v),offset+i*4));
    if(hasEvents){
     loaded.context.rider.previousVelocity.forEach((v,i)=>rider.writeUInt32LE(floatBits(v),0x58+i*4));
