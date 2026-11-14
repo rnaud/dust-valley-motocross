@@ -26,7 +26,7 @@ function compareLiveFrameBoundary(inputs,after,boundary,options={}){
  if(stages.at(-1)!==stopStage)throw Error('Tire boundary not reached');
 
 const before=Buffer.from(row.stateHex,'hex'),actual=Buffer.from(after.stateHex,'hex'),expected=Buffer.from(before);
-const ints=new Set([0x8c0,0xc90,0xca4,0xca8,0xcac,0xcb0,0xcb4,0xcbc,0xcc0,0x8b8,0x8a4,0x878,0x880,0x618,0x72c,0x8b4,0x6fc,0x568,0x8d4,0xbfc,0x820,0x710,0x714,0x814,0x844,0x614,0xc68,0xb04,0xb08,0x724,0x88c,0x884,0x8b0,0xc40,0x8c4,0x8ac,0x4bc,0x870,0xc6c,0xc78,0x620,0x8bc,0x61c,0x6e0]);
+const ints=new Set([0xc30,0x8c0,0xc90,0xca4,0xca8,0xcac,0xcb0,0xcb4,0xcbc,0xcc0,0x8b8,0x8a4,0x878,0x880,0x618,0x72c,0x8b4,0x6fc,0x568,0x8d4,0xbfc,0x820,0x710,0x714,0x814,0x844,0x614,0xc68,0xb04,0xb08,0x724,0x88c,0x884,0x8b0,0xc40,0x8c4,0x8ac,0x4bc,0x870,0xc6c,0xc78,0x620,0x8bc,0x61c,0x6e0]);
 for(const [key,value] of Object.entries(loaded.context.bike)){if(/^field[0-9a-f]+$/.test(key)){const o=parseInt(key.slice(5),16);expected.writeUInt32LE(ints.has(o)?value>>>0:floatBits(value),o);}}
 for(const [key,o] of Object.entries({position:0x4f8,velocity:0x510,forward:0x4c0,up:0x4cc,tangent:0x578,rearTangent:0x584,normal:0x54c,offset:0x540,referencePosition:0x504,angularVelocity:0x534,worldAngularVelocity:0x528,localLever:0x654,acceleration:0x51c}))loaded.context.bike[key].forEach((v,i)=>expected.writeUInt32LE(floatBits(v),o+i*4));
 expected.writeUInt32LE(floatBits(loaded.context.bike.mass),0x558);expected.writeUInt32LE(floatBits(loaded.context.bike.inverseMass),0x55c);
@@ -36,6 +36,19 @@ if(boundary==='return')loaded.context.bike.savedPosition.forEach((v,i)=>expected
 const differences=[];let changed=0;for(let o=0;o<actual.length;o+=4){if(before.readUInt32LE(o)!==actual.readUInt32LE(o))changed++;if(expected.readUInt32LE(o)!==actual.readUInt32LE(o))differences.push({offset:o.toString(16),original:actual.readUInt32LE(o),recovered:expected.readUInt32LE(o)});}
 
  let comparedWords=actual.length/4;
+ if(loaded.environment.resetSupport&&boundary==='return'){
+  const state=after.riderCollision,actor=loaded.ordered.actors.get(inputs.checkpoint.bikeAddress),rider=loaded.ordered.actors.get(actor.riderAddress),collision=rider.collision;
+  if(!state||state.address!==collision.address)throw Error('Missing retained rider collision observation');
+  const bytes=Buffer.from(state.stateHex,'hex'),rowBytes=Buffer.from(state.pairRowHex,'hex'),column=Buffer.from(state.pairColumnHex,'hex');
+  if(bytes.length!==0x110||rowBytes.length!==240||column.length!==240)throw Error('Wrong rider collision observation size');
+  for(const [field,original,recovered]of [
+   ['primary',bytes.readUInt32LE(0x108),collision.callbackAddresses[0]],
+   ['secondary',bytes.readUInt32LE(0x10c),collision.callbackAddresses[1]],
+   ['pair-row',rowBytes.readUInt32LE(actor.collision.owner*4),loaded.ordered.dispatch.pairs[collision.owner][actor.collision.owner]],
+   ['pair-column',column.readUInt32LE(actor.collision.owner*4),loaded.ordered.dispatch.pairs[actor.collision.owner][collision.owner]]
+  ]){comparedWords++;if(original!==recovered)differences.push({object:'rider-collision',field,original,recovered});}
+ }
+
 
  if(boundary!=='tires'){
   if(after.engineAddress!==row.engineAddress||after.transformAddress!==row.transformAddress)throw Error('Motion object addresses differ');

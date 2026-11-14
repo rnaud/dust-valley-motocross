@@ -70,6 +70,19 @@ export function loadLiveFrameBootstrap({checkpoint,animations,environment,collis
   contactScratch:Object.fromEntries(['resampleNormal','rearResampleNormal','probeNormals','refinedNormals'].map(k=>[k,contact.context[k]]))},'context');
  const random=connectLiveFrameEvents(context,{checkpoint,memory:m,animation,environment:env,row,strict});
  const ordered=connectLiveFrameFinish(context,{checkpoint,memory:m,collision,world,environment:env});
+ if(env.resetSupport){
+  if(env.resetDecision.mode!==0)throw Error('Unsupported live reset mode');
+  const support=env.resetSupport;
+  Object.assign(context,{setting:env.resetDecision.setting,playerCount:support.playerCount,aiCount:support.aiCount,
+   enumerationDisabled:support.enumerationDisabled,selectTerrain:undefined,selectCourse:undefined,observeResetAvoidance:undefined,
+   pose:{position:[...sv(0x378)],forward:[...sv(0x2f4)]},
+   observerBike:support.observerBikeAddress===a?context.bike:null,
+   bikes:support.bikes.map(({address,fieldc30})=>{
+    if(address===a){context.bike.fieldc30=fieldc30;return context.bike;}
+    const other=ordered.actors.get(address);if(!other)throw Error('Reset bike missing from captured actor graph');
+    other.fieldc30=fieldc30;return other;
+   })});
+ }
  connectLiveFrameEffects(context,{checkpoint,memory:m,row});
  return {context,random,ordered,input:env.input,mode:env.resetDecision.mode,visuals,world,animation,environment:env,stack:contact.stack};
 }

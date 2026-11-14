@@ -23,10 +23,31 @@ static int capture_mcm_frame_environment(HANDLE process,DWORD bike,const char*pa
  }
  if(getenv("MCM_FRAME_ACTIONS")&&!capture_mcm_frame_actions(process,blocks,&count,controller))goto done;
  if(getenv("MCM_FRAME_EVENTS")){DWORD terrain;if(!collision_world_read(process,bike+0x8f4,&terrain,4)||!terrain)goto done;ENV_SAVE(terrain+0x954,4);}
+ if(getenv("MCM_FRAME_RESET_SUPPORT")){
+  DWORD observer,disabled,players;short ai;
+  ENV_SAVE(world+0x314,4);ENV_SAVE(world+0x1078,4);ENV_SAVE(world+0x608,4);
+  if(!collision_world_read(process,world+0x608,&observer,4))goto done;
+  if(observer)ENV_SAVE(observer+0x80,4);
+  ENV_SAVE(world+0x614,4);
+  if(!collision_world_read(process,world+0x614,&disabled,4)||!collision_world_read(process,world+0x314,&players,4)||!collision_world_read(process,world+0x107a,&ai,2))goto done;
+  if(!disabled){
+   DWORD list,actor;
+   if(players!=1||ai<0||ai>64)goto done;
+   ENV_SAVE(owner+0x30,4);ENV_SAVE(owner+0x38,4);
+   if(!collision_world_read(process,owner+0x30,&actor,4)||!actor)goto done;
+   ENV_SAVE(actor+0xc30,4);
+   if(!collision_world_read(process,owner+0x38,&list,4))goto done;
+   if(list)for(int i=0;i<ai;i++){
+    ENV_SAVE(list+i*4,4);
+    if(!collision_world_read(process,list+i*4,&actor,4)||!actor)goto done;
+    ENV_SAVE(actor+0xc30,4);
+   }
+  }
+ }
  out=fopen(path,"wx");if(!out)goto done;
  fprintf(out,"{\"schemaVersion\":1,\"kind\":\"mcm-frame-environment-observation\",\"bikeAddress\":%lu,\"captureId\":\"%s\",\"captureBoundary\":\"%s\",\"playerFrame\":%lu,\"inputCaptured\":%s,\"blockCount\":%u,\"blocks\":[",bike,id,boundary,frame,getenv("MCM_FRAME_INPUT")?"true":"false",count);
  for(unsigned i=0;i<count;i++){CollisionWorldBlock*b=&blocks[i];fprintf(out,"%s{\"address\":%lu,\"size\":%lu,\"hex\":\"",i?",":"",b->address,b->size);for(DWORD j=0;j<b->size;j++)fprintf(out,"%02x",b->bytes[j]);fprintf(out,"\"}");}
- fprintf(out,"],\"actionsCaptured\":%s,\"eventsCaptured\":%s}\n",getenv("MCM_FRAME_ACTIONS")?"true":"false",getenv("MCM_FRAME_EVENTS")?"true":"false");ok=!ferror(out);
+ fprintf(out,"],\"actionsCaptured\":%s,\"eventsCaptured\":%s,\"resetSupportCaptured\":%s}\n",getenv("MCM_FRAME_ACTIONS")?"true":"false",getenv("MCM_FRAME_EVENTS")?"true":"false",getenv("MCM_FRAME_RESET_SUPPORT")?"true":"false");ok=!ferror(out);
  done:
  if(out&&fclose(out))ok=0;
  for(unsigned i=0;i<count;i++)free(blocks[i].bytes);
