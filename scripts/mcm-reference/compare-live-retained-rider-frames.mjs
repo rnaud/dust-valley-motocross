@@ -13,12 +13,14 @@ export function compareLiveRetainedRiderFrames(inputs,rows,events){
  if(events[0].rider!==r.address)throw Error('Retained rider ownership differs');
  for(const [key,field]of [['extentScale','fieldf8'],['field138','field138'],['field144','field144'],['contactClass','field154'],['selected','selected'],['eventKind','kind']])Object.defineProperty(r,key,{get:()=>c.rider[field],set:value=>{c.rider[field]=value;}});
  Object.defineProperty(external.context,'selectedRecord',{get:()=>{const token=c.rider.selected[0],record=loaded.animation.assets.records.find(a=>a.token===token);if(token&&!record)throw Error('Missing retained selected animation');return record;}});
- let eventIndex=1,visualDifferences=0,physicsDifferences=0,comparedWords=0,externalWords=0,particleComparedWords=0,particleDifferences=0,pendingExternalTick=null;const reports=[],riderReports=[];
+ let eventIndex=1,visualDifferences=0,physicsDifferences=0,comparedWords=0,externalWords=0,particleComparedWords=0,particleDifferences=0,pendingExternalTick=null,pendingBikeFrame=null;const reports=[],riderReports=[];
  for(let i=0;i<rows.length;i+=2){
   const row=rows[i],after=rows[i+1],frame=i/2;
   if(row.phase!=='before-update'||row.playerFrame!==frame||row.pass!==0||row.bike!==rows[0].bike||![0,1].includes(row.requestedThrottle))throw Error('Retained capture sequence differs');
   c.engineEntry.input.throttleResponses[0]=row.requestedThrottle;
-  const report=compareLiveFrameReturn({...inputs,row},after,{loaded,retained:true,diagnostic:true});
+  let report;
+  try{report=compareLiveFrameReturn({...inputs,row},after,{loaded,retained:true,diagnostic:true});}
+  catch(error){if(error.message!=='Unmapped live frame dependency: context.restoreRiderVisual')throw error;pendingBikeFrame={frame,reason:error.message};break;}
   const physics=report.allDifferences.filter(d=>!d.object?.startsWith('visual-emitter-'));
   const visual=report.differences-physics.length;visualDifferences+=visual;physicsDifferences+=physics.length;comparedWords+=report.comparedWords;
   reports.push({frame,comparedWords:report.comparedWords,physicsDifferences:physics.length,visualDifferences:visual,firstPhysicsDifferences:physics.slice(0,20),firstVisualDifferences:report.allDifferences.filter(d=>d.object?.startsWith('visual-emitter-')).slice(0,20)});
@@ -54,5 +56,5 @@ export function compareLiveRetainedRiderFrames(inputs,rows,events){
   if(pendingExternalTick||physicsDifferences)break;
   if(frame<rows.length/2-1&&tickCount!==1)throw Error('Missing or repeated external rider tick');
  }
- return {scope:'Retained modeled bike/rider state initialized once, using explicit throttle and external rider timing/gates. Visual emitter differences remain reported separately. Unmodeled bytes use each observed entry as an unchanged-within-call baseline. External rider output checks cover rider/child/global delta and, when captured, the retained particle pool. Pool differences from unconnected shared-world updates remain reported as visual differences; not all transforms/world allocations are checked. This is not full trajectory parity.',bikeFrames:reports.length,riderTicks:riderReports.length,comparedWords,externalWords,particleComparedWords,particleDifferences,physicsDifferences,visualDifferences,pendingExternalTick,reports,riderReports};
+ return {scope:'Retained modeled bike/rider state initialized once, using explicit throttle and external rider timing/gates. Visual emitter differences remain reported separately. Unmodeled bytes use each observed entry as an unchanged-within-call baseline. External rider output checks cover rider/child/global delta and, when captured, the retained particle pool. Pool differences from unconnected shared-world updates remain reported as visual differences; not all transforms/world allocations are checked. This is not full trajectory parity.',bikeFrames:reports.length,riderTicks:riderReports.length,comparedWords,externalWords,particleComparedWords,particleDifferences,physicsDifferences,visualDifferences,pendingExternalTick,pendingBikeFrame,reports,riderReports};
 }
