@@ -1,0 +1,39 @@
+{
+  "scope": "Connected experimental playable preview, not full parity.",
+  "backend": "recovered-core",
+  "initialFixture": "tests/fixtures/mcm/live-retained-steering-wine11.json.br",
+  "initialFixtureSha256": "2d7f2d5e569de045c3280a1cfc848d0709e75012688c817e8a062e530ab22356",
+  "terrainFile": "dunes.trn",
+  "terrainSha256": "942b756572b407adf9223ecc1afb22556c5bc5636d3bd5e3ac51ef5419543d0b",
+  "sceneAsset": "src/assets/mcm-core-scene.bin",
+  "sceneAssetSha256": "55ae8197b0ca5b1a0a65e9706d1d93156bb79011bd287d373ed7013dda094ed5",
+  "sceneBytes": 6683509,
+  "nativeMotionValidation": {
+    "frames": 400,
+    "words": 8400,
+    "differences": 0,
+    "boundary": "bike return before external rider collisions",
+    "timing": "captured bike and world clocks"
+  },
+  "displayHeightValidation": {
+    "points": 2000,
+    "toleranceMetres": 0.00001
+  },
+  "browserChecks": [
+    "backend selection",
+    "keyboard gas/straight/release",
+    "keyboard steering both directions",
+    "touch gas/straight/release",
+    "sand-enabled touch",
+    "pause/photo/reset",
+    "classic fallback"
+  ],
+  "sand": "Optional extension; recovered suspension loads in newtons drive bounded deformation, sampled by the recovered terrain solver.",
+  "remaining": [
+    "negative-steering caller scratch lifetime",
+    "shared-world and other actors",
+    "native rider animation rendering",
+    "broader riding/settings/terrain coverage"
+  ],
+  "regressionTests": 458
+}

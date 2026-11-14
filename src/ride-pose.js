@@ -21,7 +21,8 @@ function capture(to,state){
       axle.set(1,0,0).applyQuaternion(wheel.quaternion);
       // A banked rounded tire has less vertical reach than a sphere. Place the
       // visible tread on its contact plane; do not leave it floating when leaned.
-      const reach=.47*Math.sqrt(Math.max(0,1-axle.dot(normal)**2))+.14;
+      const radiusScale=(state.visualWheelRadii?.[i]??.61)/.61;
+      const reach=(.47*Math.sqrt(Math.max(0,1-axle.dot(normal)**2))+.14)*radiusScale;
       // Contact belongs to the start of the physics step; the wheel transform
       // belongs to its end. Correct along the suspension axis, not toward that
       // older point, which pulled a fast-moving wheel backward and sideways.
