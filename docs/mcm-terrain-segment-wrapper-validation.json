@@ -1,0 +1,8 @@
+{
+  "scope": "Original 0x410ac0 wrapper and clipping helpers; 0x48e4c0 traversal is replaced only in the isolated oracle with an explicit argument recorder and controlled outputs. This is not traversal, full-frame or trajectory parity.",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "cases": 2045,
+  "wordComparisons": 24540,
+  "traversalCalls": 1535,
+  "differences": []
+}
