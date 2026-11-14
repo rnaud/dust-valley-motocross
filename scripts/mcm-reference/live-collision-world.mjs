@@ -20,7 +20,7 @@ export function loadLiveCollisionWorld(checkpoint,observation){
   memory.read(entriesAddress,n*24);used.add(entriesAddress);
   const entries=Array.from({length:n},(_,i)=>node(entriesAddress+i*24));
   if(entries.some(e=>e.owner!==id||e.active>1))throw Error('Collision entry ownership differs');
-  objects.push({address,enabled:u(address+0xc8),extents:vector(address+0x64,3),collisionClass:u(address+0x104),callbackAddresses:[u(address+0x108),u(address+0x10c)],otherAddress:u(address+0x88),contactCC:vector(address+0xcc,3),contactD8:vector(address+0xd8,3),contactE4:vector(address+0xe4,3),ownerAddress:u(address+0x94),entriesAddress,owner:id,type,matrix:vector(address+0x1c,16),localCenter:vector(address+0x70,3),worldCenter:vector(address+0x7c,3),radius:f(address+0x5c),entries});
+  objects.push({address,enabled:u(address+0xc8),extents:vector(address+0x64,3),collisionClass:u(address+0x104),callbackAddresses:[u(address+0x108),u(address+0x10c)],otherAddress:u(address+0x88),contactCC:vector(address+0xcc,3),contactD8:vector(address+0xd8,3),contactE4:vector(address+0xe4,3),ownerAddress:u(address+0x94),entriesAddress,owner:id,type,matrix:vector(address+0x1c,16),localCenter:vector(address+0x70,3),worldCenter:vector(address+0x7c,3),radius:f(address+0x5c),radiusSquared:f(address+0x60),entries});
  }
  if(observation.actorsCaptured){
   for(const object of objects){

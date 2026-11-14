@@ -21,6 +21,7 @@ function compareLiveFrameBoundary(inputs,after,boundary,options={}){
  const {row}=inputs;
  if(after.phase!==`after-${boundary}`||after.playerFrame!==(options.retained?row.playerFrame:0)||after.pass!==0||after.bike!==row.bike||after.frameBits!==row.frameBits)throw Error('Tire observation boundary differs');
  const loaded=options.loaded??loadLiveFrameBootstrap(inputs),stop={},stages=[];
+ if(inputs.validateRiderCollider&&!loaded.environment.resetSupport)throw Error('Rider collider validation requires captured reset support');
  try{advanceMcmRetainedFrame(loaded.context,{delta:bitsFloat(row.frameBits),mode:loaded.mode,input:loaded.input},stage=>{stages.push(stage);if(stage===stopStage)throw stop;});}
  catch(error){if(error!==stop)throw error;}
  if(stages.at(-1)!==stopStage)throw Error('Tire boundary not reached');
@@ -41,6 +42,10 @@ const differences=[];let changed=0;for(let o=0;o<actual.length;o+=4){if(before.r
   if(!state||state.address!==collision.address)throw Error('Missing retained rider collision observation');
   const bytes=Buffer.from(state.stateHex,'hex'),rowBytes=Buffer.from(state.pairRowHex,'hex'),column=Buffer.from(state.pairColumnHex,'hex');
   if(bytes.length!==0x110||rowBytes.length!==240||column.length!==240)throw Error('Wrong rider collision observation size');
+  if(inputs.validateRiderCollider)for(const [offset,values]of [[0x1c,collision.matrix],[0x64,collision.extents],[0x70,collision.localCenter],[0x7c,collision.worldCenter],[0xcc,collision.contactCC],[0xd8,collision.contactD8],[0xe4,collision.contactE4],[0x5c,[collision.radius]],[0x60,[collision.radiusSquared]]]){
+   values.forEach((v,i)=>{const original=bytes.readUInt32LE(offset+i*4),recovered=floatBits(v);comparedWords++;
+    if(original!==recovered)differences.push({object:'rider-collider',offset:(offset+i*4).toString(16),original,recovered});});
+  }
   for(const [field,original,recovered]of [
    ['primary',bytes.readUInt32LE(0x108),collision.callbackAddresses[0]],
    ['secondary',bytes.readUInt32LE(0x10c),collision.callbackAddresses[1]],
