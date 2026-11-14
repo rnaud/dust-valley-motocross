@@ -24,7 +24,8 @@ int main(int argc,char**argv){
   if(fread(addresses+i,4,1,in)!=1||fread(sizes+i,4,1,in)!=1||!sizes[i]||sizes[i]>1048576||addresses[i]<0x10000||addresses[i]+sizes[i]<addresses[i])fail("block");
   // The captured enable flag belongs to the relocated original image, not
   // the exact-address heap graph. Never reserve its old image page.
-  if(addresses[i]==0x4e3754){if((sizes[i]!=4&&sizes[i]!=8))fail("enable flag size");addresses[i]=0x200e3754;}
+  if(addresses[i]==0x4e21a4||addresses[i]==0x4ede98){if(sizes[i]!=(addresses[i]==0x4e21a4?24u:12u))fail("rider global size");addresses[i]+=0x1fc00000;}
+  else if(addresses[i]==0x4e3754){if((sizes[i]!=4&&sizes[i]!=8))fail("enable flag size");addresses[i]=0x200e3754;}
   else for(uint32_t p=addresses[i]&0xffff0000;p<=((addresses[i]+sizes[i]-1)&0xffff0000);p+=0x10000)reserve_page(p);
   if(fread((void*)(uintptr_t)addresses[i],sizes[i],1,in)!=1)fail("bytes");
  }

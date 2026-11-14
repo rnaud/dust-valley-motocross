@@ -919,3 +919,41 @@ directly at the response routine. Bike/rider callback gating, active audio,
 normal-state collision events, full dispatch progression and whole-bike
 trajectories remain separate integration and validation work. Preview handling
 is unchanged. The debugger detached and all capture hooks were restored.
+
+## Rider crash-contact response
+
+`rider-collision-response.js` ports the primary rider crash callback `0x40e420`
+and its secondary class update `0x40e650`. The primary path includes the used
+physics outputs of impulse routine `0x40bf70`: opposing-velocity projection,
+friction, angular response, position correction, proxy transform updates,
+collider bounds/radius, grid refresh and contact class. The crash callback passes
+zero force and disables effect emission. Unused timing return values and dead
+local calculations do not become simulation state. Other callers of the impulse
+routine, including nonzero force/effect emission, are not validated here.
+
+The native oracle imports the real WinMM `timeGetTime`, whose return values are
+unused in this routine, and runs the original callback without replacing its
+physics. `MCM_COLLISION_RIDER_RESPONSE=1` captures six runtime coefficients at
+`0x4e21a4`, the vector at `0x4ede98`, and effect-gate dependencies reached through
+bike `+0xc84`. The values, graph and actors are observed at one paused contact.
+This does not expand replay restoration. The new capture completed 1,600 records;
+its debugger detached and original hook instructions were restored.
+
+The captured contact matches all 35,376 words, including 20 changed words. A
+further 26 **counterfactual copies** vary rider linear/angular velocity, opposing
+bike velocity, contact normal and the rider-to-rider branch. Their 919,776 words
+also match the original. These modified inputs are synthetic variations, not
+additional live observations. Both ARM64 and x64 checks pass. The secondary
+callback's sentinel-class behavior has a direct unit check; the native corpus
+executes the primary callback. [Rider response report](mcm-live-rider-response-validation.json)
+records scope and hashes, and the compressed fixture retains original outputs.
+
+Ghidra 11.3.2 with Java 21 was used to assist recovery of this larger routine;
+disassembly established the call arguments, store rounding and sum order. Raw
+exports, the export script, capture and oracle artifacts remain outside the
+repository in `player-validation/live-rider-response-2026-11-13/`.
+
+The new rider response is not yet bound into full ordered live dispatch. Bike
+callback gates, connected actor ordering, normal-state events and complete
+acceleration/throttle-release trajectory parity remain open. Preview handling
+is unchanged by this milestone.

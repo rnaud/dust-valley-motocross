@@ -1,0 +1,19 @@
+{
+  "originalExeSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "captured": {
+    "scope": "Original rider primary crash callback 0x40e420, including impulse, proxy, collider and grid updates, using captured rider-bike contact. Complete ordered dispatch and trajectories excluded.",
+    "comparedWords": 35376,
+    "changedWords": 20,
+    "differences": 0,
+    "firstDifferences": []
+  },
+  "counterfactualVariants": 26,
+  "variantComparedWords": 919776,
+  "variantDifferences": 0,
+  "artifacts": {
+    "mcm-rider-response-checkpoint.json": "b5efceb36f85d7f368c9e00a5604f72ece37e7cb2cfe210556bf6d7032abc9da",
+    "mcm-rider-response-observation.json": "c87cdedc61979ea2bed8687dd3051ffd171282da17fb4b11de725dde8661d675",
+    "mcm-rider-response-input.bin": "41b7da351bcd599c3922be0cca29cebf7668046eb8263c0b4fd899dbdf5729d5",
+    "mcm-rider-response-output.bin": "0c0cde0ab491a1f5816dd318ebae4e67dbe76347a005fb7cc190400d23808388"
+  }
+}
