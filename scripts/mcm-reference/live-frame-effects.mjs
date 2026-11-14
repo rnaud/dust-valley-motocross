@@ -36,5 +36,7 @@ export function connectLiveFrameEffects(c,{memory:m,checkpoint,row}){
   resolveTarget:address=>{if(address!==environment.shape)throw new Error('Uncaptured frame-effects target');return [0,4,8].map(o=>target.readFloatLE(o));}};
  const filter=m.u32(a+0x900);
  if(row.accelerationFilterAddress!==undefined&&row.accelerationFilterAddress!==filter)throw new Error('Acceleration filter address differs from checkpoint');
+ c.bike.savedPosition=[0,4,8].map(o=>m.f32(a+0x56c+o));
+ c.frameReturn={disabled:environment.disabled,state:environment.eventState,playerIsBike:environment.selectedBike===a};
  c.frameTail={frameDelta:0,filter:{value:m.f32(filter),duration:m.f32(filter+4)}};
 }

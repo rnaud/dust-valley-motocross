@@ -5191,3 +5191,33 @@ parity remains unfinished.
 Validation: all 412 tests and the production build pass. All 14 connected-frame
 checks also pass on x64. Native evidence and restored endpoint bytes are archived
 outside git under `live-frame-rider-end-2026-11-13`.
+
+
+### Connected original frame return
+
+The live bootstrap now loads saved position +56c/+570/+574 and the observed
+owner settings/event/player-selection gates for the final frame-return routine.
+`MCM_CAPTURE_RETURN=1` observes 4ad10d after all three history stores. At that
+point ESI is bike+56c and two saved registers have been popped: bike identity is
+normalized for observation and the copied snapshot context uses ESI-56c/ESP-8.
+Execution resumes with the original registers and stack untouched.
+
+Normal, controlled crash-event and deliberately changed-history captures each
+compare 110,597 words with zero differences (202, 105 and 205 changed words).
+The changed-history checkpoint starts with [-123, 456, -789] at +56c and verifies
+all three final stores from current position. Comparisons include the existing
+bike, engine, rider, filters, emitters, visual transforms and animation assets.
+They reject the older pre-history-store after-update boundary.
+
+The runner now returns from its first connected captured frame without an
+unmapped-dependency error. This proves the observed normal/crash first-frame
+paths only. Unobserved allocations, active collision branches, changed mid-frame
+globals, the selected-player state-3 restore branch, repeated acceleration/release
+trajectories and full browser integration remain outside this milestone's proof.
+No full physics parity claim is made.
+
+Validation: all 413 tests and the production build pass; all 15 connected-frame
+checks also pass on x64. Native captures and hook restoration evidence are
+archived outside git under `live-frame-return-2026-11-14`. An exploratory
+unreinitialized two-frame run matches its observed words, but is not yet the
+supported acceleration/release trajectory validation.

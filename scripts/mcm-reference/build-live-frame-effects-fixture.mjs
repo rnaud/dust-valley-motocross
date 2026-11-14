@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import {brotliCompressSync} from 'node:zlib';
 import {createHash} from 'node:crypto';
 import {readMcmTerrain} from './terrain-data.mjs';
-import {compareLiveFrameEffects,compareLiveFrameFilter,compareLiveFrameRider} from './compare-live-frame-tires.mjs';
+import {compareLiveFrameEffects,compareLiveFrameFilter,compareLiveFrameRider,compareLiveFrameReturn} from './compare-live-frame-tires.mjs';
 const [prefix,coursePath,fixturePath,reportPath]=process.argv.slice(2);
 if(!reportPath)throw new Error('Usage: node build-live-frame-effects-fixture.mjs capture-prefix course.trn fixture.json.br report.json');
 const read=s=>JSON.parse(fs.readFileSync(`${prefix}-${s}.json`)),rows=fs.readFileSync(prefix+'-boundaries.jsonl','utf8').trim().split('\n').map(JSON.parse);
@@ -16,7 +16,7 @@ function observe(node){
  return proxy;
 }
 const input={checkpoint:read('checkpoint'),animations:read('animations'),environment:read('observation'),collision:read('world'),row:rows[0],throttle:0,brake:0};
-const compare=rows[2].phase==='after-frame-rider'?compareLiveFrameRider:rows[2].phase==='after-filter'?compareLiveFrameFilter:compareLiveFrameEffects;
+const compare=rows[2].phase==='after-return'?compareLiveFrameReturn:rows[2].phase==='after-frame-rider'?compareLiveFrameRider:rows[2].phase==='after-filter'?compareLiveFrameFilter:compareLiveFrameEffects;
 const report=compare({...input,terrain:{...terrain,root:observe(terrain.root)}},rows[2]);
 if(report.differences)throw new Error(JSON.stringify(report));
 const fixture={input,after:rows[2],terrain:{scope:'Only visited terrain nodes and edges; unrecorded accesses must throw.',sha256:createHash('sha256').update(bytes).digest('hex'),
