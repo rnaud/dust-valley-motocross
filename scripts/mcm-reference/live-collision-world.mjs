@@ -1,6 +1,6 @@
 import {checkpointMemory,loadLiveVisuals} from './live-checkpoint.mjs';
 export function loadLiveCollisionWorld(checkpoint,observation){
- if(observation?.schemaVersion!==1||observation.kind!=='mcm-collision-world-observation'||!['player-frame-entry','collision-before-primary'].includes(observation.captureBoundary)||checkpoint.captureBoundary!==observation.captureBoundary||!observation.captureId||observation.captureId!==checkpoint.captureId||observation.bikeAddress!==checkpoint.bikeAddress||observation.playerFrame!==checkpoint.playerFrame)throw Error('Collision world capture boundary differs');
+ if(observation?.schemaVersion!==1||observation.kind!=='mcm-collision-world-observation'||!['player-frame-entry','collision-before-primary','rider-tick'].includes(observation.captureBoundary)||checkpoint.captureBoundary!==observation.captureBoundary||!observation.captureId||observation.captureId!==checkpoint.captureId||observation.bikeAddress!==checkpoint.bikeAddress||observation.playerFrame!==checkpoint.playerFrame)throw Error('Collision world capture boundary differs');
  const local=checkpointMemory(checkpoint);
  const memory=checkpointMemory({...observation,kind:'mcm-partial-local-checkpoint'}),manager=observation.managerAddress,u=a=>memory.u32(a),f=a=>memory.f32(a),vector=(a,n)=>Array.from({length:n},(_,i)=>f(a+i*4));
  for(const a of checkpoint.blocks)for(const b of observation.blocks){

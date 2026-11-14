@@ -6,6 +6,9 @@ import {checkpointMemory} from './live-checkpoint.mjs';
 // before combining them with a replay checkpoint. Preserve shared child identity.
 export function loadLiveAnimationAssets(observation){
  if(observation?.kind!=='mcm-animation-observation'||observation.records?.length!==21)throw Error('Invalid animation observation');
+ const extra=observation.additionalRecords??[];
+ if(!Array.isArray(extra)||extra.some(p=>!Number.isInteger(p)||p<=0||p>0xffffffff)||new Set(extra).size!==extra.length||extra.some(p=>observation.records.includes(p)))throw Error('Invalid additional animation records');
+ const recordTokens=[...observation.records,...extra];
  const m=checkpointMemory({...observation,kind:'mcm-partial-local-checkpoint'}),used=new Set(),children=new Map(),frames=new Map(),records=new Map();
  const read=(address,size)=>{const b=observation.blocks.find(b=>b.address===address);if(b?.size!==size)throw Error('Wrong animation block type');used.add(address);return m.read(address,size);};
  const vec=(b,o)=>[0,4,8].map(i=>b.readFloatLE(o+i));
@@ -22,7 +25,7 @@ export function loadLiveAnimationAssets(observation){
   if(previous)previous.next=null;
   return first??null;
  };
- for(const token of observation.records){
+ for(const token of recordTokens){
   if(records.has(token))continue;
   const b=read(token,0x78),frameCount=b.readUInt32LE(0x6c);
   if(!frameCount||frameCount>10000)throw Error('Invalid animation frame count');
@@ -50,7 +53,7 @@ export function loadLiveAnimationAssets(observation){
   }
  }
  if(used.size!==observation.blocks.length)throw Error('Unreferenced animation blocks');
- return {records:observation.records.map(p=>records.get(p)),frames,children};
+ return {records:recordTokens.map(p=>records.get(p)),frames,children};
 }
 // Original animation object prefix, shared by bike and rider proxy. Null
 // history pointers stay null; non-null missing assets must never become defaults.

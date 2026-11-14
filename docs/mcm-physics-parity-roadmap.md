@@ -5332,3 +5332,32 @@ terrain contact. ARM64 and x64 regression tests pass. See
 This removes a dependency of the separate rider tick; it is not yet a retained
 whole-rider or trajectory claim. Live query capture sources and raw observations
 are archived under `player-validation/rider-terrain-query-2026-11-14`.
+
+### Separate crash-animation rider tick connected (2026-11-14)
+
+Connected the observed active-animation/no-ground-hit branch of `0x40e990`:
+its inactive child actor callback, rider position/bounds, collider extents and
+radius, grid refresh, crash entry, interpolated animation, rider terrain query,
+protected bike/rider pair state, and ordered collision dispatch. Missing active
+particle creation, animation crossfade and free-rider integration raise errors.
+
+The rider proxy calls `0x45bcd0`, not `0x42e890`. The recovered proxy update
+interpolates adjacent frames, retains distinct displayed/previous/blend-frame
+pointers, advances the blend timer even without crossfade, and retains the
+forward-Z product until addition before its final float store. That last detail
+removed the remaining live transform differences.
+
+`MCM_CAPTURE_RIDER_ANIMATIONS` adds selected and active crash animation records
+to the native capture; the loader preserves the normal 21-record prefix and
+validates additional records. Native asset capture can now name its actual
+boundary. Full-rider after-observations reread the entire before-allocation
+footprint, including a historical frame that becomes unreferenced during entry.
+
+`mcm-live-rider-tick-validation.json`: two live ticks after bike frames 104 and
+105, 320,799 words compared, 776 changed words, zero differences. This includes
+all captured collision-world allocations, all animation assets, the child actor,
+and the global rider timestep. Recovered dispatch emits no callbacks in these cases; native callback order
+was not separately traced. The captured owner render gate is zero. Both cases pass on ARM64 and x64 Node.
+This is whole observed rider-tick coverage for that branch, not a continuous
+bike trajectory or coverage of the unsupported branches. Raw captures and
+sources are archived under `player-validation/rider-tick-2026-11-14`.
