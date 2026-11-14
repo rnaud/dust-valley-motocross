@@ -64,7 +64,13 @@ WINEPREFIX=/absolute/new-reference/prefix wineserver -k
 bash scripts/mcm-reference/launch.sh /absolute/new-reference
 ```
 
-`launch.sh` uses Wine builtin DirectDraw and the OpenGL renderer. `graphics.reg`
+`launch.sh` defaults to Wine builtin DirectDraw, OpenGL with threaded rendering
+disabled (`renderer=gl,csmt=0`), and CoreAudio disabled. These are the settings
+recorded by the healthy replay and November 14 session recovery; the original
+runs without audio in this diagnostic configuration. Explicit
+`WINE_D3D_CONFIG` and `WINEDLLOVERRIDES` values override those defaults for
+compatibility experiments. Startup can still fail intermittently; reaching a
+menu is not proof of healthy gameplay or physics parity. `graphics.reg`
 limits reported video memory to 256 MB and enables the MCM virtual desktop.
 The cap avoids the original's signed video-memory overflow. No dgVoodoo or
 DXVK wrapper is needed for the working configuration. Always use the full
