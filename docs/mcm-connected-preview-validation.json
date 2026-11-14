@@ -36,5 +36,18 @@
     "native rider animation rendering",
     "broader riding/settings/terrain coverage"
   ],
-  "regressionTests": 458
+  "regressionTests": 458,
+  "liveSiteCheck": {
+    "date": "2026-11-14",
+    "url": "https://rnaud.github.io/dust-valley-motocross/",
+    "deployedCommit": "27290a161315d831b97bba16bca92ff95b99615c",
+    "backend": "recovered-core",
+    "desktopAndTouch": true,
+    "neutralSteering": true,
+    "throttleRelease": true,
+    "touchSandVersionAdvanced": true,
+    "javascriptErrors": 0,
+    "classicUsesSeparateEngine": true,
+    "scope": "Short startup/control smoke; not sustained riding or full physics parity. Acceleration samples are not frame-synchronized across engines."
+  }
 }

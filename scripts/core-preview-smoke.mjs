@@ -18,6 +18,7 @@ try{
   if(touch){cd=await page.context().newCDPSession(page);const b=await page.locator('[data-control=gas]').boundingBox();point={x:b.x+b.width/2,y:b.y+b.height/2,id:1};await cd.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[point]});}
   else await page.keyboard.down('KeyW');
   await frames(page,20);const gas=await snapshot(page);assert.ok(gas.speed>1);assert.ok(Math.abs(gas.yaw)<.04);assert.equal(gas.crashed,false);
+  console.log(JSON.stringify({check:'preview-acceleration',touch,gas}));
   if(touch)await cd.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});else await page.keyboard.up('KeyW');
   await frames(page,4);assert.equal((await snapshot(page)).engine.recovered.released,1);
   await page.screenshot({path:`/tmp/mcm-core-preview-${touch?'touch':'desktop'}.png`});
@@ -30,7 +31,14 @@ try{
    }
    await page.keyboard.press('KeyR');await page.keyboard.press('Escape');assert.equal((await snapshot(page)).phase,'paused');await page.click('#photo');await page.screenshot({path:'/tmp/mcm-core-preview-bike.png'});await page.keyboard.press('Escape');await page.click('#home');
    await page.click('[data-mode=race]');await page.click('#start');await page.waitForFunction(()=>__game.snapshot().phase==='playing');await frames(page,3);assert.equal((await snapshot(page)).backend,'recovered-core');await page.screenshot({path:'/tmp/mcm-core-preview-circuit.png'});await page.keyboard.press('Escape');await page.click('#home');
-   await page.selectOption('#physics-mode','classic');await page.click('#start');await page.waitForFunction(()=>__game.snapshot().phase==='playing');assert.equal((await snapshot(page)).backend,undefined);
+   await page.selectOption('#physics-mode','classic');await page.click('[data-mode=free]');await page.click('#start');await page.waitForFunction(()=>__game.snapshot().phase==='playing');assert.equal((await snapshot(page)).backend,undefined);
+   assert.equal(await page.locator('#preview-badge').isVisible(),false);
+   await page.keyboard.down('KeyW');
+   await page.waitForFunction(()=>__game.snapshot().elapsed>=.4);
+   const classic=await snapshot(page);await page.keyboard.up('KeyW');
+   assert.equal(classic.engine?.recovered,undefined,'Classic must not run the recovered engine');
+   assert.ok(gas.engine?.recovered,'Preview must expose the running recovered engine');
+   console.log(JSON.stringify({check:'distinct-physics-backends',preview:gas,classic}));
   }
   assert.deepEqual(errors,[]);console.log(JSON.stringify({touch,gas,errors}));await page.close();
  }
