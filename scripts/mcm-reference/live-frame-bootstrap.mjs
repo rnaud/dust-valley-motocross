@@ -22,7 +22,7 @@ export function loadLiveFrameBootstrap({checkpoint,animations,environment,collis
  if(!env.input||!animations.retainedFrames)throw Error('Complete input/animation observations required');
  // The retained adapter builds a live view of c.bike at frame end. Do not
  // retain the normal-pose helper's detached bike view in its spread arguments.
- const frameRider={...animation.context};delete frameRider.bike;
+ const frameRider={...animation.context,components:visuals.bike.components};delete frameRider.bike;
  const start=loadLiveSubstepStart(checkpoint,{dt:m.f32(a+0x8cc),throttle,brake,visuals});
  const contact=loadLiveWheelContacts(checkpoint,row,terrain,{visuals,dt:m.f32(a+0x8cc),componentRate:0});
  const bike={};

@@ -5161,3 +5161,33 @@ complete-frame parity.
 Validation: all 411 tests and the production build pass. The 13 connected-frame
 tests also pass on x64. Native captures and hook-cleanup evidence are archived
 outside git under `live-frame-filter-2026-11-13`.
+
+
+### Connected frame-end rider animation
+
+The retained frame adapter now uses the live bike component records (including
+position flags) and preserves separate bike/rider animation callbacks. Previously
+it tried to construct flags from absent data and applied rider animation to the
+bike component list. Nearby-target lookup is now lazy, so normal/crash branches
+do not require an unrelated nearby target.
+
+`MCM_CAPTURE_FRAME_RIDER=1` captures through 4ad07f, immediately after the original
+4af710 call returns. This endpoint uses the unshifted caller stack, unlike the
+post-filter endpoint. Captures include the rider visual allocation, checkpoint
+transform allocations and every observed animation asset block. The comparator
+serializes both retained animation states and mutated animation child vectors.
+
+Normal and controlled crash-event captures each compare 110,597 words with zero
+differences (202 and 104 changed words respectively). Fixtures use
+`live-frame-rider-end` and `live-frame-rider-end-trigger`; reports use
+`mcm-live-frame-rider-validation` and the trigger counterpart. Corruption checks
+verify detection of visual matrix and animation-child changes.
+
+The connected runner now reaches `context.frameReturn`, which remains unmapped.
+These captures do not validate trick/nearby/recovery branches, complete return,
+retained acceleration/release trajectories or browser integration. Full physics
+parity remains unfinished.
+
+Validation: all 412 tests and the production build pass. All 14 connected-frame
+checks also pass on x64. Native evidence and restored endpoint bytes are archived
+outside git under `live-frame-rider-end-2026-11-13`.

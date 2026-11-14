@@ -12,16 +12,16 @@ export function updateMcmRetainedFrameRider(c,rawDelta){
  Object.defineProperty(view,'animation',{get:()=>b.field814&255,set:v=>{b.field814=((b.field814&0xffffff00)|(v&255))>>>0;}});
  Object.defineProperty(view,'returning',{get:()=>floatBits(b.field828)|0,set:v=>{b.field828=bitsFloat(v);}});
  for(const [key,field] of [['position','position'],['scratch540','offset'],['scratch54c','normal']])Object.defineProperty(view,key,{get:()=>b[field],set:v=>{b[field]=v;}});
- const components=c.bounds.components.map((node,i)=>({node,positionEnabled:a.positionFlags[i]}));
+ const components=a.components??c.bounds.components.map((node,i)=>({node,positionEnabled:a.positionFlags[i]}));
  // Bounds children are the same mutable records used by event recovery.
  const children=c.bounds.children.slice(0,c.bounds.count);
  for(let i=0;i<children.length;i++)children[i].next=children[i+1];
  const queries=[];
  updateMcmFrameRider({bike:view,...a,bodyNode:c.bodyNode,riderBodyNode:c.proxy,sourceNode:c.bodyNode,
-  leanAngle:c.componentAngle,target:c.loopRider.nearby,components,
+  leanAngle:c.componentAngle,get target(){return c.loopRider.nearby;},components,
   boundsFrame:{boundsMin:c.bounds.min,boundsMax:c.bounds.max,firstChild:children[0]},
-  applyBike:child=>applyMcmAnimationChild(c.bodyNode,components,child),
-  applyRider:child=>applyMcmAnimationChild(c.proxy,components,child),
+  applyBike:a.applyBike??(child=>applyMcmAnimationChild(c.bodyNode,components,child)),
+  applyRider:a.applyRider??(child=>applyMcmAnimationChild(c.proxy,components,child)),
   query(action){const q=queryMcmBikeInput({ai:b.field614,secondaryControl:b.field618,povPresent:0,presentMask:1,action,option:0,responses:[c.loopRider.buttons[[9,6,7].indexOf(action)],0,0,0,0,0]});if(q.polled.length)queries.push(action);return q.value;}
  },rawDelta);
  const tokens=o=>[o.stopped,o.record?.token??0,o.frame.token,o.field30,o.blending];

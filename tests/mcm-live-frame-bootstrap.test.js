@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {brotliDecompressSync} from 'node:zlib';
 import {loadLiveFrameBootstrap} from '../scripts/mcm-reference/live-frame-bootstrap.mjs';
-import {compareLiveFrameTires,compareLiveFrameMotion,compareLiveFrameControls,compareLiveFrameLoopRider,compareLiveFrameFinish,compareLiveFrameEffects,compareLiveFrameFilter} from '../scripts/mcm-reference/compare-live-frame-tires.mjs';
+import {compareLiveFrameTires,compareLiveFrameMotion,compareLiveFrameControls,compareLiveFrameLoopRider,compareLiveFrameFinish,compareLiveFrameEffects,compareLiveFrameFilter,compareLiveFrameRider} from '../scripts/mcm-reference/compare-live-frame-tires.mjs';
 import {advanceMcmRetainedFrame} from '../src/physics/mcm/retained-frame.js';
 function fixture(boundary='tires'){
  const f=JSON.parse(brotliDecompressSync(fs.readFileSync(new URL(`./fixtures/mcm/live-frame-${boundary}-wine11.json.br`,import.meta.url)))),cache=new Map();
@@ -138,4 +138,24 @@ test('connected frame acceleration filter matches normal and triggered original 
  const f=fixture('filter'),bytes=Buffer.from(f.after.accelerationFilterHex,'hex');bytes[0]^=1;
  const mismatch=compareLiveFrameFilter(f.input,{...f.after,accelerationFilterHex:bytes.toString('hex')});
  assert.equal(mismatch.differences,1);assert.equal(mismatch.firstDifferences[0].object,'acceleration-filter');
+});
+
+
+test('connected frame-end normal and crash animation match original visual graphs and assets',()=>{
+ for(const [name,changed] of [['rider-end',202],['rider-end-trigger',104]]){
+  const f=fixture(name),report=compareLiveFrameRider(f.input,f.after);
+  assert.equal(report.comparedWords,110597);assert.equal(report.changedWords,changed);assert.equal(report.differences,0);
+  assert.equal(report.stages.at(-1),'frame-rider');
+ }
+ const f=fixture('rider-end'),after=structuredClone(f.after),node=after.visualState.find(b=>b.size===0x114);
+ const bytes=Buffer.from(node.hex,'hex');bytes[0x84]^=1;node.hex=bytes.toString('hex');
+ const mismatch=compareLiveFrameRider(f.input,after);
+ assert.equal(mismatch.differences,1);assert.match(mismatch.firstDifferences[0].object,/frame-rider-visual/);
+ after.visualState=f.after.visualState;
+ const block=after.animationState.find(b=>b.size===0x30),child=Buffer.from(block.hex,'hex');child[8]^=1;block.hex=child.toString('hex');
+ assert.equal(compareLiveFrameRider(f.input,after).differences,1);
+ const loaded=loadLiveFrameBootstrap(f.input);
+ assert.equal(loaded.context.frameRider.components,loaded.visuals.bike.components);
+ assert.equal(loaded.context.frameRider.applyRider,loaded.animation.context.applyRider);
+ assert.throws(()=>advanceMcmRetainedFrame(loaded.context,{delta:Math.fround(.02),mode:loaded.mode,input:loaded.input}),/Unmapped live frame dependency: context.frameReturn/);
 });
