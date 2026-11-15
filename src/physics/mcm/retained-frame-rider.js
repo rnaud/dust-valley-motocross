@@ -16,8 +16,9 @@ export function updateMcmRetainedFrameRider(c,rawDelta){
  // Bounds children are the same mutable records used by event recovery.
  const children=c.bounds.children.slice(0,c.bounds.count);
  for(let i=0;i<children.length;i++)children[i].next=children[i+1];
+ // Recovery copies orientation from *(bike+8d8) before updating bike+434.
  const queries=[];
- updateMcmFrameRider({bike:view,...a,bodyNode:c.bodyNode,riderBodyNode:c.proxy,sourceNode:c.bodyNode,
+ updateMcmFrameRider({bike:view,...a,bodyNode:c.bodyNode,riderBodyNode:c.proxy,sourceNode:'baseNode' in c?c.baseNode:c.bodyNode,
   leanAngle:c.componentAngle,get target(){return c.loopRider.nearby;},components,
   boundsFrame:{boundsMin:c.bounds.min,boundsMax:c.bounds.max,firstChild:children[0]},
   applyBike:a.applyBike??(child=>applyMcmAnimationChild(c.bodyNode,components,child)),

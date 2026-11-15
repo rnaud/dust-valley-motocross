@@ -1,5 +1,22 @@
 # Motocross Madness physics parity roadmap
 
+## Current status — November 15, 2026
+
+**Full physics parity is not achieved.** The previously failing scene trajectory (38 bike / 28 visual DWORDs) now passes after correcting the base-component transform used by airborne control. The retained recovery wrapper has also been corrected against the original recovery corpus. Historical milestone descriptions below preserve what was known at those commits; their old “next work” paragraphs are not the current task list.
+
+| Area | Current evidence | Still required |
+| --- | --- | --- |
+| Retained AI bike physics | Two substep captures cover 12 frames, 715 observed substep boundaries, complete bike bodies and twelve component words per boundary. The previously failing scene trajectory also passes. | Longer, normal-rate trajectories; uncovered controller modes and interactions. |
+| Recovery orientation | Retained wrapper matches 327 pinned-original synthetic cases over four calls each, including graphs, animation and orientation scratch. | Live complete crash/recovery sequences in the surrounding world. |
+| Player acceleration and throttle release | One 400-frame crash/throttle-release capture matches the modeled physics words; shared visual/particle differences remain. | A separate negative-steering run still diverges at frame 38 (41 physics differences) without observed caller scratch; finish the world inputs and prove sustained repeatability without reseeding. |
+| Shared world and scheduling | Separate rider tick and scene-position-query prefix are connected. | Remaining scene update/scheduler logic, shared-particle writers, other actors, and full collision-state assertions. Particle-pool mismatches remain explicit. |
+| Observation quality | Read-only batching prototype reduced later captured intervals from about 24 seconds to about 3 seconds. | Maintain and further reduce overhead; validate at normal frame timing. |
+| Preview | Uses the shared recovered runtime; desktop/touch startup and driving checks pass for the airborne-control fix. | Continued gameplay validation across jumps, collisions, recovery, maps and input modes; a playable preview is not proof of parity. |
+
+There is no defensible completion percentage yet: the remaining world/order dependencies can reveal additional errors. Green regression tests prove their stated boundaries, not complete gameplay equivalence.
+
+## Historical milestones
+
 ## Scene-object rider query connected; later physics divergence retained (2026-11-15)
 
 The shared frame runtime now derives the scene object's initial gate inputs and ownership from an atomic AI-entry environment. `scene-rider-position.js` implements the original `422f50..422fad` prefix: owner enabled gate, world disabled gate, live bike exclusion flag, then `bike+874 -> rider+fc` world-position resolution. The queried joint and recursive parent-cache chain come from the retained graph. Observed query targets, callers and output position are assertions only. Later visibility/state transitions and the complete application scheduler remain unconnected.
@@ -6137,3 +6154,9 @@ A faster read-only capture exposed the first mismatch at frame 3, substep 0, bet
 This removes both that first substep mismatch and the previous scene fixture's 38 body / 28 visual DWORD differences. The earlier fixture now passes strict retained comparison, including its separate rider tick and particle pool. A deliberate reintroduction of the body-root alias reproduces its old strict failure. The new four-frame fixture matches all 237 observed substep bodies, 2,844 component words and 16 frame bodies; 7,412 shared-particle DWORD observations still differ, so whole-world parity remains unfinished.
 
 The same initializer/control bridge is used by MCM Preview, so this changes actual airborne handling when the base component and body root differ. It does not claim full gameplay parity. The faster observer prototype remains outside the maintained capture source: its later measured intervals are approximately 3.0–4.3 seconds rather than 24 seconds, still far above normal frame timing. Its capture completed with all 17 sites restored and debugger detached.
+
+### Correct retained recovery orientation source — November 15, 2026
+
+The frame-end recovery bridge had the same source-node alias error as airborne control. Original `0x4afdb1..0x4afdd6` reads `*(bike+0x8d8)` through `0x4b7640`, then applies those axes to the body root at `bike+0x434`. The retained wrapper now passes the explicitly initialized base component node into recovery completion. Synthetic one-node contexts retain their existing root fallback.
+
+A new regression sends the existing pinned-original recovery corpus through the retained wrapper, rather than only its underlying semantic routine. All 327 stored cases match 4,275,852 output words across four calls each, including six-node graphs, animation state/timers, bounds children and orientation scratch. The test failed on case 11 before the fix; deliberately substituting the body root reproduces that native mismatch. This is isolated recovery-branch evidence with synthetic assets, not a complete live crash/recovery trajectory. MCM Preview uses the corrected shared wrapper.

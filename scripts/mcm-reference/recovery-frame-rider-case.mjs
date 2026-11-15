@@ -2,7 +2,7 @@ import {applyMcmAnimationChild} from '../../src/physics/mcm/animation-seek.js';
 import {updateMcmFrameRider} from '../../src/physics/mcm/frame-rider.js';
 import {floatBits,bitsFloat} from '../../src/physics/mcm/math.js';
 const f=Math.fround;
-export function evaluateRecoveryFrameRider(c){
+export function evaluateRecoveryFrameRider(c,{advance=updateMcmFrameRider}={}){
  const nodes=[];
  for(let o=0;o<2;o++){
   const group=c.nodes.map(n=>({...n,local:[...n.local],world:[...n.world]}));
@@ -36,7 +36,7 @@ export function evaluateRecoveryFrameRider(c){
  const output=[];
  for(let step=0;step<4;step++){
  const context={bike:b,records,bikeAnimation:objects[0],riderAnimation:objects[1],applyBike,applyRider,bodyNode:nodes[1],riderBodyNode:nodes[4],sourceNode:nodes[0],boundsFrame:records[0].firstFrame,components:tables[0]};
- updateMcmFrameRider(context,c.delta);
+ advance(context,c.delta);
  output.push(...nodes.flatMap(n=>[...[...n.local,...n.world].map(floatBits),n.cacheValid]),b.pose>>>0,floatBits(b.weight),b.nextPose>>>0,floatBits(b.fraction),floatBits(b.secondaryWeight),b.enabled>>>0,floatBits(b.speed),c.state>>>0,b.fieldbfc>>>0,...objects.flatMap(o=>[records.indexOf(o.record)>>>0,o.frame.index,...[...o.boundsMin,...o.boundsMax].map(floatBits)]),...children.flatMap(child=>[...child.forward,...child.up,...child.position].map(floatBits)),...objects.flatMap(o=>[o.stopped,floatBits(o.remainder),o.displayedFrame.index,o.previousFrame.index,floatBits(o.blendTime),o.blending,o.field30]),b.field710,b.field714,...[...b.scratch540,...b.scratch54c].map(floatBits));
  }
  return output;
