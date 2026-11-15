@@ -17,7 +17,9 @@
     "refreshCounterContinuityProven": false,
     "captureSha256": "f6242e0b0484f0d56eb4c23a30f80878eba3f6c6245fc44cbddd0cdd2b3bfaf6",
     "restoredHooks": 11,
-    "debuggerDetached": true
+    "debuggerDetached": true,
+    "cameraKeyMask": 4,
+    "cameraKey": "keypad-left (scan 0x4b) held"
   },
   "remaining": [
     "Action-11 mode transitions and seventh-filter FOV smoothing",

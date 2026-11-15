@@ -21,3 +21,12 @@ test('live retained chase pose and FOV produce the native camera matrices',()=>{
  }
  assert.throws(()=>analyzeLiveChaseController(fixture.live.slice(0,-1),options),/Incomplete/);
 });
+test('camera matrix evidence distinguishes held input from verified neutral input',()=>{
+ const options={terrain:loadTerrain('quarries-dunes'),matrices:true};
+ for(const [id,count,key]of [['held',320,4],['neutral',10,0]]){
+  const c=fixture[id],result=analyzeLiveChaseController(c.live,options);assert.equal(result.pairs,count);assert.equal(result.matrixWords,count*65);assert.equal(result.refreshCounterBoundaryInputs,0);
+  assert.deepEqual([...new Set(c.live.filter(r=>r.phase==='controls-entry').map(r=>r.inputs[64]))],[key]);assert.match(c.cleanup,/debugger=0 clean=1/);assert.equal((c.cleanup.match(/restored=1/g)||[]).length,14);
+ }
+ assert.deepEqual([...new Set(fixture.live.filter(r=>r.phase==='controls-entry').map(r=>r.inputs[64]))],[4]);
+ const source=fixture.held.live.filter(r=>r.phase==='controls-entry'),after=fixture.held.live.filter(r=>r.phase==='before');assert.equal(source.filter((r,i)=>r.inputs[26]!==after[i].inputs[26]).length,320);
+});

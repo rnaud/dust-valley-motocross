@@ -4,7 +4,7 @@
 
 The eye gate belongs before controls. The saved key-pulse capture contains a frame where the updated yaw crosses 2 radians while the gate still reflects the entry yaw. Moving the gate after controls changes the original behavior. A dedicated regression retains this frame.
 
-The entry oracle was rerun against the pinned executable: 2,560 cases / 15,360 words match. Saved idle and key-pulse captures match 190 frames, 9,880 downstream words and 2,280 source/base words. Capture cleanup records in the fixture prove restoration of all eight hooks and debugger detachment. The pulse capture contains angle changes throughout; it does not contain a verified key-up frame. Release was checked separately.
+The entry oracle was rerun against the pinned executable: 2,560 cases / 15,360 words match. Saved captures (legacy fixture labels `idle` and `pulse`, both with keypad-left held) match 190 frames, 9,880 downstream words and 2,280 source/base words. Capture cleanup records in the fixture prove restoration of all eight hooks and debugger detachment. The pulse capture contains angle changes throughout; it does not contain a verified key-up frame. The earlier release check was OS-level only, not proof of neutral game input. A later matrix-chain capture verifies key mask 0 after releasing keypad-left; see `mcm-camera-matrices-recovery.md`.
 
 ## Reproduction
 

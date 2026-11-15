@@ -15,14 +15,16 @@
       "frames": 30,
       "downstreamWords": 1560,
       "spatialWords": 360,
-      "retainedTargetChecks": 30
+      "retainedTargetChecks": 30,
+      "cameraKeyMask": 4
     },
     "pulse": {
       "frames": 160,
       "downstreamWords": 8320,
       "spatialWords": 1920,
       "retainedTargetChecks": 160,
-      "withinCaptureYawGateCrossings": 1
+      "withinCaptureYawGateCrossings": 1,
+      "cameraKeyMask": 4
     },
     "mode": 0,
     "joystick": false,
@@ -38,7 +40,7 @@
     ],
     "allInstructionsRestored": true,
     "debuggerDetached": true,
-    "note": "Previously collected captures revalidated using the joined production controller. Every pulse frame changes angle; key release was verified outside this capture."
+    "note": "Legacy idle/pulse fixture labels: both captures have camera key mask 4 (keypad-left) throughout. Angle changes and gate ordering are verified; neither capture proves a key-up transition. The earlier release check was OS-level. Later matrix evidence includes a separate game-neutral capture."
   },
   "retainedState": [
     "camera angles and radius",

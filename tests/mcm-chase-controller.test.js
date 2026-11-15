@@ -7,7 +7,7 @@ test('camera restore, yaw threshold and multiplier match 2560 original boundary 
  assert.deepEqual(compareChaseEntry(input,output),{cases:2560,words:15360,differences:0,examples:[]});
  output[0]^=1;assert.equal(compareChaseEntry(input,output).differences,1);assert.throws(()=>compareChaseEntry(input,output.subarray(0,-1)),/Incomplete/);
 });
-for(const [name,pairs] of [['idle',30],['pulse',160]])test(`retained joined controller matches ${pairs} original ${name} frames`,()=>{
+for(const [name,pairs] of [['idle',30],['pulse',160]])test(`retained joined controller matches ${pairs} original held-left frames (${name} fixture)`,()=>{
  assert.deepEqual(analyzeLiveChaseController(fixture[name]),{pairs,downstreamWords:pairs*52,spatialWords:pairs*12,retainedTargetChecks:pairs,active:pairs,bypassed:0,resets:0,modes:[0]});
  assert.match(fixture.cleanup[name],/debugger=0 clean=1/);assert.equal((fixture.cleanup[name].match(/restored=1/g)||[]).length,8);
 });

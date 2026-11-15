@@ -1,5 +1,5 @@
 {
-  "scope": "Complete camera matrix arithmetic and retained idle live chain; not renderer submission or full physics parity",
+  "scope": "Complete camera matrix arithmetic and retained moving/neutral live chain; not renderer submission or full physics parity",
   "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
   "native": {
     "range": "0x47a670..0x47a819 with intact helpers",
@@ -15,7 +15,25 @@
     "refreshCounterBoundaryInputs": 0,
     "captureSha256": "c8ca2e55e02030e55b87dd2f305373ed1efd985cf29e69e28307ee5dc44a2ad7",
     "restoredHooks": 14,
-    "debuggerDetached": true
+    "debuggerDetached": true,
+    "cameraKeyMask": 4,
+    "cameraKey": "keypad-left (scan 0x4b) held",
+    "supplemental": [
+      {
+        "id": "held",
+        "frames": 320,
+        "matrixWords": 20800,
+        "cameraKeyMask": 4,
+        "sha256": "205de7d3cbc2b7a8f16529dac64f00fb64767fddd3eca0af8410d384a20823da"
+      },
+      {
+        "id": "neutral",
+        "frames": 10,
+        "matrixWords": 650,
+        "cameraKeyMask": 0,
+        "sha256": "ee41bbf04912d72513f172720ee484f513ea9c2d54b4711ee4393a4e90a9106d"
+      }
+    ]
   },
   "remaining": [
     "Renderer submission/cache gates and stack-writer ordering",
@@ -24,9 +42,10 @@
   ],
   "previewHandlingChanged": false,
   "tests": {
-    "passed": 524,
+    "passed": 525,
     "failed": 0,
     "focusedPassed": 17,
-    "build": true
+    "build": true,
+    "correctedCoverageFocusedPassed": 8
   }
 }

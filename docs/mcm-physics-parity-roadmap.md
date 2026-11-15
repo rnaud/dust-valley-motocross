@@ -2,13 +2,13 @@
 
 ## Camera matrices connected to the retained live chain
 
-Complete original `0x47a670` matrix arithmetic matches **4,096 cases / 266,240 words**, including zero-FOV exceptional outputs. A fresh 60-frame idle capture matches all four matrices and screen scale (3,900 additional words) from the recovered pose/FOV, with matrix state retained between frames. All fourteen hooks were restored and detachment verified. See `mcm-camera-matrices-recovery.md` and validation report.
+Complete original `0x47a670` matrix arithmetic matches **4,096 cases / 266,240 words**, including zero-FOV exceptional outputs. A fresh 60-frame camera-left-held capture matches all four matrices and screen scale (3,900 additional words) from the recovered pose/FOV, with matrix state retained between frames. All fourteen hooks were restored and detachment verified. See `mcm-camera-matrices-recovery.md` and validation report.
 
 Next trace matrix submission/cache gates and renderer stack-writer ordering, then retry the frame-38 steering divergence without observed scratch inputs. Mode/FOV/viewport transitions and whole-world parity remain open. Preview handling is unchanged.
 
 ## FOV filter and live refresh-counter continuity recovered
 
-The original seventh filter, FOV setter and update-counter prefix match **4,096 cases / 32,768 words**. A fresh 60-frame idle capture extends the camera chain through FOV and update return, now retaining the refresh counter without per-frame telemetry reseeding. All fourteen hooks were restored and detachment verified. Mode-transition/FOV controls and remaining camera/view updates are still outside this coverage; the analyzer rejects control-state changes. See `mcm-chase-fov-recovery.md` and its validation report. Preview handling is unchanged; full physics parity remains open.
+The original seventh filter, FOV setter and update-counter prefix match **4,096 cases / 32,768 words**. A fresh 60-frame camera-left-held capture extends the camera chain through FOV and update return, now retaining the refresh counter without per-frame telemetry reseeding. All fourteen hooks were restored and detachment verified. Mode-transition/FOV controls and remaining camera/view updates are still outside this coverage; the analyzer rejects control-state changes. See `mcm-chase-fov-recovery.md` and its validation report. Preview handling is unchanged; full physics parity remains open.
 
 ## Final camera pose and bike/rider node fields recovered
 
@@ -30,7 +30,7 @@ World bounds, terrain clearance, final camera/view/render ordering and the frame
 
 ## Joined initialized chase controller (2026-11-15)
 
-Source, backup restoration, the pre-input yaw gate, base, controls, heading and smoothing now run as one retained production controller. A fresh entry oracle matches **2,560 cases / 15,360 words**. Previously collected idle/pulse captures match **190 frames / 9,880 downstream words / 2,280 spatial words**, including a within-frame yaw threshold crossing that verifies gate-before-controls ordering. Camera/filter/target state is retained rather than reseeded per control entry. See `mcm-chase-controller-validation.json` and `mcm-chase-controller-recovery.md`.
+Source, backup restoration, the pre-input yaw gate, base, controls, heading and smoothing now run as one retained production controller. A fresh entry oracle matches **2,560 cases / 15,360 words**. Previously collected held-left captures (legacy `idle`/`pulse` labels) match **190 frames / 9,880 downstream words / 2,280 spatial words**, including a within-frame yaw threshold crossing that verifies gate-before-controls ordering. Camera/filter/target state is retained rather than reseeded per control entry. See `mcm-chase-controller-validation.json` and `mcm-chase-controller-recovery.md`.
 
 First initialization, alternate paths, post-smoothing/view/render ordering and the known negative-steering scratch mismatch remain open. This milestone does not change preview handling or establish whole-world parity.
 
