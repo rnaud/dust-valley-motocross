@@ -1,5 +1,9 @@
 # Motocross Madness physics parity roadmap
 
+## Shader program cache eligibility recovered — 2026-11-15
+
+The intact six-word comparator matches 4,096 native cases. A completed 42-frame capture predicts all 363 cache lookups / 5,432 comparisons: 362 hits and one miss. Retaining the returned creation explains the next snapshot's growth from 4,032 to 4,033 entries; later snapshots verify membership rather than reseeding it. Only the predicted miss runs sampler setup, with eight sampler formats. All 242 hooks restored and debugger absent. See `mcm-shader-program-cache-recovery.md`. Key production, topology/insertion, allocation and full scheduling remain boundaries; the older steering failure remains open and preview handling is unchanged.
+
 ## Sampler mapping producer recovered — 2026-11-15
 
 The intact mapping producer and modern range helper match 4,096 native cases / 12,288 words, including byte truncation, unsigned overflow and the compute-offset equality rule. The binding model now derives its ranges by default. The live null-shader path derives eight formats and validates the returned context-map pointer; deleting a complete format call is rejected. The 42-bike / 41-rider retained comparison remains clean. See `mcm-shader-sampler-map-recovery.md`. Shader-cache scheduling, map/capability state and the old frame-38 steering failure remain open; preview handling is unchanged.
