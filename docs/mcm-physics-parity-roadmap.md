@@ -1,5 +1,9 @@
 # Motocross Madness physics parity roadmap
 
+## Retained fixed shader caches (2026-11-15)
+
+The vertex and pixel analyzers now initialize each cache once, then compare later snapshots against retained nodes and topology. The five-frame fixture retains six vertex nodes and 4,726 pixel nodes; unexplained mutations to unused nodes are rejected too. Full suite: 627 tests passed. Longer capture has exposed a pixel-cache creation miss at frame 23 and missing formatter callback evidence; neither is silently accepted. Cache creation and the older frame-38 steering failure remain open. Capture tooling now supports an explicit record-count override and buffered diagnostics, with byte-identical isolated I/O validation. Preview handling is unchanged.
+
 ## Joined fixed-function program selection (2026-11-15)
 
 The existing five-frame native trace now drives all six program-cache key words from computed fixed-function shader IDs and retained prior selection. All 28 final lookups / 407 comparisons / 28 returned programs match, including 16 retained vertex IDs and 27 subsequent selected-program entries. Initial cache contents and graphics inputs remain boundaries. Unsupported programmable or changed middle-stage paths fail explicitly. This closes a validation-chain boundary, not the older frame-38 steering divergence. See `mcm-fixed-pixel-recovery.md`.

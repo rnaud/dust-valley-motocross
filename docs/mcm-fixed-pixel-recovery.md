@@ -22,6 +22,13 @@ All 257 non-CALL/non-REP hook locations were independently verified restored and
 
 The initial 4,726-node program cache supplies the initial previous program key. Captured lookup keys and subsequent previous-program keys are assertions only. Tests reject even mutually consistent changes to captured assembly/lookup keys, changed retained selections, missing producers and unsupported paths. Current joined coverage requires null programmable shaders, unchanged middle stages, an existing previous program and pixel refresh. Other branches are rejected explicitly.
 
+Both fixed-function cache analyzers now retain the initial tree and node contents.
+Later snapshots are comparisons, not new inputs. In the five-frame fixture this
+retains six vertex nodes and 4,726 pixel nodes across all lookups. Unexplained
+changes, including changes to nodes outside the current comparison path, fail
+validation. Cache insertion remains unmodeled and is rejected if it changes a
+later snapshot.
+
 ## Remaining scope
 
 The five-frame sample contains no cache-creation misses. Initial cache contents/topology, graphics-state fields and the remaining temporary-buffer seed bytes are still boundary inputs. Cache allocation/creation, full caller scheduling and the older frame-38 steering divergence remain unresolved. This is a joined shader-key recovery milestone, not a new whole-ride physics equivalence result. Preview handling is unchanged.
@@ -33,3 +40,20 @@ The five-frame sample contains no cache-creation misses. Initial cache contents/
 - Run `node --test tests/mcm-fixed-pixel-descriptor.test.js tests/mcm-fixed-pixel-live.test.js`.
 
 - Run `node --test tests/mcm-fixed-program-chain.test.js` for the joined selection chain.
+
+## Capture throughput and longer runs
+
+The capture's default remains ten records (five bike updates). Compile with
+`-DMCM_RENDER_RECORD_COUNT=84` to request 42 updates using the same hooks;
+the runtime record-count argument must match. Render diagnostics use a 64 KiB
+buffer, flushed before each debugger continuation. A failed flush enters the
+existing cleanup path. This changes diagnostic I/O, not native hook locations.
+
+An isolated Wine stdio comparison produced identical 489,685-byte streams with
+unbuffered and buffered output (SHA-256
+`e0c4232f7aadb4903940390e48508991da6d0163dcfa5d1505c23ffd0572918a`).
+The sample took 1,059 ms and 13 ms respectively. These are formatting/I/O timings,
+not whole-capture performance or simulation-equivalence measurements. The capture
+and independent verifier both compile with the updated configuration. Live
+buffered-capture verification remains pending while the prior unbuffered capture
+is running; do not attach a second debugger to test it.

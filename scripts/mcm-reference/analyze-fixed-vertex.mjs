@@ -1,8 +1,9 @@
+import {retainFixedCache} from './retain-fixed-cache.mjs';
 import assert from 'node:assert/strict';
 import{mcmFixedVertexDescriptor}from'../../src/physics/mcm/fixed-vertex-descriptor.js';
 import{lookupMcmFixedVertexCache}from'../../src/physics/mcm/fixed-vertex-cache.js';
 export function analyzeFixedVertex(rows,{allowIncomplete=false,onKeyWord=()=>{}}={}){
- let pending=null,inputs=0,descriptors=0,comparisons=0,hits=0,misses=0,keyWords=0;
+ let cache=null,pending=null,inputs=0,descriptors=0,comparisons=0,hits=0,misses=0,keyWords=0;
  for(const r of rows){
   if(r.phase==='fixed-vertex-input'){
    assert.equal(pending,null,'Unfinished fixed vertex input');assert.equal(r.words.length,35);
@@ -13,8 +14,8 @@ export function analyzeFixedVertex(rows,{allowIncomplete=false,onKeyWord=()=>{}}
   }else if(r.phase==='fixed-vertex-cache'){
    assert.ok(pending);assert.equal(r.frame,pending.frame);assert.equal(r.esp,pending.esp+4);assert.equal(r.compare,0x7a770000+0x1d8c20);
    assert.deepEqual(r.key,pending.key,'Fixed vertex descriptor');descriptors++;
-   const nodes=new Map(r.nodes.map(n=>[n.id,n]));assert.equal(nodes.size,r.nodes.length);
-   pending.expected=lookupMcmFixedVertexCache(pending.key,r.root,nodes);
+   cache=retainFixedCache(cache,r,'Fixed vertex');
+   pending.expected=lookupMcmFixedVertexCache(pending.key,cache.root,cache.nodes);
   }else if(r.phase==='fixed-vertex-compare'){
    assert.ok(pending?.expected);assert.equal(r.frame,pending.frame);
    assert.deepEqual({node:r.node,result:Math.sign(r.result)},pending.expected.comparisons[pending.index++],'Fixed vertex comparison');comparisons++;

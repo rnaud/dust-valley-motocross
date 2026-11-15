@@ -1,10 +1,11 @@
+import {retainFixedCache} from './retain-fixed-cache.mjs';
 import assert from 'node:assert/strict';
 import{mcmFixedPixelDescriptor}from'../../src/physics/mcm/fixed-pixel-descriptor.js';
 import{mcmFixedVertexDescriptor}from'../../src/physics/mcm/fixed-vertex-descriptor.js';
 import{unpackFixedPixelInput}from'./fixed-pixel-input.mjs';
 import{lookupMcmFixedPixelCache}from'../../src/physics/mcm/fixed-vertex-cache.js';
 export function analyzeFixedPixel(rows,{allowIncomplete=false,onKeyWord=()=>{}}={}){
- let pending=null,vertexSeed=null,inputs=0,descriptors=0,comparisons=0,hits=0,misses=0,keyWords=0,derivedSeedBytes=0;
+ let cache=null,pending=null,vertexSeed=null,inputs=0,descriptors=0,comparisons=0,hits=0,misses=0,keyWords=0,derivedSeedBytes=0;
  for(const r of rows){
   if(r.phase==='program-key-entry')vertexSeed=null;
   if(r.phase==='fixed-vertex-input'){
@@ -21,8 +22,8 @@ export function analyzeFixedPixel(rows,{allowIncomplete=false,onKeyWord=()=>{}}=
   }else if(r.phase==='fixed-pixel-cache'){
    assert.ok(pending);assert.equal(r.frame,pending.frame);assert.equal(r.esp,pending.esp+4);assert.equal(r.compare,0x7a770000+0x1d7e60);
    assert.deepEqual(r.key,pending.key,'Fixed pixel descriptor');descriptors++;
-   const nodes=new Map(r.nodes.map(n=>[n.id,n]));assert.equal(nodes.size,r.nodes.length);
-   pending.expected=lookupMcmFixedPixelCache(pending.key,r.root,nodes);
+   cache=retainFixedCache(cache,r,'Fixed pixel');
+   pending.expected=lookupMcmFixedPixelCache(pending.key,cache.root,cache.nodes);
   }else if(r.phase==='fixed-pixel-compare'){
    assert.ok(pending?.expected);assert.equal(r.frame,pending.frame);
    assert.deepEqual({node:r.node,result:Math.sign(r.result)},pending.expected.comparisons[pending.index++],'Fixed pixel comparison');comparisons++;

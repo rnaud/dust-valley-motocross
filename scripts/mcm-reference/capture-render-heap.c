@@ -16,12 +16,14 @@
 #if defined(MCM_CAPTURE_UPLOAD_COPY) && !defined(MCM_CAPTURE_BINDING_GATES)
 #error Upload copy capture requires binding gates to preserve hook indices
 #endif
+#ifndef MCM_RENDER_RECORD_COUNT
 #if defined(MCM_CAPTURE_FIXED_VERTEX)
 #define MCM_RENDER_RECORD_COUNT 10
 #elif defined(MCM_CAPTURE_WORLD_WRITERS)
 #define MCM_RENDER_RECORD_COUNT 84
 #else
 #define MCM_RENDER_RECORD_COUNT 10
+#endif
 #endif
 #if defined(MCM_CAPTURE_BINDING_GATES) && (!defined(MCM_CAPTURE_RENDER_BINDING) || !defined(MCM_CAPTURE_HUD_LINE_STORES))
 #error Binding gates require binding and HUD hooks to preserve hook indices
@@ -544,7 +546,11 @@ int main(int argc, char **argv) {
     if (!out) return 2;
     setbuf(out, NULL);
     const char *render_path=getenv("MCM_RENDER_TRACE");if(!render_path||!*render_path){fclose(out);return 2;}
-    render_out=fopen(render_path,"wx");if(!render_out){fclose(out);return 2;}setbuf(render_out,NULL);
+    render_out=fopen(render_path,"wx");if(!render_out){fclose(out);return 2;}
+    // Cache snapshots contain thousands of byte fields. Buffer their formatting
+    // and flush each debugger event before resuming the reference process.
+    static char render_buffer[65536];
+    if(setvbuf(render_out,render_buffer,_IOFBF,sizeof(render_buffer))){fclose(render_out);fclose(out);return 2;}
     process = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
     // This instruction guard prevents attaching to another executable version.
     // The caller must also verify mcm.exe's SHA-256 as documented in README.
@@ -976,6 +982,7 @@ int main(int argc, char **argv) {
             fprintf(stderr, "No player-bike records or renderer progress for 30 seconds.\n");
             done = 2;
         }
+        if (fflush(render_out)) {fprintf(stderr,"Cannot flush render trace.\n");done=2;}
         if (done) {
             for (unsigned i = 0; i < hook_count; i++) if (armed[i]) {
                 write_byte(addresses[i], saved[i]);

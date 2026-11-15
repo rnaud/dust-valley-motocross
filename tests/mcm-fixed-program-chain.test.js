@@ -31,3 +31,16 @@ test('joined chain refuses unsupported shader paths rather than copying their ke
   assert.throws(()=>analyzeFixedProgramChain(f.rows),/Unsupported/);
  }
 });
+test('later fixed-cache snapshots cannot reseed even nodes unused by the current lookup',()=>{
+ for(const kind of ['vertex','pixel']){
+  const f=live(),snapshots=f.rows.filter(r=>r.phase===`fixed-${kind}-cache`),row=snapshots[1];
+  const index=f.rows.indexOf(row),visited=new Set();
+  for(const r of f.rows.slice(index+1)){
+   if(r.phase===`fixed-${kind}-result`)break;
+   if(r.phase===`fixed-${kind}-compare`)visited.add(r.node);
+  }
+  const unused=row.nodes.find(n=>!visited.has(n.id));assert.ok(unused);
+  unused.program^=1;
+  assert.throws(()=>analyzeFixedProgramChain(f.rows),new RegExp(`Fixed ${kind} cache changed without modeled insertion`));
+ }
+});
