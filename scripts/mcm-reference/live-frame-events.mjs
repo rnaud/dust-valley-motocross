@@ -16,6 +16,10 @@ export function connectLiveFrameEvents(c,{checkpoint,memory:m,animation,environm
  for(const o of [0x86c,0x868,0x864,0x890,0x708,0x704,0x71c,0x720,0x728,0x734,0x6e8,0x6ec])b[`field${o.toString(16)}`]=m.f32(a+o);
  for(const [name,offset] of [['spawnPosition',0xbc0],['savedHeading',0x898],['boundsMin',0x218],['boundsMax',0x224]])b[name]=[0,4,8].map(o=>m.f32(a+offset+o));
  c.loopRider.animationFrame=animation.context.bikeAnimation.frame.index;
+ if(animation.context.tricks){
+  c.loopRider.bikeRecords=animation.context.tricks[0].map(record=>record.firstFrame.token);
+  c.loopRider.riderRecords=animation.context.tricks[1].map(record=>record.firstFrame.token);
+ }
  c.loopRider.buttons=[9,6,7].map(action=>env.actions[action]);
  p.normalEventDecision=strict({inputPresent:+!!env.controllerAddress,inputResult:env.actions[8],terrainMode:env.terrainMode,
   get otherSpeed(){if(b.field8b0)throw Error('Other-bike event state not connected');return 0;}},'normalEventDecision');

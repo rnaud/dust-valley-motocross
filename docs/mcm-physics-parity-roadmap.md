@@ -1,5 +1,16 @@
 # Motocross Madness physics parity roadmap
 
+## Natural AI frame-entry initialization (2026-11-15)
+
+Added `MCM_OBSERVE_AI` to the existing frame observer. It selects a specific AI bike, rejects scripted inputs/timing, checkpoint import/restoration and alternate hook layouts, and captures entry resources without changing simulation state. The four guarded sites remain scheduler entry `4a54b6`, frame tail `4ad0e1`, action boundary `4ad5a2` and RNG `4bf195`. RNG observation establishes the actual thread-local state before starting a frame capture; it never substitutes the scripted seed. `verify-ai-frame.c` independently checks all four restored instructions and detached status.
+
+The pinned original produced two observed scheduler-entry/frame-tail pairs for bike `0x51f7598`, with matching entry checkpoint, collision world, environment and animation resources. The tail boundary precedes the final saved-position copy at `4ad0e1..4ad10d`; it is not an after-return snapshot. All 32 bike/rider trick pointers are included before selection. The animation loader reconstructs 69 shared records and 2,313 linked frames. The four observed RNG draws and every frame-boundary RNG state follow one computed stream. The second frame's long elapsed interval reflects debugger/export overhead and remains unchanged in the fixture; these observations are not a claim of representative realtime cadence.
+
+The retained bootstrap now accepts the explicit `ai-frame-entry` boundary, requires an AI bike, preserves its control words, disables player device queries, and connects real trick resources. Its actor transforms, bike state, bounds and animation objects share the existing runtime identities. Tests reject mixed capture boundaries, player relabeling and missing animation resources. The driver still returns `pending-controller` before any substep or RNG draw: this milestone validates initialization and evidence integrity, **not full-frame output parity**.
+
+Evidence: reproducible `archive-ai-frame.mjs`, maintained observer/exporter/verifier, `ai-frame-wine11.json.br` with hashes of all seven original capture files and cleanup evidence, and `tests/mcm-ai-frame.test.js`. Next: capture the route/controller environment at this same frame entry, connect the executable controller to these shared objects, and compare frame/controller boundaries before expanding to retained multi-actor evolution. Preview handling is unchanged; full parity remains incomplete.
+
+
 ## Executable mode-0 AI controller runtime (2026-11-15)
 
 `src/physics/mcm/ai-controller.js` now composes the recovered controller as an executable runtime routine. Its mutable inputs are bike/proxy/envelope DataViews, route nodes, transform/bounds graphs and animation resources. Terrain queries, actor/player bodies, shared RNG, heap policy and allocation accounting are explicit environment dependencies. It has no capture-row or Node/Buffer dependency. It computes entry, targeting, guidance, avoidance/allocation, jump/trick, steering, landing/pitch, throttle and final motion in original order. Modes other than zero and nearby interaction remain explicitly guarded.

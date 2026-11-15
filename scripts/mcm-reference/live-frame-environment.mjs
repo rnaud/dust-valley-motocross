@@ -6,7 +6,7 @@ import {checkpointMemory} from './live-checkpoint.mjs';
 export function loadLiveFrameEnvironment(checkpoint,observation){
  if(observation?.kind!=='mcm-frame-environment-observation'||
     !/^[0-9a-f]{16}$/.test(observation.captureId??'')||observation.captureId!==checkpoint.captureId||
-    observation.captureBoundary!=='player-frame-entry'||checkpoint.captureBoundary!==observation.captureBoundary||
+    !['player-frame-entry','ai-frame-entry'].includes(observation.captureBoundary)||checkpoint.captureBoundary!==observation.captureBoundary||
     observation.playerFrame!==checkpoint.playerFrame||observation.bikeAddress!==checkpoint.bikeAddress)throw Error('Frame environment boundary differs');
  const local=checkpointMemory(checkpoint),memory=checkpointMemory({...observation,kind:'mcm-partial-local-checkpoint'}),bike=checkpoint.bikeAddress;
  for(const a of checkpoint.blocks)for(const b of observation.blocks){

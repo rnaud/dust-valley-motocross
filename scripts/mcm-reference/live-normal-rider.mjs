@@ -6,7 +6,7 @@ import {applyMcmAnimationChild} from '../../src/physics/mcm/animation-seek.js';
 // history for later retained-frame wiring; this is not a complete frame context.
 export function loadLiveNormalRider(checkpoint,observation,{visuals:sharedVisuals}={}){
  if(!/^[0-9a-f]{16}$/.test(checkpoint.captureId??'')||checkpoint.captureId!==observation.captureId||
-    checkpoint.captureBoundary!=='player-frame-entry'||observation.captureBoundary!==checkpoint.captureBoundary||
+    !['player-frame-entry','ai-frame-entry'].includes(checkpoint.captureBoundary)||observation.captureBoundary!==checkpoint.captureBoundary||
     observation.bikeAddress!==checkpoint.bikeAddress)throw Error('Animation/checkpoint boundary differs');
  const m=checkpointMemory(checkpoint),address=checkpoint.bikeAddress;
  if(m.u32(address+0x844)||m.u32(address+0x710)||m.u32(address+0xbfc)===2)throw Error('Unsupported normal rider state');
@@ -35,5 +35,11 @@ export function loadLiveNormalRider(checkpoint,observation,{visuals:sharedVisual
   bodyNode:visuals.bike.bodyNode,riderBodyNode:visuals.rider.bodyNode,
   applyBike:child=>applyMcmAnimationChild(visuals.bike.bodyNode,visuals.bike.components,child),
   applyRider:child=>applyMcmAnimationChild(visuals.rider.bodyNode,visuals.rider.components,child)};
+ if(checkpoint.captureBoundary==='ai-frame-entry'){
+  const records=new Map(assets.records.map(record=>[record.token,record]));
+  context.tricks=[0x7d4,0x794].map(base=>Array.from({length:16},(_,i)=>{
+   const record=records.get(m.u32(address+base+i*4));if(!record)throw Error('Missing AI trick animation resource');return record;
+  }));
+ }
  return {context,assets,visuals};
 }

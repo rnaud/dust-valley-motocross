@@ -17,6 +17,7 @@ const strict=(value,name)=>new Proxy(value,{get(target,key,receiver){
 export function loadLiveFrameBootstrap({checkpoint,animations,environment,collision,row,terrain,throttle,brake}){
  if(!Number.isInteger(throttle)||!Number.isInteger(brake))throw Error('Explicit digital action responses required');
  const m=checkpointMemory(checkpoint),a=checkpoint.bikeAddress,component=m.u32(a+0x8ec);
+ if(checkpoint.captureBoundary==='ai-frame-entry'&&!m.u32(a+0x614))throw Error('AI frame entry requires an AI bike');
  const world=loadLiveCollisionWorld(checkpoint,collision),visuals=loadLiveVisuals(checkpoint,{nodes:world.transformNodes,extraRoots:[m.u32(component+0x50)]});
  const animation=loadLiveNormalRider(checkpoint,animations,{visuals}),env=loadLiveFrameEnvironment(checkpoint,environment);
  if(!env.input||!animations.retainedFrames)throw Error('Complete input/animation observations required');
