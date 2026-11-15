@@ -1,5 +1,11 @@
 # Motocross Madness physics parity roadmap
 
+## Camera matrices connected to the retained live chain
+
+Complete original `0x47a670` matrix arithmetic matches **4,096 cases / 266,240 words**, including zero-FOV exceptional outputs. A fresh 60-frame idle capture matches all four matrices and screen scale (3,900 additional words) from the recovered pose/FOV, with matrix state retained between frames. All fourteen hooks were restored and detachment verified. See `mcm-camera-matrices-recovery.md` and validation report.
+
+Next trace matrix submission/cache gates and renderer stack-writer ordering, then retry the frame-38 steering divergence without observed scratch inputs. Mode/FOV/viewport transitions and whole-world parity remain open. Preview handling is unchanged.
+
 ## FOV filter and live refresh-counter continuity recovered
 
 The original seventh filter, FOV setter and update-counter prefix match **4,096 cases / 32,768 words**. A fresh 60-frame idle capture extends the camera chain through FOV and update return, now retaining the refresh counter without per-frame telemetry reseeding. All fourteen hooks were restored and detachment verified. Mode-transition/FOV controls and remaining camera/view updates are still outside this coverage; the analyzer rejects control-state changes. See `mcm-chase-fov-recovery.md` and its validation report. Preview handling is unchanged; full physics parity remains open.

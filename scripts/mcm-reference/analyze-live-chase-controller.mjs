@@ -1,3 +1,4 @@
+import {composeMcmCameraMatrices} from '../../src/physics/mcm/camera-matrices.js';
 import {stepMcmChaseFov,beginMcmCameraUpdate} from '../../src/physics/mcm/chase-fov.js';
 import {finalizeMcmChaseCamera} from '../../src/physics/mcm/chase-finalize.js';
 import {readMcmTerrain} from './terrain-data.mjs';
@@ -15,8 +16,9 @@ const renderCameraWords=c=>[...bits(Float32Array.from(c.values)),c.upValid,c.for
 const renderNodeWords=nodes=>nodes.flatMap(n=>[n.flag12c,...bits(n.fields240)]);
 const cameraWords=r=>[r.inputs[23],r.inputs[24],r.inputs[26],r.inputs[27],r.inputs[28],...r.inputs.slice(33,36),r.inputs[49],...r.inputs.slice(50,54)];
 const cameraState=s=>{const c=s.camera;return [...bits(Float32Array.of(c.pitch,c.radius,c.yaw,c.orbitAngle)),s.eyeResetFlag,...bits(c.backup),...bits(Float32Array.of(c.zoom)),...bits(s.settings)];};
-export function analyzeLiveChaseController(rows,{postSmoothing=false,terrain=null,finalize=false,fov=false}={}){
- if(fov)finalize=true;assert.ok(!finalize||terrain,'Finalization requires terrain');const clearance=!!terrain;if(clearance)postSmoothing=true;
+export function analyzeLiveChaseController(rows,{postSmoothing=false,terrain=null,finalize=false,fov=false,matrices=false}={}){
+ if(matrices)fov=true;if(fov)finalize=true;assert.ok(!finalize||terrain,'Finalization requires terrain');const clearance=!!terrain;if(clearance)postSmoothing=true;
+ let matrixWords=null,matrixContext=null;
  let fovFilter=null,fovBefore=null,fovPointer=null;
  let renderCamera=null,renderNodes=null,finalizeBefore=null,clearanceResult=null;
  let joinedState=null,controlsInput=null,sourceInput=null,baseInput=null,smoothed=null,postBefore=null,postResult=null,clearanceBefore=null;
@@ -24,7 +26,7 @@ export function analyzeLiveChaseController(rows,{postSmoothing=false,terrain=nul
  const phases=['source-entry','source-exit','restore-entry','base-entry','base-exit','controls-entry','before','after',...(postSmoothing?['post']:[]),...(clearance?['clearance']:[]),...(finalize?['finalized']:[]),...(fov?['fov-entry','fov','updated']:[])];
  let eyeGate=0,motionGate=0,multiplier=0,restoreFlag=0;let phaseIndex=0,sourceEntry=null,baseEntry=null,source=null,base=null,retainedTarget=null,retainedTargetChecks=0;
  for(const r of rows){
-  for(const [name,n] of [['inputs',fov?98:finalize?90:clearance?86:postSmoothing?76:75],['filters',24],['pointers',6],['targets',6],['result',6],...(clearance?[['groundPoint',3]]:[]),...(finalize?[['cameraPose',13],['nodeVisibility',18]]:[])])assert.ok(Array.isArray(r[name])&&r[name].length===n&&r[name].every(v=>Number.isInteger(v)&&v>=0&&v<=0xffffffff),'Invalid '+name);
+  for(const [name,n] of [['inputs',matrices?102:fov?98:finalize?90:clearance?86:postSmoothing?76:75],['filters',24],['pointers',6],['targets',6],['result',6],...(clearance?[['groundPoint',3]]:[]),...(finalize?[['cameraPose',13],['nodeVisibility',18]]:[]),...(matrices?[['matrices',65]]:[])])assert.ok(Array.isArray(r[name])&&r[name].length===n&&r[name].every(v=>Number.isInteger(v)&&v>=0&&v<=0xffffffff),'Invalid '+name);
   assert.ok(Number.isInteger(r.deltaBits)&&r.deltaBits>=0&&r.deltaBits<=0xffffffff,'Invalid delta');
   assert.equal(r.phase,phases[phaseIndex],'Missing or reordered spatial stage');phaseIndex=(phaseIndex+1)%phases.length;
   assert.equal(r.frame,pairs,'Nonsequential spatial frame');
@@ -53,6 +55,11 @@ export function analyzeLiveChaseController(rows,{postSmoothing=false,terrain=nul
      assert.deepEqual(r.inputs.slice(90,91),bits(Float32Array.of(renderCamera.fov)),'Retained FOV differs');assert.equal(r.inputs[92],renderCamera.refreshByte,'Retained refresh byte differs');
     }
     assert.deepEqual(r.nodeVisibility,renderNodeWords(renderNodes),'Retained render nodes differ');
+   }
+   if(matrices){
+    if(!matrixWords){matrixWords=r.matrices.slice();matrixContext=r.inputs.slice(98,102);const v=floats(matrixContext);Object.assign(renderCamera,{near:v[0],far:v[1],aspect:v[2],width:matrixContext[3]});}
+    assert.deepEqual(r.matrices,matrixWords,'Retained camera matrices differ');
+    assert.deepEqual(r.inputs.slice(98,102),matrixContext,'Unrecovered projection context changed');
    }
    sourceEntry=r;const v=floats(r.inputs);
    sourceInput={direction:v.slice(54,57),velocity:v.slice(36,39),bike6a4:v[40],bike620:r.inputs[57]};source=deriveMcmChaseSource(sourceInput).source;
@@ -154,17 +161,24 @@ export function analyzeLiveChaseController(rows,{postSmoothing=false,terrain=nul
    assert.deepEqual(r.inputs.slice(90,91),bits(Float32Array.of(renderCamera.fov)),'Native FOV differs');
    assert.deepEqual(r.cameraPose,renderCameraWords(renderCamera),'Native FOV counter differs');
    assert.equal(r.inputs[92],renderCamera.refreshByte,'Refresh byte changed before update');
+   if(matrices){assert.deepEqual(r.inputs.slice(98,102),matrixContext,'Projection context changed before update');assert.deepEqual(r.matrices,matrixWords,'Matrices changed before update');}
    renderCamera.skipUpdate=r.inputs[91];beginMcmCameraUpdate(renderCamera);
   }else if(r.phase==='updated'){
    assert.deepEqual(r.cameraPose,renderCameraWords(renderCamera),'Native update pose/counter differs');
    assert.equal(r.inputs[92],renderCamera.refreshByte,'Native update byte differs');
    assert.deepEqual(r.inputs.slice(90,91),bits(Float32Array.of(renderCamera.fov)),'Native update FOV differs');
-   assert.deepEqual(r.inputs.slice(94,98),bits(fovFilter),'Native update filter differs');pairs++;
+   assert.deepEqual(r.inputs.slice(94,98),bits(fovFilter),'Native update filter differs');
+   if(matrices){
+    assert.deepEqual(r.inputs.slice(98,102),matrixContext,'Projection context changed during update');
+    if(!renderCamera.skipUpdate){const m=composeMcmCameraMatrices(renderCamera);matrixWords=bits(Float32Array.from([...m.projection,...m.view,...m.combined,...m.screen,m.screenScale]));}
+    assert.deepEqual(r.matrices,matrixWords,'Native camera matrices differ');
+   }
+   pairs++;
   }
  }
- assert.ok(state&&!pending&&phaseIndex===0,'Incomplete capture');return {pairs,downstreamWords:pairs*52,spatialWords:pairs*12,retainedTargetChecks,active,bypassed,resets,modes:[...modes].sort(),...(postSmoothing?{postWords:pairs*32}:{}),...(clearance?{clearanceWords:pairs*8}:{}),...(finalize?{finalizeWords:pairs*31,refreshCounterBoundaryInputs:fov?0:pairs}:{}),...(fov?{fovWords:pairs*8}:{})};
+ assert.ok(state&&!pending&&phaseIndex===0,'Incomplete capture');return {pairs,downstreamWords:pairs*52,spatialWords:pairs*12,retainedTargetChecks,active,bypassed,resets,modes:[...modes].sort(),...(postSmoothing?{postWords:pairs*32}:{}),...(clearance?{clearanceWords:pairs*8}:{}),...(finalize?{finalizeWords:pairs*31,refreshCounterBoundaryInputs:fov?0:pairs}:{}),...(fov?{fovWords:pairs*8}:{}),...(matrices?{matrixWords:pairs*65}:{})};
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
  const terrainIndex=process.argv.indexOf('--terrain'),terrain=terrainIndex<0?null:readMcmTerrain(fs.readFileSync(process.argv[terrainIndex+1]));
- console.log(JSON.stringify(analyzeLiveChaseController(fs.readFileSync(process.argv[2],'utf8').trim().split('\n').map(JSON.parse),{postSmoothing:process.argv.includes('--post'),terrain,finalize:process.argv.includes('--finalize'),fov:process.argv.includes('--fov')}),null,2));
+ console.log(JSON.stringify(analyzeLiveChaseController(fs.readFileSync(process.argv[2],'utf8').trim().split('\n').map(JSON.parse),{postSmoothing:process.argv.includes('--post'),terrain,finalize:process.argv.includes('--finalize'),fov:process.argv.includes('--fov'),matrices:process.argv.includes('--matrices')}),null,2));
 }

@@ -1,0 +1,32 @@
+{
+  "scope": "Complete camera matrix arithmetic and retained idle live chain; not renderer submission or full physics parity",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "native": {
+    "range": "0x47a670..0x47a819 with intact helpers",
+    "cases": 4096,
+    "words": 266240,
+    "differences": 0
+  },
+  "live": {
+    "frames": 60,
+    "mode": 0,
+    "matrixWords": 3900,
+    "differences": 0,
+    "refreshCounterBoundaryInputs": 0,
+    "captureSha256": "c8ca2e55e02030e55b87dd2f305373ed1efd985cf29e69e28307ee5dc44a2ad7",
+    "restoredHooks": 14,
+    "debuggerDetached": true
+  },
+  "remaining": [
+    "Renderer submission/cache gates and stack-writer ordering",
+    "Action-11 mode and FOV/viewport controls",
+    "Known frame-38 steering divergence and whole-world parity"
+  ],
+  "previewHandlingChanged": false,
+  "tests": {
+    "passed": 524,
+    "failed": 0,
+    "focusedPassed": 17,
+    "build": true
+  }
+}
