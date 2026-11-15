@@ -4,6 +4,7 @@ import {compareFrameRiderVisuals,compareFrameVisuals} from './compare-live-frame
 import {createCapturedFrameRuntime} from './captured-frame-runtime.mjs';
 import {advanceMcmRetainedFrame} from '../../src/physics/mcm/retained-frame.js';
 import {bitsFloat,floatBits} from '../../src/physics/mcm/math.js';
+import {connectLiveMeshDraw} from './live-mesh-draw.mjs';
 
 // Diagnostic, not a whole-world parity verdict. Initialize once, retain all
 // computed state, and report external visual writes rather than importing them.
@@ -18,6 +19,7 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents,{diagnosticBody=f
  }
  const runtime=riderEvents?createCapturedFrameRuntime(inputs,first,riderEvents[0]):null;
  const loaded=runtime?.loaded??loadLiveFrameBootstrap({...inputs,row:first}),c=loaded.context;
+ const meshDraw=inputs.draws?connectLiveMeshDraw(runtime,first):null;let drawIndex=0;
  let riderTicks=0,riderBytes=0,eventIndex=1;
  const particleDifferences=[],worldQueries=[];
  const bodyDifferences=[];
@@ -69,7 +71,15 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents,{diagnosticBody=f
   assert.equal(result.status,'returned');assert.equal(boundary,4);substeps.push(result.substeps);
   if(riderEvents){
    let ticks=0;
+   const drainDraws=()=>{
+    while(inputs.draws?.[drawIndex]?.eventSequence===eventIndex){
+     const draw=inputs.draws[drawIndex++];assert.equal(draw.captureId,inputs.checkpoint.captureId);assert.equal(draw.completedBikeFrames,frame+1);
+     if(draw.phase==='before-draw')meshDraw.entry(draw);
+     else{assert.equal(draw.phase,'after-draw');meshDraw.exit(draw);}
+    }
+   };
    while(riderEvents[eventIndex]?.completedBikeFrames===frame+1){
+    drainDraws();
     const before=riderEvents[eventIndex++];
     if(before.phase==='scene-entry'){
      assert.ok(runtime.scenePosition,'Missing initial scene inputs');assert.equal(pendingScene,null,'Overlapping scene queries');
@@ -92,6 +102,7 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents,{diagnosticBody=f
     if(before.phase==='world-query'){
      worldQueries.push(before);
      if(pendingScene){const first=pendingScene.observedNodes.length===0;assert.equal(before.caller,first?0x4b797f:0x4b6956);if(first)assert.equal(before.positionCaller,0x422fad);pendingScene.observedNodes.push(before.node);}
+     else meshDraw?.query(before);
      continue;
     }
     const after=riderEvents[eventIndex++];
@@ -103,10 +114,12 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents,{diagnosticBody=f
     compareRider(after,frame,'after-rider');assert.equal(floatBits(runtime.external.context.globalDelta),after.globalDtBits);
     riderTicks++;ticks++;
    }
+   drainDraws();
    if(frame<observations.length/4-1)assert.equal(ticks,1,'Missing separate rider tick');
   }
  }
  if(riderEvents)assert.equal(eventIndex,riderEvents.length,'Unconsumed rider events');
  assert.equal(pendingScene,null,'Incomplete scene query');
- return {frames:intervals.length,intervals,substeps,bodyBoundaries,bodyBytes,randomDraws:loaded.random.calls,visualDifferences,...(diagnosticBody?{diagnosticBody:true,bodyDifferences}:{}),...(riderEvents?{riderTicks,riderBytes,particleDifferences,worldQueries,...(runtime.scenePosition?{sceneReports}:{})}:{})};
+ if(meshDraw){meshDraw.complete();assert.equal(drawIndex,inputs.draws.length,'Unconsumed draws');}
+ return {frames:intervals.length,intervals,substeps,bodyBoundaries,bodyBytes,randomDraws:loaded.random.calls,visualDifferences,...(meshDraw?{drawReports:meshDraw.reports,drawNodeWords:meshDraw.nodeWords}:{}),...(diagnosticBody?{diagnosticBody:true,bodyDifferences}:{}),...(riderEvents?{riderTicks,riderBytes,particleDifferences,worldQueries,...(runtime.scenePosition?{sceneReports}:{})}:{})};
 }

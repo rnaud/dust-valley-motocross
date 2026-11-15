@@ -5,7 +5,7 @@ const fixture=(name='ai-substeps')=>JSON.parse(brotliDecompressSync(fs.readFileS
 function input(f=fixture()){
  const json=name=>JSON.parse(f.files[name+'.json']),rows=f.files['frames.jsonl'].trim().split('\n').map(JSON.parse);
  const {terrain:t}=JSON.parse(gunzipSync(fs.readFileSync(new URL('../src/assets/mcm-maps/quarries-dunes.bin',import.meta.url)))),cache=new Map(),node=id=>{if(cache.has(id))return cache.get(id);const raw=t.nodes[id],n={...raw,...t.banks[raw.bankIndex]};cache.set(id,n);if(raw.children)n.children=raw.children.map(id=>id===null?null:node(id));return n;};
- return {checkpoint:json('checkpoint'),animations:json('animations'),environment:json('environment'),collision:json('collision'),aiEnvironment:json('ai-environment'),row:rows.find(r=>r.phase==='before-update'),terrain:{root:node(t.root),worldToGrid:t.worldToGrid,heightScale:t.heightScale},throttle:0,brake:0,rows};
+ return {checkpoint:json('checkpoint'),animations:json('animations'),environment:json('environment'),collision:json('collision'),aiEnvironment:json('ai-environment'),row:rows.find(r=>r.phase==='before-update'),terrain:{root:node(t.root),worldToGrid:t.worldToGrid,heightScale:t.heightScale},throttle:0,brake:0,rows,...(f.files['draws.jsonl']?{draws:f.files['draws.jsonl'].trim().split('\n').map(JSON.parse)}:{})};
 }
 import {analyzeAiSubsteps} from '../scripts/mcm-reference/analyze-ai-substeps.mjs';
 const trace=f=>f.files['substeps.jsonl'].trim().split('\n').map(JSON.parse);
@@ -59,4 +59,33 @@ test('airborne redirection uses the component cached basis across retained trick
  const loaded=loadLiveFrameBootstrap(i),c=loaded.context,m=checkpointMemory(i.checkpoint);
  assert.equal(c.baseNode.address,m.u32(m.u32(i.checkpoint.bikeAddress+0x8d8)));assert.notEqual(c.baseNode,c.bodyNode);
  assert.equal(c.baseNode,c.aiController.runtime.setup.graph.source);
+});
+
+
+test('retained draw rectangles, recursive LOD and mesh caches match eight original AI frames',()=>{
+ const f=fixture('ai-draw-world');
+ for(const [name,value] of Object.entries(f.files))assert.equal(createHash('sha256').update(value).digest('hex'),f.provenance.fileSha256[name]);
+ assert.match(f.files['cleanup.log'],/debugger=0 clean=1/);assert.equal((f.files['cleanup.log'].match(/restored=1/g)||[]).length,19);
+ assert.match(f.provenance.note,/Controlled camera target/);assert.match(f.files['camera-restoration.log'],/target_changed=051f7598->051c8d40 verified=1/);
+ const i=input(f),r=analyzeAiSubsteps(i,i.rows,rider(f),trace(f));
+ assert.equal(r.frames,8);assert.equal(r.bodyBoundaries,32);assert.equal(r.substepBoundaries,480);assert.equal(r.componentWords,5760);
+ assert.deepEqual(r.visualDifferences,[]);assert.equal(r.drawNodeWords,24150);assert.equal(r.drawReports.length,14);
+ assert.equal(r.drawReports.filter(d=>d.accepted).length,2);assert.equal(r.drawReports.reduce((n,d)=>n+d.queries,0),24);
+ assert.equal(r.particleDifferences.length,53214);assert.equal(r.riderBytes,35000);
+ const bike=i.checkpoint.bikeAddress;
+ assert.equal(i.draws.find(d=>d.phase==='after-draw'&&d.actor===bike&&d.completedBikeFrames===5).selection,2);
+ delete i.draws;
+ assert.throws(()=>analyzeAiSubsteps(i,i.rows,rider(f),trace(f)),/body 488/);
+});
+test('draw outputs and observed query targets cannot steer retained rendering state',()=>{
+ for(const kind of ['rectangle','lod','query']){
+  const f=fixture('ai-draw-world'),i=input(f),events=rider(f);
+  if(kind==='query')events.find(e=>e.phase==='world-query'&&e.caller===0x445711).node^=4;
+  else{
+   const out=i.draws.find(d=>d.phase==='after-draw'&&d.actor===i.checkpoint.bikeAddress&&d.completedBikeFrames===5);
+   if(kind==='rectangle')out.rect[0]^=1;
+   else out.lodNodes.find(n=>n.address===out.node).index^=1;
+  }
+  assert.throws(()=>analyzeAiSubsteps(i,i.rows,events,trace(f)),kind==='rectangle'?/Computed screen rectangle/:kind==='lod'?/Computed recursive LOD/:/Computed mesh query target/);
+ }
 });
