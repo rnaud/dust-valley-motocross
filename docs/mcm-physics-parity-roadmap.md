@@ -1,5 +1,9 @@
 # Motocross Madness physics parity roadmap
 
+## Pixel descriptor joined to live shader selection — 2026-11-15
+
+The complete fixed-function pixel builder matches 8,192 intact native cases / 1,081,344 bytes, including inherited output bytes. A five-frame trace predicts 28 descriptors, 291 cache comparisons and 28 pixel program IDs. Its 12 computed vertex descriptors also provide 528 bytes of pixel-buffer input. All 257 hooks restored and debugger absent. See `mcm-fixed-pixel-recovery.md`. State producers, remaining seed bytes, cache creation and full scheduling remain boundaries; the older frame-38 failure is open. Preview handling is unchanged.
+
 ## Vertex descriptor connected to live cache selection — 2026-11-15
 
 A completed five-frame capture computes all 12 native descriptors, follows 24 cache comparisons and predicts 12 selected vertex IDs in the final program key. Input/descriptor/selected-ID mutations are rejected; all 253 hooks restored and debugger absent. See `mcm-shader-key-recovery.md`. The sample has no creation misses; cache contents, graphics-state production and pixel descriptors remain boundaries. The older steering failure remains open.
