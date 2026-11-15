@@ -1,5 +1,14 @@
 # Motocross Madness physics parity roadmap
 
+## Live AI avoidance records joined to guidance (2026-11-15)
+
+A 64-call original capture now joins nearest-route selection, retained target advancement (21 advances), guidance and avoidance record preparation. The recovered calculations match all written fields in 114 records: 57 inactive player records and 57 active self-actor records. Seven calls skip avoidance through the original `+0x4bc` eligibility branch. Input pose/velocity/radius and actor identities come from earlier captures; output-time body snapshots are assertions. Inactive angle slots are not interpreted as outputs, and their preservation remains covered by the isolated original-code oracle.
+
+The regression rejects altered output words, changed body inputs, missing actor entries and changed eligibility. All seven guarded live hooks were independently verified restored with no debugger attached. Evidence: `analyze-ai-avoidance-record.mjs`, `tests/mcm-ai-avoidance-record.test.js`, and `ai-avoidance-live-wine11.json.br`.
+
+This live scene contains no second-list actors and no active player obstacle. The self entry is excluded by the later scan. Actual obstacle-induced steering, the full scan, allocator behavior, retained AI motion and the longer world replay remain open. No preview handling change or full-parity claim.
+
+
 ## AI avoidance record preparation (2026-11-15)
 
 Recovered pairwise avoidance records in the player region `0x46df56..0x46e060` and both actor-list regions `0x46e0a9..0x46e1ac` and `0x46e214..0x46e317`. Each record carries eligibility, distance (or squared distance while inactive), heading, relative speed squared plus one, and angular half-width. Inactive records preserve the two inherited angle slots. The implementation preserves the distinct player/actor comparison rules identified in the native instructions.
