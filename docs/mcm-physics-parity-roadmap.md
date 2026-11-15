@@ -1,5 +1,14 @@
 # Motocross Madness physics parity roadmap
 
+## AI target guidance joined to retained selection (2026-11-15)
+
+Recovered mode-0 guidance at `0x46dac1..0x46dec6`: original square-root lookup distance, route-offset/lookahead interpolation, aim heading with coincident-point fallback, speed-limit value and signed lateral error using the correct nearest-segment side. The current target and nearest segment remain distinct. All six words match 4,096 intact original executions, including direct/interpolated targets, category-8 bypass and degenerate nearest segments. Repeat native output is identical.
+
+A new 64-call capture joins computed nearest segments and retained target selection through six advances into guidance; all six output words match each call. The lookahead setting is initialized once, then later snapshots are assertions. Mutated output bits, route offsets and later lookahead values are rejected. All four guarded live hooks are independently verified restored and no debugger remains. Evidence: `tests/mcm-ai-route-guidance.test.js`, `ai-route-guidance-wine11.json.br`, and the oracle, generator and analyzer in `scripts/mcm-reference/`.
+
+Per-call bike pose, heading and remaining controller inputs are still boundaries; the initial lookahead producer is not recovered here. Other modes fail explicitly. Subsequent heading overrides, nearby-actor avoidance, steering/throttle outputs and retained AI motion/rider simulation remain open. This is not full controller or whole-physics parity, and preview handling is unchanged.
+
+
 ## Retained AI target advancement (2026-11-15)
 
 Recovered the complete mode-0 target-selection loop at `0x46d707..0x46dac1`, including nearest/reference-index reconciliation, height and wrapped-angle tests, multi-node advancement, wraparound, reset of the target flag and both heading outputs. All seven output words match 4,096 original executions (1,902 advancing cases, including 848 multi-node cases); a repeated native execution is identical. No generated cases were discarded.
