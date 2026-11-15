@@ -54,8 +54,56 @@ Use the capture and cleanup commands in mcm-render-heap-recovery.md. The
 additional metadata observes state-input, state-prepared, state-declaration
 and upload-input without adding breakpoint sites.
 
-Still required: viewport-matrix payload recovery, the remaining upload gates,
+Still required: live viewport-payload validation, the remaining upload gates,
 temporary-buffer lifetime/free conditions, and shared-world particle
 visibility/order. The transform-upload model is isolated; preview handling
 does not invoke it yet. A transform upload alone does not prove a free or
 an overlapping scratch write.
+
+## Viewport matrix arithmetic
+
+The pre-transformed path's matrix calculation is now recovered in
+`src/physics/mcm/render-viewport.js`. The pinned instruction block at RVA
+0x1bddc6 runs through 0x1bdef6 (including the 0x1c1306 branch), stopping before
+the upload at 0x1bf964. It reads viewport x/y/width/height at state +0xade4,
+and raw state +0x2300 / device +0x28 fields for the depth diagonal. The latter
+fields retain their offset names because their semantics are not established.
+
+Each SSE arithmetic instruction rounds to binary32. Sign inversion is a sign
+bit XOR. Generated invalid results use negative indefinite NaN, while quiet
+input NaNs preserve operand selection. Plain JavaScript arithmetic produced
+3,600 NaN-sign differences in the edge fixture; the recovered operations remove
+them. No half-pixel correction or viewport depth-range input appears here.
+
+`oracle-render-viewport.c` loads the pinned DLL in a separate process without
+resolving imports, guards entry/exit instructions, and redirects only the exit
+to collect its 16 output words. It does not attach to or patch the running game.
+The DLL SHA-256 is
+`25feee6100619bd123fc00568d4e5107a3a20d60f62d160e12c368731fa32f1c`.
+MXCSR is 0x1f80. The fixture preserves raw inputs and outputs:
+
+- 4,096 randomized finite cases / 65,536 words.
+- 10,000 Cartesian edge cases / 160,000 words, including signed zeros,
+  infinities, quiet NaNs with distinct payloads, and minimum subnormal values.
+
+All 225,536 words match, and fresh native reruns reproduced both saved output
+files byte for byte. Signaling NaNs and alternate MXCSR modes are outside this
+coverage. This is isolated arithmetic validation: live captures currently
+record upload addresses, not payload bytes. It does not yet close the shared
+stack writer schedule or change preview handling.
+
+A subsequent live-payload capture attempt on PID 288 stopped after one record,
+before renderer observations. The retained launcher reported game exit
+0x80000004. The pre-capture check verified all 167 instructions and no debugger;
+the post-capture check could not read the exited process and therefore does not
+prove restoration. No payload observations from that attempt are used here.
+Recovering the live capture is still required.
+
+To reproduce, decompress `tests/fixtures/mcm/render-viewport-wine11.json.br`,
+decode each group's base64 `input` to a file, compile the oracle with
+`i686-w64-mingw32-gcc -O0 -Wall -Wextra -Werror`, and invoke under the pinned
+Wine prefix with three arguments: pinned DLL path, input path, output path.
+Each input record contains four float32 viewport values and two uint32 flags
+(24 bytes); each output record is 16 float32 words (64 bytes). Compare the
+output to the group's decoded `output`. Run
+`node --test tests/mcm-render-viewport.test.js` for the recovered model.
