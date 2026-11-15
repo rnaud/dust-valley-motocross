@@ -16,6 +16,13 @@ This is an asset-port tally, separate from physics equivalence. Matching geometr
 - Original TRN palettes and 1,068 indexed textures across all 33 courses now parse with their mip levels and tile metadata preserved.
 - Original texture layout and orientation math matches 1,024 isolated native cases / 5,120 output words. See `mcm-terrain-rendering-recovery.md` for scope and reproduction. The preview now applies these textures to both the coarse ground and dense sand patch using native world coordinates. Original base pixels and the stored mip level are palette-expanded without recoloring.
 
+## Scene settings and comparison scenery
+
+- Imported a source-hashed SCN settings record for every available matching course file; missing files are explicit null entries. Defaults are not presented as exact race starts.
+- Preview applies a scene’s declared fog color when present. Fog distance, sky cubes and lighting remain unported; imported sky/light metadata is preserved for that work.
+- Original-map rides now hide Dust Valley’s decorative mountains, cacti, rocks, arch, grass and nearby procedural ground details. Classic restores these decorations.
+- Desktop Dunes and touch Week 10 browser checks verify original meshes/textures and absence of procedural scenery.
+
 ## Still required for a complete asset port
 
 - Original skies, fog, scene lighting and full terrain renderer behavior. Terrain textures and rotations are connected, but geometry resampling, lighting, outer-map clamping and GPU filtering still differ from the original renderer.
