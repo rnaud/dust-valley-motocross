@@ -1,5 +1,14 @@
 # Motocross Madness physics parity roadmap
 
+## AI throttle, brake and direct motion outputs (2026-11-15)
+
+Recovered `0x470174..0x4703c2` throttle/brake decisions, lateral-speed and route-boundary limits, turn-rate adjustment and the mode-1 pitch override. Recovered `0x4703c2..0x470553` direct velocity/axis rotation, original `0x4b7000` normalization and graph invalidation, low-speed forward boost, speed recomputation, output-history fields and packed jump-flag clearing. The motion helper accepts a caller-owned transform graph. Five throttle outputs match 8,192 repeated original cases; all 49 motion/body/root-matrix/cache outputs match 4,096 repeated cases. The original orientation callee is intact, with synthetic root/child/sibling graphs and varied cache flags. Coverage is finite and does not establish every exceptional x87 value.
+
+The mode-0 live chain now computes throttle/brake/pitch and checks all fourteen final motion fields across 256 calls: 139 throttle-on decisions, three braking decisions and 148 turning updates. Inputs include recovered pitch, route guidance, avoidance, lookahead and jump-modified vertical velocity. The earlier minimum-speed-limit clamp is reconstructed and asserted at its boundary. Tampered throttle, velocity, normalized axes or packed flags fail. This capture has **zero low-speed boosts**; that branch has isolated original coverage only. The live capture also lacks the AI root graph: the body-only analyzer uses an inert local transform solely for body-axis normalization and makes no live root-matrix/cache claim. All graph outputs are checked by the isolated oracle.
+
+Evidence: `ai-throttle.js`, `ai-motion.js`, both native oracles/generators, `analyze-ai-throttle.mjs`, `analyze-ai-motion.mjs`, `tests/mcm-ai-final-controls.test.js` and its native fixture. Per-call pose, startup/race/handicap inputs, full trick/nearby event graphs, live transform graphs, retained motion and natural whole-world replay remain unfinished. The recovered blocks are not yet a complete replacement for AI frame dispatch; keep its guards. Preview handling is unchanged, and full physics parity remains unproven.
+
+
 ## Retained mode-0 AI pitch command (2026-11-15)
 
 Recovered speed-based pitch adjustment `0x46f69e..0x46f824` and contact/airborne/route-jump pitch control `0x46f911..0x470174`. The latter also computes the handicap-dependent turn multiplier. Preserves signed-bit speed/timestep gates, distinct float stores and multiplication order, landing-angle deadband, route projection, snap/rate limits and asymmetric bit clamps. All outputs match 12,288 repeated intact original executions (4,096 base cases and 8,192 later-control cases), with finite inputs and no substituted callees in either block.

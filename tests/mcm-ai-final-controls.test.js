@@ -1,0 +1,13 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import {brotliDecompressSync,gunzipSync} from 'node:zlib';import {createHash} from 'node:crypto';
+import {generateAiThrottleCases} from '../scripts/mcm-reference/ai-throttle-cases.mjs';import {generateAiMotionCases} from '../scripts/mcm-reference/ai-motion-cases.mjs';import {analyzeAiMotion} from '../scripts/mcm-reference/analyze-ai-motion.mjs';
+const read=name=>JSON.parse(brotliDecompressSync(fs.readFileSync(new URL(`./fixtures/mcm/${name}-wine11.json.br`,import.meta.url)))),fixture=()=>read('ai-final-controls'),live=()=>read('ai-jump-state'),hash=x=>createHash('sha256').update(x).digest('hex'),rows=()=>live().live.trim().split('\n').map(JSON.parse);
+function options(){const f=fixture(),bytes=fs.readFileSync(new URL('../src/assets/mcm-maps/quarries-dunes.bin',import.meta.url));assert.equal(hash(bytes),f.provenance.assetSha256);const {terrain:t}=JSON.parse(gunzipSync(bytes)),cache=new Map(),node=id=>{if(cache.has(id))return cache.get(id);const raw=t.nodes[id],n={...raw,...t.banks[raw.bankIndex]};cache.set(id,n);if(raw.children)n.children=raw.children.map(i=>i===null?null:node(i));return n;};return {...f.configuration,terrain:{root:node(t.root),worldToGrid:t.worldToGrid,heightScale:t.heightScale}};}
+test('throttle and final motion match 12288 repeated intact original executions',()=>{
+ const f=fixture();for(const [name,gen,count,size] of [['throttle',generateAiThrottleCases,8192,20],['motion',generateAiMotionCases,4096,196]]){const p=f.fixtures[name],{input,expected}=gen(),native=Buffer.from(p.native,'base64');assert.equal(native.length,count*size);assert.equal(hash(input),p.inputSha256);assert.equal(hash(native),p.outputSha256);assert.equal(p.repeatSha256,p.outputSha256);assert.deepEqual(expected,native);}
+});
+test('256 live calls match final commands and 14 motion fields, including 148 turning updates',()=>{
+ const f=fixture(),l=live();assert.equal(hash(l.live),f.provenance.liveSha256);assert.match(l.provenance.cleanup,/debugger=0 clean=1/);assert.equal((l.provenance.cleanup.match(/restored=1/g)||[]).length,17);assert.deepEqual(analyzeAiMotion(rows(),options()),{calls:256,gas:139,brake:3,rotations:148,boosts:0});
+});
+test('changed throttle, velocity, normalized axes and packed flags fail live reconstruction',()=>{
+ for(const [offset,message] of [[0xb04,/Throttle outputs/],[0x510,/Computed AI motion/],[0x4c4,/Computed AI motion/],[0xb6c,/Computed AI motion/]]){const r=rows(),o=r.find(x=>x.phase==='after'),b=Buffer.from(o.hex,'hex');b.writeUInt32LE((b.readUInt32LE(offset)^1)>>>0,offset);o.hex=b.toString('hex');assert.throws(()=>analyzeAiMotion(r,options()),message);}
+});
