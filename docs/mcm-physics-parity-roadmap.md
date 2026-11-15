@@ -1,5 +1,9 @@
 # Motocross Madness physics parity roadmap
 
+## Sampler mapping producer recovered — 2026-11-15
+
+The intact mapping producer and modern range helper match 4,096 native cases / 12,288 words, including byte truncation, unsigned overflow and the compute-offset equality rule. The binding model now derives its ranges by default. The live null-shader path derives eight formats and validates the returned context-map pointer; deleting a complete format call is rejected. The 42-bike / 41-rider retained comparison remains clean. See `mcm-shader-sampler-map-recovery.md`. Shader-cache scheduling, map/capability state and the old frame-38 steering failure remain open; preview handling is unchanged.
+
 ## Live sampler saves joined to world replay — 2026-11-15
 
 The 270-site capture verifies eight sampler-name formats, 24 output callbacks and 16 computed zero saves. Joining them to ordered world writes closes this capture's interval-23 failure: 41 next-bike checks pass, and retained physics matches 42 bike / 41 rider updates with zero modeled physics differences and zero observed scratch substitution. A separate intact sampler-binding oracle matches 4,096 cases, including read timing and format-before-location-query ordering. See `mcm-shader-sampler-format-recovery.md` and `mcm-shader-sampler-bindings-recovery.md`. Shader-cache scheduling, mapping production and the older frame-38 steering failure remain open; preview handling is unchanged.

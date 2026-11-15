@@ -77,10 +77,12 @@ scratch substitutions. The scene check retains 76 nodes and verifies 3,040
 node comparisons and 2,640 callback boundaries.
 
 The live formatter checker rejects changed stack addresses, saved values and
-missing entries. Its invocation boundaries and sampler counts are still
-observed, not produced by a complete shader-cache simulation. The separately
+missing entries. Its invocation boundaries are still observed, not produced by a complete
+shader-cache simulation. The null-shader range now derives the eight-name
+count and validates the map pointer; whole missing format calls are rejected. The separately
 recovered sampler-binding gate validates its own ordering against native
-execution, but its mapping producer and upstream eligibility remain open.
+execution. The mapping producer is now recovered, while its state inputs
+and upstream shader-cache eligibility remain open.
 The older negative captures lack these detailed boundaries and continue to
 fail strictly. The original frame-38 steering failure is not closed by this
 42-frame validation. Preview handling remains unchanged.

@@ -1,3 +1,4 @@
+import {mcmShaderSamplerMap} from './shader-sampler-map.js';
 // Pinned wined3d ec5e0, with logging disabled. Context capability fields stay
 // live across callbacks; sampler range, map pointer, prefix and program are
 // retained at the same points as the original. GL and buffer helpers are
@@ -8,7 +9,7 @@ export function bindMcmShaderSamplers(context,callbacks) {
  const type=context.shader?.type;
  const prefix=context.shader==null?'ps':(['ps','vs','gs','hs','ds','cs'][type>>>0]??'unknown');
  const program=context.program>>>0;
- const range=callbacks.getSamplerMap(context.shader);
+ const range=callbacks.getSamplerMap?callbacks.getSamplerMap(context.shader):mcmShaderSamplerMap(context);
  const first=range.first>>>0,count=range.count>>>0,map=range.map;
  const buffer=callbacks.acquire();
  for(let i=0;i<count;i++) {

@@ -52,4 +52,11 @@ test('live formatter rejects altered stores, stack positions and missing entries
  f=liveFixture();start=f.render.findIndex(r=>r.phase==='shader-ec5e0');
  f.render.splice(f.render.findIndex((r,i)=>i>start&&r.phase==='shader-138260'),1);
  assert.throws(()=>analyzeSamplerFormatter(f.render),/Missing formatter entry/);
+ f=liveFixture();start=f.render.findIndex(r=>r.phase==='shader-ec5e0');
+ const first=f.render.findIndex((r,i)=>i>start&&r.phase==='shader-138260');
+ const end=f.render.findIndex((r,i)=>i>first&&r.phase==='shader-ec6cf');
+ f.render.splice(first,end-first+1);
+ assert.throws(()=>analyzeSamplerFormatter(f.render),/Missing derived sampler formats/);
+ f=liveFixture();f.render.find(r=>r.phase==='shader-ec65b').result^=4;
+ assert.throws(()=>analyzeSamplerFormatter(f.render),/Sampler map pointer/);
 });

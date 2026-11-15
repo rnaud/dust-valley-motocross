@@ -15,7 +15,8 @@ uniforms still incur formatting and its stack writes.
 The model preserves the original reads: the prefix, program, mapping pointer
 and range are retained; map entries and the capability object's unit limit
 are read after each location query. Buffer, formatting and GL callbacks remain
-explicit, as does the mapping producer. The model does not infer when the
+explicit. The mapping producer is now recovered and used by default; an
+explicit mapping callback remains available for oracle comparisons. The model does not infer when the
 program-selection cache invokes this routine.
 
 ## Native validation
@@ -40,5 +41,6 @@ shader, map present, mutate limit during query, and mutate map during query.
 Each output is 129 DWORDs: event count and up to 32 four-word events. Event
 kinds are mapping, acquisition, formatting, query, binding and release.
 
-This gate is available for reconstruction but is not yet driven by retained
-shader-cache state. It does not change preview handling.
+The recovered mapper supplies ranges by default; shader-cache state and the
+legacy map contents still need retained-state integration. See
+`mcm-shader-sampler-map-recovery.md`. Preview handling is unchanged.
