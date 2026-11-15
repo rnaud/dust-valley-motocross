@@ -1,5 +1,14 @@
 # Motocross Madness physics parity roadmap
 
+## Retained mode-0 AI pitch command (2026-11-15)
+
+Recovered speed-based pitch adjustment `0x46f69e..0x46f824` and contact/airborne/route-jump pitch control `0x46f911..0x470174`. The latter also computes the handicap-dependent turn multiplier. Preserves signed-bit speed/timestep gates, distinct float stores and multiplication order, landing-angle deadband, route projection, snap/rate limits and asymmetric bit clamps. All outputs match 12,288 repeated intact original executions (4,096 base cases and 8,192 later-control cases), with finite inputs and no substituted callees in either block.
+
+The live analyzer consumes computed jump/landing outputs from the retained replay, recovered lookahead and avoidance, route segment geometry and a pitch angle derived from entry orientation. It initializes `6ec` once, carries each computed result, checks stage entries and matches all 256 full-controller pitch exits. The recovered frame-input crash branch processes 156 captured crash events. **Pitch is already zero at these events in this fixture**, so deleting them does not change pitch outputs; the earlier steering regression remains the evidence that missing crash events are observable. Altered retained pitch entries, output commands and timestep boundaries fail the new checks. Turn multiplier output is proven by isolated execution, not yet by a live downstream observer.
+
+Evidence: `ai-pitch-control.js`, both native oracles/generators, `analyze-ai-pitch-control.mjs`, `tests/mcm-ai-pitch-control.test.js` and native fixture. `replayAiLandingPitch` exposes copied computed results so the command analyzer does not seed landing pitch from observed exits. Live validation remains mode 0 with per-call pose, race/handicap configuration, crash occurrence and external random scheduling as boundaries. The later mode-1 pitch override, throttle/brake decisions, direct velocity/orientation updates, full trick/nearby graphs, retained motion and natural whole-world replay remain unfinished. Preview handling is unchanged; full parity is not established.
+
+
 ## Retained AI jump state through terrain-normal landing pitch (2026-11-15)
 
 Recovered `0x46f824..0x46f911`: the airborne/latch/time gates, projected query position, original smooth terrain-normal query, heading-relative landing pitch, signed-bit pitch cap and latch write. Both output words match 4,096 repeated original executions on Dunes, including bypass cases. The oracle retains original terrain parsing and normal lookup, with the existing host allocation/stdio and renderer-initialization substitutions. Its wrapper reserves sufficient scratch space through `esp+0xb0`.

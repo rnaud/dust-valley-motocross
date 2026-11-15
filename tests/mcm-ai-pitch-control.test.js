@@ -1,0 +1,15 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import {brotliDecompressSync,gunzipSync} from 'node:zlib';import {createHash} from 'node:crypto';
+import {generateAiBasePitchCases} from '../scripts/mcm-reference/ai-base-pitch-cases.mjs';import {generateAiPitchControlCases} from '../scripts/mcm-reference/ai-pitch-control-cases.mjs';import {analyzeAiPitchControl} from '../scripts/mcm-reference/analyze-ai-pitch-control.mjs';
+const read=name=>JSON.parse(brotliDecompressSync(fs.readFileSync(new URL(`./fixtures/mcm/${name}-wine11.json.br`,import.meta.url)))),fixture=()=>read('ai-pitch-control'),live=()=>read('ai-jump-state'),hash=x=>createHash('sha256').update(x).digest('hex'),rows=()=>live().live.trim().split('\n').map(JSON.parse);
+function options(){const f=fixture(),bytes=fs.readFileSync(new URL('../src/assets/mcm-maps/quarries-dunes.bin',import.meta.url));assert.equal(hash(bytes),f.provenance.assetSha256);const {terrain:t}=JSON.parse(gunzipSync(bytes)),cache=new Map(),node=id=>{if(cache.has(id))return cache.get(id);const raw=t.nodes[id],n={...raw,...t.banks[raw.bankIndex]};cache.set(id,n);if(raw.children)n.children=raw.children.map(i=>i===null?null:node(i));return n;};return {...f.configuration,terrain:{root:node(t.root),worldToGrid:t.worldToGrid,heightScale:t.heightScale}};}
+test('pitch command blocks match 12288 repeated original executions',()=>{
+ const f=fixture();for(const [name,gen,count,size] of [['base-pitch',generateAiBasePitchCases,4096,4],['pitch-control',generateAiPitchControlCases,8192,8]]){const p=f.fixtures[name],{input,expected}=gen(),native=Buffer.from(p.native,'base64');assert.equal(native.length,count*size);assert.equal(hash(input),p.inputSha256);assert.equal(hash(native),p.outputSha256);assert.equal(p.repeatSha256,p.outputSha256);assert.deepEqual(expected,native);}
+});
+test('retained pitch matches 256 live exits through 156 computed crash clears',()=>{
+ const f=fixture(),l=live();assert.equal(hash(l.live),f.provenance.liveSha256);assert.match(l.provenance.cleanup,/debugger=0 clean=1/);assert.equal((l.provenance.cleanup.match(/restored=1/g)||[]).length,17);const {checks,...summary}=analyzeAiPitchControl(rows(),options());assert.deepEqual(summary,{calls:256,clears:156,landingQueries:16,aiDraws:127});assert.equal(checks.length,256);
+});
+test('altered retained entries, commands and timesteps cannot be hidden by reseeding pitch',()=>{
+ let r=rows(),o=r.find(x=>x.phase==='before'&&x.sequence===5),b=Buffer.from(o.hex,'hex');b.writeUInt32LE((b.readUInt32LE(0x6ec)^1)>>>0,0x6ec);o.hex=b.toString('hex');assert.throws(()=>analyzeAiPitchControl(r,options()),/Retained pitch entry/);
+ r=rows();o=r.find(x=>x.phase==='after');b=Buffer.from(o.hex,'hex');b.writeUInt32LE((b.readUInt32LE(0x6ec)^1)>>>0,0x6ec);o.hex=b.toString('hex');assert.throws(()=>analyzeAiPitchControl(r,options()),/Computed final pitch command/);
+ r=rows();r.find(x=>x.phase==='lookahead-after').dtBits^=1;assert.throws(()=>analyzeAiPitchControl(r,options()),/Pitch timestep/);
+});

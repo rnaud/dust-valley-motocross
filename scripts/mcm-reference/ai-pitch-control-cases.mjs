@@ -1,0 +1,5 @@
+import {computeMcmAiPitchControl} from '../../src/physics/mcm/ai-pitch-control.js';
+import {floatBits as bits} from '../../src/physics/mcm/math.js';
+export function generateAiPitchControlCases(){
+const count=8192,input=Buffer.alloc(count*92),expected=Buffer.alloc(count*8);let seed=0x46f911;const random=()=>{seed^=seed<<13;seed^=seed>>>17;seed^=seed<<5;return seed>>>0;};for(let i=0;i<count;i++){const w=[bits([0,-.02,.02,.001,.5][i%5]),bits((random()%60000-30000)/10000),bits(i%2?-1:1),bits(i%3?-1:1),random()%2,random()%4,bits((random()%40000-20000)/10000),random()%2,random()%2,random()%2,bits((random()%10000)/10),bits((random()%10000)/10),bits((random()%60000-30000)/10000),random()%2,random()%2,bits((random()%30000-10000)/10000),bits((random()%40000-20000)/10000),bits((random()%1000)/10000),bits((random()%10000)/10),bits((random()%10000)/10),bits((random()%10000)/10),bits((random()%10000)/10),random()%8];w.forEach((v,j)=>input.writeUInt32LE(v,i*92+j*4));computeMcmAiPitchControl(w).forEach((v,j)=>expected.writeUInt32LE(v,i*8+j*4));}return {input,expected};
+}
