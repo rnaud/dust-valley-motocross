@@ -1,5 +1,7 @@
 # Motocross Madness physics parity roadmap
 
+Retained visibility connection: [42-frame physics-to-culling regression](mcm-moving-visibility-recovery.md), 82 computed bike/rider visibility decisions and 24 SSE values match. Camera/world matrices remain stage inputs; one later-writer interval and all visual differences are preserved. Full world ordering and the older frame-38 failure remain open.
+
 Binding CALL writes: [return-address store recovered and live-validated](mcm-render-binding-recovery.md), 4,096 native cases / 45,056 words and 38 live handlers including four bike-slot overlaps. Producer eligibility and final world ordering remain open; preview handling is unchanged.
 
 Exact HUD writer: [USER32 measured-line store identified and validated](mcm-hud-line-store-recovery.md), 4,096 native cases / 20,480 words and six live instruction-level triplets with zero differences. HUD scheduling, layout inputs and later world writes still need joining to retained physics; the frame-38 failure remains open.
