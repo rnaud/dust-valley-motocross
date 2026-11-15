@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import{mcmFixedVertexDescriptor}from'../../src/physics/mcm/fixed-vertex-descriptor.js';
 import{lookupMcmFixedVertexCache}from'../../src/physics/mcm/fixed-vertex-cache.js';
-export function analyzeFixedVertex(rows,{allowIncomplete=false}={}){
+export function analyzeFixedVertex(rows,{allowIncomplete=false,onKeyWord=()=>{}}={}){
  let pending=null,inputs=0,descriptors=0,comparisons=0,hits=0,misses=0,keyWords=0;
  for(const r of rows){
   if(r.phase==='fixed-vertex-input'){
@@ -25,7 +25,7 @@ export function analyzeFixedVertex(rows,{allowIncomplete=false}={}){
   }else if(r.phase==='program-key-fields'&&pending){
    assert.equal(r.frame,pending.frame);assert.equal(pending.result,true);
    // Creation remains outside this lookup; only a hit predicts the shader ID.
-   if(pending.expected.program!==null){assert.equal(r.key[0],pending.expected.program,'Derived vertex program key');keyWords++;}
+   if(pending.expected.program!==null){assert.equal(r.key[0],pending.expected.program,'Derived vertex program key');keyWords++;onKeyWord(r,pending.expected.program);}
    pending=null;
   }
  }

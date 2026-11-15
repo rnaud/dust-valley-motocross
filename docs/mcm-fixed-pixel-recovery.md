@@ -16,6 +16,12 @@ The pixel cache comparator `1d7e60` compares 132 bytes at node `+10`; the tree u
 
 All 257 non-CALL/non-REP hook locations were independently verified restored and the debugger detached. The repository capture configuration also passed guard verification against the restored process.
 
+## Joined final program selection
+
+`analyze-fixed-program-chain.mjs` connects both descriptor/cache models to the final program-cache model. It derives all six key words: computed vertex/pixel IDs, retained middle-stage IDs and the native zero final word. On the same five-frame trace, all 28 final lookups, 407 comparisons and 28 returned programs match. Sixteen calls retain the previous vertex ID. Twenty-seven subsequent entries validate the selected program against the preceding return; they do not reseed that selection from each entry observation.
+
+The initial 4,726-node program cache supplies the initial previous program key. Captured lookup keys and subsequent previous-program keys are assertions only. Tests reject even mutually consistent changes to captured assembly/lookup keys, changed retained selections, missing producers and unsupported paths. Current joined coverage requires null programmable shaders, unchanged middle stages, an existing previous program and pixel refresh. Other branches are rejected explicitly.
+
 ## Remaining scope
 
 The five-frame sample contains no cache-creation misses. Initial cache contents/topology, graphics-state fields and the remaining temporary-buffer seed bytes are still boundary inputs. Cache allocation/creation, full caller scheduling and the older frame-38 steering divergence remain unresolved. This is a joined shader-key recovery milestone, not a new whole-ride physics equivalence result. Preview handling is unchanged.
@@ -25,3 +31,5 @@ The five-frame sample contains no cache-creation misses. Initial cache contents/
 - Build `fixed-pixel-descriptor-oracle.c` with 32-bit MinGW and run against the pinned Wine DLL. Its fixture preserves inputs, outputs, source/DLL hashes and repeated-output hashes.
 - Build `capture-fixed-pixel.c` / `verify-fixed-pixel.c` with the same toolchain. Use the established ten-record scripted runner and preflight/cleanup sequence. Never attach concurrently with another debugger.
 - Run `node --test tests/mcm-fixed-pixel-descriptor.test.js tests/mcm-fixed-pixel-live.test.js`.
+
+- Run `node --test tests/mcm-fixed-program-chain.test.js` for the joined selection chain.

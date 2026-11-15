@@ -1,5 +1,9 @@
 # Motocross Madness physics parity roadmap
 
+## Joined fixed-function program selection (2026-11-15)
+
+The existing five-frame native trace now drives all six program-cache key words from computed fixed-function shader IDs and retained prior selection. All 28 final lookups / 407 comparisons / 28 returned programs match, including 16 retained vertex IDs and 27 subsequent selected-program entries. Initial cache contents and graphics inputs remain boundaries. Unsupported programmable or changed middle-stage paths fail explicitly. This closes a validation-chain boundary, not the older frame-38 steering divergence. See `mcm-fixed-pixel-recovery.md`.
+
 ## Pixel descriptor joined to live shader selection — 2026-11-15
 
 The complete fixed-function pixel builder matches 8,192 intact native cases / 1,081,344 bytes, including inherited output bytes. A five-frame trace predicts 28 descriptors, 291 cache comparisons and 28 pixel program IDs. Its 12 computed vertex descriptors also provide 528 bytes of pixel-buffer input. All 257 hooks restored and debugger absent. See `mcm-fixed-pixel-recovery.md`. State producers, remaining seed bytes, cache creation and full scheduling remain boundaries; the older frame-38 failure is open. Preview handling is unchanged.

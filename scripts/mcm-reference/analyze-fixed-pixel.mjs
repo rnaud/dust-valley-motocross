@@ -3,7 +3,7 @@ import{mcmFixedPixelDescriptor}from'../../src/physics/mcm/fixed-pixel-descriptor
 import{mcmFixedVertexDescriptor}from'../../src/physics/mcm/fixed-vertex-descriptor.js';
 import{unpackFixedPixelInput}from'./fixed-pixel-input.mjs';
 import{lookupMcmFixedPixelCache}from'../../src/physics/mcm/fixed-vertex-cache.js';
-export function analyzeFixedPixel(rows,{allowIncomplete=false}={}){
+export function analyzeFixedPixel(rows,{allowIncomplete=false,onKeyWord=()=>{}}={}){
  let pending=null,vertexSeed=null,inputs=0,descriptors=0,comparisons=0,hits=0,misses=0,keyWords=0,derivedSeedBytes=0;
  for(const r of rows){
   if(r.phase==='program-key-entry')vertexSeed=null;
@@ -33,7 +33,7 @@ export function analyzeFixedPixel(rows,{allowIncomplete=false}={}){
   }else if(r.phase==='program-key-fields'&&pending){
    assert.equal(r.frame,pending.frame);assert.equal(pending.result,true);
    // Creation remains outside this lookup; only a hit predicts the shader ID.
-   if(pending.expected.program!==null){assert.equal(r.key[4],pending.expected.program,'Derived pixel program key');keyWords++;}
+   if(pending.expected.program!==null){assert.equal(r.key[4],pending.expected.program,'Derived pixel program key');keyWords++;onKeyWord(r,pending.expected.program);}
    pending=null;
   }
  }
