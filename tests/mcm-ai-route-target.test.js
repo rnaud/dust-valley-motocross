@@ -16,5 +16,5 @@ test('64 live target decisions retain index and flag across 11 advances',()=>{
 test('observed outputs cannot replace computed headings or reseed retained targets',()=>{
  let r=rows();r.find(r=>r.phase==='target').words[4]^=1;assert.throws(()=>analyzeAiRouteTargets(r),/Computed target/);
  r=rows();const entry=r.filter(r=>r.phase==='before')[1],b=Buffer.from(entry.hex,'hex');b.writeUInt32LE(b.readUInt32LE(0xafc)+1,0xafc);entry.hex=b.toString('hex');assert.throws(()=>analyzeAiRouteTargets(r),/Retained target index/);
- assert.throws(()=>advanceMcmAiRouteTarget({mode:1}),/Unsupported/);
+ assert.throws(()=>advanceMcmAiRouteTarget({mode:1}),/Missing AI route inputs/);
 });

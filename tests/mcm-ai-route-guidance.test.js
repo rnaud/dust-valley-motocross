@@ -16,5 +16,5 @@ test('guidance outputs, route offsets and later lookahead snapshots cannot silen
  let r=rows();r.find(r=>r.phase==='guidance').words[5]^=1;assert.throws(()=>analyzeAiRouteGuidance(r),/Computed guidance/);
  r=rows();r.filter(r=>r.phase==='guidance')[1].lookaheadBits^=1;assert.throws(()=>analyzeAiRouteGuidance(r),/lookahead mutation/);
  r=rows();const route=r.find(r=>r.phase==='route');for(const n of route.nodes)n.words[6]=0x447a0000;assert.throws(()=>analyzeAiRouteGuidance(r),/Computed guidance/);
- assert.throws(()=>computeMcmAiRouteGuidance({mode:1}),/Unsupported/);
+ assert.throws(()=>computeMcmAiRouteGuidance({mode:1}),/Missing AI mode-1 direction/);
 });

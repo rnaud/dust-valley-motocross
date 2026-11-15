@@ -1,5 +1,13 @@
 # Motocross Madness physics parity roadmap
 
+## AI route-controller modes 1 and 2 (2026-11-15)
+
+Extended `0x46d707..0x46dac1` targeting and `0x46dac1..0x46dec6` guidance beyond mode 0. Seven target outputs and six guidance outputs match 16,384 repeated intact original executions (4,096 per block/mode), while the original mode-0 fixtures remain unchanged and passing. Targeting preserves mode-1 flag-driven advancement and mode-2 route-gap rewinds. A rewind updates target/index but deliberately retains the pre-rewind successor and headings, matching original output. The loop detector includes the flag because a mode-1 one-node route can revisit the same index after consuming its advance flag.
+
+Mode-1 guidance consumes the caller's scene direction, selects signed near/far offsets and lowers the speed limit to 80 for nearby sharp turns. The original overwrites the aim-X scratch slot with its heading difference in that branch; the reported six-word stage result preserves that reuse. Mode-2 guidance reads its speed limit from route word5. The live analyzers pass captured modes and route word5; mode 1 requires an explicit direction table and fails if it is absent. No direction is inferred from output.
+
+Evidence: expanded target/guidance models and maintained oracle/case generators, `ai-route-modes-wine11.json.br`, `tests/mcm-ai-route-modes.test.js` and the unchanged mode-0 comparisons. New mode coverage is isolated original execution, not live racing-scene or whole-controller proof. Full frame dispatch remains guarded pending controller integration, external events and graph/allocation effects. Preview handling is unchanged.
+
 ## Constructed AI lookahead input (2026-11-15)
 
 Recovered constructor `0x4a3289..0x4a32db`: global lookahead is `f32(worldHeight * 16)`, then body `b5c` is computed from that stored float and the constructor's signed-integer argument (previously stored as float at `EBP-7c`). Both outputs match 4,096 repeated intact original executions, including signed zero and varied finite world heights/integer arguments. The argument's semantic meaning is not inferred from its numeric value. The original default data values 48/24 are not proof of immutable globals: lookahead has this constructor writer.
