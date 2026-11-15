@@ -3,15 +3,22 @@ import {mcmIndexedDrawStack} from '../../src/physics/mcm/indexed-draw-stack.js';
 
 // Root wrapper positions remain caller boundaries. Child wrappers follow the
 // recovered 4206c0 traversal; application ESP is an output of the draw path.
-export function deriveActorApplyStacks(render) {
-  const stack=[];let applications=0,observedNonActorApplications=0,childWrappers=0,rootWrappers=0;
+export function deriveActorApplyStacks(render,{actorDrawSchedules=null}={}) {
+  const stack=[];let applications=0,observedNonActorApplications=0,childWrappers=0,rootWrappers=0,scheduledWrappers=0;
+  const scheduleIndices=new Map();
   const rows=render.map(r=>{
     if(r.phase==='wrapper'){
       let wrapper=r;
+      const schedule=actorDrawSchedules?.get(r.frame);
+      if(schedule){
+        const index=scheduleIndices.get(r.frame)??0,expected=schedule[index];assert.ok(expected,'Unexpected actor wrapper invocation');
+        assert.equal(r.actor,expected.actor,'Scene actor invocation order differs');assert.equal(r.esp,expected.esp,'Scene-derived wrapper stack differs');
+        wrapper={...r,actor:expected.actor,esp:expected.esp};scheduleIndices.set(r.frame,index+1);scheduledWrappers++;
+      }
       if(stack.length){
         const parent=stack.at(-1);assert.equal(r.frame,parent.frame);
         const esp=(parent.esp-0xf8)>>>0;assert.equal(r.esp,esp,'Derived child wrapper stack differs');
-        wrapper={...r,esp};childWrappers++;
+        wrapper={...wrapper,esp};childWrappers++;
       }else rootWrappers++;
       stack.push(wrapper);return wrapper;
     }
@@ -31,5 +38,6 @@ export function deriveActorApplyStacks(render) {
     applications++;return {...r,esp:computed.stateApplyEntryEsp};
   });
   assert.equal(stack.length,0,'Incomplete wrapper traversal');
-  return {rows,applications,observedNonActorApplications,childWrappers,rootWrappers};
+  if(actorDrawSchedules)for(const [frame,schedule] of actorDrawSchedules)assert.equal(scheduleIndices.get(frame)??0,schedule.length,'Missing scheduled wrapper invocation');
+  return {rows,applications,observedNonActorApplications,childWrappers,rootWrappers,scheduledWrappers};
 }

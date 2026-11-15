@@ -1,5 +1,11 @@
 # Motocross Madness physics parity roadmap
 
+## Scene traversal and an additional stack writer — 2026-11-15
+
+Recovered original child traversal (4,681 native cases / 84,258 words), retained scene hierarchy, and actor-wrapper scheduling from the world entry. The short scene sample checks 198 callback entries/returns and six actor application addresses. Unknown callback bodies remain boundaries. See `mcm-scene-traversal-recovery.md`.
+
+A longer combined trace exposes another unresolved carry: predicted heap handle `00110000`, actual pointer `0022f0b8`. The negative fixture preserves that failure. Traced the host upload memcpy register-save mechanism: 612 isolated native cases and 194 live copy calls match computed save addresses/values. Integration into ordered world writes is next; neither this trace nor the older frame-38 mismatch is closed. See `mcm-upload-copy-recovery.md`. Preview handling remains unchanged.
+
 ## Actor graphics stack addresses derived — 2026-11-15
 
 The indexed-draw call path now computes all 52 actor state-application ESP values in the combined capture. The recovered child traversal also computes 82 nested wrapper positions from 82 root boundaries. A separate six-application native call-stack capture verifies the intermediate Wine frame pointers and return addresses. The same 41 computed next-bike writes and 42-frame physics replay still match; captured actor application ESP is now only a comparison output. See `mcm-indexed-draw-stack-recovery.md`.
