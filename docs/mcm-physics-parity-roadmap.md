@@ -1,5 +1,14 @@
 # Motocross Madness physics parity roadmap
 
+## Automatic trick selection and observed AI dispatch (2026-11-15)
+
+Recovered complete selector `0x49d6a0`: six flight-time thresholds, all three selection banks (including the empty-bank fallback), original nearest-even integer conversion, selected trick and optional randomized startup delay. Uses the pinned executable's trick and duration tables and the shared thread random stream. Five output words match 4,096 repeated original executions, including failed selections that preserve outputs and draw no random values. The oracle keeps original random arithmetic and substitutes only the CRT thread-pointer lookup.
+
+The mode-0 stage-local diagnostic now predicts all 127 AI draws in the captured 138-draw thread stream, rejecting unmodeled AI draws. Across 256 calls it checks all nine jump body fields, flight time, delay, selected animation and startup flag. It predicts two successful tricks and thirteen rejected attempts; the intervening dispatch now explains the `b4c` differences excluded from the prior jump-only diagnostic. Route word9 values are initialized from the captured route and carried through computed jump clears. Selected animation, trick flag, RNG-consumer tampering and extra unmodeled AI draws fail tests.
+
+Evidence: `ai-trick-select.js`, oracle/generator, `analyze-ai-trick-select.mjs`, `tests/mcm-ai-trick-select.test.js` and its native fixture, reusing the independently cleaned seventeen-hook live capture. Scope remains **observed stage inputs**, not retained whole-controller simulation. The live fixture has difficulty zero, so nearby-interaction dispatch is absent; full trick-start animation/event-graph side effects are not reconstructed by this analyzer. A strict retained-state experiment fails at sequence 5 because the later landing-pitch block changes `b64`/`b68` after sequence 4's steering stage. Those observed values are not used to claim retained parity. Next: recover `0x46f824..0x46f911` terrain-normal landing pitch and the remaining longitudinal controls, then join retained AI motion and natural world replay. Preview handling is unchanged.
+
+
 ## AI airborne state and flight-time calculation (2026-11-15)
 
 Recovered `0x46f0a4..0x46f41a`: airborne-entry latches and route pointer, initial trick flag, projected landing distance, capped vertical-velocity correction, route word9 clearing, flight-time estimate and conditional random draws. All fourteen output words (including both route flags, random state and draw count) match 4,096 repeated isolated original executions. Finite cases cover ground/air transitions, modes 0/1/2, route categories, handicap branches and velocity limits. The oracle substitutes only the CRT thread-pointer lookup at the random entry; original random arithmetic and state stores execute unchanged.
