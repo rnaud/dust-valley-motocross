@@ -10,11 +10,11 @@ export function analyzeWrapperProduct(rows,terrain){
   }
   if(r.phase==='bounds-entry'){
    const w=stack.at(-1);assert.ok(w&&!w.used,'Missing wrapper input scope');assert.equal(r.camera,w.source.camera);assert.equal(r.frame,w.source.frame);w.used=true;
-   const source=w.source,world=floats(source.words.slice(0,16)),camera=cameras.get(source);
+   const source=w.source,local=floats(source.words.slice(0,16)),camera=cameras.get(source);
    let combined;
    if(camera){assert.equal(r.camera,camera.camera);combined=camera.matrices.combined;assert.deepEqual(source.words.slice(16,32),bits(combined),'Stored camera combined matrix differs');assert.equal(source.words[40],camera.state.width,'Wrapper viewport width differs');computedProducts++;}
    else {assert.equal(r.frame,0,'Missing computed camera after warmup');combined=floats(source.words.slice(16,32));warmupProducts++;}
-   const product=bits(composeMcmWrapperProduct(combined,world));assert.deepEqual(r.words.slice(0,16),product,'Computed wrapper matrix differs');assert.deepEqual(r.words.slice(16,22),source.words.slice(32,38),'Actor bounds copy differs');assert.deepEqual(r.words.slice(22,26),source.words.slice(38,42),'Wrapper viewport copy differs');copiedBounds++;
+   const product=bits(composeMcmWrapperProduct(combined,local));assert.deepEqual(r.words.slice(0,16),product,'Computed wrapper matrix differs');assert.deepEqual(r.words.slice(16,22),source.words.slice(32,38),'Actor bounds copy differs');assert.deepEqual(r.words.slice(22,26),source.words.slice(38,42),'Wrapper viewport copy differs');copiedBounds++;
    rewritten.push({...r,words:[...product,...source.words.slice(32,38),...source.words.slice(38,42),...r.words.slice(26)]});
   }else rewritten.push(r);
   if(r.phase==='wrapper-exit'){const w=stack.pop();assert.ok(w?.used,'Wrapper exited before bounds');assert.equal(r.object,w.entry.object);}

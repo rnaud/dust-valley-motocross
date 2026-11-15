@@ -1,6 +1,8 @@
 # Motocross Madness physics parity roadmap
 
-Latest milestone: [wrapper matrix product](mcm-wrapper-product-recovery.md). All 8,192 native cases / 131,072 words match. A fresh live trace computes 236 wrapper matrices from recovered camera state, then all 240 bounds decisions, 59 rider stack writes and 58 following bike-entry checks. Four startup products are explicitly counted as warmup. Cached node-world matrices, animated bounds producers, remaining draw scheduling and frame-38 steering are still open. Preview handling is unchanged.
+Latest milestone: [retained wrapper sources](mcm-render-sources-recovery.md). The draw wrapper reads **local +0x84**, not cached world +0xc4. Recovered local matrices and animation bounds match 400 positive-steering bike samples plus one rider sample (8,822 words). Negative steering still produces 12 matrix-word differences at frame 38. This is update-return source coverage, not a joined moving render replay.
+
+Previous milestone: [wrapper matrix product](mcm-wrapper-product-recovery.md). All 8,192 native cases / 131,072 words match. A fresh live trace computes 236 wrapper matrices from recovered camera state, then all 240 bounds decisions, 59 rider stack writes and 58 following bike-entry checks. Four startup products are explicitly counted as warmup. Stored node-local matrices, animated bounds producers, remaining draw scheduling and frame-38 steering are still open. Preview handling is unchanged.
 
 Previous milestone: [projected screen bounds](mcm-projected-bounds-recovery.md). All 8,192 intact native cases / 311,296 words match. The live chain now computes all 240 bounds decisions before rider dispatch; matrix/bounds producers and the remaining draw stack are still open, as is frame-38 steering.
 

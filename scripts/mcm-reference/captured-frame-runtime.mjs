@@ -14,6 +14,16 @@ export function createCapturedFrameRuntime(inputs,row,child){
  for(const [key,field]of [['extentScale','fieldf8'],['field138','field138'],['field144','field144'],['contactClass','field154'],['selected','selected'],['eventKind','kind']])Object.defineProperty(r,key,{get:()=>c.rider[field],set:value=>{c.rider[field]=value;}});
  Object.defineProperty(external.context,'selectedRecord',{get:()=>{const token=c.rider.selected[0],record=loaded.animation.assets.records.find(a=>a.token===token);if(token&&!record)throw Error('Missing retained selected animation');return record;}});
  return {loaded,external,
+  // 0x4b7a00 copies local +0x84 verbatim; it does not resolve world +0xc4.
+  // 0x44f870 copies animated actor +0x218/+0x224, not physics-rider bounds.
+  renderSources(){
+   return ['bike','rider'].map(kind=>{
+    const visual=loaded.visuals[kind],animation=c.frameRider[kind+'Animation'];
+    return {actor:visual.address,node:visual.bodyNode.address,
+     local:Float32Array.from(visual.bodyNode.local),
+     center:Float32Array.from(animation.boundsMin),extent:Float32Array.from(animation.boundsMax)};
+   });
+  },
   stepBike({delta,throttle,brake,steerBits},observe){
    if(!Number.isFinite(delta)||delta<=0||![0,1].includes(throttle))throw Error('Invalid bike frame input');
    if(brake!==undefined&&![0,1].includes(brake))throw Error('Invalid bike brake input');

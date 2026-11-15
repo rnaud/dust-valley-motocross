@@ -1,6 +1,6 @@
 # Wrapper matrix product
 
-The inline original block `0x44fb53..0x44feb6` is recovered as `composeMcmWrapperProduct`. Its x87 addition order differs from the other recovered matrix helpers. The output combines the camera combined matrix with the cached node-world matrix before projected bounds testing.
+The inline original block `0x44fb53..0x44feb6` is recovered as `composeMcmWrapperProduct`. Its x87 addition order differs from the other recovered matrix helpers. The output combines the camera combined matrix with the stored node-local matrix before projected bounds testing.
 
 ## Evidence
 
@@ -14,7 +14,7 @@ Mutation tests reject changed world sources, camera matrices, actor bounds, view
 
 ## Remaining scope
 
-Cached node-world matrices and animated actor bounds remain observed boundary inputs. Their producers must be connected to retained player/animation state. The remaining render traversal and graphics call stack also require recovery. These captures are debugger-paced and do not establish normal-speed ride parity. The known negative-steering divergence at frame 38 remains unresolved; this milestone does not change preview handling.
+Stored node-local matrices and animated actor bounds remain observed boundary inputs. Their producers must be connected to retained player/animation state. The remaining render traversal and graphics call stack also require recovery. These captures are debugger-paced and do not establish normal-speed ride parity. The known negative-steering divergence at frame 38 remains unresolved; this milestone does not change preview handling.
 
 ## Reproduction
 

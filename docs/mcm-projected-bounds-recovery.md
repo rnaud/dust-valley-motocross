@@ -25,7 +25,7 @@ Mutation tests reject changed acceptance, corners, rectangles and missing entry 
 
 ## Remaining dependencies
 
-Bounds decisions are now computed, but the wrapper's input matrix and local bounds are observed. Recover its inline matrix product, node-world matrix retrieval (`0x4b7a00`) and animated bounds retrieval (`0x44f870`), then connect those to retained scene/player state. Linked render traversal and the graphics call stack below model drawing also remain incomplete. The known negative-steering frame-38 divergence is not fixed; normal preview handling is unchanged.
+Bounds decisions are now computed, but the wrapper's input matrix and local bounds are observed. Recover its inline matrix product, node-local matrix retrieval (`0x4b7a00`) and animated bounds retrieval (`0x44f870`), then connect those to retained scene/player state. Linked render traversal and the graphics call stack below model drawing also remain incomplete. The known negative-steering frame-38 divergence is not fixed; normal preview handling is unchanged.
 
 ## Reproduction
 

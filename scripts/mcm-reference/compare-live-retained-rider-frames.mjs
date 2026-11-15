@@ -5,7 +5,7 @@ import {bitsFloat,floatBits} from '../../src/physics/mcm/math.js';
 
 // Diagnostic projection: physics and effects mismatches are counted separately,
 // never removed. One initialization; only recorded input/timing/gates thereafter.
-export function compareLiveRetainedRiderFrames(inputs,rows,events,{observedCallerDriveScratch=false}={}){
+export function compareLiveRetainedRiderFrames(inputs,rows,events,{observedCallerDriveScratch=false,onBikeReturn=null}={}){
  if(!rows.length||rows.length%2||events[0]?.phase!=='initial-rider'||events[0].frame!==0||events[0].bike!==inputs.checkpoint.bikeAddress)throw Error('Missing retained rider initialization');
  if(events[0].eventSequence!==undefined&&events.some((e,i)=>e.eventSequence!==i))throw Error('Retained world event sequence differs');
  const runtime=createCapturedFrameRuntime(inputs,rows[0],events[0]),{loaded,external}=runtime,c=loaded.context,r=external.context.rider;
@@ -29,6 +29,7 @@ export function compareLiveRetainedRiderFrames(inputs,rows,events,{observedCalle
   let report;
   try{report=compareLiveFrameReturn({...inputs,row},after,{loaded,retained:true,diagnostic:true});}
   catch(error){if(error.message!=='Unmapped live frame dependency: context.restoreRiderVisual')throw error;pendingBikeFrame={frame,reason:error.message};break;}
+  if(onBikeReturn)onBikeReturn({frame,after,sources:runtime.renderSources()});
   const physics=report.allDifferences.filter(d=>!d.object?.startsWith('visual-emitter-'));
   const visual=report.differences-physics.length;visualDifferences+=visual;physicsDifferences+=physics.length;comparedWords+=report.comparedWords;
   reports.push({frame,comparedWords:report.comparedWords,physicsDifferences:physics.length,visualDifferences:visual,firstPhysicsDifferences:physics.slice(0,20),firstVisualDifferences:report.allDifferences.filter(d=>d.object?.startsWith('visual-emitter-')).slice(0,20)});
