@@ -61,7 +61,9 @@ export function loadLiveFrameBootstrap({checkpoint,animations,environment,collis
   frontMountNode:visuals.nodes.get(m.u32(component)),chassisLocal:[0x630,0x63c,0x648].map(o=>vec(a,o)),
   chassisWorld:[0x36c,0x3e4].map(sv),chassisSurface:[0x2a0,0x2c4].map(sv),chassisNormals:[0x4b0,0x6d8].map(sv),chassisDepth:[stack.f32(0xbc),stack.f32(0x194)],
   responseScratch:[0x264,0x260,0x1c0,0x1bc].map(o=>stack.f32(o)),suspensionForces:strict({front:{force:sv(1032),dampingForce:sv(2196)},rear:{force:sv(1044),dampingForce:sv(2184)}},'suspensionForces'),traction:strict({scratch:[68,104,192,592,588,420,416,424,276,584,280,412].map(o=>stack.f32(o)),tire:strict({magnitude:stack.f32(268),force:sv(1212)},'rearTire')},'traction'),frontLoad:strict({arm:sv(1020),angularCross:sv(1104),scratch354:sv(852),force:sv(684)},'frontLoad'),contactCorrection:strict({acceleration:sv(948),get controller170(){return rider.kind;},set controller170(value){rider.kind=value;},get controller140(){return rider.field140;},set controller140(value){rider.field140=value;}},'contactCorrection'),frontTire:strict({magnitude:stack.f32(272),force:sv(1224),direction:sv(1932)},'frontTire')},'contactPhase');
- const context=strict({bike:strict(bike,'bike'),bodyNode:visuals.bike.bodyNode,proxy:visuals.rider.bodyNode,
+ const baseNode=visuals.nodes.get(m.u32(m.u32(a+0x8d8)));
+ if(!baseNode)throw Error('Missing base component transform');
+ const context=strict({baseNode,bike:strict(bike,'bike'),bodyNode:visuals.bike.bodyNode,proxy:visuals.rider.bodyNode,
   frameRider,loopRider:strict({},'loopRider'),resetDecision:env.resetDecision,
   rider,engine:start.context.engine,engineEntry:start.context,suspension:start.suspension,
   front:{limited:m.f32(wheelFront+0x4c)},rear:{limited:m.f32(wheelRear+0x4c)},

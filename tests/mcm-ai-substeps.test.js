@@ -1,3 +1,5 @@
+import {loadLiveFrameBootstrap} from '../scripts/mcm-reference/live-frame-bootstrap.mjs';
+import {checkpointMemory} from '../scripts/mcm-reference/live-checkpoint.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import {brotliDecompressSync,gunzipSync} from 'node:zlib';import {createHash} from 'node:crypto';
 const fixture=(name='ai-substeps')=>JSON.parse(brotliDecompressSync(fs.readFileSync(new URL(`./fixtures/mcm/${name}-wine11.json.br`,import.meta.url))));
 function input(f=fixture()){
@@ -36,4 +38,14 @@ test('substep comparison rejects missing boundaries and invented control visits'
   }
   assert.throws(()=>analyzeAiSubsteps(i,i.rows,rider(f),rows));
  }
+});
+test('airborne redirection uses the component cached basis across retained trick frames',()=>{
+ const f=fixture('ai-substeps-control-source');for(const [name,value] of Object.entries(f.files))assert.equal(createHash('sha256').update(value).digest('hex'),f.provenance.fileSha256[name]);
+ const i=input(f),r=analyzeAiSubsteps(i,i.rows,rider(f),trace(f));
+ assert.equal(r.frames,4);assert.deepEqual(r.substeps,[11,11,10,11]);assert.equal(r.substepBoundaries,237);
+ assert.equal(r.componentWords,2844);assert.equal(r.bodyBoundaries,16);assert.deepEqual(r.visualDifferences,[]);
+ assert.equal(r.particleDifferences.length,7412);
+ const loaded=loadLiveFrameBootstrap(i),c=loaded.context,m=checkpointMemory(i.checkpoint);
+ assert.equal(c.baseNode.address,m.u32(m.u32(i.checkpoint.bikeAddress+0x8d8)));assert.notEqual(c.baseNode,c.bodyNode);
+ assert.equal(c.baseNode,c.aiController.runtime.setup.graph.source);
 });

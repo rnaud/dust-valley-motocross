@@ -95,17 +95,18 @@ test('original scene-object position query identifies the unresolved rider cache
  const diagnostic=analyzeAiFrameSequence(i,i.rows,altered);assert.deepEqual(diagnostic.visualDifferences,r.visualDifferences);
 });
 
-test('scene query computes the missing caches but strict replay retains the later physics divergence',()=>{
+test('retained scene replay matches after using the original base-component control transform',()=>{
  const f=fixture('ai-frame-scene');for(const [name,value] of Object.entries(f.files))assert.equal(createHash('sha256').update(value).digest('hex'),f.provenance.fileSha256[name]);
  assert.equal(f.provenance.executableSha256,'e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b');assert.match(f.files['cleanup.log'],/debugger=0 clean=1/);assert.equal((f.files['cleanup.log'].match(/restored=1/g)||[]).length,11);
  const i=input(f),events=f.files['rider.jsonl'].trim().split('\n').map(JSON.parse);
- assert.throws(()=>analyzeAiFrameSequence(i,i.rows,events),/frame 1 frame-tail body 4f0/);
+ assert.equal(analyzeAiFrameSequence(i,i.rows,events).bodyBoundaries,8);
  const r=analyzeAiFrameSequence(i,i.rows,events,{diagnosticBody:true});
  assert.equal(r.bodyBoundaries,8);assert.equal(r.riderTicks,1);assert.equal(r.riderBytes,5000);assert.deepEqual(r.particleDifferences,[]);
  assert.equal(r.sceneReports.length,1);assert.equal(r.sceneReports[0].queried,true);assert.equal(r.sceneReports[0].nodes.length,4);
  assert.deepEqual(r.sceneReports[0].positionBits,events.find(e=>e.phase==='scene-position').positionBits);
- assert.equal(r.bodyDifferences.length,38);assert.equal(r.visualDifferences.length,28);
- assert.ok([...r.bodyDifferences,...r.visualDifferences].every(d=>d.frame===1&&d.stage==='frame-tail'));
+ assert.deepEqual(r.bodyDifferences,[]);assert.deepEqual(r.visualDifferences,[]);
+ // Reintroducing the old root alias reproduces the original strict failure.
+ assert.throws(()=>analyzeAiFrameSequence(i,i.rows,events,{observe({context:c}){c.baseNode=c.bodyNode;}}),/frame 1 frame-tail body 4f0/);
 });
 
 test('scene query rejects altered gate inputs, ownership, observed targets and position outputs',()=>{
