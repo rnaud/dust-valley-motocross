@@ -8,7 +8,7 @@ This is an asset-port tally, separate from physics equivalence. Matching geometr
 - Original seven-part bike and fifteen-part rider geometry at highest detail, including original UVs and normals. Twenty-one drawable surfaces are bound to the recovered runtime's articulated transform graph. The empty `NullFrame` remains in the hierarchy.
 - Twelve original rider skins and twelve bike liveries decoded from the four `RES` texture/palette archives. Reserved magenta palette entry 255 is transparent.
 - Terrain, rider and livery selectors in MCM preview. Asset downloads occur when needed. Classic retains its existing graphics.
-- Selected terrains use the recovered bike reset/ground-alignment routine at a central practice location. Dunes retains the previously validated initial checkpoint. Each imported scene's declared shadow light replaces the dunes light target; scenes without a declared shadow light omit that occlusion query.
+- Selected terrains use the recovered bike reset/ground-alignment routine at the declared scene default start when present, otherwise at a central practice location. Scene defaults are not race-grid starts. Dunes retains the previously validated initial checkpoint. Each imported scene's declared shadow light replaces the dunes light target; scenes without a declared shadow light omit that occlusion query.
 - Original animation/component transforms are read without changing native transform caches.
 
 ## Original ground textures connected
@@ -39,3 +39,5 @@ All 33 imported terrains completed 30 recovered acceleration frames with finite 
 ## Deployed asset verification — 2026-11-14
 
 The public Pages build passed desktop Dunes and touch Week 10 startup checks with Rider 12 and Bike 02: 21 drawable parts, original terrain textures, no missing textures, recovered-core backend, and no browser errors. This checks asset delivery and startup, not sustained physics equivalence. `scripts/original-assets-smoke.mjs` accepts `MCM_MAP` to repeat the check on a selected course.
+
+Widowmaker additionally passed desktop/touch checks after restoring its uppercase scene filename and using the declared scene default start. Screenshot inspection caught the previous central spawn on empty gray terrain; the corrected start displays the original textured slopes. The regression test checks the declared horizontal position with tolerance for recovered ground alignment, then advances 30 acceleration frames.

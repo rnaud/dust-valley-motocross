@@ -21,3 +21,13 @@ test('selected course uses native reset alignment and its own shadow environment
  for(let i=0;i<30;i++)stepMcmCoreState(s,{gas:true},.02);assert.ok(s.speed>0);assert.equal(s.frame,30);assert.ok([s.x,s.y,s.z].every(Number.isFinite));
  }
 });
+
+test('Widowmaker uses the declared scene start instead of the empty hierarchy center',()=>{
+ const id='quarries-track13',a=read(`mcm-maps/${id}.bin`),settings=JSON.parse(fs.readFileSync(new URL('../src/mcm-scene-settings.json',import.meta.url)))[id];
+ const s=createMcmCoreState({...base,mapId:id,terrainMode:a.terrainMode,shadowTarget:a.shadowTarget,terrain:a.terrain,sceneSettings:settings},{sand:false});
+ const point=s.physics.nativePoint(0,0);
+ // Recovered ground alignment can shift the final horizontal position slightly.
+ assert.ok(Math.abs(point.x-1113)<1);assert.ok(Math.abs(point.z-1197)<1);
+ for(let i=0;i<30;i++)stepMcmCoreState(s,{gas:true},.02);
+ assert.ok([s.x,s.y,s.z,s.speed].every(Number.isFinite));assert.ok(s.speed>0);
+});
