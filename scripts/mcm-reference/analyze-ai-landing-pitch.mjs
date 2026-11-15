@@ -1,3 +1,4 @@
+import {analyzeAiTrickGraph} from './analyze-ai-trick-graph.mjs';
 import {replayAiContactEvents} from './analyze-ai-contact-events.mjs';
 import {replayAiRaceHandicap} from './analyze-ai-race-handicap.mjs';
 import {analyzeAiLookahead} from './analyze-ai-lookahead.mjs';
@@ -9,8 +10,10 @@ import {bitsFloat as float,floatBits as bits} from '../../src/physics/mcm/math.j
 import assert from 'node:assert/strict';import {computeMcmAiJumpState,AI_JUMP_OFFSETS} from '../../src/physics/mcm/ai-jump-state.js';import {createMcmRandom} from '../../src/physics/mcm/random.js';
 // Retain eight jump fields through the complete controller, with computed
 // lookahead inputs. Per-call pose and race/handicap configuration remain boundaries.
-// The live difficulty-zero scene excludes nearby interaction and full event graphs.
+// The live difficulty-zero scene excludes nearby interaction. Optional contact
+// and trick events validate their graph effects and connect computed transitions.
 export function replayAiLandingPitch(rows,options){
+const trickGraphs=rows.some(r=>r.phase==='trick-graph-before')?analyzeAiTrickGraph(rows).checks:null;
 const checks=[],handicap=replayAiRaceHandicap(rows),contacts=replayAiContactEvents(rows),contactEntries=new Map(contacts.checks.map(c=>[rows[c.index],c]));
 const look=analyzeAiLookahead(rows,options),entries=new Map(rows.filter(r=>r.phase==='before').map(r=>[r.sequence,r])),route=rows.find(r=>r.phase==='route'),table=route.nodes.map(n=>n.address),routeNodes=new Map(route.nodes.map(n=>[n.address,{x:float(n.words[0]),y:float(n.words[1]),z:float(n.words[2]),kind:n.words[4],speed:float(n.words[3]),next:n.words[10]}]));
 let landingInput,landingQueries=0,exits=0;
@@ -39,7 +42,7 @@ for(const r of rows){
  if(w[7]&&out[7]&&(r.stack[30]|0)>=0x3f490fdb&&nodes.get(out[4])){
   trickResult=selectMcmAiTrick({flightTime:float(out[11]),selector:0,delayEnabled:b.readUInt32LE(0x614),delay:float(expectedDelay),selected:0},{draw(){pending.push({state:rng.state,consumer:"trick"});return rng.draw();}});
   expectedDelay=bits(trickResult.delay);out[7]=0;
-  if(trickResult.success){expectedAnimation=trickResult.selected&255;expectedControl=1;selections++;}else rejected++;
+  if(trickResult.success){if(trickGraphs){const graph=trickGraphs.find(g=>g.sequence===r.sequence);assert.ok(graph,'Missing retained trick graph');assert.equal(graph.selected,trickResult.selected,'Computed retained trick selection');}expectedAnimation=trickResult.selected&255;expectedControl=1;selections++;}else rejected++;
 
  }
 
@@ -55,7 +58,7 @@ for(const r of rows){
  const b=Buffer.from(r.hex,'hex');for(let i=0;i<9;i++)assert.equal(out[i],b.readUInt32LE(offsets[i]),`seq ${r.sequence} field ${offsets[i].toString(16)}`);assert.equal(expectedDelay,b.readUInt32LE(0x81c),'Trick delay');assert.equal(expectedAnimation,b[0x814],'Selected trick animation');assert.equal(expectedControl,b.readUInt32LE(0x710),'Trick startup flag');assert.equal(out[11],r.stack[13],`flight ${r.sequence}`);assert.equal(pending.length,0);calls++;
  }
 }
-assert.equal(pending.length,0,'Unconsumed AI draws');assert.equal(calls,rows.filter(r=>r.phase==='lookahead-after').length,'Trick observation count');assert.equal(exits,calls,'Controller exit count');assert.equal(entries.size,calls,'Controller entry count');return {calls,draws,allDraws:rng.calls,selections,rejected,landingQueries,checks};
+if(trickGraphs)assert.equal(trickGraphs.length,selections,'Unmatched retained trick graphs');assert.equal(pending.length,0,'Unconsumed AI draws');assert.equal(calls,rows.filter(r=>r.phase==='lookahead-after').length,'Trick observation count');assert.equal(exits,calls,'Controller exit count');assert.equal(entries.size,calls,'Controller entry count');return {calls,draws,allDraws:rng.calls,selections,rejected,landingQueries,checks};
 }
 
 export function analyzeAiLandingPitch(rows,options){const {checks,...summary}=replayAiLandingPitch(rows,options);return summary;}
