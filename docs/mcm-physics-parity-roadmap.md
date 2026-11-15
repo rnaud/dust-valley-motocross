@@ -1,5 +1,14 @@
 # Motocross Madness physics parity roadmap
 
+## Complete AI route/jump lookahead (2026-11-15)
+
+Recovered `0x46eb14..0x46f0a4`: the five-node lookahead, route wrapping and category decisions, projected landing target, both terrain-query sites, landing-distance calculation, speed limit/jump flag updates and the conditional steering override. All eight checked output words match 4,096 repeated executions of the intact original block on the original Dunes terrain. The oracle keeps original terrain-node parsing and height queries; only the existing course loader's host allocation/stdio and renderer initialization substitutions remain.
+
+The retained live reconstruction matches 256 calls, including 102 computed terrain queries, 33 projected-target changes and 15 steering overrides. Target coordinates and jump flag are initialized once, then carried forward and checked at subsequent entries and full-controller exits. The 15 previously unexplained steering changes now match before final smoothing. Targets, terrain heights and steering outputs are not injected from observations. Tests reject altered outputs, reseeded targets, changed terrain and changed configuration. All fourteen capture hooks were independently verified restored with no debugger attached.
+
+Evidence: `ai-lookahead.js`, oracle/generator and `analyze-ai-lookahead.mjs`, `tests/mcm-ai-lookahead.test.js`, and `ai-lookahead-wine11.json.br`. The Dunes asset hash matches the original course used by the oracle. Live coverage uses mode-0 launch coefficients, supplied margin 24 and world `+0x18bc` value 3; the global configuration producer is not recovered here. Native generated coverage is finite. Jump-state/RNG/trick behavior after `0x46f0a4`, final controls, allocator effects, retained AI motion and the longer world replay remain open. Preview control is unchanged; full parity is not established.
+
+
 ## Ground and airborne steering differences joined (2026-11-15)
 
 Recovered heading override `0x46dec6..0x46df48` and airborne steering difference `0x46e9f0..0x46eb14`. The override uses the retained target's segment heading, nearest-segment threshold and computed lateral error. The airborne path selects between target and velocity heading using route category, lateral velocity and the original wrapped-angle tests. Both intact regions match 8,192 repeated original executions (4,096 per branch, finite inputs).
