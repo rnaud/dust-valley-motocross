@@ -1,5 +1,9 @@
 # Motocross Madness physics parity roadmap
 
+## Shader cache insertion recovered (2026-11-15)
+
+The intact pinned Wine insertion routine matches 32,768 attempts / 2,129,920 words, including all parent/child links, color flags, roots and 3,087 duplicate keys; native repeat output is identical. This supplies the tree-update mechanism needed after the observed pixel-cache miss. Live integration still needs initial parent/color metadata and explicit allocation/compiled-ID boundaries. The existing strict rejection of unexplained cache changes remains enabled. Full physics parity and the older steering failure remain open; preview handling is unchanged.
+
 ## Retained fixed shader caches (2026-11-15)
 
 The vertex and pixel analyzers now initialize each cache once, then compare later snapshots against retained nodes and topology. The five-frame fixture retains six vertex nodes and 4,726 pixel nodes; unexplained mutations to unused nodes are rejected too. Full suite: 627 tests passed. Longer capture has exposed a pixel-cache creation miss at frame 23 and missing formatter callback evidence; neither is silently accepted. Cache creation and the older frame-38 steering failure remain open. Capture tooling now supports an explicit record-count override and buffered diagnostics, with byte-identical isolated I/O validation. Preview handling is unchanged.

@@ -120,7 +120,7 @@ export function analyzeWorldWriters(render, physicsRows, {player, scratch, modul
     }
     if(r.phase==='bike-function-entry'&&r.ecx===player){
       finishApply();assert.ok(last,'No predicted writer');assert.equal(last.frame,r.frame);
-      assert.equal(last.value,r.value,'Next bike entry differs from predicted last writer');
+      assert.equal(last.value,r.value,`Next bike entry differs from predicted last writer (frame ${r.frame}, ${last.kind})`);
       const next=physicsRows[(r.frame+1)*2];assert.ok(next);assert.equal(parseInt(next.stackAddress,16)+0x54,scratch);assert.equal(Buffer.from(next.stackHex,'hex').readUInt32LE(0x54),last.value,'Physics entry differs');
       assert.equal(r.frame,checks.length,'Missing or repeated player entry');
       checks.push({...last,nextFrame:r.frame+1});

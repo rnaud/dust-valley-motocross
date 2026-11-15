@@ -29,6 +29,22 @@ changes, including changes to nodes outside the current comparison path, fail
 validation. Cache insertion remains unmodeled and is rejected if it changes a
 later snapshot.
 
+## Native cache insertion recovery
+
+`shader-cache-insert.js` implements the pinned `12fe0` insertion routine: duplicate
+rejection, parent/child links, rotations, recoloring and root blackening. An
+isolated oracle executes the intact native routine with its caller-supplied
+unsigned-key comparator and logging disabled. Across 2,048 sequences of sixteen
+attempts, all 32,768 attempts / 2,129,920 output words match. The cases include
+3,087 duplicate keys. Repeat native output is byte-identical. Each step compares
+the root and every node's parent, left, right and flags, including untouched nodes.
+
+This recovers insertion mechanics, not allocation or shader compilation. The
+existing live descriptor fixtures omit parent/color metadata, so insertion is
+not yet joined to their replay. A subsequent capture must supply that initial
+metadata, then validate later topology against computed insertions. The strict
+cache-snapshot rejection remains in place until that integration is proven.
+
 ## Remaining scope
 
 The five-frame sample contains no cache-creation misses. Initial cache contents/topology, graphics-state fields and the remaining temporary-buffer seed bytes are still boundary inputs. Cache allocation/creation, full caller scheduling and the older frame-38 steering divergence remain unresolved. This is a joined shader-key recovery milestone, not a new whole-ride physics equivalence result. Preview handling is unchanged.
