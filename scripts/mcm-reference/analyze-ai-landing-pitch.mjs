@@ -1,3 +1,4 @@
+import {replayAiContactEvents} from './analyze-ai-contact-events.mjs';
 import {replayAiRaceHandicap} from './analyze-ai-race-handicap.mjs';
 import {analyzeAiLookahead} from './analyze-ai-lookahead.mjs';
 import {selectMcmAiRouteSegment} from '../../src/physics/mcm/ai-route-segment.js';
@@ -10,11 +11,12 @@ import assert from 'node:assert/strict';import {computeMcmAiJumpState,AI_JUMP_OF
 // lookahead inputs. Per-call pose and race/handicap configuration remain boundaries.
 // The live difficulty-zero scene excludes nearby interaction and full event graphs.
 export function replayAiLandingPitch(rows,options){
-const checks=[],handicap=replayAiRaceHandicap(rows);
+const checks=[],handicap=replayAiRaceHandicap(rows),contacts=replayAiContactEvents(rows),contactEntries=new Map(contacts.checks.map(c=>[rows[c.index],c]));
 const look=analyzeAiLookahead(rows,options),entries=new Map(rows.filter(r=>r.phase==='before').map(r=>[r.sequence,r])),route=rows.find(r=>r.phase==='route'),table=route.nodes.map(n=>n.address),routeNodes=new Map(route.nodes.map(n=>[n.address,{x:float(n.words[0]),y:float(n.words[1]),z:float(n.words[2]),kind:n.words[4],speed:float(n.words[3]),next:n.words[10]}]));
 let landingInput,landingQueries=0,exits=0;
 const rng=createMcmRandom(rows.find(r=>r.phase==='random').state);const nodes=new Map(rows.find(r=>r.phase==='route').nodes.map(n=>[n.address,n.words[9]]));let trickResult,expectedDelay,expectedAnimation,expectedControl;let selections=0,rejected=0;let pending=[],out,ids,calls=0,draws=0;const offsets=[0x514,0xb44,0xb64,0xb68,0xb40,0xb18,0xb20,0xb4c,0xb38];
 for(const r of rows){
+ const contact=contactEntries.get(r);if(contact&&out){assert.equal(out[7],contact.before,'Retained contact latch entry');out[7]=contact.latch;}
  if(r.phase==='before'&&out){const b=Buffer.from(r.hex,'hex');for(let i=1;i<9;i++)assert.equal(out[i],b.readUInt32LE(offsets[i]),`Retained jump entry ${r.sequence} field ${offsets[i].toString(16)}`);}
 
  if(r.phase==='lookahead-after'){

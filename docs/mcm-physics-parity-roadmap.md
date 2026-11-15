@@ -1,5 +1,13 @@
 # Motocross Madness physics parity roadmap
 
+## AI contact-response event connection (2026-11-15)
+
+Added before/after `0x4a6c01..0x4a6eac` observations alongside AI calls and complete motion graphs. The existing recovered `updateMcmContactResponse` matches 2,901 live substeps: eleven body fields, component angle/rate, four scratch values and full captured graph bytes. Chronological controller replay now asserts the retained latch against each contact entry and applies the computed contact result. All 256 AI calls match, with 150 throttle/turning updates and no braking or low-speed boosts. No observed output is injected as a replacement state.
+
+Coverage limit: this capture has **zero contact-driven latch changes**. It validates contact-response execution and the event connection, but does not reproduce the older graph capture's call-160 latch clear. That older trace still rejects the missing external event. A preceding writer trace identified actual landing clears at `0x4a6e38`, but lacked the routine entry inputs; those writer values are not substituted into replay. A changing-latch live contact example remains required.
+
+All twenty-eight hooks were independently verified restored and the debugger detached. The fixture projects contact rows to the observed body words and stack inputs consumed by the checker, preserving complete component/graph records and all other rows; it records both raw-trace and projected hashes. The projection is reproducible with `archive-ai-contact-events.mjs`. Evidence includes maintained capture/verification scripts, `analyze-ai-contact-events.mjs`, `tests/mcm-ai-contact-events.test.js` and the live fixture. Outer contact queries/pose remain observed inputs; retained whole-frame AI integration, graph changes outside these stages and full physics parity remain unfinished. Preview handling is unchanged.
+
 ## Live AI motion transform graphs (2026-11-15)
 
 Captured complete before/after motion-stage graphs for 256 calls in the existing Wine process: eight nodes per call, 2,048 node records, 163 turning updates and 457 cache invalidations. The recovered motion routine matches all node bytes, including local/world matrices, child cache flags and untouched fields, plus fourteen body outputs. This capture contains no low-speed boosts. All nineteen guarded hooks were independently verified restored with no debugger attached. The first attempt timed out with zero calls because the window was minimized; cleanup was verified, then the same process was restored and captured without restart.
