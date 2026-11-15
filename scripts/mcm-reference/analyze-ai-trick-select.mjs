@@ -1,9 +1,12 @@
+import {analyzeAiTrickGraph} from './analyze-ai-trick-graph.mjs';
 import {selectMcmAiTrick} from '../../src/physics/mcm/ai-trick-select.js';
 import {bitsFloat as float,floatBits as bits} from '../../src/physics/mcm/math.js';
 import assert from 'node:assert/strict';import {computeMcmAiJumpState,AI_JUMP_OFFSETS} from '../../src/physics/mcm/ai-jump-state.js';import {createMcmRandom} from '../../src/physics/mcm/random.js';
 // Stage-local mode-0 capture. Pose/stack inputs remain observed boundaries;
-// this checks selected trick and startup flags, not the full animation graph.
+// Older captures check selection/startup flags. Trick-graph captures also check
+// complete event graphs and require each computed selection to match an event.
 export function analyzeAiTrickSelect(rows){
+const graphChecks=rows.some(r=>r.phase==='trick-graph-before')?analyzeAiTrickGraph(rows).checks:null;
 const rng=createMcmRandom(rows.find(r=>r.phase==='random').state);const nodes=new Map(rows.find(r=>r.phase==='route').nodes.map(n=>[n.address,n.words[9]]));let trickResult,expectedDelay,expectedAnimation,expectedControl;let selections=0,rejected=0;let pending=[],out,ids,calls=0,draws=0;const offsets=[0x514,0xb44,0xb64,0xb68,0xb40,0xb18,0xb20,0xb4c,0xb38];
 for(const r of rows){
  if(r.phase==='lookahead-after'){
@@ -13,7 +16,7 @@ for(const r of rows){
  if(w[7]&&out[7]&&(r.stack[30]|0)>=0x3f490fdb&&nodes.get(out[4])){
   trickResult=selectMcmAiTrick({flightTime:float(out[11]),selector:0,delayEnabled:b.readUInt32LE(0x614),delay:float(expectedDelay),selected:0},{draw(){pending.push({state:rng.state,consumer:"trick"});return rng.draw();}});
   expectedDelay=bits(trickResult.delay);out[7]=0;
-  if(trickResult.success){expectedAnimation=trickResult.selected&255;expectedControl=1;selections++;}else rejected++;
+  if(trickResult.success){if(graphChecks){const graph=graphChecks.find(g=>g.sequence===r.sequence);assert.ok(graph,'Missing computed trick graph');assert.equal(graph.selected,trickResult.selected,'Computed trick graph selection');}expectedAnimation=trickResult.selected&255;expectedControl=1;selections++;}else rejected++;
 
  }
 
@@ -25,5 +28,5 @@ for(const r of rows){
  const b=Buffer.from(r.hex,'hex');for(let i=0;i<9;i++)assert.equal(out[i],b.readUInt32LE(offsets[i]),`seq ${r.sequence} field ${offsets[i].toString(16)}`);assert.equal(expectedDelay,b.readUInt32LE(0x81c),'Trick delay');assert.equal(expectedAnimation,b[0x814],'Selected trick animation');assert.equal(expectedControl,b.readUInt32LE(0x710),'Trick startup flag');assert.equal(out[11],r.stack[13],`flight ${r.sequence}`);assert.equal(pending.length,0);calls++;
  }
 }
-assert.equal(pending.length,0,'Unconsumed AI draws');assert.equal(calls,rows.filter(r=>r.phase==='lookahead-after').length,'Trick observation count');return {calls,draws,allDraws:rng.calls,selections,rejected};
+if(graphChecks)assert.equal(graphChecks.length,selections,'Unmatched computed trick selections');assert.equal(pending.length,0,'Unconsumed AI draws');assert.equal(calls,rows.filter(r=>r.phase==='lookahead-after').length,'Trick observation count');return {calls,draws,allDraws:rng.calls,selections,rejected};
 }
