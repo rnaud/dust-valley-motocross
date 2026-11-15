@@ -1,5 +1,14 @@
 # Motocross Madness physics parity roadmap
 
+## AI route selection recovered (2026-11-15)
+
+The natural scene-query replay now reaches another rider's visibility writes, which the retained player-only model correctly rejects. Read-only native identity checks link AI bike `0x51f7598` to render rider `0x5218220`. The AI controller remains explicitly unsupported; accepting that actor without recovering its simulation would hide the dependency.
+
+Recovered nearest-route selection at `0x46d3c2..0x46d439`. All 4,096 isolated original executions match the recovered output bytes, and a second native execution is identical. Coverage includes empty lists, 1–32 nodes, duplicate coordinates, the initial distance cutoff, signed zero, infinities and NaNs. Native `FCOM` tests C0 alone, so unordered comparisons replace the minimum too; ordinary JavaScript `<` was incorrect in 600 generated cases. Four independently captured live controller entries also match selected pointer, list index and distance bits on the original 603-node route. The three live hooks were restored and the debugger detached.
+
+Evidence: `tests/mcm-ai-route-nearest.test.js`, `ai-route-nearest-wine11.json.br`, `scripts/mcm-reference/ai-route-nearest-oracle.c`, and the deterministic `generateAiRouteNearestCases()` export in `ai-route-nearest-cases.mjs`. The oracle consumes its `input` buffer and emits three DWORDs per case; the fixture contains native outputs, hashes and complete live records. This validates route selection only. Segment choice, steering/throttle generation, AI motion/rider updates and joining the second actor into retained visibility remain open. No preview handling change or full-parity claim.
+
+
 ## Terrain traversal derived from top-level queries (2026-11-15)
 
 The retained terrain-writer replay now requires the original map and computes clipping, recursive node selection, crossing points, visit order and stack depth from each top-level segment. Captured child coordinates, levels, shifts, stack addresses and merged points are assertions only. Five top-level queries derive all 12 visits / 501 compared words in the existing controlled fixture; its five bike frames / four rider ticks still match with zero physics differences and no observed scratch substitution. Negative tests reject altered child coordinates, stack depth, node shift, missing top-level queries, missing maps and changed terrain bounds/scale.
