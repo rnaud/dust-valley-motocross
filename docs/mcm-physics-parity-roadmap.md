@@ -1,5 +1,11 @@
 # Motocross Madness physics parity roadmap
 
+## Actor graphics stack addresses derived — 2026-11-15
+
+The indexed-draw call path now computes all 52 actor state-application ESP values in the combined capture. The recovered child traversal also computes 82 nested wrapper positions from 82 root boundaries. A separate six-application native call-stack capture verifies the intermediate Wine frame pointers and return addresses. The same 41 computed next-bike writes and 42-frame physics replay still match; captured actor application ESP is now only a comparison output. See `mcm-indexed-draw-stack-recovery.md`.
+
+Root wrappers and 8,334 non-actor application stack positions remain boundaries, alongside invocation order, prepared graphics state, camera/font/allocator inputs. The old frame-38 failure remains open; preview handling is unchanged.
+
 ## Computed world writes connected to retained physics — 2026-11-15
 
 The combined 42-frame capture now predicts all 41 next-bike scratch values from ordered invocation/stage inputs. HUD refresh/line stores, SSE gates/values, binding gates/CALL writes and resource staging/heap writes are checked together. An explicit modeled-world replay applies the computed stores between updates: 42 bike frames / 41 rider ticks, zero modeled physics differences, 881,090 visual differences, zero observed scratch inputs. Negative tests reject altered observations and missing player invocations. See `mcm-world-writers-recovery.md`.

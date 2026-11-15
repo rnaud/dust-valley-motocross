@@ -11,7 +11,7 @@ function terrain(){
 }
 test('ordered invocation inputs predict every competing writer and next bike scratch value',()=>{
  const f=read(),r=run(f);
- assert.equal(r.applications,8386);assert.deepEqual(r.bindings,{applications:8386,commands:310,stores:310,overlaps:28});
+ assert.equal(r.applications,8386);assert.equal(r.derivedActorApplications,52);assert.equal(r.derivedChildWrappers,82);assert.equal(r.observedRootWrappers,82);assert.equal(r.observedNonActorApplications,8334);assert.deepEqual(r.bindings,{applications:8386,commands:310,stores:310,overlaps:28});
  assert.deepEqual(r.counts,{hud:82,sse:24,binding:28,heap:4});assert.equal(r.uploads.uploads,1876);assert.equal(r.uploads.allocatedBytes,199732);
  assert.equal(r.clockChecks,41);assert.equal(r.refreshes,41);assert.equal(r.lineCalls,82);assert.equal(r.checks.length,41);
  assert.deepEqual(r.checks.reduce((o,c)=>(o[c.kind]=(o[c.kind]??0)+1,o),{}),{heap:1,sse:23,binding:4,hud:13});

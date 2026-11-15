@@ -603,6 +603,17 @@ int main(int argc, char **argv) {
    else fprintf(render_out,"{\"phase\":\"hud-clock-input\",\"frame\":%lu,\"stage\":%d,\"owner\":%lu,\"elapsedBits\":%lu,\"frames\":%lu,\"frameMillisecondsBits\":%lu,\"dtBits\":%lu,\"enabled\":%lu}\n",player_frame-1,matched,context.Esi,elapsed,count,period,dt,enabled);
   }
 #endif
+#ifdef MCM_CAPTURE_APPLY_STACK
+  if(matched==57&&draw_depth){DWORD words[32],fp=context.Ebp,pair[2];
+   if(!read_memory(context.Esp,words,sizeof(words)))done=2;else{
+    fprintf(render_out,"{\"phase\":\"apply-call-stack\",\"frame\":%lu,\"actor\":%lu,\"esp\":%lu,\"ebp\":%lu,\"words\":[",player_frame-1,draw_actors[draw_depth-1],context.Esp,context.Ebp);
+    for(unsigned j=0;j<32;j++)fprintf(render_out,"%s%lu",j?",":"",words[j]);fprintf(render_out,"],\"chain\":[");
+    // The original model draw uses EBP as a vertex pointer. Only the two
+    // intervening Wine frames are EBP-based frames on this indexed-draw path.
+    for(unsigned j=0;j<2&&fp>=context.Esp&&fp<context.Esp+0x1000;j++){if(!read_memory(fp,pair,8))break;fprintf(render_out,"%s[%lu,%lu,%lu]",j?",":"",fp,pair[0],pair[1]);if(pair[0]<=fp)break;fp=pair[0];}fprintf(render_out,"]}\n");
+   }
+  }
+#endif
   static DWORD upload_command_address;
   if(matched==131){DWORD args[7],device,adapter,cached;BYTE adapter_flags;if(!read_memory(context.Esp,args,sizeof(args))||args[2]>=8||!read_memory(args[1]+4,&device,4)||!read_memory(device+0xc,&adapter,4)||!read_memory(adapter+0x5a,&adapter_flags,1)||!read_memory(device+0x12d4+args[2]*4,&cached,4))done=2;else fprintf(render_out,"{\"phase\":\"upload-resource-input\",\"frame\":%lu,\"cs\":%lu,\"device\":%lu,\"kind\":%lu,\"cachedResource\":%lu,\"adapterFlags\":%u}\n",player_frame-1,args[1],device,args[2],cached,adapter_flags);}
   if(matched==147){if(!capture_register_heaps(render_out,context.Ebx,player_frame-1,147))done=2;upload_command_address=context.Eax;fprintf(render_out,"{\"phase\":\"upload-command-allocation\",\"frame\":%lu,\"address\":%lu}\n",player_frame-1,upload_command_address);}

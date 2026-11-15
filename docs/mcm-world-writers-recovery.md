@@ -2,7 +2,7 @@
 
 The combined native capture now connects recovered HUD, SSE matrix, shader-binding and heap-free writers to all 41 following bike entries. Write values are computed from the stage inputs; observed store words and next-bike scratch values are comparisons only. An explicit replay option applies the computed stores after each world interval, before the next retained bike update.
 
-This remains a **boundary-driven reconstruction**, not fully recovered world execution. The ordered draw/state-application invocations, their stack positions, prepared graphics state, camera matrices, font measurements and allocator results remain external inputs. The older negative-steering frame-38 failure does not contain these world observations and remains unresolved.
+This remains a **boundary-driven reconstruction**, not fully recovered world execution. The ordered draw/state-application invocations, root-wrapper and non-actor stack positions, prepared graphics state, camera matrices, font measurements and allocator results remain external inputs. Actor application stacks and nested wrapper positions are now derived through the indexed-draw path; see `mcm-indexed-draw-stack-recovery.md`. The older negative-steering frame-38 failure does not contain these world observations and remains unresolved.
 
 ## Combined native evidence
 
