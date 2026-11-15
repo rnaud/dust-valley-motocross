@@ -209,6 +209,7 @@ static int observe_rider_collision(FILE *out,DWORD rider) {
 
 #include "capture-ai-rider.c"
 #include "capture-ai-substeps.c"
+#include "capture-animation-observations.c"
 
 static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CONTEXT *context) {
     // At 0x4ad078 the rider delta has been pushed. Normalize only the observation.
@@ -260,14 +261,14 @@ static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CON
             const Block*b=&blocks[k];if(b->size!=0x114&&b->address!=proxy)continue;
             BYTE bytes[0x438];if(b->size>sizeof bytes||!read_memory(b->address,bytes,b->size))return 0;
             fprintf(out,"%s{\"address\":%lu,\"size\":%lu,\"hex\":\"",emitted++?",":"",b->address,b->size);
-            for(DWORD i=0;i<b->size;i++){fprintf(out,"%02x",bytes[i]);}fprintf(out,"\"}");
+            if(!substep_hex(out,bytes,b->size))return 0;fprintf(out,"\"}");
         }
         fprintf(out,"],\"animationState\":[");
+        if(!refresh_animation_observations())return 0;
         for(unsigned k=0;k<animation_count;k++){
-            const AnimationBlock*b=&animation_blocks[k];BYTE bytes[0x78];
-            if(!read_memory(b->address,bytes,b->size))return 0;
+            const AnimationBlock*b=&animation_blocks[k];const BYTE*bytes=b->bytes;
             fprintf(out,"%s{\"address\":%lu,\"size\":%lu,\"hex\":\"",k?",":"",b->address,b->size);
-            for(DWORD i=0;i<b->size;i++){fprintf(out,"%02x",bytes[i]);}fprintf(out,"\"}");
+            if(!substep_hex(out,bytes,b->size))return 0;fprintf(out,"\"}");
         }
         fprintf(out,"]");
     }

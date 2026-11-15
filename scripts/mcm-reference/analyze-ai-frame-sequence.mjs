@@ -85,7 +85,7 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents,{diagnosticBody=f
      assert.ok(pendingScene,'Unexpected scene position');assert.equal(before.address,runtime.scenePosition.address);
      assert.equal(before.bikeActive,0);assert.equal(before.riderActive,0);
      assert.deepEqual(before.positionBits,Array.from(pendingScene.position,floatBits),'Scene world position');
-     assert.deepEqual(pendingScene.observedNodes,pendingScene.nodes,'Scene resolver call chain');
+     assert.deepEqual(pendingScene.observedNodes,pendingScene.nodes,`Scene resolver call chain at frame ${frame}`);
      sceneReports.push({frame,queried:true,nodes:pendingScene.nodes,positionBits:before.positionBits});pendingScene=null;continue;
     }
     // Query targets/callers are evidence only; they do not select model writes.

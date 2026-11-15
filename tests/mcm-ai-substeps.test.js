@@ -10,6 +10,17 @@ function input(f=fixture()){
 import {analyzeAiSubsteps} from '../scripts/mcm-reference/analyze-ai-substeps.mjs';
 const trace=f=>f.files['substeps.jsonl'].trim().split('\n').map(JSON.parse);
 const rider=f=>f.files['rider.jsonl'].trim().split('\n').map(JSON.parse);
+test('render transform-cache writes remain an explicit retained-world parity failure',()=>{
+ const f=fixture('ai-substeps-render-cache');
+ for(const [name,value] of Object.entries(f.files))assert.equal(createHash('sha256').update(value).digest('hex'),f.provenance.fileSha256[name]);
+ assert.match(f.files['cleanup.log'],/debugger=0 clean=1/);
+ assert.equal((f.files['cleanup.log'].match(/restored=1/g)||[]).length,17);
+ const i=input(f),events=rider(f);
+ // Original mesh update 445690 resolves 21 component nodes before each scene
+ // query. Its invocations/eligibility are not yet part of the retained model.
+ for(let frame=1;frame<=3;frame++)assert.equal(events.filter(e=>e.completedBikeFrames===frame&&e.phase==='world-query'&&e.caller===0x445711).length,21);
+ assert.throws(()=>analyzeAiSubsteps(i,i.rows,events,trace(f)),/Scene resolver call chain at frame 0/);
+});
 test('eight retained original AI frames match every observed substep body and component word',()=>{
  const f=fixture();for(const [name,value] of Object.entries(f.files))assert.equal(createHash('sha256').update(value).digest('hex'),f.provenance.fileSha256[name]);
  assert.match(f.files['cleanup.log'],/debugger=0 clean=1/);assert.equal((f.files['cleanup.log'].match(/restored=1/g)||[]).length,17);

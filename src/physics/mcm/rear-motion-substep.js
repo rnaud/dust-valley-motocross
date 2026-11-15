@@ -37,7 +37,8 @@ export function prepareMcmRearVelocity(c){
   s.forwardMagnitude=f(mul(!(alignment>=0)?-s.alignment:s.alignment,projected));c.steeringFlag=+(alignment>=0);
   s.combined=s.tangent.map((v,i)=>f(add(mul(projected,v),c.rearLoad.angularCross[i])));
   const [x,y,z]=s.combined;s.speed=mcmSqrt(f((y*y+z*z)+x*x));
-  const inverse=div(1,s.speed);s.direction=s.combined.map(v=>f(mul(v,inverse)));
+  const inverse=div(1,s.speed);s.direction=new Float64Array(3);
+  for(let i=0;i<3;i++)s.direction[i]=f(mul(s.combined[i],inverse));
  }else{
   s.combined=[...c.rearLoad.angularCross];const [x,y,z]=s.combined;s.speed=mcmSqrt(f((y*y+z*z)+x*x));
   c.forwardSpeed=0;s.forwardMagnitude=0;s.direction=[0,0,0];

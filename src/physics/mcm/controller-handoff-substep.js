@@ -12,10 +12,12 @@ const f=Math.fround;
 // 0x4ac6cd for crash state. The controller update precedes crash orientation.
 export function handoffMcmSubstepController(c){
  const s=c.controllerHandoff;
+ const angularVelocity=new Float64Array(3);
+ angularVelocity[0]=c.chassisResponse.angularXY[0];angularVelocity[1]=c.chassisResponse.angularXY[1];angularVelocity[2]=c.field53c;
  const r=updateMcmControllerHandoff({
   state844:c.state844,controller13c:s.flag13c,controller140:c.contactCorrection.controller140,
   field8b4:s.kind,otherVelocity:s.other===2?c.velocity:s.other?s.otherVelocity:null,
-  linearVelocity:c.velocity,angularVelocity:[...c.chassisResponse.angularXY,c.field53c],
+  linearVelocity:c.velocity,angularVelocity,
   controllerVelocity:s.velocity,controllerAngularVelocity:s.angularVelocity,
  });
  s.velocity=r.velocity;s.angularVelocity=r.angularVelocity;
