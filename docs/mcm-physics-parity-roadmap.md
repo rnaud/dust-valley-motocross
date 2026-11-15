@@ -1,5 +1,9 @@
 # Motocross Madness physics parity roadmap
 
+## Live cache insertion and renderer writes joined (2026-11-15)
+
+A completed 42-frame capture validates 235 computed program selections, two computed pixel-tree insertions, 2,341 pixel-cache comparisons and 3,210 program-cache comparisons. Both misses lead to 16 sampler formats and 32 overlapping saves. The same capture's modeled writes feed 42 bike frames / 41 rider ticks with zero physics differences and zero observed scratch substitutions, including negative steering and two throttle-release frames. All 278 hooks restored and debugger absent. Allocation/GL IDs, initial graphics state, inherited seed producers and full scheduling remain boundaries. The older 400-frame failure and an active `422f50` scene-child writer observed in a separate capture remain unresolved. Preview handling is unchanged. See `mcm-fixed-pixel-recovery.md`.
+
 ## Shader cache insertion recovered (2026-11-15)
 
 The intact pinned Wine insertion routine matches 32,768 attempts / 2,129,920 words, including all parent/child links, color flags, roots and 3,087 duplicate keys; native repeat output is identical. This supplies the tree-update mechanism needed after the observed pixel-cache miss. Live integration still needs initial parent/color metadata and explicit allocation/compiled-ID boundaries. The existing strict rejection of unexplained cache changes remains enabled. Full physics parity and the older steering failure remain open; preview handling is unchanged.

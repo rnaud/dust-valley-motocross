@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 
-// No insertion model yet: later snapshots are assertions against the retained
-// initial tree, never fresh inputs that could hide an unexplained cache change.
+// Later snapshots are assertions against retained state, never fresh inputs.
+// Callers may update this state only through a separately validated operation.
 export function retainFixedCache(previous,row,label) {
  const nodes=new Map(row.nodes.map(n=>[n.id,n]));
  assert.equal(nodes.size,row.nodes.length,`Duplicate ${label} cache nodes`);
@@ -10,5 +10,5 @@ export function retainFixedCache(previous,row,label) {
   assert.deepEqual(nodes,previous.nodes,`${label} cache changed without modeled insertion`);
   return previous;
  }
- return {root:row.root,nodes};
+ return {root:row.root,nodes:new Map([...nodes].map(([id,n])=>[id,{...n,key:[...n.key]}]))};
 }

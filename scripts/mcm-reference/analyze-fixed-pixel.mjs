@@ -4,8 +4,9 @@ import{mcmFixedPixelDescriptor}from'../../src/physics/mcm/fixed-pixel-descriptor
 import{mcmFixedVertexDescriptor}from'../../src/physics/mcm/fixed-vertex-descriptor.js';
 import{unpackFixedPixelInput}from'./fixed-pixel-input.mjs';
 import{lookupMcmFixedPixelCache}from'../../src/physics/mcm/fixed-vertex-cache.js';
+import{insertMcmShaderCacheNode}from'../../src/physics/mcm/shader-cache-insert.js';
 export function analyzeFixedPixel(rows,{allowIncomplete=false,onKeyWord=()=>{}}={}){
- let cache=null,pending=null,vertexSeed=null,inputs=0,descriptors=0,comparisons=0,hits=0,misses=0,keyWords=0,derivedSeedBytes=0;
+ let cache=null,pending=null,vertexSeed=null,inputs=0,descriptors=0,comparisons=0,hits=0,misses=0,keyWords=0,derivedSeedBytes=0,creations=0;
  for(const r of rows){
   if(r.phase==='program-key-entry')vertexSeed=null;
   if(r.phase==='fixed-vertex-input'){
@@ -31,13 +32,32 @@ export function analyzeFixedPixel(rows,{allowIncomplete=false,onKeyWord=()=>{}}=
    assert.ok(pending?.expected);assert.equal(pending.result,false);assert.equal(r.frame,pending.frame);
    assert.equal(pending.index,pending.expected.comparisons.length);assert.equal(r.node,pending.expected.node);assert.equal(r.miss,pending.expected.node?0:1);
    pending.result=true;if(r.miss)misses++;else hits++;
+  }else if(r.phase==='shader-d5aaa'||r.phase==='shader-d6740'){
+   assert.ok(pending?.result&&pending.expected.node===0,'Creation boundary without pixel miss');
+   assert.equal(r.frame,pending.frame);assert.ok(r.result,'Unsupported failed pixel allocation/compilation');
+   const field=r.phase==='shader-d5aaa'?'allocation':'compiledId';
+   assert.equal(pending[field],undefined,'Repeated pixel creation boundary');pending[field]=r.result;
+  }else if(r.phase==='fixed-pixel-created'){
+   assert.ok(pending?.result&&pending.expected.node===0,'Created pixel without lookup miss');
+   assert.equal(r.frame,pending.frame);assert.ok(pending.allocation&&pending.compiledId,'Missing allocation or compiled shader boundary');
+   assert.equal(pending.created,undefined,'Repeated pixel creation');
+   assert.equal(r.node,pending.allocation,'Allocated pixel node');assert.equal(r.program,pending.compiledId,'Compiled pixel ID');assert.equal(r.registerProgram,pending.compiledId);
+   assert.deepEqual(r.key,pending.key,'Created pixel descriptor');
+   for(const n of cache.nodes.values()){
+    assert.ok(Number.isInteger(n.parent)&&Number.isInteger(n.flags),'Missing initial cache parent/color metadata');
+    assert.notEqual(n.program,pending.compiledId,'Created shader aliases an existing ID');
+   }
+   const compare=(a,b)=>{for(let i=0;i<132;i++)if(a[i]!==b[i])return a[i]<b[i]?-1:1;return 0;};
+   assert.equal(insertMcmShaderCacheNode(cache,{id:pending.allocation,key:[...pending.key],program:pending.compiledId},compare),true,'Created duplicate pixel descriptor');
+   pending.expected.program=pending.compiledId;pending.created=true;creations++;
   }else if(r.phase==='program-key-fields'&&pending){
    assert.equal(r.frame,pending.frame);assert.equal(pending.result,true);
-   // Creation remains outside this lookup; only a hit predicts the shader ID.
+   // Allocation and GL compilation returns are explicit external inputs on a
+   // miss; descriptor copying and tree insertion are computed, not reseeded.
    if(pending.expected.program!==null){assert.equal(r.key[4],pending.expected.program,'Derived pixel program key');keyWords++;onKeyWord(r,pending.expected.program);}
    pending=null;
   }
  }
  if(!allowIncomplete)assert.equal(pending,null,'Incomplete fixed pixel operation');
- return {inputs,descriptors,comparisons,hits,misses,keyWords,derivedSeedBytes,pending:!!pending};
+ return {inputs,descriptors,comparisons,hits,misses,keyWords,derivedSeedBytes,creations,pending:!!pending};
 }

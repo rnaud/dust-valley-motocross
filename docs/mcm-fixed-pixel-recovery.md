@@ -26,8 +26,8 @@ Both fixed-function cache analyzers now retain the initial tree and node content
 Later snapshots are comparisons, not new inputs. In the five-frame fixture this
 retains six vertex nodes and 4,726 pixel nodes across all lookups. Unexplained
 changes, including changes to nodes outside the current comparison path, fail
-validation. Cache insertion remains unmodeled and is rejected if it changes a
-later snapshot.
+validation. Insertions require the explicit creation inputs and initial metadata
+described below; unexplained later changes remain rejected.
 
 ## Native cache insertion recovery
 
@@ -40,14 +40,45 @@ attempts, all 32,768 attempts / 2,129,920 output words match. The cases include
 the root and every node's parent, left, right and flags, including untouched nodes.
 
 This recovers insertion mechanics, not allocation or shader compilation. The
-existing live descriptor fixtures omit parent/color metadata, so insertion is
-not yet joined to their replay. A subsequent capture must supply that initial
-metadata, then validate later topology against computed insertions. The strict
-cache-snapshot rejection remains in place until that integration is proven.
+42-frame capture below supplies initial parent/color metadata and validates the
+subsequent topology against computed insertions. Older fixtures without that
+metadata still cannot establish insertion coverage; unexplained changes remain
+strict failures.
+
+## Creation joined to the retained world replay
+
+A completed 42-frame, 278-hook capture now validates 109 vertex descriptors,
+235 pixel descriptors and 235 complete program selections. Two pixel-cache
+misses consume separately captured allocation and GL shader-ID returns. The
+model copies its computed descriptor and applies the recovered insertion routine;
+subsequent root, parent, child, key, ID and color snapshots are comparisons only.
+All 2,341 pixel-cache and 3,210 final program-cache comparisons match.
+
+Both final program misses lead to the expected sampler setup: 16 formats,
+48 callbacks and 32 overlapping register saves. The shader and world fixtures
+share capture hashes and compare their formatter event sequences directly. Their
+computed writes feed 42 retained bike frames and 41 rider ticks with zero physics
+differences, 41 modeled caller words and zero observed scratch substitutions.
+The sequence accelerates through frame 39, steers negatively from frame 20, and
+releases throttle for frames 40–41. Removing the formatter writes fails at
+interval 22 (`1064500121` versus native zero).
+
+Negative tests reject missing allocation/compilation inputs, changed descriptor
+bytes, absent initial color data, and modified post-insertion colors. They also
+verify that insertion never mutates captured snapshots. Both the executed
+configuration and repository verifier confirm all 278 hooks restored and no
+attached debugger.
+
+Allocation/GL IDs, initial graphics/cache state, inherited seed bytes and outer
+invocation scheduling remain boundaries. The older 400-frame steering failure
+is not closed. A separate completed combined capture exposed a frame-0 write
+inside scene child `422f50`; that callback exits before its drawing path in this
+successful sample. Its active writing path remains unresolved. These are
+controlled trace results, not full-world or preview parity.
 
 ## Remaining scope
 
-The five-frame sample contains no cache-creation misses. Initial cache contents/topology, graphics-state fields and the remaining temporary-buffer seed bytes are still boundary inputs. Cache allocation/creation, full caller scheduling and the older frame-38 steering divergence remain unresolved. This is a joined shader-key recovery milestone, not a new whole-ride physics equivalence result. Preview handling is unchanged.
+The five-frame sample contains no cache-creation misses; the longer sample covers two insertions. Initial cache contents/topology, graphics-state fields and remaining temporary-buffer seed bytes are still boundary inputs. Allocation and GL compilation, full caller scheduling, the active scene-child writer and the older frame-38 steering divergence remain unresolved. This is a joined shader-key recovery milestone, not a new whole-ride physics equivalence result. Preview handling is unchanged.
 
 ## Reproduction
 
@@ -70,6 +101,12 @@ unbuffered and buffered output (SHA-256
 `e0c4232f7aadb4903940390e48508991da6d0163dcfa5d1505c23ffd0572918a`).
 The sample took 1,059 ms and 13 ms respectively. These are formatting/I/O timings,
 not whole-capture performance or simulation-equivalence measurements. The capture
-and independent verifier both compile with the updated configuration. Live
-buffered-capture verification remains pending while the prior unbuffered capture
-is running; do not attach a second debugger to test it.
+and independent verifier both compile with the updated configuration. The
+completed 278-hook capture verifies buffered diagnostics live. Never attach a
+second debugger while a capture is active.
+
+For the joined trace, build `capture-fixed-pixel-tree.c` and
+`verify-fixed-pixel-tree.c`; the wrapper selects 84 records and the 278-hook
+configuration. It includes initial parent/color fields, creation boundaries,
+formatter callbacks and scene-child call boundaries. Run
+`node --test tests/mcm-fixed-pixel-insertion-live.test.js` for the retained chain.
