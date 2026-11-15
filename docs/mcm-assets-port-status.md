@@ -18,7 +18,7 @@ This is an asset-port tally, separate from physics equivalence. Matching geometr
 
 ## Scene settings and comparison scenery
 
-- Imported a source-hashed SCN settings record for every available matching course file; missing same-name files are explicit null entries. Filename matching is case-insensitive, including `TRACK13.TRN` / `TRACK13.SCN` (Widowmaker). Waypoint terrain files use differently named race scenes; selecting those race variants is still outstanding. Defaults are not presented as exact race starts.
+- Imported a source-hashed SCN settings record for every available matching course file; missing same-name files are explicit null entries. Filename matching is case-insensitive, including `TRACK13.TRN` / `TRACK13.SCN` (Widowmaker). All twelve waypoint scene variants are now matched by their declared TerrainFile and selectable under Original environment. Their declared practice starts, fog colors and shadow light positions are connected; waypoint race setup is still outstanding. Defaults are not presented as exact race starts.
 - Preview applies a scene’s declared fog color when present. Fog distance, sky cubes and lighting remain unported; imported sky/light metadata is preserved for that work.
 - Original-map rides now hide Dust Valley’s decorative mountains, cacti, rocks, arch, grass and nearby procedural ground details. Classic restores these decorations.
 - Desktop Dunes and touch Week 10 browser checks verify original meshes/textures and absence of procedural scenery.
@@ -41,3 +41,7 @@ All 33 imported terrains completed 30 recovered acceleration frames with finite 
 The public Pages build passed desktop Dunes and touch Week 10 startup checks with Rider 12 and Bike 02: 21 drawable parts, original terrain textures, no missing textures, recovered-core backend, and no browser errors. This checks asset delivery and startup, not sustained physics equivalence. `scripts/original-assets-smoke.mjs` accepts `MCM_MAP` to repeat the check on a selected course.
 
 Widowmaker additionally passed desktop/touch checks after restoring its uppercase scene filename and using the declared scene default start. Screenshot inspection caught the previous central spawn on empty gray terrain; the corrected start displays the original textured slopes. The regression test checks the declared horizontal position with tolerance for recovered ground alignment, then advances 30 acceleration frames.
+
+## Waypoint environments — 2026-11-15
+
+All six waypoint terrains now expose their two original named scene environments. The importer records source hashes and declared terrain/waypoint references; the two Yuma scene files omit WaypointFile and retain explicit null values. Scene selection changes the declared practice spawn, fog color and shadow target. These are not reconstructed race starts, checkpoint layouts, skies or full lighting. Rider geometry and the twelve skins remain available in the same preview selector.

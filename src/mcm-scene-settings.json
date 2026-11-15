@@ -1,6 +1,8 @@
 {
   "canyon-canyon01": {
     "title": "Canyon Country 01",
+    "terrainFile": "CANYON01.trn",
+    "waypointFile": null,
     "skyCube": null,
     "fogColor": null,
     "defaultStartPosition": null,
@@ -11,6 +13,8 @@
   },
   "canyon-canyon02": {
     "title": "Canyon Country 02",
+    "terrainFile": "CANYON02.trn",
+    "waypointFile": null,
     "skyCube": null,
     "fogColor": null,
     "defaultStartPosition": null,
@@ -21,6 +25,8 @@
   },
   "canyon-canyon03": {
     "title": "Canyon Country 03",
+    "terrainFile": "CANYON03.trn",
+    "waypointFile": null,
     "skyCube": null,
     "fogColor": null,
     "defaultStartPosition": null,
@@ -31,6 +37,8 @@
   },
   "canyon-canyon04": {
     "title": "Canyon Country 04",
+    "terrainFile": "CANYON04.trn",
+    "waypointFile": null,
     "skyCube": null,
     "fogColor": null,
     "defaultStartPosition": null,
@@ -41,6 +49,8 @@
   },
   "canyon-canyon05": {
     "title": "Canyon Country 05",
+    "terrainFile": "CANYON05.trn",
+    "waypointFile": null,
     "skyCube": null,
     "fogColor": null,
     "defaultStartPosition": null,
@@ -51,6 +61,8 @@
   },
   "quarries-track13": {
     "title": "Widowmaker",
+    "terrainFile": "track13.trn",
+    "waypointFile": null,
     "skyCube": "cube10.cub",
     "fogColor": [
       155,
@@ -106,6 +118,8 @@
   },
   "quarries-dunes": {
     "title": "Yuma Sand Dunes",
+    "terrainFile": "dunes.trn",
+    "waypointFile": null,
     "skyCube": "cube21.cub",
     "fogColor": [
       180,
@@ -161,6 +175,8 @@
   },
   "quarries-quarry00": {
     "title": "Arizona Exploration",
+    "terrainFile": "quarry00.trn",
+    "waypointFile": null,
     "skyCube": "cube04.cub",
     "fogColor": [
       160,
@@ -216,6 +232,8 @@
   },
   "quarries-quarry01": {
     "title": "T-rific",
+    "terrainFile": "quarry01.trn",
+    "waypointFile": null,
     "skyCube": "cube05.cub",
     "fogColor": [
       180,
@@ -271,6 +289,8 @@
   },
   "quarries-quarry02": {
     "title": "Rocky Road",
+    "terrainFile": "quarry02.trn",
+    "waypointFile": null,
     "skyCube": "cube10.cub",
     "fogColor": [
       170,
@@ -326,6 +346,8 @@
   },
   "quarries-quarry03": {
     "title": "Painted Desert",
+    "terrainFile": "quarry03.trn",
+    "waypointFile": null,
     "skyCube": "cube14.cub",
     "fogColor": [
       70,
@@ -381,6 +403,8 @@
   },
   "quarries-quarry19": {
     "title": "Bowling Greens",
+    "terrainFile": "quarry19.trn",
+    "waypointFile": null,
     "skyCube": "cube18.cub",
     "fogColor": [
       128,
@@ -436,6 +460,8 @@
   },
   "season-week01": {
     "title": "Week 01 - San Diego",
+    "terrainFile": "week01.trn",
+    "waypointFile": null,
     "skyCube": null,
     "fogColor": null,
     "defaultStartPosition": null,
@@ -446,6 +472,8 @@
   },
   "season-week02": {
     "title": "Week 02 - Indianapolis",
+    "terrainFile": "week02.trn",
+    "waypointFile": null,
     "skyCube": null,
     "fogColor": null,
     "defaultStartPosition": null,
@@ -456,6 +484,8 @@
   },
   "season-week03": {
     "title": "Week 03 - Phoenix",
+    "terrainFile": "week03.trn",
+    "waypointFile": null,
     "skyCube": null,
     "fogColor": null,
     "defaultStartPosition": null,
@@ -466,6 +496,8 @@
   },
   "season-week04": {
     "title": "Week 04 - Minneapolis",
+    "terrainFile": "week04.trn",
+    "waypointFile": null,
     "skyCube": null,
     "fogColor": null,
     "defaultStartPosition": null,
@@ -476,6 +508,8 @@
   },
   "season-week05": {
     "title": "Week 05 - Denver",
+    "terrainFile": "week05.trn",
+    "waypointFile": null,
     "skyCube": null,
     "fogColor": null,
     "defaultStartPosition": null,
@@ -486,6 +520,8 @@
   },
   "season-week06": {
     "title": "Week 06 - Houston",
+    "terrainFile": "WEEK06.trn",
+    "waypointFile": null,
     "skyCube": null,
     "fogColor": null,
     "defaultStartPosition": null,
@@ -496,6 +532,8 @@
   },
   "season-week07": {
     "title": "Week 07 - Pittsburgh",
+    "terrainFile": "week07.trn",
+    "waypointFile": null,
     "skyCube": null,
     "fogColor": null,
     "defaultStartPosition": null,
@@ -506,6 +544,8 @@
   },
   "season-week08": {
     "title": "Week 08 - Detroit",
+    "terrainFile": "week08.trn",
+    "waypointFile": null,
     "skyCube": null,
     "fogColor": null,
     "defaultStartPosition": null,
@@ -516,6 +556,8 @@
   },
   "season-week09": {
     "title": "Week 09 - Seattle",
+    "terrainFile": "week09.trn",
+    "waypointFile": null,
     "skyCube": null,
     "fogColor": null,
     "defaultStartPosition": null,
@@ -526,6 +568,8 @@
   },
   "season-week10": {
     "title": "Week 10 - Boston",
+    "terrainFile": "week10.trn",
+    "waypointFile": null,
     "skyCube": null,
     "fogColor": null,
     "defaultStartPosition": null,
@@ -536,6 +580,8 @@
   },
   "season-week11": {
     "title": "Week 11 - Atlanta",
+    "terrainFile": "week11.trn",
+    "waypointFile": null,
     "skyCube": null,
     "fogColor": null,
     "defaultStartPosition": null,
@@ -546,6 +592,8 @@
   },
   "season-week12": {
     "title": "Week 12 - Tampa Bay",
+    "terrainFile": "week12.trn",
+    "waypointFile": null,
     "skyCube": null,
     "fogColor": null,
     "defaultStartPosition": null,
@@ -556,6 +604,8 @@
   },
   "season-week13": {
     "title": "Week 13 - Charlotte",
+    "terrainFile": "week13.trn",
+    "waypointFile": null,
     "skyCube": null,
     "fogColor": null,
     "defaultStartPosition": null,
@@ -566,6 +616,8 @@
   },
   "season-week14": {
     "title": "Week 14 - Cleveland",
+    "terrainFile": "week14.trn",
+    "waypointFile": null,
     "skyCube": null,
     "fogColor": null,
     "defaultStartPosition": null,
@@ -576,6 +628,8 @@
   },
   "season-week15": {
     "title": "Week 15 - Dallas",
+    "terrainFile": "week15.trn",
+    "waypointFile": null,
     "skyCube": null,
     "fogColor": null,
     "defaultStartPosition": null,

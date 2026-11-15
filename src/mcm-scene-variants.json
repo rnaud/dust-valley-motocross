@@ -1,0 +1,1391 @@
+{
+  "canyon-canyon01": [
+    {
+      "title": "Canyon Country 01",
+      "terrainFile": "CANYON01.trn",
+      "waypointFile": null,
+      "skyCube": null,
+      "fogColor": null,
+      "defaultStartPosition": null,
+      "defaultStartDirection": null,
+      "lights": [],
+      "source": "teraform/canyon/canyon01.scn",
+      "sha256": "7496f0314be1016e410d72b0b44370929a3ae146bb0bf4bf195ef14fc9fd353a"
+    }
+  ],
+  "canyon-canyon02": [
+    {
+      "title": "Canyon Country 02",
+      "terrainFile": "CANYON02.trn",
+      "waypointFile": null,
+      "skyCube": null,
+      "fogColor": null,
+      "defaultStartPosition": null,
+      "defaultStartDirection": null,
+      "lights": [],
+      "source": "teraform/canyon/canyon02.scn",
+      "sha256": "c463973b88ebb47fc1787183ce8fc5e1870486152327a9ed5765c0c3adc6e7f6"
+    }
+  ],
+  "canyon-canyon03": [
+    {
+      "title": "Canyon Country 03",
+      "terrainFile": "CANYON03.trn",
+      "waypointFile": null,
+      "skyCube": null,
+      "fogColor": null,
+      "defaultStartPosition": null,
+      "defaultStartDirection": null,
+      "lights": [],
+      "source": "teraform/canyon/canyon03.scn",
+      "sha256": "b8a564e3b38bb0653ac873a5f7f5c3cec86094ae5e230fd9364ae63c1d5159e3"
+    }
+  ],
+  "canyon-canyon04": [
+    {
+      "title": "Canyon Country 04",
+      "terrainFile": "CANYON04.trn",
+      "waypointFile": null,
+      "skyCube": null,
+      "fogColor": null,
+      "defaultStartPosition": null,
+      "defaultStartDirection": null,
+      "lights": [],
+      "source": "teraform/canyon/canyon04.scn",
+      "sha256": "58ef211ab2bdd08fb1dccb132a11e352d92e22ade74fa2f78d2a64c548c23c09"
+    }
+  ],
+  "canyon-canyon05": [
+    {
+      "title": "Canyon Country 05",
+      "terrainFile": "CANYON05.trn",
+      "waypointFile": null,
+      "skyCube": null,
+      "fogColor": null,
+      "defaultStartPosition": null,
+      "defaultStartDirection": null,
+      "lights": [],
+      "source": "teraform/canyon/canyon05.scn",
+      "sha256": "cae3bb238b20679f555a6fe78fc5038316da132cbcbe62a3d54ed3e96dae0b5b"
+    }
+  ],
+  "quarries-track13": [
+    {
+      "title": "Widowmaker",
+      "terrainFile": "track13.trn",
+      "waypointFile": null,
+      "skyCube": "cube10.cub",
+      "fogColor": [
+        155,
+        195,
+        215
+      ],
+      "defaultStartPosition": [
+        1113,
+        100,
+        1197
+      ],
+      "defaultStartDirection": [
+        0,
+        0,
+        1
+      ],
+      "lights": [
+        {
+          "type": "Ambient",
+          "color": [
+            120,
+            120,
+            120
+          ],
+          "position": null,
+          "target": null,
+          "castsShadows": false,
+          "atInfinity": true
+        },
+        {
+          "type": "ObjectPoint",
+          "color": [
+            200,
+            200,
+            200
+          ],
+          "position": [
+            -780,
+            1807.5,
+            361.155
+          ],
+          "target": [
+            0,
+            0,
+            0
+          ],
+          "castsShadows": true,
+          "atInfinity": true
+        }
+      ],
+      "source": "teraform/quarries/TRACK13.SCN",
+      "sha256": "eca90f973982e271166a93503bd5ceb92a3bc2847ae0a06ad58f5421b996ffaa"
+    }
+  ],
+  "quarries-dunes": [
+    {
+      "title": "Yuma Sand Dunes",
+      "terrainFile": "dunes.trn",
+      "waypointFile": null,
+      "skyCube": "cube21.cub",
+      "fogColor": [
+        180,
+        210,
+        210
+      ],
+      "defaultStartPosition": [
+        2688,
+        100,
+        2688
+      ],
+      "defaultStartDirection": [
+        0,
+        0,
+        1
+      ],
+      "lights": [
+        {
+          "type": "Ambient",
+          "color": [
+            150,
+            150,
+            150
+          ],
+          "position": null,
+          "target": null,
+          "castsShadows": false,
+          "atInfinity": true
+        },
+        {
+          "type": "ObjectPoint",
+          "color": [
+            255,
+            255,
+            255
+          ],
+          "position": [
+            2688,
+            2314.032,
+            -69.762
+          ],
+          "target": [
+            0,
+            0,
+            0
+          ],
+          "castsShadows": true,
+          "atInfinity": true
+        }
+      ],
+      "source": "teraform/quarries/dunes.scn",
+      "sha256": "a92e8ad4479532a897b65c481ce7642855af44a644c2dd168645171e4b5f7d0b"
+    }
+  ],
+  "quarries-quarry00": [
+    {
+      "title": "Arizona Exploration",
+      "terrainFile": "quarry00.trn",
+      "waypointFile": null,
+      "skyCube": "cube04.cub",
+      "fogColor": [
+        160,
+        200,
+        210
+      ],
+      "defaultStartPosition": [
+        2600,
+        100,
+        2800
+      ],
+      "defaultStartDirection": [
+        0,
+        0,
+        1
+      ],
+      "lights": [
+        {
+          "type": "Ambient",
+          "color": [
+            120,
+            120,
+            120
+          ],
+          "position": null,
+          "target": null,
+          "castsShadows": false,
+          "atInfinity": true
+        },
+        {
+          "type": "ObjectPoint",
+          "color": [
+            220,
+            220,
+            220
+          ],
+          "position": [
+            2750.16,
+            2225.664,
+            -873.258
+          ],
+          "target": [
+            0,
+            0,
+            0
+          ],
+          "castsShadows": true,
+          "atInfinity": true
+        }
+      ],
+      "source": "teraform/quarries/quarry00.scn",
+      "sha256": "7d0973dbe3dcc907053ee14cbcbf44908e45f9d5d5d3a1bd086bf0f91bd921f6"
+    }
+  ],
+  "quarries-quarry01": [
+    {
+      "title": "T-rific",
+      "terrainFile": "quarry01.trn",
+      "waypointFile": null,
+      "skyCube": "cube05.cub",
+      "fogColor": [
+        180,
+        190,
+        210
+      ],
+      "defaultStartPosition": [
+        2688,
+        100,
+        2688
+      ],
+      "defaultStartDirection": [
+        0,
+        0,
+        1
+      ],
+      "lights": [
+        {
+          "type": "Ambient",
+          "color": [
+            120,
+            120,
+            120
+          ],
+          "position": null,
+          "target": null,
+          "castsShadows": false,
+          "atInfinity": true
+        },
+        {
+          "type": "ObjectPoint",
+          "color": [
+            200,
+            200,
+            200
+          ],
+          "position": [
+            4892.541,
+            1800,
+            483.459
+          ],
+          "target": [
+            0,
+            0,
+            0
+          ],
+          "castsShadows": true,
+          "atInfinity": true
+        }
+      ],
+      "source": "teraform/quarries/quarry01.scn",
+      "sha256": "57c63f74a25525a49c30031b58d5edabcf913cce0ed9734c5136721df05ef8ab"
+    }
+  ],
+  "quarries-quarry02": [
+    {
+      "title": "Rocky Road",
+      "terrainFile": "quarry02.trn",
+      "waypointFile": null,
+      "skyCube": "cube10.cub",
+      "fogColor": [
+        170,
+        200,
+        230
+      ],
+      "defaultStartPosition": [
+        2688,
+        100,
+        2688
+      ],
+      "defaultStartDirection": [
+        0,
+        0,
+        1
+      ],
+      "lights": [
+        {
+          "type": "Ambient",
+          "color": [
+            120,
+            120,
+            120
+          ],
+          "position": null,
+          "target": null,
+          "castsShadows": false,
+          "atInfinity": true
+        },
+        {
+          "type": "ObjectPoint",
+          "color": [
+            200,
+            200,
+            200
+          ],
+          "position": [
+            -12,
+            1800,
+            1129.155
+          ],
+          "target": [
+            0,
+            0,
+            0
+          ],
+          "castsShadows": true,
+          "atInfinity": true
+        }
+      ],
+      "source": "teraform/quarries/quarry02.scn",
+      "sha256": "542d160d5416d2d00aa15b3a5d900ad0543189dd4584df3444b958f9bdcc8823"
+    }
+  ],
+  "quarries-quarry03": [
+    {
+      "title": "Painted Desert",
+      "terrainFile": "quarry03.trn",
+      "waypointFile": null,
+      "skyCube": "cube14.cub",
+      "fogColor": [
+        70,
+        70,
+        100
+      ],
+      "defaultStartPosition": [
+        2688,
+        100,
+        2688
+      ],
+      "defaultStartDirection": [
+        0,
+        0,
+        1
+      ],
+      "lights": [
+        {
+          "type": "Ambient",
+          "color": [
+            90,
+            90,
+            90
+          ],
+          "position": null,
+          "target": null,
+          "castsShadows": false,
+          "atInfinity": true
+        },
+        {
+          "type": "ObjectPoint",
+          "color": [
+            200,
+            200,
+            200
+          ],
+          "position": [
+            6070.893,
+            1231.275,
+            2688
+          ],
+          "target": [
+            0,
+            0,
+            0
+          ],
+          "castsShadows": true,
+          "atInfinity": true
+        }
+      ],
+      "source": "teraform/quarries/quarry03.scn",
+      "sha256": "5ea1f7e82553df18f2e6c82a4195b86ad30118c1f03849e131f7e1454b6c9548"
+    }
+  ],
+  "quarries-quarry19": [
+    {
+      "title": "Bowling Greens",
+      "terrainFile": "quarry19.trn",
+      "waypointFile": null,
+      "skyCube": "cube18.cub",
+      "fogColor": [
+        128,
+        147,
+        158
+      ],
+      "defaultStartPosition": [
+        2688,
+        100,
+        2688
+      ],
+      "defaultStartDirection": [
+        0,
+        0,
+        1
+      ],
+      "lights": [
+        {
+          "type": "Ambient",
+          "color": [
+            120,
+            120,
+            120
+          ],
+          "position": null,
+          "target": null,
+          "castsShadows": false,
+          "atInfinity": true
+        },
+        {
+          "type": "ObjectPoint",
+          "color": [
+            200,
+            200,
+            200
+          ],
+          "position": [
+            1744.791,
+            2314.038,
+            96.555
+          ],
+          "target": [
+            0,
+            0,
+            0
+          ],
+          "castsShadows": true,
+          "atInfinity": true
+        }
+      ],
+      "source": "teraform/quarries/quarry19.scn",
+      "sha256": "17aa6bf2a555913da1eeef04aae197003a9a0a8c07c22446f98d62261e62dd8f"
+    }
+  ],
+  "season-week01": [
+    {
+      "title": "Week 01 - San Diego",
+      "terrainFile": "week01.trn",
+      "waypointFile": null,
+      "skyCube": null,
+      "fogColor": null,
+      "defaultStartPosition": null,
+      "defaultStartDirection": null,
+      "lights": [],
+      "source": "teraform/season/week01.scn",
+      "sha256": "92f87126ad2c55df2d4085ac84bdd0c91958b89e2b5ba964b9d42ac3ebac78e1"
+    }
+  ],
+  "season-week02": [
+    {
+      "title": "Week 02 - Indianapolis",
+      "terrainFile": "week02.trn",
+      "waypointFile": null,
+      "skyCube": null,
+      "fogColor": null,
+      "defaultStartPosition": null,
+      "defaultStartDirection": null,
+      "lights": [],
+      "source": "teraform/season/week02.scn",
+      "sha256": "3979cf6a86ed19fea5ef287dafa393e487390c0b63f9c56630fdcf6f550b79ac"
+    }
+  ],
+  "season-week03": [
+    {
+      "title": "Week 03 - Phoenix",
+      "terrainFile": "week03.trn",
+      "waypointFile": null,
+      "skyCube": null,
+      "fogColor": null,
+      "defaultStartPosition": null,
+      "defaultStartDirection": null,
+      "lights": [],
+      "source": "teraform/season/week03.scn",
+      "sha256": "fb5c351a8d4c21d290b6b1a1c47165a1d8b53d407b1d0afcfc3b92e39c36b315"
+    }
+  ],
+  "season-week04": [
+    {
+      "title": "Week 04 - Minneapolis",
+      "terrainFile": "week04.trn",
+      "waypointFile": null,
+      "skyCube": null,
+      "fogColor": null,
+      "defaultStartPosition": null,
+      "defaultStartDirection": null,
+      "lights": [],
+      "source": "teraform/season/week04.scn",
+      "sha256": "c257dfa24b3d259049e9d71ef3dfd45495b379173ce5526457356b2aee5962d9"
+    }
+  ],
+  "season-week05": [
+    {
+      "title": "Week 05 - Denver",
+      "terrainFile": "week05.trn",
+      "waypointFile": null,
+      "skyCube": null,
+      "fogColor": null,
+      "defaultStartPosition": null,
+      "defaultStartDirection": null,
+      "lights": [],
+      "source": "teraform/season/week05.scn",
+      "sha256": "44fb1e8d2884088565f618915dcd07b71e68de9f954a4f74576740369f7c7241"
+    }
+  ],
+  "season-week06": [
+    {
+      "title": "Week 06 - Houston",
+      "terrainFile": "WEEK06.trn",
+      "waypointFile": null,
+      "skyCube": null,
+      "fogColor": null,
+      "defaultStartPosition": null,
+      "defaultStartDirection": null,
+      "lights": [],
+      "source": "teraform/season/week06.scn",
+      "sha256": "7bc1559df889f6bb347190ebd69a5185a2a1c6e97628ec72a2bb075db8ecb9c1"
+    }
+  ],
+  "season-week07": [
+    {
+      "title": "Week 07 - Pittsburgh",
+      "terrainFile": "week07.trn",
+      "waypointFile": null,
+      "skyCube": null,
+      "fogColor": null,
+      "defaultStartPosition": null,
+      "defaultStartDirection": null,
+      "lights": [],
+      "source": "teraform/season/week07.scn",
+      "sha256": "d398fc39548c2f7942e2dfda461285ede0036b605b588a22b8a5e0ebd9612af8"
+    }
+  ],
+  "season-week08": [
+    {
+      "title": "Week 08 - Detroit",
+      "terrainFile": "week08.trn",
+      "waypointFile": null,
+      "skyCube": null,
+      "fogColor": null,
+      "defaultStartPosition": null,
+      "defaultStartDirection": null,
+      "lights": [],
+      "source": "teraform/season/week08.scn",
+      "sha256": "f35b36a3615a87ccf4fcf4bfdd8704474e005186eb90b3c42c8d574ec378576d"
+    }
+  ],
+  "season-week09": [
+    {
+      "title": "Week 09 - Seattle",
+      "terrainFile": "week09.trn",
+      "waypointFile": null,
+      "skyCube": null,
+      "fogColor": null,
+      "defaultStartPosition": null,
+      "defaultStartDirection": null,
+      "lights": [],
+      "source": "teraform/season/week09.scn",
+      "sha256": "d016fed191f44e67de34aadf20f7ad72c379f62530b8bb02944b08bc8a7b1c8d"
+    }
+  ],
+  "season-week10": [
+    {
+      "title": "Week 10 - Boston",
+      "terrainFile": "week10.trn",
+      "waypointFile": null,
+      "skyCube": null,
+      "fogColor": null,
+      "defaultStartPosition": null,
+      "defaultStartDirection": null,
+      "lights": [],
+      "source": "teraform/season/week10.scn",
+      "sha256": "bc48caa2b1a0220e643ca40d252b7dbc5d328f6e08f94393016dad9b78d7cfc8"
+    }
+  ],
+  "season-week11": [
+    {
+      "title": "Week 11 - Atlanta",
+      "terrainFile": "week11.trn",
+      "waypointFile": null,
+      "skyCube": null,
+      "fogColor": null,
+      "defaultStartPosition": null,
+      "defaultStartDirection": null,
+      "lights": [],
+      "source": "teraform/season/week11.scn",
+      "sha256": "b32b6cb04db9081150359e9b085f062f345c940250cc3a072e57015e137bae76"
+    }
+  ],
+  "season-week12": [
+    {
+      "title": "Week 12 - Tampa Bay",
+      "terrainFile": "week12.trn",
+      "waypointFile": null,
+      "skyCube": null,
+      "fogColor": null,
+      "defaultStartPosition": null,
+      "defaultStartDirection": null,
+      "lights": [],
+      "source": "teraform/season/week12.scn",
+      "sha256": "9ae1b25bb32df12c69bfd2da157e203066d89e5c22a28be23b73acb9b143fc00"
+    }
+  ],
+  "season-week13": [
+    {
+      "title": "Week 13 - Charlotte",
+      "terrainFile": "week13.trn",
+      "waypointFile": null,
+      "skyCube": null,
+      "fogColor": null,
+      "defaultStartPosition": null,
+      "defaultStartDirection": null,
+      "lights": [],
+      "source": "teraform/season/week13.scn",
+      "sha256": "fcb9e2722216addbd63cc14394a108e3bda0071867648adb28bb79bcc2c96ae2"
+    }
+  ],
+  "season-week14": [
+    {
+      "title": "Week 14 - Cleveland",
+      "terrainFile": "week14.trn",
+      "waypointFile": null,
+      "skyCube": null,
+      "fogColor": null,
+      "defaultStartPosition": null,
+      "defaultStartDirection": null,
+      "lights": [],
+      "source": "teraform/season/week14.scn",
+      "sha256": "9b7f89c1c16219a0658cbae4de23d1eef254af542041483094df0c45d8ed1813"
+    }
+  ],
+  "season-week15": [
+    {
+      "title": "Week 15 - Dallas",
+      "terrainFile": "week15.trn",
+      "waypointFile": null,
+      "skyCube": null,
+      "fogColor": null,
+      "defaultStartPosition": null,
+      "defaultStartDirection": null,
+      "lights": [],
+      "source": "teraform/season/week15.scn",
+      "sha256": "695f44251380bf333eb5467825447a479742150aef7650b4c411924cb3403738"
+    }
+  ],
+  "waypoint-baja00": [
+    {
+      "title": "Arizona Waypoint #1",
+      "terrainFile": "Baja00.trn",
+      "waypointFile": "Q00_B01.wpt",
+      "skyCube": "cube04.cub",
+      "fogColor": [
+        160,
+        200,
+        210
+      ],
+      "defaultStartPosition": [
+        2600,
+        100,
+        2800
+      ],
+      "defaultStartDirection": [
+        0,
+        0,
+        1
+      ],
+      "lights": [
+        {
+          "type": "Ambient",
+          "color": [
+            120,
+            120,
+            120
+          ],
+          "position": null,
+          "target": null,
+          "castsShadows": false,
+          "atInfinity": true
+        },
+        {
+          "type": "ObjectPoint",
+          "color": [
+            190,
+            190,
+            190
+          ],
+          "position": [
+            2750.16,
+            2225.664,
+            -873.258
+          ],
+          "target": [
+            0,
+            0,
+            0
+          ],
+          "castsShadows": true,
+          "atInfinity": true
+        }
+      ],
+      "source": "teraform/waypoint/Q00_B01.SCN",
+      "sha256": "ce521b2d461632f9c80f1fde0031bb82a4209adaf85270208f055925c3f8282c"
+    },
+    {
+      "title": "Arizona Waypoint #2",
+      "terrainFile": "Baja00.trn",
+      "waypointFile": "Q00_B02.wpt",
+      "skyCube": "cube04.cub",
+      "fogColor": [
+        160,
+        200,
+        210
+      ],
+      "defaultStartPosition": [
+        2600,
+        100,
+        2800
+      ],
+      "defaultStartDirection": [
+        0,
+        0,
+        1
+      ],
+      "lights": [
+        {
+          "type": "Ambient",
+          "color": [
+            120,
+            120,
+            120
+          ],
+          "position": null,
+          "target": null,
+          "castsShadows": false,
+          "atInfinity": true
+        },
+        {
+          "type": "ObjectPoint",
+          "color": [
+            200,
+            200,
+            200
+          ],
+          "position": [
+            2750.16,
+            2225.664,
+            -873.258
+          ],
+          "target": [
+            0,
+            0,
+            0
+          ],
+          "castsShadows": true,
+          "atInfinity": true
+        }
+      ],
+      "source": "teraform/waypoint/Q00_B02.SCN",
+      "sha256": "142ff32cdefbb84e42bf10891f70685f83a25f528b71eec1f53365d84a98c011"
+    }
+  ],
+  "waypoint-baja01": [
+    {
+      "title": "T-rific Waypoint #1",
+      "terrainFile": "baja01.trn",
+      "waypointFile": "Q01_B01.wpt",
+      "skyCube": "cube05.cub",
+      "fogColor": [
+        180,
+        190,
+        210
+      ],
+      "defaultStartPosition": [
+        2688,
+        100,
+        2688
+      ],
+      "defaultStartDirection": [
+        0,
+        0,
+        1
+      ],
+      "lights": [
+        {
+          "type": "Ambient",
+          "color": [
+            120,
+            120,
+            120
+          ],
+          "position": null,
+          "target": null,
+          "castsShadows": false,
+          "atInfinity": true
+        },
+        {
+          "type": "ObjectPoint",
+          "color": [
+            200,
+            200,
+            200
+          ],
+          "position": [
+            4892.541,
+            1800,
+            483.459
+          ],
+          "target": [
+            0,
+            0,
+            0
+          ],
+          "castsShadows": true,
+          "atInfinity": true
+        }
+      ],
+      "source": "teraform/waypoint/Q01_B01.SCN",
+      "sha256": "edc634f36939a1c773c51241c5539d53673f73a1b14dd500949f5834757d8c04"
+    },
+    {
+      "title": "T-rific Waypoint #2",
+      "terrainFile": "baja01.trn",
+      "waypointFile": "Q01_B02.wpt",
+      "skyCube": "cube05.cub",
+      "fogColor": [
+        180,
+        190,
+        210
+      ],
+      "defaultStartPosition": [
+        2688,
+        100,
+        2688
+      ],
+      "defaultStartDirection": [
+        0,
+        0,
+        1
+      ],
+      "lights": [
+        {
+          "type": "Ambient",
+          "color": [
+            120,
+            120,
+            120
+          ],
+          "position": null,
+          "target": null,
+          "castsShadows": false,
+          "atInfinity": true
+        },
+        {
+          "type": "ObjectPoint",
+          "color": [
+            200,
+            200,
+            200
+          ],
+          "position": [
+            4892.541,
+            1800,
+            483.459
+          ],
+          "target": [
+            0,
+            0,
+            0
+          ],
+          "castsShadows": true,
+          "atInfinity": true
+        }
+      ],
+      "source": "teraform/waypoint/Q01_B02.SCN",
+      "sha256": "986a795950bccfefd1a46ff91be32e013b6579ce5eb665e79af363cb6b2597ba"
+    }
+  ],
+  "waypoint-baja02": [
+    {
+      "title": "Rocky Road Waypoint #1",
+      "terrainFile": "baja02.trn",
+      "waypointFile": "Q02_B01.wpt",
+      "skyCube": "cube10.cub",
+      "fogColor": [
+        170,
+        200,
+        230
+      ],
+      "defaultStartPosition": [
+        2688,
+        100,
+        2688
+      ],
+      "defaultStartDirection": [
+        0,
+        0,
+        1
+      ],
+      "lights": [
+        {
+          "type": "Ambient",
+          "color": [
+            120,
+            120,
+            120
+          ],
+          "position": null,
+          "target": null,
+          "castsShadows": false,
+          "atInfinity": true
+        },
+        {
+          "type": "ObjectPoint",
+          "color": [
+            200,
+            200,
+            200
+          ],
+          "position": [
+            -12,
+            1800,
+            1129.155
+          ],
+          "target": [
+            0,
+            0,
+            0
+          ],
+          "castsShadows": true,
+          "atInfinity": true
+        }
+      ],
+      "source": "teraform/waypoint/Q02_B01.SCN",
+      "sha256": "1cf0235bc749793d489ba08a03d9d5e27ab4827a8ac7b0ee36bfcbe343c058ff"
+    },
+    {
+      "title": "Rocky Road Waypoint #2",
+      "terrainFile": "baja02.trn",
+      "waypointFile": "Q02_B02.wpt",
+      "skyCube": "cube10.cub",
+      "fogColor": [
+        170,
+        200,
+        230
+      ],
+      "defaultStartPosition": [
+        2688,
+        100,
+        2688
+      ],
+      "defaultStartDirection": [
+        0,
+        0,
+        1
+      ],
+      "lights": [
+        {
+          "type": "Ambient",
+          "color": [
+            120,
+            120,
+            120
+          ],
+          "position": null,
+          "target": null,
+          "castsShadows": false,
+          "atInfinity": true
+        },
+        {
+          "type": "ObjectPoint",
+          "color": [
+            200,
+            200,
+            200
+          ],
+          "position": [
+            -12,
+            1800,
+            1129.155
+          ],
+          "target": [
+            0,
+            0,
+            0
+          ],
+          "castsShadows": true,
+          "atInfinity": true
+        }
+      ],
+      "source": "teraform/waypoint/Q02_B02.SCN",
+      "sha256": "4e0a1dac46c4434e10199d004d2842bf364eaf5c2e3d4867cfaed8a297b3292d"
+    }
+  ],
+  "waypoint-baja03": [
+    {
+      "title": "Painted Desert Waypoint #1",
+      "terrainFile": "baja03.trn",
+      "waypointFile": "Q03_B01.wpt",
+      "skyCube": "cube14.cub",
+      "fogColor": [
+        70,
+        70,
+        100
+      ],
+      "defaultStartPosition": [
+        2688,
+        100,
+        2688
+      ],
+      "defaultStartDirection": [
+        0,
+        0,
+        1
+      ],
+      "lights": [
+        {
+          "type": "Ambient",
+          "color": [
+            90,
+            90,
+            90
+          ],
+          "position": null,
+          "target": null,
+          "castsShadows": false,
+          "atInfinity": true
+        },
+        {
+          "type": "ObjectPoint",
+          "color": [
+            200,
+            200,
+            200
+          ],
+          "position": [
+            6070.893,
+            1231.275,
+            2688
+          ],
+          "target": [
+            0,
+            0,
+            0
+          ],
+          "castsShadows": true,
+          "atInfinity": true
+        }
+      ],
+      "source": "teraform/waypoint/Q03_B01.SCN",
+      "sha256": "13896431d46141bc41791d558c0ec5d8993f3520c3b6e889e76831ca8088a9d6"
+    },
+    {
+      "title": "Painted Desert Waypoint #2",
+      "terrainFile": "baja03.trn",
+      "waypointFile": "Q03_B02.wpt",
+      "skyCube": "cube14.cub",
+      "fogColor": [
+        70,
+        70,
+        100
+      ],
+      "defaultStartPosition": [
+        2688,
+        100,
+        2688
+      ],
+      "defaultStartDirection": [
+        0,
+        0,
+        1
+      ],
+      "lights": [
+        {
+          "type": "Ambient",
+          "color": [
+            90,
+            90,
+            90
+          ],
+          "position": null,
+          "target": null,
+          "castsShadows": false,
+          "atInfinity": true
+        },
+        {
+          "type": "ObjectPoint",
+          "color": [
+            200,
+            200,
+            200
+          ],
+          "position": [
+            6070.893,
+            1231.275,
+            2688
+          ],
+          "target": [
+            0,
+            0,
+            0
+          ],
+          "castsShadows": true,
+          "atInfinity": true
+        }
+      ],
+      "source": "teraform/waypoint/Q03_B02.SCN",
+      "sha256": "5b53998feca94822d4ddb6bd747aaae293f6e44c70eeed45426a96da0c6d7637"
+    }
+  ],
+  "waypoint-baja19": [
+    {
+      "title": "Bowling Greens Waypoint #1",
+      "terrainFile": "baja19.trn",
+      "waypointFile": "Q19_B01.wpt",
+      "skyCube": "cube18.cub",
+      "fogColor": [
+        128,
+        147,
+        158
+      ],
+      "defaultStartPosition": [
+        2688,
+        100,
+        2688
+      ],
+      "defaultStartDirection": [
+        0,
+        0,
+        1
+      ],
+      "lights": [
+        {
+          "type": "Ambient",
+          "color": [
+            120,
+            120,
+            120
+          ],
+          "position": null,
+          "target": null,
+          "castsShadows": false,
+          "atInfinity": true
+        },
+        {
+          "type": "ObjectPoint",
+          "color": [
+            200,
+            200,
+            200
+          ],
+          "position": [
+            1744.791,
+            2314.038,
+            96.555
+          ],
+          "target": [
+            0,
+            0,
+            0
+          ],
+          "castsShadows": true,
+          "atInfinity": true
+        }
+      ],
+      "source": "teraform/waypoint/Q19_B01.SCN",
+      "sha256": "58135041835fc1787a2dff24d6f876045c8e5e2f115cb0d2d3e18cb6898048c4"
+    },
+    {
+      "title": "Bowling Greens Waypoint #2",
+      "terrainFile": "baja19.trn",
+      "waypointFile": "Q19_B02.wpt",
+      "skyCube": "cube18.cub",
+      "fogColor": [
+        128,
+        147,
+        158
+      ],
+      "defaultStartPosition": [
+        2688,
+        100,
+        2688
+      ],
+      "defaultStartDirection": [
+        0,
+        0,
+        1
+      ],
+      "lights": [
+        {
+          "type": "Ambient",
+          "color": [
+            120,
+            120,
+            120
+          ],
+          "position": null,
+          "target": null,
+          "castsShadows": false,
+          "atInfinity": true
+        },
+        {
+          "type": "ObjectPoint",
+          "color": [
+            200,
+            200,
+            200
+          ],
+          "position": [
+            1744.791,
+            2314.038,
+            96.555
+          ],
+          "target": [
+            0,
+            0,
+            0
+          ],
+          "castsShadows": true,
+          "atInfinity": true
+        }
+      ],
+      "source": "teraform/waypoint/Q19_B02.SCN",
+      "sha256": "3fa6e2003433dbdb793c5f4874054e4d37d137f6b683608d53ff1ff0d6d8af24"
+    }
+  ],
+  "waypoint-dunebaja": [
+    {
+      "title": "Yuma Dunes Waypoint #1",
+      "terrainFile": "duneBaja.trn",
+      "waypointFile": null,
+      "skyCube": "cube21.cub",
+      "fogColor": [
+        180,
+        210,
+        210
+      ],
+      "defaultStartPosition": [
+        2688,
+        100,
+        2688
+      ],
+      "defaultStartDirection": [
+        0,
+        0,
+        1
+      ],
+      "lights": [
+        {
+          "type": "Ambient",
+          "color": [
+            130,
+            130,
+            130
+          ],
+          "position": null,
+          "target": null,
+          "castsShadows": false,
+          "atInfinity": true
+        },
+        {
+          "type": "ObjectPoint",
+          "color": [
+            255,
+            255,
+            255
+          ],
+          "position": [
+            2688,
+            2314.032,
+            -69.762
+          ],
+          "target": [
+            0,
+            0,
+            0
+          ],
+          "castsShadows": true,
+          "atInfinity": true
+        }
+      ],
+      "source": "teraform/waypoint/DUNE_B01.SCN",
+      "sha256": "4685991507b922e213de5e48f9cff04322472ec4583910149d4986e30c698d09"
+    },
+    {
+      "title": "Yuma Dunes Waypoint #2",
+      "terrainFile": "duneBaja.trn",
+      "waypointFile": null,
+      "skyCube": "cube21.cub",
+      "fogColor": [
+        180,
+        210,
+        210
+      ],
+      "defaultStartPosition": [
+        2688,
+        100,
+        2688
+      ],
+      "defaultStartDirection": [
+        0,
+        0,
+        1
+      ],
+      "lights": [
+        {
+          "type": "Ambient",
+          "color": [
+            130,
+            130,
+            130
+          ],
+          "position": null,
+          "target": null,
+          "castsShadows": false,
+          "atInfinity": true
+        },
+        {
+          "type": "ObjectPoint",
+          "color": [
+            255,
+            255,
+            255
+          ],
+          "position": [
+            2688,
+            2314.032,
+            -69.762
+          ],
+          "target": [
+            0,
+            0,
+            0
+          ],
+          "castsShadows": true,
+          "atInfinity": true
+        }
+      ],
+      "source": "teraform/waypoint/DUNE_B02.SCN",
+      "sha256": "a88964369141469b522e0fd16dc0b4232ff1ad6abedbfd468386b37a1e332bf6"
+    }
+  ]
+}

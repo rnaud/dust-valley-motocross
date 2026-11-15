@@ -1,3 +1,4 @@
+import mcmSceneVariants from './mcm-scene-variants.json';
 import mcmSceneSettings from './mcm-scene-settings.json';
 import * as THREE from 'three';
 import {bikeLinkagePoints,fitBikeLink} from './bike-linkage.js';
@@ -29,8 +30,10 @@ const terrain=(x,z)=>activeSand?activeSand.height(x,z):(previewHeight?previewHei
 const $=id=>document.getElementById(id);
 let originalModels;
 for(const map of mcmMaps){const option=document.createElement('option');option.value=map.id;option.textContent=map.title;$('mcm-map').append(option);}$('mcm-map').value='quarries-dunes';
+function updateMcmScenes(){const select=$('mcm-scene');select.replaceChildren();const variants=mcmSceneVariants[$('mcm-map').value]??[];for(const scene of variants){const option=document.createElement('option');option.value=scene.source;option.textContent=scene.title??scene.source;select.append(option);}select.disabled=variants.length===0;if(!variants.length){const option=document.createElement('option');option.textContent='Default practice environment';select.append(option);}}
+$('mcm-map').addEventListener('change',updateMcmScenes);updateMcmScenes();
 const mapCache=new Map();
-async function loadSelectedMcmMap(base){const id=$('mcm-map').value;let asset=mapCache.get(id);if(!asset){const response=await fetch(mcmMaps.find(m=>m.id===id).url);if(!response.ok)throw Error('Original terrain download failed');asset=await new Response(response.body.pipeThrough(new DecompressionStream('gzip'))).json();mapCache.set(id,asset);}return {...base,mapId:id,terrainMode:asset.terrainMode,shadowTarget:asset.shadowTarget,sceneSettings:mcmSceneSettings[id],rendering:asset.rendering,terrain:asset.terrain};}
+async function loadSelectedMcmMap(base){const id=$('mcm-map').value;let asset=mapCache.get(id);if(!asset){const response=await fetch(mcmMaps.find(m=>m.id===id).url);if(!response.ok)throw Error('Original terrain download failed');asset=await new Response(response.body.pipeThrough(new DecompressionStream('gzip'))).json();mapCache.set(id,asset);}const settings=mcmSceneVariants[id]?.find(scene=>scene.source===$('mcm-scene').value)??mcmSceneSettings[id];const shadow=settings?.lights.find(light=>light.type==='ObjectPoint'&&light.castsShadows)?.position??asset.shadowTarget;return {...base,mapId:id,terrainMode:asset.terrainMode,shadowTarget:shadow,sceneSettings:settings,rendering:asset.rendering,terrain:asset.terrain};}
 
 $('physics-mode').onchange=()=>{$('mcm-assets').hidden=$('physics-mode').value!=='mcm-preview';physicsMode=$('physics-mode').value;syncSandOption();$('physics-note').textContent=physicsMode==='mcm-preview'?'Connected recovered bike and rider physics on the selected original terrain. Full matching is still in progress; steering can diverge. Boost disabled.':'Original Dust Valley handling.';};
 function syncSandOption(){$('sand-option').hidden=false;$('sand-mode').disabled=false;$('sand-note').textContent='Tires carve soft sand in every mode. Switch off for hardpack.';}
