@@ -19,11 +19,16 @@ export function mcmInverseSqrt(value) {
 }
 
 // Unchecked original lookup; recovered callers supply their own x87 guards.
-export function mcmInverseSqrtLookup(value) {
+export function mcmInverseSqrtSeed(value) {
   const bits = floatBits(value);
   const index = (bits & 0xfe0000) >>> 17;
   const exponent = ((0x5f000000 - ((bits & 0x7f800000) >>> 1)) & 0xff800000) >>> 0;
-  let estimate = bitsFloat(exponent | (seeds[index] << 15));
+  return bitsFloat(exponent | (seeds[index] << 15));
+}
+
+// Original 0x401770 adds two refinements; 0x4017e0 returns only the seed.
+export function mcmInverseSqrtLookup(value) {
+  let estimate = mcmInverseSqrtSeed(value);
   estimate = mul(mul(sub(3,mul(mul(estimate,estimate),value)),estimate),.5);
   return mul(mul(sub(3,mul(mul(estimate,estimate),value)),estimate),.5);
 }

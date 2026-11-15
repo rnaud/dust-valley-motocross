@@ -1,5 +1,14 @@
 # Motocross Madness physics parity roadmap
 
+## AI route-segment setup recovered (2026-11-15)
+
+Extended the recovered AI search through `0x46d535`: next and previous route nodes (including wraparound), unrefined inverse segment length, half-speed scalar and both node-class flags. The contiguous original region matches all eight output words in 4,096 isolated executions; a second execution is identical. Four live controller calls on the original 603-node route also match all eight words. Independent cleanup confirms all three guarded hooks restored and no debugger attached.
+
+The original calls `0x4017e0`, which returns the inverse-square-root table seed without refinement. The shared math module now exposes that seed separately while preserving the existing two-refinement lookup for its other callers. Tests cover duplicate/zero-length segments, first/last-node wraparound, class values, NaNs and infinities; empty routes and missing neighbor memory are rejected at this boundary. Evidence: `tests/mcm-ai-route-segment.test.js`, `ai-route-segment-wine11.json.br`, and `scripts/mcm-reference/ai-route-segment-oracle.c` with the deterministic generator alongside it.
+
+This closes segment setup only. Race-state adjustments beginning at `0x46d535`, steering/throttle outputs, retained AI motion/rider updates and the unmodeled actor in the longer world replay remain open. No preview handling change or full-parity claim.
+
+
 ## AI route selection recovered (2026-11-15)
 
 The natural scene-query replay now reaches another rider's visibility writes, which the retained player-only model correctly rejects. Read-only native identity checks link AI bike `0x51f7598` to render rider `0x5218220`. The AI controller remains explicitly unsupported; accepting that actor without recovering its simulation would hide the dependency.
