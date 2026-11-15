@@ -7,7 +7,7 @@ import {bitsFloat,floatBits} from '../../src/physics/mcm/math.js';
 
 // Diagnostic, not a whole-world parity verdict. Initialize once, retain all
 // computed state, and report external visual writes rather than importing them.
-export function analyzeAiFrameSequence(inputs,rows,riderEvents,{diagnosticBody=false}={}){
+export function analyzeAiFrameSequence(inputs,rows,riderEvents,{diagnosticBody=false,observe}={}){
  const observations=rows.filter(r=>r.phase!=='random'),first=observations[0];
  assert.ok(observations.length>=8&&observations.length%4===0,'Expected consecutive complete AI frames');
  const phases=['before-update','after-ai-controller','after-ai-steering','after-update'];
@@ -62,6 +62,7 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents,{diagnosticBody=f
   compare(entry,frame,'entry');intervals.push(bitsFloat(entry.frameBits));
   let boundary=1;
   const result=advanceMcmRetainedFrame(c,{delta:intervals.at(-1),mode:loaded.mode,input:loaded.input},stage=>{
+   observe?.({frame,stage,context:c});
    if(!['ai-controller','steering','frame-tail'].includes(stage))return;
    assert.equal(stage,['ai-controller','steering','frame-tail'][boundary-1]);compare(group[boundary++],frame,stage);
   });
