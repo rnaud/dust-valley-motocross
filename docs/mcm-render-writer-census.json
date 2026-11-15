@@ -1,0 +1,359 @@
+{
+  "scope": "Observation census and candidate provenance; not predicted draw eligibility or full world parity.",
+  "traceSha256": "9ee18fbe8753540039c030935c564e802cbb9d18a70668d6a7b3d8fd8efc0fb2",
+  "physicsRowsSha256": "4b6d41bbe7d5aaeff33dd14e61ab7040a8fb23fd5a3e8c079a13df677191802d",
+  "frames": [
+    {
+      "frame": 0,
+      "sse": 1,
+      "heap": 4,
+      "draws": 1,
+      "wrappers": 4,
+      "lastSse": 1063244243,
+      "next": 1114112
+    },
+    {
+      "frame": 1,
+      "sse": 1,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "lastSse": 1063331976,
+      "next": 1063331976
+    },
+    {
+      "frame": 2,
+      "sse": 1,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "lastSse": 1063480209,
+      "next": 1063480209
+    },
+    {
+      "frame": 3,
+      "sse": 1,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "lastSse": 1063596045,
+      "next": 1063596045
+    },
+    {
+      "frame": 4,
+      "sse": 1,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "lastSse": 1063685967,
+      "next": 1063685967
+    },
+    {
+      "frame": 5,
+      "sse": 1,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "lastSse": 1063764865,
+      "next": 1063764865
+    },
+    {
+      "frame": 6,
+      "sse": 1,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "lastSse": 1063836924,
+      "next": 1063836924
+    },
+    {
+      "frame": 7,
+      "sse": 1,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "lastSse": 1063903803,
+      "next": 1063903803
+    },
+    {
+      "frame": 8,
+      "sse": 1,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "lastSse": 1063966230,
+      "next": 1063966230
+    },
+    {
+      "frame": 9,
+      "sse": 1,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "lastSse": 1064024667,
+      "next": 1064024667
+    },
+    {
+      "frame": 10,
+      "sse": 1,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "lastSse": 1064079496,
+      "next": 1064079496
+    },
+    {
+      "frame": 11,
+      "sse": 1,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "lastSse": 1064131035,
+      "next": 1064131035
+    },
+    {
+      "frame": 12,
+      "sse": 1,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "lastSse": 1064179560,
+      "next": 1064179560
+    },
+    {
+      "frame": 13,
+      "sse": 1,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "lastSse": 1064225296,
+      "next": 1064225296
+    },
+    {
+      "frame": 14,
+      "sse": 1,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "lastSse": 1064268482,
+      "next": 1064268482
+    },
+    {
+      "frame": 15,
+      "sse": 1,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "lastSse": 1064309624,
+      "next": 1064309624
+    },
+    {
+      "frame": 16,
+      "sse": 1,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "lastSse": 1064349388,
+      "next": 1064349388
+    },
+    {
+      "frame": 17,
+      "sse": 1,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "lastSse": 1064387660,
+      "next": 1064387660
+    },
+    {
+      "frame": 18,
+      "sse": 1,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "lastSse": 1064424394,
+      "next": 1064424394
+    },
+    {
+      "frame": 19,
+      "sse": 1,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "lastSse": 1064459546,
+      "next": 1064459546
+    },
+    {
+      "frame": 20,
+      "sse": 1,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "lastSse": 1064492900,
+      "next": 1064492900
+    },
+    {
+      "frame": 21,
+      "sse": 1,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "lastSse": 1064481793,
+      "next": 1064481793
+    },
+    {
+      "frame": 22,
+      "sse": 1,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "lastSse": 1064500121,
+      "next": 1064500121
+    },
+    {
+      "frame": 23,
+      "sse": 1,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "lastSse": 1064518239,
+      "next": 1064518239
+    },
+    {
+      "frame": 24,
+      "sse": 0,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "next": 2056412568
+    },
+    {
+      "frame": 25,
+      "sse": 0,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "next": 2056412568
+    },
+    {
+      "frame": 26,
+      "sse": 0,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "next": 2056412568
+    },
+    {
+      "frame": 27,
+      "sse": 0,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "next": 2056412568
+    },
+    {
+      "frame": 28,
+      "sse": 0,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "next": 0
+    },
+    {
+      "frame": 29,
+      "sse": 0,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "next": 0
+    },
+    {
+      "frame": 30,
+      "sse": 0,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "next": 0
+    },
+    {
+      "frame": 31,
+      "sse": 0,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "next": 0
+    },
+    {
+      "frame": 32,
+      "sse": 0,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "next": 0
+    },
+    {
+      "frame": 33,
+      "sse": 0,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "next": 0
+    },
+    {
+      "frame": 34,
+      "sse": 0,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "next": 0
+    },
+    {
+      "frame": 35,
+      "sse": 0,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "next": 0
+    },
+    {
+      "frame": 36,
+      "sse": 0,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "next": 0
+    },
+    {
+      "frame": 37,
+      "sse": 0,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "next": 0
+    },
+    {
+      "frame": 38,
+      "sse": 0,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "next": 0
+    },
+    {
+      "frame": 39,
+      "sse": 0,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "next": 0
+    },
+    {
+      "frame": 40,
+      "sse": 0,
+      "heap": 0,
+      "draws": 0,
+      "wrappers": 4,
+      "next": 0
+    }
+  ]
+}
