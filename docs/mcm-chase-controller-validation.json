@@ -1,0 +1,63 @@
+{
+  "scope": "Initialized normal chase controller through smoothing; not complete camera/view/render or whole-world parity",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "entryOracle": {
+    "cases": 2560,
+    "words": 15360,
+    "differences": 0,
+    "addresses": [
+      "0x47b3e7..0x47b452",
+      "0x47c2fa..0x47c30c"
+    ]
+  },
+  "live": {
+    "idle": {
+      "frames": 30,
+      "downstreamWords": 1560,
+      "spatialWords": 360,
+      "retainedTargetChecks": 30
+    },
+    "pulse": {
+      "frames": 160,
+      "downstreamWords": 8320,
+      "spatialWords": 1920,
+      "retainedTargetChecks": 160,
+      "withinCaptureYawGateCrossings": 1
+    },
+    "mode": 0,
+    "joystick": false,
+    "boundaries": [
+      "0x47b107",
+      "0x47b1fe",
+      "0x47b3e7",
+      "0x47b452",
+      "0x47b4e5",
+      "0x47b52a",
+      "0x47c30c",
+      "0x47d606"
+    ],
+    "allInstructionsRestored": true,
+    "debuggerDetached": true,
+    "note": "Previously collected captures revalidated using the joined production controller. Every pulse frame changes angle; key release was verified outside this capture."
+  },
+  "retainedState": [
+    "camera angles and radius",
+    "backup angles",
+    "restore/reset flags",
+    "target",
+    "settings",
+    "axis",
+    "six filters"
+  ],
+  "remaining": [
+    "First camera initialization and alternate fixed/free camera paths",
+    "Post-smoothing camera overrides, terrain clearance, target/view construction and renderer scheduling",
+    "World/actor inputs still supplied by boundary observations",
+    "Known negative-steering frame-38 scratch dependency and whole-world physics parity"
+  ],
+  "tests": {
+    "passed": 512,
+    "failed": 0,
+    "build": true
+  }
+}
