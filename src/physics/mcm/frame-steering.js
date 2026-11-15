@@ -2,11 +2,11 @@ import {floatBits,mcmSqrtLookup} from './math.js';
 import {mcmMultiply as mul,mcmSubtract as sub,mcmDivide as div,mcmAdd as add} from './x87-arithmetic.js';
 const f=Math.fround,signed=v=>floatBits(v)|0;
 // Original 0x4a57c0..0x4a5993. AI/scripted calls must finish before this block.
-export function prepareMcmFrameSteering(c,inputBranch){
- if(inputBranch==='ai'||inputBranch==='scripted')return null;
+export function prepareMcmFrameSteering(c,inputBranch,{controllerComplete=false}={}){
+ if((inputBranch==='ai'||inputBranch==='scripted')&&!controllerComplete)return null;
  const b=c.bike,e=c.frameEntry;
  let limit=0;
- if(inputBranch==='player'){
+ if(['player','ai','scripted'].includes(inputBranch)){
   limit=c.riderComponentLimit;
   if(b.field724!==9){
    const square=f(mul(div(b.field564,b.field5ec),mul(limit,limit)));

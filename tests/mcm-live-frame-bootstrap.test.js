@@ -165,7 +165,7 @@ test('connected frame return matches original normal, crash and changed-history 
  for(const [name,changed] of [['return',202],['return-trigger',105],['return-history',205]]){
   const f=fixture(name),report=compareLiveFrameReturn(f.input,f.after);
   assert.equal(report.comparedWords,110597);assert.equal(report.changedWords,changed);assert.equal(report.differences,0);
-  assert.deepEqual(report.stages.slice(-2),['before-return','return']);
+  assert.deepEqual(report.stages.slice(-3),['before-return','frame-tail','return']);
  }
  const f=fixture('return-history'),before=Buffer.from(f.input.row.stateHex,'hex'),after=Buffer.from(f.after.stateHex,'hex');
  assert.deepEqual([0,4,8].map(o=>before.readFloatLE(0x56c+o)),[-123,456,-789]);

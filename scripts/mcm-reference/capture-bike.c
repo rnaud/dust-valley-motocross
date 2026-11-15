@@ -20,6 +20,7 @@
 #undef MCM_ANIMATION_EMBEDDED
 #include "capture-collision-world.c"
 #include "capture-frame-environment.c"
+#include "capture-ai-frame-environment.c"
 
 static DWORD addresses[] = {0x4a54b6, 0x4ad0e1, 0x4ad5a2, 0x4bf195, 0x40e990, 0x42ce38, 0x4acfd8, 0x4acaad};
 static BYTE expected[][6] = {{0xd9, 0x86, 0xc8, 0x08, 0, 0},
@@ -43,6 +44,8 @@ static DWORD player_frame, requested_throttle, pass, random_state=12345;
 static int player_active;
 // Explicit read-only focus; never combines with scripted input/checkpoint writes.
 static DWORD observe_ai,observed_random_address,observed_random_thread;
+static int capture_ai_environment;
+static void configure_ai_frame_hooks(void){hook_count=6;addresses[4]=0x4a56d9;lengths[4]=5;const BYTE a[]={0xe9,0xe2,0,0,0};memcpy(expected[4],a,5);addresses[5]=0x4a5991;lengths[5]=2;expected[5][0]=0x8b;expected[5][1]=0xce;}
 
 static int read_memory(DWORD address, void *buffer, SIZE_T size) {
     SIZE_T count;
@@ -136,6 +139,7 @@ static int export_checkpoint(DWORD bike) {
         if(animations&&*animations&&!capture_mcm_animation_assets_at(process,bike,animations,capture_id,export_boundary))return 0;
         if(world&&*world&&!capture_mcm_collision_world(process,bike,world,capture_id,player_frame,export_boundary))return 0;
     }
+    if(capture_ai_environment&&!capture_mcm_ai_environment(process,bike,getenv("MCM_AI_ENVIRONMENT"),capture_id))return 0;
     memcpy(frame_capture_id,capture_id,sizeof frame_capture_id);
     FILE *out=fopen(path,"wx");if(!out)return 0;
     fprintf(out,"{\"schemaVersion\":1,\"kind\":\"mcm-partial-local-checkpoint\",\"bikeAddress\":%lu,\"playerFrame\":%lu,\"blockCount\":%u,\"blocks\":[",bike,player_frame,block_count);
@@ -190,6 +194,7 @@ static int observe_rider_collision(FILE *out,DWORD rider) {
 static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CONTEXT *context) {
     // At 0x4ad078 the rider delta has been pushed. Normalize only the observation.
     CONTEXT observed=*context;
+    if(capture_ai_environment&&phase==5){observed.Esp+=4;context=&observed;}
     if(capture_return&&phase==6){observed.Esi-=0x56c;observed.Esp-=8;context=&observed;}
     if(capture_filter&&!capture_frame_rider&&phase==6){observed.Esp+=4;context=&observed;}
     DWORD frame, carry, nominal, cap, dt, steps, engine, transform, rider;
@@ -214,7 +219,7 @@ static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CON
     fprintf(out, "{\"phase\":\"%s\",\"sequence\":%lu,\"bike\":\"%08lx\","
                  "\"thread\":%lu,\"cw\":%lu,\"frameBits\":%lu,\"carryBits\":%lu,"
                  "\"nominalBits\":%lu,\"cap\":%lu,\"dtBits\":%lu,\"steps\":%lu,\"stateHex\":\"",
-            capture_effects?(phase==6?(capture_return?"after-return":capture_frame_rider?"after-frame-rider":capture_filter?"after-filter":"after-frame-effects"):phase?"before-frame-effects":"before-update"):phase ? (capture_tires?"after-tires":capture_motion?"after-motion":capture_controls?"after-controls":capture_loop_rider?"after-loop-rider":capture_finish?"after-finish":"after-update") : "before-update", sequence, context->Esi,
+            capture_ai_environment&&phase>=4?(phase==4?"after-ai-controller":"after-ai-steering"):capture_effects?(phase==6?(capture_return?"after-return":capture_frame_rider?"after-frame-rider":capture_filter?"after-filter":"after-frame-effects"):phase?"before-frame-effects":"before-update"):phase ? (capture_tires?"after-tires":capture_motion?"after-motion":capture_controls?"after-controls":capture_loop_rider?"after-loop-rider":capture_finish?"after-finish":"after-update") : "before-update", sequence, context->Esi,
             thread, context->FloatSave.ControlWord, frame, carry, nominal, cap, dt, steps);
     for (unsigned i = 0; i < sizeof object; i++) fprintf(out, "%02x", object[i]);
     fprintf(out, "\",\"engineAddress\":\"%08lx\",\"engineHex\":\"", engine);
@@ -247,12 +252,12 @@ static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CON
         }
         fprintf(out,"]");
     }
-    if(capture_filter){
+    if(capture_filter||capture_ai_environment){
         DWORD address;BYTE bytes[8];if(!read_memory(context->Esi+0x900,&address,4)||!read_memory(address,bytes,8))return 0;
         fprintf(out,",\"accelerationFilterAddress\":%lu,\"accelerationFilterHex\":\"",address);
         for(unsigned i=0;i<8;i++){fprintf(out,"%02x",bytes[i]);}fprintf(out,"\"");
     }
-    if(capture_effects){
+    if(capture_effects||capture_ai_environment){
     fprintf(out,",\"visualEffects\":[");
     for(unsigned k=0;k<3;k++){
         DWORD address,offsets[]={0xc94,0xc98,0xca0},sizes[]={0x84,0x84,0x480};BYTE bytes[0x480];
@@ -260,7 +265,7 @@ static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CON
         fprintf(out,"%s{\"address\":%lu,\"size\":%lu,\"hex\":\"",k?",":"",address,sizes[k]);
         for(DWORD i=0;i<sizes[k];i++){fprintf(out,"%02x",bytes[i]);}fprintf(out,"\"}");
     }
-    fprintf(out,"]");
+    fprintf(out,"],\"effectQueriesCaptured\":%s",capture_effects?"true":"false");
 
     {DWORD world,owner,event,settings,shape,enabled,occlusion,selected,state,disabled;BYTE target[12];
      if(!read_memory(0x4e4fb4,&world,4)||!read_memory(world+0x718,&enabled,4)||!read_memory(world+0x714,&occlusion,4)||
@@ -307,6 +312,10 @@ int main(int argc, char **argv) {
         }
         export_boundary="ai-frame-entry";
     }
+    capture_ai_environment=getenv("MCM_AI_ENVIRONMENT")!=NULL;
+    if(getenv("MCM_AI_GROUNDED")&&!capture_ai_environment)return 2;
+    if(capture_ai_environment&&!observe_ai){fprintf(stderr,"AI environment requires explicit AI observation\n");return 2;}
+    if(capture_ai_environment)configure_ai_frame_hooks();
     capture_stack = getenv("MCM_STACK") != NULL;
     capture_collision = getenv("MCM_COLLISION") != NULL;
     checkpoint_collision_callbacks = getenv("MCM_COLLISION_CALLBACKS") != NULL;
@@ -323,6 +332,7 @@ int main(int argc, char **argv) {
     capture_contact=getenv("MCM_CAPTURE_CONTACT")!=NULL;
     if(capture_contact){if(!scripted||!getenv("MCM_COLLISION_WORLD")||!getenv("MCM_CHECKPOINT")||getenv("MCM_ANIMATIONS")){fprintf(stderr,"Contact capture requires scripted world/checkpoint output and excludes animation export.\n");return 2;}hook_count=6;capture_rider_timing=1;}
     DWORD pid = strtoul(argv[1], NULL, 0), limit = strtoul(argv[3], NULL, 0);
+    if(capture_ai_environment&&(limit<4||limit%4))return 2;
     capture_tires=getenv("MCM_CAPTURE_TIRES")!=NULL;
     if(capture_tires){
         if(!scripted||limit!=2||capture_contact||getenv("MCM_CAPTURE_FRAME")){fprintf(stderr,"Tire boundary capture requires scripted first frame and exactly two records.\n");return 2;}
@@ -434,7 +444,7 @@ int main(int argc, char **argv) {
                     TerminateProcess(process, 5);
                     done = 2;
                 } else {
-                    if(matched==7){if(player_active){effect_query_count++;effect_query_result=context.Eax;if(!read_memory(context.Esp+0x834,effect_query_start,12)||!read_memory(context.Esp+0xb88,effect_query_output,12))done=2;}} else if(matched==5){
+                    if(matched==7){if(player_active){effect_query_count++;effect_query_result=context.Eax;if(!read_memory(context.Esp+0x834,effect_query_start,12)||!read_memory(context.Esp+0xb88,effect_query_output,12))done=2;}} else if(matched==5&&!capture_ai_environment){
                         if(capture_contact&&!contact_exported&&player_frame){DWORD collider,owner,kind,bike,ai;
                             if(!read_memory(context.Esi+8+context.Edi*4,&collider,4)||!read_memory(collider+0x94,&owner,4)||!read_memory(collider+0x104,&kind,4))done=2;
                             else if(kind<=1){bike=owner;if(kind==1&&!read_memory(owner+0x15c,&bike,4))done=2;
@@ -442,6 +452,8 @@ int main(int argc, char **argv) {
                                 if(!done&&ai==0){export_boundary="collision-before-primary";if(!export_current_checkpoint(bike))done=2;else contact_exported=1;export_boundary="player-frame-entry";}
                             }
                         }
+                    } else if(capture_ai_environment&&matched>=4){
+                        if(context.Esi==observe_ai&&player_frame>0){if(!snapshot(out,matched,count++,event.dwThreadId,&context))done=2;else start=GetTickCount();}
                     } else if(matched==4) {
                         DWORD owner,ai;
                         if(!read_memory(context.Ecx+0x15c,&owner,4)||!read_memory(owner+0x614,&ai,4))done=2;
@@ -460,10 +472,16 @@ int main(int argc, char **argv) {
                     if(capture_return&&matched==6)bike-=0x56c;
                     if (matched == 2 && !read_memory(context.Esi, &bike, 4)) done = 2;
                     if (!read_memory(bike + 0x614, &ai, 4)) done = 2;
-                    if(matched==0)player_active=observe_ai?bike==observe_ai&&observed_random_address&&observed_random_thread==event.dwThreadId:ai==0;
+                    int selected=observe_ai?bike==observe_ai&&observed_random_address&&observed_random_thread==event.dwThreadId:ai==0;
+                    // Select an observed grounded start; never alter the bike state.
+                    if(selected&&observe_ai&&matched==0&&!player_frame&&getenv("MCM_AI_GROUNDED")){
+                        DWORD air,state,trick;if(!read_memory(bike+0x4bc,&air,4)||!read_memory(bike+0x844,&state,4)||!read_memory(bike+0x710,&trick,4))done=2;
+                        else if(air||state||trick)selected=0;
+                    }
+                    if(matched==0)player_active=selected;
                     // Ignore an in-flight update when attaching: the first
                     // observed player boundary must be scheduler entry.
-                    if (!done && (observe_ai?bike==observe_ai&&observed_random_address&&observed_random_thread==event.dwThreadId:ai==0) && (matched == 0 || player_frame > 0)) {
+                    if (!done && selected && (matched == 0 || player_frame > 0)) {
                         if (matched == 2) {
                             if (scripted) context.Eax = requested_throttle;
                         } else {

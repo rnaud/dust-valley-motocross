@@ -31,8 +31,11 @@ export function advanceMcmRetainedFrame(c,{delta,mode,input},observe){
  c.loopRider.riderAnimation=tokens(c.frameRider.riderAnimation);
  emit('recovery',recovery);
  const controller=prepareMcmFrameInput(c,input);emit('input',controller);
- if(controller.pendingController)return {status:'pending-controller',controller:controller.pendingController,substeps:0};
- const steering=prepareMcmFrameSteering(c,controller.branch);emit('steering',steering);
+ if(controller.pendingController){
+  if(controller.branch==='ai'&&'aiController' in c)emit('ai-controller',c.aiController.advance(delta));
+  else return {status:'pending-controller',controller:controller.pendingController,substeps:0};
+ }
+ const steering=prepareMcmFrameSteering(c,controller.branch,{controllerComplete:controller.branch==='ai'&&'aiController' in c});emit('steering',steering);
  const reset=decideMcmFrameReset(c,delta);emit('reset',reset);
  const terrain=prepareMcmFrameTerrain(c,reset.code);emit('terrain',terrain);
  const engine=prepareMcmFrameEngine(c);emit('engine',engine);
@@ -57,6 +60,6 @@ export function advanceMcmRetainedFrame(c,{delta,mode,input},observe){
  if('frameEffects' in c)emit('effects');
  const filter=updateMcmFrameAcceleration(c);emit('filter',{...filter,substeps});
  const rider=updateMcmRetainedFrameRider(c,delta);emit('frame-rider',rider);
- emit('before-return');finishMcmFrame(c);emit('return');
+ emit('before-return');finishMcmFrame(c,()=>emit('frame-tail'));emit('return');
  return {status:'returned',substeps,controller:controller.branch,recovery,reset:reset.branch};
 }
