@@ -1,5 +1,14 @@
 # Motocross Madness physics parity roadmap
 
+## Final AI steering command retained through crash clears (2026-11-15)
+
+Recovered steering smoothing `0x46f4ea..0x46f69e`, including the signed-bit timestep gate, asymmetric native clamps, snap/decay paths, rounding boundaries and absolute-angle output. Both output words match 4,096 repeated original executions with varied finite angles, current commands and zero/negative/positive timesteps.
+
+The live chain now computes route selection, guidance, avoidance/airborne differences, landing lookahead and final steering across 256 AI calls. Steering is initialized once and retained. All stage entries, output commands and full-controller exits match, including 14 lookahead steering changes. The capture contains 156 actual AI crash-input clears at `0x4a58b3`; the analyzer applies the existing `prepareMcmFrameInput` crash branch, checking each prior value and the computed zero. Removing clears fails the retained-entry check; changed clear values, timestep snapshots and output words also fail. No steering output or intermediate steering difference is injected.
+
+Evidence: `ai-steering-control.js`, oracle/generator and `analyze-ai-steering-control.mjs`, `tests/mcm-ai-steering-control.test.js`, and `ai-steering-control-wine11.json.br`. All seventeen live hooks were independently verified restored with no debugger attached. Crash occurrence/timing, per-call poses and the outer-frame schedule remain captured boundaries; this is not a complete retained AI-frame simulation. Jump-state/RNG/trick behavior, longitudinal/throttle controls, allocator effects, retained motion and whole-world replay remain unfinished. Preview control is unchanged.
+
+
 ## Complete AI route/jump lookahead (2026-11-15)
 
 Recovered `0x46eb14..0x46f0a4`: the five-node lookahead, route wrapping and category decisions, projected landing target, both terrain-query sites, landing-distance calculation, speed limit/jump flag updates and the conditional steering override. All eight checked output words match 4,096 repeated executions of the intact original block on the original Dunes terrain. The oracle keeps original terrain-node parsing and height queries; only the existing course loader's host allocation/stdio and renderer initialization substitutions remain.
