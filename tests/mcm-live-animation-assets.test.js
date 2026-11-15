@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {loadLiveAnimationAssets} from '../scripts/mcm-reference/live-animation-assets.mjs';
+import {advanceMcmInterpolatedAnimation} from '../src/physics/mcm/interpolated-animation-advance.js';
+import {loadLiveAnimationAssets,loadLiveAnimationState} from '../scripts/mcm-reference/live-animation-assets.mjs';
 import {seekMcmAnimation} from '../src/physics/mcm/animation-seek.js';
 function fixture(){
  const record=Buffer.alloc(0x78),frame=Buffer.alloc(0x34),child=Buffer.alloc(0x30);
@@ -23,4 +24,22 @@ test('live animation loader rejects cycles, absent pointers and inconsistent len
  }
  const input=fixture();input.blocks.push({address:0x4000,size:4,hex:'00000000'});input.blockCount++;
  assert.throws(()=>loadLiveAnimationAssets(input),/Unreferenced/);
+});
+
+test('inactive unreadable previous-frame bits survive bootstrap and reject dereference',()=>{
+ const observation=fixture(),token=0x3e31d0c8;
+ observation.retainedFrames=[0,0,0,0,token,0];observation.boundsFrames=[0,0];
+ observation.unreadableRetainedFrames=[{index:4,token}];
+ const assets=loadLiveAnimationAssets(observation),values=new Map([[4,1],[0x1c,token]]);
+ const memory={u32:offset=>values.get(offset)??0,f32:()=>0};
+ const state=loadLiveAnimationState(memory,0,assets);
+ assert.equal(state.previousFrame.token,token);
+ assert.throws(()=>state.previousFrame.firstChild,/dereferenced/);
+ values.set(0x2c,1);assert.throws(()=>loadLiveAnimationState(memory,0,assets),/required by active/);values.set(0x2c,0);
+ state.stopped=0;state.record=assets.records[0];state.frame=state.record.firstFrame;state.record.loop=1;
+ advanceMcmInterpolatedAnimation(state,.02,()=>{});assert.equal(state.previousFrame,null);
+ const invalid=structuredClone(observation);invalid.unreadableRetainedFrames[0].index=3;
+ assert.throws(()=>loadLiveAnimationAssets(invalid),/Invalid unreadable/);
+ const missing=structuredClone(observation);delete missing.unreadableRetainedFrames;
+ assert.throws(()=>loadLiveAnimationAssets(missing),/Wrong animation block type/);
 });

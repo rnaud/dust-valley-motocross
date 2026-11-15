@@ -5,7 +5,7 @@ import {bitsFloat,floatBits} from '../../src/physics/mcm/math.js';
 
 // Diagnostic projection: physics and effects mismatches are counted separately,
 // never removed. One initialization; only recorded input/timing/gates thereafter.
-export function compareLiveRetainedRiderFrames(inputs,rows,events,{observedCallerDriveScratch=false,onBikeReturn=null}={}){
+export function compareLiveRetainedRiderFrames(inputs,rows,events,{observedCallerDriveScratch=false,onBikeReturn=null,onWorldFrame=null}={}){
  if(!rows.length||rows.length%2||events[0]?.phase!=='initial-rider'||events[0].frame!==0||events[0].bike!==inputs.checkpoint.bikeAddress)throw Error('Missing retained rider initialization');
  if(events[0].eventSequence!==undefined&&events.some((e,i)=>e.eventSequence!==i))throw Error('Retained world event sequence differs');
  const runtime=createCapturedFrameRuntime(inputs,rows[0],events[0]),{loaded,external}=runtime,c=loaded.context,r=external.context.rider;
@@ -74,6 +74,7 @@ export function compareLiveRetainedRiderFrames(inputs,rows,events,{observedCalle
    externalWords+=words;physicsDifferences+=differences.length;riderReports.push({frame,comparedWords:words,differences,...(external.poolBytes?{particleDifferences:particleErrors,firstParticleDifferences}:{})});if(differences.length)break;
   }
   if(pendingExternalTick||physicsDifferences)break;
+  if(onWorldFrame)onWorldFrame({frame,sources:runtime.renderSources()});
   if(frame<rows.length/2-1&&tickCount!==1)throw Error('Missing or repeated external rider tick');
  }
  return {callerScratchMode:observedCallerDriveScratch?'observed-input':'retained',observedCallerScratchWords:observedCallerDriveScratch?reports.length:0,scope:(observedCallerDriveScratch?'Caller drive scratch is supplied as observed external input every frame; this is conditional physics validation, not fully retained caller/world state. ':'')+'Retained modeled bike/rider state initialized once, using explicit throttle, optional captured brake/steering responses and external rider timing/gates. Visual emitter differences remain reported separately. Unmodeled bytes use each observed entry as an unchanged-within-call baseline. External rider output checks cover rider/child/global delta and, when captured, the retained particle pool. Captured pool ticks execute with their own observed timing when available. Pool differences from unconnected shared-world updates remain reported as visual differences; not all transforms/world allocations are checked. This is not full trajectory parity.',bikeFrames:reports.length,riderTicks:riderReports.length,comparedWords,externalWords,particleComparedWords,particleDifferences,physicsDifferences,visualDifferences,pendingExternalTick,pendingBikeFrame,reports,riderReports,...(poolReports.length?{poolTicks:poolReports.length,poolReports}:{})};

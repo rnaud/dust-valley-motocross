@@ -39,12 +39,22 @@ export function loadLiveAnimationAssets(observation){
   }
   if(address)throw Error('Long frame chain');previous.next=null;records.set(token,record);
  }
+ // Some original cold objects retain unreadable previous-frame bits while
+ // blending is disabled. Preserve those bits; any attempted dereference fails.
+ const unresolved=new Map();
+ for(const entry of observation.unreadableRetainedFrames??[]){
+  const {index,token}=entry;
+  if(![1,4].includes(index)||!Number.isInteger(token)||token<=0||token>0xffffffff||observation.retainedFrames?.[index]!==token||unresolved.has(token)||frames.has(token)||
+   observation.retainedFrames.some((p,i)=>i!==index&&p===token)||observation.boundsFrames?.includes(token))throw Error('Invalid unreadable previous frame');
+  unresolved.set(token,new Proxy({token,unresolved:true},{get(target,key){if(key==='token'||key==='unresolved')return target[key];throw Error('Unreadable previous animation frame dereferenced');}}));
+ }
  for(const [field,count] of [['retainedFrames',6],['boundsFrames',2]]){
   if(observation[field]===undefined)continue;
   if(!Array.isArray(observation[field])||observation[field].length!==count)throw Error(`Invalid ${field} pointers`);
   for(const token of observation[field]){
    if(!Number.isInteger(token)||token<0||token>0xffffffff)throw Error('Invalid retained frame pointer');
    if(!token||frames.has(token))continue;
+   if(field==='retainedFrames'&&unresolved.has(token)){frames.set(token,unresolved.get(token));continue;}
    const raw=read(token,0x34);
    // Historical frames are pose references, not independently advanced chains.
    frames.set(token,{token,index:raw.readUInt32LE(0),boundsMin:vec(raw,0x1c),boundsMax:vec(raw,0x28),firstChild:childChain(raw.readUInt32LE(0xc))});
@@ -57,7 +67,7 @@ export function loadLiveAnimationAssets(observation){
 // history pointers stay null; non-null missing assets must never become defaults.
 export function loadLiveAnimationState(memory,address,assets){
  const u=o=>memory.u32(address+o),f=o=>memory.f32(address+o);
- const frame=o=>{const p=u(o);if(!p)return null;const value=assets.frames.get(p);if(!value)throw Error(`Missing retained animation frame at 0x${p.toString(16)}`);return value;};
+ const frame=o=>{const p=u(o);if(!p)return null;const value=assets.frames.get(p);if(value?.unresolved&&(o!==0x1c||u(0x2c)))throw Error('Unreadable previous frame required by active animation');if(!value)throw Error(`Missing retained animation frame at 0x${p.toString(16)}`);return value;};
  const pointer=u(0x10),record=pointer?assets.records.find(r=>r.token===pointer):null;
  if(pointer&&!record)throw Error('Missing active animation record');
  const state={stopped:u(4),remainder:f(8),record,frame:frame(0x14),displayedFrame:frame(0x18),previousFrame:frame(0x1c),blendFrame:frame(0x20),

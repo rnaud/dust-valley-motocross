@@ -1,0 +1,118 @@
+{
+  "returnSamples": 800,
+  "returnWords": 17600,
+  "drawSamples": 798,
+  "drawWords": 17556,
+  "storeCount": 383,
+  "carryChecks": 373,
+  "carryDifferences": 59,
+  "multipleStoreFrames": 10,
+  "firstCarryDifferences": [
+    {
+      "frame": 0,
+      "lastStore": 1059604022,
+      "nextEntry": 1114112
+    },
+    {
+      "frame": 2,
+      "lastStore": 1060229992,
+      "nextEntry": 1114112
+    },
+    {
+      "frame": 15,
+      "lastStore": 1062846738,
+      "nextEntry": 0
+    },
+    {
+      "frame": 16,
+      "lastStore": 1062966215,
+      "nextEntry": 0
+    },
+    {
+      "frame": 51,
+      "lastStore": 1064413494,
+      "nextEntry": 1114112
+    },
+    {
+      "frame": 52,
+      "lastStore": 1064384295,
+      "nextEntry": 1114112
+    },
+    {
+      "frame": 53,
+      "lastStore": 1064354664,
+      "nextEntry": 1114112
+    },
+    {
+      "frame": 54,
+      "lastStore": 1064324292,
+      "nextEntry": 1114112
+    },
+    {
+      "frame": 55,
+      "lastStore": 1064288002,
+      "nextEntry": 1114112
+    },
+    {
+      "frame": 56,
+      "lastStore": 1064254116,
+      "nextEntry": 1114112
+    },
+    {
+      "frame": 57,
+      "lastStore": 1064221261,
+      "nextEntry": 2289848
+    },
+    {
+      "frame": 58,
+      "lastStore": 1064188370,
+      "nextEntry": 2289848
+    },
+    {
+      "frame": 59,
+      "lastStore": 1064149474,
+      "nextEntry": 2289848
+    },
+    {
+      "frame": 60,
+      "lastStore": 1064114225,
+      "nextEntry": 2289848
+    },
+    {
+      "frame": 61,
+      "lastStore": 1064080391,
+      "nextEntry": 2289848
+    },
+    {
+      "frame": 62,
+      "lastStore": 1064041398,
+      "nextEntry": 2289848
+    },
+    {
+      "frame": 63,
+      "lastStore": 1064005741,
+      "nextEntry": 2289848
+    },
+    {
+      "frame": 64,
+      "lastStore": 1063972526,
+      "nextEntry": 2289848
+    },
+    {
+      "frame": 65,
+      "lastStore": 1063930014,
+      "nextEntry": 2289848
+    },
+    {
+      "frame": 66,
+      "lastStore": 1063894534,
+      "nextEntry": 2289848
+    }
+  ],
+  "bikeFrames": 400,
+  "riderTicks": 399,
+  "poolTicks": 399,
+  "physicsDifferences": 0,
+  "visualDifferences": 11224606,
+  "particleDifferences": 11221535
+}

@@ -1,6 +1,8 @@
 # Motocross Madness physics parity roadmap
 
-Latest milestone: [retained wrapper sources](mcm-render-sources-recovery.md). The draw wrapper reads **local +0x84**, not cached world +0xc4. Recovered local matrices and animation bounds match 400 positive-steering bike samples plus one rider sample (8,822 words). Negative steering still produces 12 matrix-word differences at frame 38. This is update-return source coverage, not a joined moving render replay.
+Latest milestone: [moving render capture](mcm-moving-render-recovery.md). One controlled 400-frame negative-steering run matches retained bike/rider source fields both at update return (17,600 words) and actual drawing (17,556 words). All modeled physics comparisons pass in this new starting state. The older frame-38 failure remains open. The same run exposes 59 scratch changes after the final observed renderer store and 10 frames with multiple stores; the idle last-writer result cannot be generalized. Shared-world/particle mismatches remain reported.
+
+Previous milestone: [retained wrapper sources](mcm-render-sources-recovery.md). The draw wrapper reads **local +0x84**, not cached world +0xc4. Recovered local matrices and animation bounds match 400 positive-steering bike samples plus one rider sample (8,822 words). Negative steering still produces 12 matrix-word differences at frame 38. This is update-return source coverage, not a joined moving render replay.
 
 Previous milestone: [wrapper matrix product](mcm-wrapper-product-recovery.md). All 8,192 native cases / 131,072 words match. A fresh live trace computes 236 wrapper matrices from recovered camera state, then all 240 bounds decisions, 59 rider stack writes and 58 following bike-entry checks. Four startup products are explicitly counted as warmup. Stored node-local matrices, animated bounds producers, remaining draw scheduling and frame-38 steering are still open. Preview handling is unchanged.
 
