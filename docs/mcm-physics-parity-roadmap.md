@@ -1,5 +1,9 @@
 # Motocross Madness physics parity roadmap
 
+## Fixed-function vertex descriptor recovered — 2026-11-15
+
+The intact vertex descriptor builder matches 8,192 native cases / 360,448 bytes, with byte-identical repeat output. This is the fixed-function path observed in early live shader-key frames. Separately, programmable variant scans match 4,096 native cases with shader creation explicitly bounded; these helpers are not observed in the early live sample. See `mcm-shader-key-recovery.md`. Descriptor inputs, pixel descriptor, cache creation and live integration remain open; preview handling is unchanged.
+
 ## Shader program cache eligibility recovered — 2026-11-15
 
 The intact six-word comparator matches 4,096 native cases. A completed 42-frame capture predicts all 363 cache lookups / 5,432 comparisons: 362 hits and one miss. Retaining the returned creation explains the next snapshot's growth from 4,032 to 4,033 entries; later snapshots verify membership rather than reseeding it. Only the predicted miss runs sampler setup, with eight sampler formats. All 242 hooks restored and debugger absent. See `mcm-shader-program-cache-recovery.md`. Key production, topology/insertion, allocation and full scheduling remain boundaries; the older steering failure remains open and preview handling is unchanged.
