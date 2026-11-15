@@ -51,7 +51,8 @@ test('terrain hierarchy connects file offsets, sample banks and world-coordinate
 test('terrain rendering resources preserve shared texture, palette, base pixels and mip boundaries',()=>{
   const word=n=>{const b=Buffer.alloc(4);b.writeUInt32LE(n);return b;};
   const group=(count,width,height)=>Buffer.concat([word(width),word(height),word(4),
-    ...Array.from({length:count},(_,i)=>Buffer.concat([Buffer.alloc(width*height,10+i),Buffer.alloc(width*height/4,90+i)]))]);
+    ...Array.from({length:count},(_,i)=>Buffer.alloc(width*height,10+i)),
+    ...Array.from({length:count},(_,i)=>Buffer.alloc(width*height/4,90+i))]);
   const palette=Buffer.from(Array.from({length:768},(_,i)=>i%256));
   const bytes=Buffer.concat([word(2),word(1),group(1,2,2),group(2,4,4),Buffer.from('hierarchy')]);
   const prefix={nextOffset:0,blocks:[{kind:'palette',size:768,compressed:false,data:palette}]};

@@ -1,0 +1,55 @@
+{
+  "scope": "Original terrain texture integration; not full renderer or physics parity",
+  "maps": 33,
+  "textures": 1068,
+  "nativeUv": {
+    "cases": 1024,
+    "words": 5120,
+    "differences": 0
+  },
+  "payloadCorrection": "Texture group stores all base images then all half-size images; verified original 0x4106e7 and 0x4108d4",
+  "atlasChecks": "All maps: palette pixels, stored half-size pixels, leaf count, valid texture references and orientations",
+  "browser": [
+    {
+      "touch": false,
+      "assets": {
+        "map": "canyon-canyon01",
+        "rider": "rider12",
+        "bike": "bike02",
+        "parts": 21,
+        "terrainTextures": true,
+        "missingTerrainTextures": 0
+      },
+      "frame": 6,
+      "errors": []
+    },
+    {
+      "touch": true,
+      "assets": {
+        "map": "season-week10",
+        "rider": "rider12",
+        "bike": "bike02",
+        "parts": 21,
+        "terrainTextures": true,
+        "missingTerrainTextures": 0
+      },
+      "frame": 5,
+      "errors": []
+    }
+  ],
+  "controls": {
+    "desktop": true,
+    "touch": true,
+    "throttleRelease": true,
+    "neutralTouch": true,
+    "sand": true,
+    "reset": true,
+    "classicSwitch": true
+  },
+  "limitations": [
+    "Existing resampled display geometry and lighting remain.",
+    "Outer map clamping and scenery remain preview behavior.",
+    "GPU filtering is not validated against the original renderer.",
+    "Exact race starts and full-world physics parity remain incomplete."
+  ]
+}

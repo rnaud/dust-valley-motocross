@@ -68,8 +68,10 @@ export function readMcmTerrainResources(bytes,prefix=readMcmTerrainBanks(bytes))
     const begin=offset;
     offset+=count*width*height*pixelBytes*5/4;
     if(!Number.isSafeInteger(offset)||offset>bytes.length)throw new Error('Truncated terrain textures');
+    // 0x4106e7 skips all base images for low detail; 0x4108d4 skips all mips.
+    // Groups store every base image first, followed by every half-size image.
     const size=width*height*pixelBytes;
-    return Array.from({length:count},(_,i)=>{const at=begin+i*size*5/4;return {width,height,format,pixelBytes,offset:at,pixels:bytes.subarray(at,at+size),mip:bytes.subarray(at+size,at+size*5/4)};});
+    return Array.from({length:count},(_,i)=>{const at=begin+i*size,mipAt=begin+count*size+i*size/4;return {width,height,format,pixelBytes,offset:at,pixels:bytes.subarray(at,at+size),mip:bytes.subarray(mipAt,mipAt+size/4)};});
   };
   const sharedTexture=hasSharedTexture?readTextures(1)[0]:null;
   const textures=textureCount?readTextures(textureCount):[];

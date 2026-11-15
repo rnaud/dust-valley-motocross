@@ -11,14 +11,14 @@ This is an asset-port tally, separate from physics equivalence. Matching geometr
 - Selected terrains use the recovered bike reset/ground-alignment routine at a central practice location. Dunes retains the previously validated initial checkpoint. Each imported scene's declared shadow light replaces the dunes light target; scenes without a declared shadow light omit that occlusion query.
 - Original animation/component transforms are read without changing native transform caches.
 
-## Recovered for the next rendering milestone
+## Original ground textures connected
 
 - Original TRN palettes and 1,068 indexed textures across all 33 courses now parse with their mip levels and tile metadata preserved.
-- Original texture layout and orientation math matches 1,024 isolated native cases / 5,120 output words. See `mcm-terrain-rendering-recovery.md` for scope and reproduction. Renderer integration is still pending; this does not change the deployed map appearance yet.
+- Original texture layout and orientation math matches 1,024 isolated native cases / 5,120 output words. See `mcm-terrain-rendering-recovery.md` for scope and reproduction. The preview now applies these textures to both the coarse ground and dense sand patch using native world coordinates. Original base pixels and the stored mip level are palette-expanded without recoloring.
 
 ## Still required for a complete asset port
 
-- Original terrain texture placement, rotations, skies, fog and scene lighting in the renderer. Current terrain shading remains Dust Valley's.
+- Original skies, fog, scene lighting and full terrain renderer behavior. Terrain textures and rotations are connected, but geometry resampling, lighting, outer-map clamping and GPU filtering still differ from the original renderer.
 - Original scene objects and stadium geometry, placement and collision integration.
 - Original race/waypoint data, checkpoints, exact starts and mode setup. The current circuit is Dust Valley's course overlay, not an original race reconstruction.
 - The editor-only `trakedit/tracks/mass_air.trn` and UI-only `ui/simple.trn` are not course-selector entries.

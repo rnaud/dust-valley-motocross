@@ -1,6 +1,6 @@
 # Original terrain rendering recovery
 
-This work supports the original map port. It does not establish whole-world physics or rendering parity, and the preview still uses Dust Valley ground shading.
+This work supports the original map port. It does not establish whole-world physics or rendering parity, and does not yet reproduce the full original scene renderer.
 
 ## Recovered and checked
 
@@ -18,6 +18,12 @@ WINEPREFIX="/path/to/reference/prefix" node scripts/mcm-reference/generate-terra
 node --test tests/mcm-terrain-data.test.js tests/mcm-terrain-uv.test.js
 ```
 
-## Next integration
+## Texture payload correction
 
-Package indexed textures and palettes alongside the lazy-loaded course resources. Render each physical leaf using its original texture index, tile index and orientation, preserving the existing physical height queries. Verify texture seams, axis orientation and original screenshots before calling the map appearance matched. Handle the texture-index `-1` fallback separately; its runtime placeholder and non-leaf rendering behavior are not represented by the UV fixture. Skies, scenery, exact starts and full-world simulation remain separate open items in the asset ledger.
+Visual inspection exposed a grouping error in the first resource reader: texture groups store all base images followed by all half-size images, rather than alternating each base with its mip. The original low-detail skip at `0x4106e7..0x4106fb` advances over `count * width * height * pixelBytes`; the high-detail tail at `0x4108b1..0x4108e0` skips all half-size images together. The importer and boundary regression test now follow that layout. The earlier byte-preservation check did not prove image assignment and is superseded by this correction.
+
+## Preview integration
+
+Indexed textures, palettes and tile metadata are packaged in the lazy-loaded course resources. Both the coarse ground and dense patch use a shared atlas and leaf lookup in original terrain coordinates. The original base image and stored mip level are uploaded. This retains the existing physical height queries and sand deformation. Switching back to Classic restores its materials.
+
+All 33 courses have valid populated leaf texture references; the native texture-index `-1` fallback is not needed for those leaves. The shader uses a neutral fallback for missing/outside data; this is not a recovery of the native placeholder. GPU arithmetic/filtering, coarse geometry resampling and lighting are not claimed bit-exact. Original screenshots, scene boundaries, skies, scenery, exact starts and full-world simulation remain open verification/integration work.
