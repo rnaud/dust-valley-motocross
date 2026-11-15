@@ -1,5 +1,14 @@
 # Motocross Madness physics parity roadmap
 
+## Retained AI target advancement (2026-11-15)
+
+Recovered the complete mode-0 target-selection loop at `0x46d707..0x46dac1`, including nearest/reference-index reconciliation, height and wrapped-angle tests, multi-node advancement, wraparound, reset of the target flag and both heading outputs. All seven output words match 4,096 original executions (1,902 advancing cases, including 848 multi-node cases); a repeated native execution is identical. No generated cases were discarded.
+
+A new 64-call live capture matches every output word and includes 11 advances on the 603-node route. The analyzer computes nearest nodes and retains target index/flag across all calls, checking both subsequent entries and full-controller exits. Altered native heading bits and reseeded target indices are rejected. All three live hooks were independently verified restored with no debugger attached.
+
+Evidence: `tests/mcm-ai-route-target.test.js`, `ai-route-target-wine11.json.br`, `analyze-ai-route-target.mjs`, and the isolated oracle/generator alongside it. Bike position, heading, reference index and BB8 still come from each captured entry; this does not yet retain the AI's motion. Modes other than 0 fail explicitly. Competitive race adjustments, distance/lateral-error production, obstacle/actor avoidance, steering/throttle outputs and complete AI motion/rider integration remain open. Preview handling is unchanged; full parity is not established.
+
+
 ## AI route-segment setup recovered (2026-11-15)
 
 Extended the recovered AI search through `0x46d535`: next and previous route nodes (including wraparound), unrefined inverse segment length, half-speed scalar and both node-class flags. The contiguous original region matches all eight output words in 4,096 isolated executions; a second execution is identical. Four live controller calls on the original 603-node route also match all eight words. Independent cleanup confirms all three guarded hooks restored and no debugger attached.
