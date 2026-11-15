@@ -1,5 +1,7 @@
 # Motocross Madness physics parity roadmap
 
+Resource staging: [sizing through actual cleanup memory writes recovered](mcm-render-staging-recovery.md), 4,096 isolated map cases and 222 live resource-to-heap-store chains with zero differences. Allocation addresses and heap handle remain environment inputs. State-upload resource setup, submission policy and world scheduling remain open; preview handling is unchanged.
+
 Update command and cleanup: [producer serialization and free predicate recovered](mcm-render-command-recovery.md), 4,096 isolated cases and 191 live commands with zero differences. Per-thread debugger step tracking fixes the observed concurrent-hook crash. Resource staging/allocation and full scratch scheduling remain open; preview handling is unchanged.
 
 Auxiliary upload gates: [three later families recovered](mcm-render-auxiliary-uploads-recovery.md), 871 native applications / 44 uploads with zero gate, order or descriptor differences. The 256-byte branch has static coverage only. Payloads, other upload families and free conditions remain open; follow-up capture single-step exits also require diagnosis.
