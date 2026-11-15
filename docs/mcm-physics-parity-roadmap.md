@@ -1,5 +1,7 @@
 # Motocross Madness physics parity roadmap
 
+Auxiliary upload gates: [three later families recovered](mcm-render-auxiliary-uploads-recovery.md), 871 native applications / 44 uploads with zero gate, order or descriptor differences. The 256-byte branch has static coverage only. Payloads, other upload families and free conditions remain open; follow-up capture single-step exits also require diagnosis.
+
 Viewport upload arithmetic: [pinned SSE matrix recovered](mcm-render-upload-recovery.md#viewport-matrix-arithmetic), 14,096 isolated native cases / 225,536 output words plus 12 live uploads / 192 words with zero differences. Other upload/free gates and shared-world scheduling remain unvalidated; preview handling is unchanged.
 
 Transform-upload gate: [both vertex paths recovered](mcm-render-upload-recovery.md), 868 native applications / 16 uploads / 852 skips with zero gate or source-address differences. Other uploads, frees and world visibility remain open.

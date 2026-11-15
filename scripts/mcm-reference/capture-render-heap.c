@@ -498,6 +498,7 @@ int main(int argc, char **argv) {
   if(matched==57){DWORD args[3],decl,viewport[6];BYTE transformed=0;if(!read_memory(context.Esp,args,sizeof(args))||!read_memory(args[2]+0x10c,&decl,4)||(decl&&!read_memory(decl+0x18,&transformed,1))||!read_memory(args[2]+0xade4,viewport,sizeof(viewport)))done=2;else fprintf(render_out,"{\"phase\":\"state-declaration\",\"frame\":%lu,\"block\":%lu,\"declaration\":%lu,\"transformed\":%u,\"viewport\":[%lu,%lu,%lu,%lu,%lu,%lu]}\n",player_frame-1,args[2],decl,transformed,viewport[0],viewport[1],viewport[2],viewport[3],viewport[4],viewport[5]);}
   if(matched==57){DWORD args[3],cs,device,state2300,device28;if(!read_memory(context.Esp,args,sizeof(args))||!read_memory(args[1]+0x12d0,&cs,4)||!read_memory(cs+8,&device,4)||!read_memory(args[2]+0x2300,&state2300,4)||!read_memory(device+0x28,&device28,4))done=2;else fprintf(render_out,"{\"phase\":\"viewport-input\",\"frame\":%lu,\"block\":%lu,\"cs\":%lu,\"state2300\":%lu,\"device28\":%lu}\n",player_frame-1,args[2],cs,state2300,device28);}
   if(matched==131){DWORD args[7],words[16];if(!read_memory(context.Esp,args,sizeof(args)))done=2;else if(args[0]==0x7a92f994){if(args[5]!=64||!read_memory(args[6],words,sizeof(words)))done=2;else{fprintf(render_out,"{\"phase\":\"viewport-payload\",\"frame\":%lu,\"data\":%lu,\"words\":[",player_frame-1,args[6]);for(unsigned j=0;j<16;j++)fprintf(render_out,"%s%lu",j?",":"",words[j]);fprintf(render_out,"]}\n");}}}
+  if(matched==57){DWORD args[3],state2540;if(!read_memory(context.Esp,args,sizeof(args))||!read_memory(args[2]+0x2540,&state2540,4))done=2;else fprintf(render_out,"{\"phase\":\"upload-config\",\"frame\":%lu,\"block\":%lu,\"state2540\":%lu}\n",player_frame-1,args[2],state2540);}
   if(matched==22){if(!draw_depth)done=2;else draw_depth--;}
  }
 }else if(matched==14){
@@ -567,13 +568,16 @@ int main(int argc, char **argv) {
                     write_byte(addresses[matched], saved[matched]);
                     armed[matched] = 0;
                     context.Eip = addresses[matched];
-                    context.EFlags |= 0x100; // Execute the restored instruction once.
+                    // An aborted observation resumes the restored instruction
+                    // directly. Do not arm a single-step and then detach.
+                    if(done)context.EFlags &= ~0x100u;
+                    else context.EFlags |= 0x100;
                     context.ContextFlags=CONTEXT_CONTROL|CONTEXT_INTEGER;
                     if (!SetThreadContext(thread, &context)) {
                         TerminateProcess(process, 5);
                         done = 2;
                     }
-                    pending = matched;
+                    pending = done ? -1 : matched;
                     pending_thread = event.dwThreadId;
                 }
                 if (thread) CloseHandle(thread);
