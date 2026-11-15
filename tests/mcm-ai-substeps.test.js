@@ -89,3 +89,17 @@ test('draw outputs and observed query targets cannot steer retained rendering st
   assert.throws(()=>analyzeAiSubsteps(i,i.rows,events,trace(f)),kind==='rectangle'?/Computed screen rectangle/:kind==='lod'?/Computed recursive LOD/:/Computed mesh query target/);
  }
 });
+
+test('rider orientation resets use the base component through visible bike and rider draws',()=>{
+ const f=fixture('ai-rider-orientation');
+ for(const [name,value]of Object.entries(f.files))assert.equal(createHash('sha256').update(value).digest('hex'),f.provenance.fileSha256[name]);
+ assert.match(f.files['cleanup.log'],/debugger=0 clean=1/);assert.equal((f.files['cleanup.log'].match(/restored=1/g)||[]).length,19);
+ const i=input(f),r=analyzeAiSubsteps(i,i.rows,rider(f),trace(f));
+ assert.equal(r.frames,8);assert.equal(r.bodyBoundaries,32);assert.equal(r.substepBoundaries,454);assert.equal(r.componentWords,5448);
+ assert.deepEqual(r.visualDifferences,[]);assert.equal(r.riderBytes,35000);assert.equal(r.randomDraws,6);
+ assert.equal(r.drawNodeWords,24150);assert.equal(r.drawReports.length,14);
+ const visible=r.drawReports.filter(d=>d.accepted),bike=i.checkpoint.bikeAddress;
+ assert.equal(visible.filter(d=>d.actor===bike).length,4);assert.equal(visible.filter(d=>d.actor!==bike).length,4);
+ assert.equal(visible.reduce((n,d)=>n+d.queries,0),168);
+ assert.equal(r.particleDifferences.length,47716);
+});

@@ -9,7 +9,9 @@ import {startMcmNearbyInteraction,seekMcmInteractionAnimations} from './nearby-t
 export function continueMcmResetLoopRider(c){
  const b=c.bike,p=c.contactPhase,s=c.loopRider;
  s.queries=[];s.trickIndex=-1;
- const setup={graph:{target:c.bodyNode,source:c.bodyNode,components:c.bounds.components,
+ // Rider/trick resets read *(bike+8d8), then write the body root (+434).
+ // These are distinct nodes while an animation rotates the base component.
+ const setup={graph:{target:c.bodyNode,source:'baseNode' in c?c.baseNode:c.bodyNode,components:c.bounds.components,
   boundsChildren:c.bounds.children.slice(0,c.bounds.count)},boundsMin:c.bounds.min,boundsMax:c.bounds.max,
   envelope:c.effect,liveBoundsMin:b.boundsMin,liveBoundsMax:b.boundsMax,scratch540:b.offset,scratch54c:b.normal};
  const r=applyMcmBikeRider(c,{
