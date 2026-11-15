@@ -1,0 +1,15 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import {brotliDecompressSync,gunzipSync} from 'node:zlib';import {createHash} from 'node:crypto';
+import {generateAiLandingPitchCases} from '../scripts/mcm-reference/ai-landing-pitch-cases.mjs';import {analyzeAiLandingPitch} from '../scripts/mcm-reference/analyze-ai-landing-pitch.mjs';
+const read=name=>JSON.parse(brotliDecompressSync(fs.readFileSync(new URL(`./fixtures/mcm/${name}-wine11.json.br`,import.meta.url)))),fixture=()=>read('ai-landing-pitch'),live=()=>read('ai-jump-state'),hash=x=>createHash('sha256').update(x).digest('hex'),rows=()=>live().live.trim().split('\n').map(JSON.parse);
+function options(){const f=fixture(),bytes=fs.readFileSync(new URL('../src/assets/mcm-maps/quarries-dunes.bin',import.meta.url));assert.equal(hash(bytes),f.provenance.assetSha256);const {terrain:t}=JSON.parse(gunzipSync(bytes)),cache=new Map(),node=id=>{if(cache.has(id))return cache.get(id);const raw=t.nodes[id],n={...raw,...t.banks[raw.bankIndex]};cache.set(id,n);if(raw.children)n.children=raw.children.map(i=>i===null?null:node(i));return n;};return {...f.configuration,terrain:{root:node(t.root),worldToGrid:t.worldToGrid,heightScale:t.heightScale}};}
+test('landing pitch and latch match 4096 repeated original terrain-normal executions',()=>{
+ const f=fixture(),{input,expected}=generateAiLandingPitchCases(options().terrain),native=Buffer.from(f.native,'base64');assert.equal(input.length,4096*44);assert.equal(native.length,4096*8);assert.equal(hash(input),f.provenance.inputSha256);assert.equal(hash(native),f.provenance.outputSha256);assert.equal(f.provenance.repeatSha256,f.provenance.outputSha256);assert.deepEqual(expected,native);
+});
+test('256 controller calls retain jump state through computed lookahead, tricks and 16 landing queries',()=>{
+ const f=fixture(),l=live();assert.equal(hash(l.live),f.provenance.liveSha256);assert.match(l.provenance.cleanup,/debugger=0 clean=1/);assert.equal((l.provenance.cleanup.match(/restored=1/g)||[]).length,17);assert.deepEqual(analyzeAiLandingPitch(rows(),options()),{calls:256,draws:127,allDraws:138,selections:2,rejected:13,landingQueries:16});
+});
+test('retained replay rejects reseeded latch, changed landing outputs and a suppressed landing query',()=>{
+ let r=rows(),o=r.find(x=>x.phase==='before'&&x.sequence===5),b=Buffer.from(o.hex,'hex');b.writeUInt32LE(0,0xb64);o.hex=b.toString('hex');assert.throws(()=>analyzeAiLandingPitch(r,options()),/Retained jump entry/);
+ r=rows();o=r.find(x=>x.phase==='after'&&x.sequence===4);b=Buffer.from(o.hex,'hex');b.writeUInt32LE(b.readUInt32LE(0xb68)^1,0xb68);o.hex=b.toString('hex');assert.throws(()=>analyzeAiLandingPitch(r,options()),/Computed full-controller jump exit/);
+ r=rows();for(const o of r.filter(x=>x.sequence===4&&['before','lookahead-after'].includes(x.phase))){b=Buffer.from(o.hex,'hex');b.writeFloatLE(1000,0x6c8);o.hex=b.toString('hex');}assert.throws(()=>analyzeAiLandingPitch(r,options()),/Computed full-controller jump exit/);
+});

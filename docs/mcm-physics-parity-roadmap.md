@@ -1,5 +1,14 @@
 # Motocross Madness physics parity roadmap
 
+## Retained AI jump state through terrain-normal landing pitch (2026-11-15)
+
+Recovered `0x46f824..0x46f911`: the airborne/latch/time gates, projected query position, original smooth terrain-normal query, heading-relative landing pitch, signed-bit pitch cap and latch write. Both output words match 4,096 repeated original executions on Dunes, including bypass cases. The oracle retains original terrain parsing and normal lookup, with the existing host allocation/stdio and renderer-initialization substitutions. Its wrapper reserves sufficient scratch space through `esp+0xb0`.
+
+The live chain initializes eight jump-state fields once (`b44,b64,b68,b40,b18,b20,b4c,b38`) and retains computed results across 256 controller calls. Landing targets, nearest route and category come from the recovered route/lookahead chain. Pose and other body inputs come from the earlier controller-entry snapshot and are asserted unchanged at jump entry. Computed vertical velocity feeds landing pitch. All nine body outputs match full-controller exits; all eight retained fields match subsequent entries. Sixteen computed terrain-normal queries resolve the former sequence-5 latch/pitch mismatch. Two selected tricks, thirteen rejected attempts and all 127 AI draws remain matched. Reseeding the entry latch, altering an exit pitch or suppressing a landing query fails validation.
+
+Evidence: `ai-landing-pitch.js`, oracle/generator, `analyze-ai-landing-pitch.mjs`, `tests/mcm-ai-landing-pitch.test.js` and native fixture. Reuses the independently cleaned seventeen-hook live capture. Per-call pose/velocity, race/handicap/scratch inputs, external random-consumer scheduling and difficulty-zero eligibility remain boundaries; complete trick event graphs, nearby interaction, remaining longitudinal commands, retained AI motion and natural whole-world replay are not established. This milestone does not change preview handling or prove full physics parity.
+
+
 ## Automatic trick selection and observed AI dispatch (2026-11-15)
 
 Recovered complete selector `0x49d6a0`: six flight-time thresholds, all three selection banks (including the empty-bank fallback), original nearest-even integer conversion, selected trick and optional randomized startup delay. Uses the pinned executable's trick and duration tables and the shared thread random stream. Five output words match 4,096 repeated original executions, including failed selections that preserve outputs and draw no random values. The oracle keeps original random arithmetic and substitutes only the CRT thread-pointer lookup.
