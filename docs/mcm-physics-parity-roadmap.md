@@ -1,5 +1,7 @@
 # Motocross Madness physics parity roadmap
 
+Upload backend effects: [register heaps recovered and live-validated](mcm-render-register-heap-recovery.md), 2,048 intact native command-chain cases / 3,950,592 output words plus 192 live transitions with zero differences. Whole-world ordering and the frame-38 mismatch remain open; preview handling is unchanged.
+
 Upload follow-up dispatch: [command 33 recovered](mcm-render-upload-invalidation-recovery.md), 4,096 isolated native cases / 49,152 output words with zero differences. Live backend callbacks are identified; their effects and whole-world ordering remain open. Preview handling is unchanged.
 
 State upload resource selection: [cached/created resources and follow-up commands recovered](mcm-render-resource-upload-recovery.md), 4,096 isolated cases and 192 live upload-to-heap-store chains with zero differences. The subsequent command handler, resource lifecycle and world ordering remain open; preview handling is unchanged.

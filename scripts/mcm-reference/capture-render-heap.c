@@ -53,6 +53,8 @@ static int read_memory(DWORD address, void *buffer, SIZE_T size) {
     SIZE_T count;
     return ReadProcessMemory(process, (void *)(uintptr_t)address, buffer, size, &count) && count == size;
 }
+#include "capture-register-heap.c"
+
 
 typedef struct {DWORD address, size; BYTE bytes[0xcc8];} Block;
 static Block blocks[256]; static unsigned block_count;
@@ -516,8 +518,8 @@ int main(int argc, char **argv) {
   if(matched==166){DWORD word;if(!read_memory(context.Ebp-0x14,&word,4))done=2;else fprintf(render_out,"{\"phase\":\"heap-store-value\",\"frame\":%lu,\"address\":%lu,\"value\":%lu}\n",player_frame-1,context.Ebp-0x14,word);}
   static DWORD upload_command_address;
   if(matched==131){DWORD args[7],device,adapter,cached;BYTE adapter_flags;if(!read_memory(context.Esp,args,sizeof(args))||args[2]>=8||!read_memory(args[1]+4,&device,4)||!read_memory(device+0xc,&adapter,4)||!read_memory(adapter+0x5a,&adapter_flags,1)||!read_memory(device+0x12d4+args[2]*4,&cached,4))done=2;else fprintf(render_out,"{\"phase\":\"upload-resource-input\",\"frame\":%lu,\"cs\":%lu,\"device\":%lu,\"kind\":%lu,\"cachedResource\":%lu,\"adapterFlags\":%u}\n",player_frame-1,args[1],device,args[2],cached,adapter_flags);}
-  if(matched==147){upload_command_address=context.Eax;fprintf(render_out,"{\"phase\":\"upload-command-allocation\",\"frame\":%lu,\"address\":%lu}\n",player_frame-1,upload_command_address);}
-  if(matched==148){DWORD words[5];if(!upload_command_address||!read_memory(upload_command_address,words,sizeof(words)))done=2;else fprintf(render_out,"{\"phase\":\"upload-command-bytes\",\"frame\":%lu,\"address\":%lu,\"words\":[%lu,%lu,%lu,%lu,%lu]}\n",player_frame-1,upload_command_address,words[0],words[1],words[2],words[3],words[4]);upload_command_address=0;}
+  if(matched==147){if(!capture_register_heaps(render_out,context.Ebx,player_frame-1,147))done=2;upload_command_address=context.Eax;fprintf(render_out,"{\"phase\":\"upload-command-allocation\",\"frame\":%lu,\"address\":%lu}\n",player_frame-1,upload_command_address);}
+  if(matched==148){if(!capture_register_heaps(render_out,context.Ebx,player_frame-1,148))done=2;DWORD words[5];if(!upload_command_address||!read_memory(upload_command_address,words,sizeof(words)))done=2;else fprintf(render_out,"{\"phase\":\"upload-command-bytes\",\"frame\":%lu,\"address\":%lu,\"words\":[%lu,%lu,%lu,%lu,%lu]}\n",player_frame-1,upload_command_address,words[0],words[1],words[2],words[3],words[4]);upload_command_address=0;}
   if(matched==22){if(!draw_depth)done=2;else draw_depth--;}
  }
 }else if(matched==14){
