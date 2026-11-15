@@ -68,8 +68,9 @@ export function splitMcmTerrainSegment(start,end,shift){
 }
 
 // Original recursive traversal 0x48e4c0; option models its optional node output.
-export function traverseMcmTerrainSegment(node,start,end,output,option){
+export function traverseMcmTerrainSegment(node,start,end,output,option,onSplit=null,depth=0){
  const {points,direction,step}=splitMcmTerrainSegment(start,end,node.shift),twice=f(step*2);
+ onSplit?.({node,start,end,points,depth});
  for(let i=0;i<points.length-1;i++){
   const a=points[i],b=points[i+1];
   let x=nearestEven(f((b[0]+a[0])/twice-.5)),y=nearestEven(f(f((b[1]+a[1])/twice)-.5));
@@ -80,7 +81,7 @@ export function traverseMcmTerrainSegment(node,start,end,output,option){
    const low=f(child.minimumHeight/256),high=f(child.maximumHeight/256);
    if(!(low<=a[2]||low<=b[2])||!(a[2]<=high||b[2]<=high))continue;
    const local=p=>[f(p[0]-x*step),f(p[1]-y*step),p[2]];
-   if(traverseMcmTerrainSegment(child,local(a),local(b),output,option))return 1;
+   if(traverseMcmTerrainSegment(child,local(a),local(b),output,option,onSplit,depth+1))return 1;
    continue;
   }
   if(x<0||y<0||x>16||y>16)throw new RangeError('Terrain leaf query outside recorded row table');

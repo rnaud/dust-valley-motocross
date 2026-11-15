@@ -1,5 +1,11 @@
 # Motocross Madness physics parity roadmap
 
+## Terrain traversal derived from top-level queries (2026-11-15)
+
+The retained terrain-writer replay now requires the original map and computes clipping, recursive node selection, crossing points, visit order and stack depth from each top-level segment. Captured child coordinates, levels, shifts, stack addresses and merged points are assertions only. Five top-level queries derive all 12 visits / 501 compared words in the existing controlled fixture; its five bike frames / four rider ticks still match with zero physics differences and no observed scratch substitution. Negative tests reject altered child coordinates, stack depth, node shift, missing top-level queries, missing maps and changed terrain bounds/scale.
+
+This removes the recursive invocation-input boundary from the previous milestone. Top-level invocation timing, camera/segment endpoints, the caller stack address, other terrain stack stores and continuous world scheduling remain external. The older natural scene divergence and long steering failure are still open. Preview handling is unchanged.
+
 ## Terrain-query merged-point stack writer (2026-11-15)
 
 Recovered the completed crossing-array stores in original `0x48e4c0`: its third recursive frame can overlap the caller word later read by bike physics. The `0x40ded0` vector constructors perform no initialization, so shorter later queries preserve unused slots. A controlled native scene query validates 12 splits / 501 float words in the retained interval. Its 29th point writes `1093338000` at `0x22f038`; a later shorter query leaves that value intact. The computed stores feed five bike frames / four rider ticks with zero physics differences and no observed scratch substitutions. Removing terrain writes fails frame 3 (`1063596045` versus `1093338000`).

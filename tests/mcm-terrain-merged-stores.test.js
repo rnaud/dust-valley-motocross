@@ -9,8 +9,8 @@ import {analyzeMovingVisibility} from '../scripts/mcm-reference/analyze-moving-v
 const fixture=()=>JSON.parse(brotliDecompressSync(fs.readFileSync(new URL('./fixtures/mcm/terrain-merged-world-writers-wine11.json.br',import.meta.url))));
 
 test('native terrain merged points produce the overlapping stack write and preserve unused slots',()=>{
- const f=fixture(),r=analyzeTerrainMergedStores(f.render);
- assert.equal(r.calls,12);assert.equal(r.words,501);
+ const f=fixture(),r=analyzeTerrainMergedStores(f.render,{terrain:terrain()});
+ assert.equal(r.queries,5);assert.equal(r.calls,12);assert.equal(r.words,501);
  const overlaps=[...r.stores].flatMap(([index,stores])=>stores.filter(s=>s.address===f.world.scratch).map(s=>({index,...s})));
  assert.equal(overlaps.length,1);assert.equal(overlaps[0].value,1093338000);
  const later=[...r.stores].filter(([index])=>index>overlaps[0].index);
@@ -24,9 +24,29 @@ test('native terrain merged points produce the overlapping stack write and prese
 
 test('native point observations cannot replace missing inputs or corrupted computed results',()=>{
  let f=fixture();f.render=f.render.filter(r=>r.phase!=='terrain-query-input');
- assert.throws(()=>analyzeTerrainMergedStores(f.render),/Missing terrain split inputs/);
+ assert.throws(()=>analyzeTerrainMergedStores(f.render,{terrain:terrain()}),/Missing terrain split inputs/);
  f=fixture();f.render.find(r=>r.phase==='terrain-merged-points').points[0]^=1;
- assert.throws(()=>analyzeTerrainMergedStores(f.render),/Computed terrain merged points/);
+ assert.throws(()=>analyzeTerrainMergedStores(f.render,{terrain:terrain()}),/Computed terrain merged points/);
+});
+
+test('recursive coordinates, stack depths and terrain metadata are assertions, not inputs',()=>{
+ const run=f=>analyzeTerrainMergedStores(f.render,{terrain:terrain()});
+ let f=fixture();f.render.find(r=>r.phase==='terrain-query-input'&&r.entry===0x48e4c0).start[0]^=1;
+ assert.throws(()=>run(f),/Derived recursive start/);
+ f=fixture();f.render.find(r=>r.phase==='terrain-query-input'&&r.entry===0x48e4c0).esp+=4;
+ assert.throws(()=>run(f),/Derived recursive stack/);
+ f=fixture();f.render.find(r=>r.phase==='terrain-merged-points').shift^=1;
+ assert.throws(()=>run(f),/Derived terrain shift/);
+ f=fixture();f.render=f.render.filter(r=>!(r.phase==='terrain-query-input'&&r.entry===0x410ac0));
+ assert.throws(()=>run(f),/Missing top-level terrain query/);
+});
+
+test('top-level terrain replay requires the original map and derives visits from it',()=>{
+ const f=fixture();assert.throws(()=>analyzeTerrainMergedStores(f.render),/Missing original terrain/);
+ const map=terrain();map.heightScale*=2;
+ assert.throws(()=>analyzeTerrainMergedStores(f.render,{terrain:map}),/Terrain height scale/);
+ const changed=terrain();changed.root.minimumHeight=65535;
+ assert.throws(()=>analyzeTerrainMergedStores(f.render,{terrain:changed}),/Unexpected terrain visit|Derived recursive start/);
 });
 
 function terrain(){
@@ -38,7 +58,7 @@ function terrain(){
 test('controlled scene query feeds five retained bike frames without observed scratch substitution',()=>{
  const f=fixture(),scene=analyzeSceneActorDraws(f.render.filter(r=>sceneActorPhases.has(r.phase)),f.world.ownerDrawTarget);
  const actorDrawSchedules=new Map(scene.reports.map(r=>[r.frame,r.wrappers]));
- const run=render=>analyzeWorldWriters(render.filter(r=>worldWriterPhases.has(r.phase)),f.rows,{...f.world,actorDrawSchedules});
+ const run=render=>analyzeWorldWriters(render.filter(r=>worldWriterPhases.has(r.phase)),f.rows,{...f.world,actorDrawSchedules,terrain:terrain()});
  const writers=run(f.render);assert.deepEqual(writers,f.writers);
  assert.equal(writers.checks.at(-1).kind,'terrainMerged');
  assert.throws(()=>run(f.render.filter(r=>!r.phase.startsWith('terrain-'))),e=>e.code==='ERR_ASSERTION'&&e.actual===f.mismatch.actual&&e.expected===f.mismatch.expected);

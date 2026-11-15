@@ -22,11 +22,11 @@ export const worldWriterPhases=new Set([...terrainMergedPhases,...samplerFormatt
 // Predict writes from ordered invocation/stage inputs. Store observations never
 // become state. Invocation order, wrapper/non-actor stack depth, prepared graphics state, camera,
 // allocator results and font measurements are still external boundaries.
-export function analyzeWorldWriters(render, physicsRows, {player, scratch, moduleBase, heapHandle, worldMatrix, actorDrawSchedules=null}) {
+export function analyzeWorldWriters(render, physicsRows, {player, scratch, moduleBase, heapHandle, worldMatrix, actorDrawSchedules=null, terrain=null}) {
   assert.equal(scratch,parseInt(physicsRows[0].stackAddress,16)+0x54);
   const actorStacks=deriveActorApplyStacks(render,{actorDrawSchedules});render=actorStacks.rows;
   const copies=analyzeUploadCopy(render,moduleBase);
-  const terrain=analyzeTerrainMergedStores(render);
+  const terrainWrites=analyzeTerrainMergedStores(render,{terrain});
   const samplerStores=new Map();
   const samplerFormats=analyzeSamplerFormatter(render,{onStore:(index,store)=>samplerStores.set(index,store)});
   const bindings=analyzeBindingGates(render.filter(r=>bindingPhases.has(r.phase)),moduleBase);
@@ -73,7 +73,7 @@ export function analyzeWorldWriters(render, physicsRows, {player, scratch, modul
   };
   for(const [index,r] of render.entries()){
     assert.ok(worldWriterPhases.has(r.phase),'Unknown world writer event');
-    if(terrain.stores.has(index)){finishApply();for(const store of terrain.stores.get(index))commit('terrainMerged',r.frame,store);}
+    if(terrainWrites.stores.has(index)){finishApply();for(const store of terrainWrites.stores.get(index))commit('terrainMerged',r.frame,store);}
     if(samplerStores.has(index)){finishApply();commit('sampler',r.frame,samplerStores.get(index));}
     if(r.phase==='wrapper')wrappers.set(`${r.frame}/${r.actor}`,r);
     if(r.phase==='state-1bd500'){finishApply();app={entry:r,actual:[],uploads:[],copies:[]};}
