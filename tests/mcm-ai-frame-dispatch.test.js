@@ -58,3 +58,39 @@ test('consecutive AI comparison rejects second-frame body and RNG corruption wit
   assert.throws(()=>analyzeAiFrameSequence(i,i.rows),kind==='body'?/frame 1 frame-tail body 510/:/frame 1 frame-tail RNG/);
  }
 });
+
+test('AI and separate rider tick share retained state while external particles and joint caches remain explicit',()=>{
+ const f=fixture('ai-frame-rider');for(const [name,value] of Object.entries(f.files))assert.equal(createHash('sha256').update(value).digest('hex'),f.provenance.fileSha256[name]);
+ assert.equal(f.provenance.executableSha256,'e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b');assert.match(f.files['cleanup.log'],/debugger=0 clean=1/);assert.equal((f.files['cleanup.log'].match(/restored=1/g)||[]).length,8);
+ const i=input(f),events=f.files['rider.jsonl'].trim().split('\n').map(JSON.parse),r=analyzeAiFrameSequence(i,i.rows,events);
+ assert.equal(r.bodyBoundaries,8);assert.equal(r.bodyBytes,26176);assert.equal(r.riderTicks,1);assert.equal(r.riderBytes,5000);assert.deepEqual(r.substeps,[2,11]);assert.equal(r.randomDraws,0);
+ assert.equal(r.visualDifferences.length,153);assert.ok(r.visualDifferences.every(d=>d.frame===1&&d.offset>=0xc4&&d.offset<=0x104));
+ assert.equal(r.particleDifferences.length,376);assert.deepEqual(r.worldQueries,[]);
+ // This ground contact writes the front-load radius that was previously absent
+ // from the raw/semantic AI bridge. The full body checks cover its native bits.
+ const before=Buffer.from(i.row.stateHex,'hex'),after=Buffer.from(i.rows.find(r=>r.phase==='after-update').stateHex,'hex');assert.notEqual(before.readUInt32LE(0x6b4),after.readUInt32LE(0x6b4));
+});
+
+test('retained AI rider checks reject mixed captures, altered rider/child outputs and missing ticks',()=>{
+ for(const kind of ['identity','rider','child','missing']){
+  const f=fixture('ai-frame-rider'),i=input(f),events=f.files['rider.jsonl'].trim().split('\n').map(JSON.parse);
+  if(kind==='identity')events[1].captureId='unrelated';
+  else if(kind==='missing')events.splice(1);
+  else{const key=kind==='rider'?'riderHex':'hex',bytes=Buffer.from(events[2][key],'hex');bytes[kind==='rider'?0x40:0x68]^=1;events[2][key]=bytes.toString('hex');}
+  assert.throws(()=>analyzeAiFrameSequence(i,i.rows,events));
+ }
+});
+
+test('original scene-object position query identifies the unresolved rider cache writer',()=>{
+ const f=fixture('ai-frame-rider-callers');for(const [name,value] of Object.entries(f.files))assert.equal(createHash('sha256').update(value).digest('hex'),f.provenance.fileSha256[name]);
+ assert.equal(f.provenance.executableSha256,'e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b');assert.match(f.files['cleanup.log'],/debugger=0 clean=1/);assert.equal((f.files['cleanup.log'].match(/restored=1/g)||[]).length,9);
+ const i=input(f),events=f.files['rider.jsonl'].trim().split('\n').map(JSON.parse),r=analyzeAiFrameSequence(i,i.rows,events),m=checkpointMemory(i.checkpoint),rider=m.u32(i.checkpoint.bikeAddress+0x874);
+ assert.equal(r.bodyBoundaries,8);assert.equal(r.riderTicks,1);assert.equal(r.riderBytes,5000);assert.equal(r.randomDraws,2);assert.deepEqual(r.substeps,[11,11]);assert.deepEqual(r.particleDifferences,[]);
+ assert.equal(r.visualDifferences.length,153);assert.equal(r.worldQueries.length,4);
+ assert.equal(r.worldQueries[0].node,m.u32(rider+0xfc));assert.equal(r.worldQueries[0].caller,0x4b797f);assert.equal(r.worldQueries[0].positionCaller,0x422fad);
+ for(let j=1;j<4;j++){assert.equal(r.worldQueries[j].caller,0x4b6956);assert.equal(r.worldQueries[j].node,m.u32(r.worldQueries[j-1].node+0x108));}
+ // Queries identify a missing world writer. They must not silently become
+ // playback commands that hide it by refreshing caches from recorded targets.
+ const altered=structuredClone(events);altered[3].node=0;
+ const diagnostic=analyzeAiFrameSequence(i,i.rows,altered);assert.deepEqual(diagnostic.visualDifferences,r.visualDifferences);
+});

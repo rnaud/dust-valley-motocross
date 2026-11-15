@@ -22,12 +22,12 @@
 #include "capture-frame-environment.c"
 #include "capture-ai-frame-environment.c"
 
-static DWORD addresses[] = {0x4a54b6, 0x4ad0e1, 0x4ad5a2, 0x4bf195, 0x40e990, 0x42ce38, 0x4acfd8, 0x4acaad};
+static DWORD addresses[] = {0x4a54b6, 0x4ad0e1, 0x4ad5a2, 0x4bf195, 0x40e990, 0x42ce38, 0x4acfd8, 0x4acaad, 0x4b6930};
 static BYTE expected[][6] = {{0xd9, 0x86, 0xc8, 0x08, 0, 0},
-                                  {0x8b, 0x86, 0xf8, 0x04, 0, 0}, {0x85, 0xc0}, {0x8b, 0x48, 0x14}, {0x8b,0x44,0x24,0x04}, {0x8b,0x44,0xbe,0x08}, {0x8d,0x86,0x10,0x05,0,0}, {0x8b,0xf8}};
-static unsigned lengths[] = {6, 6, 2, 3, 4, 4, 6, 2};
-static BYTE saved[8];
-static int armed[8];
+                                  {0x8b, 0x86, 0xf8, 0x04, 0, 0}, {0x85, 0xc0}, {0x8b, 0x48, 0x14}, {0x8b,0x44,0x24,0x04}, {0x8b,0x44,0xbe,0x08}, {0x8d,0x86,0x10,0x05,0,0}, {0x8b,0xf8}, {0x53}};
+static unsigned lengths[] = {6, 6, 2, 3, 4, 4, 6, 2, 1};
+static BYTE saved[9];
+static int armed[9];
 static HANDLE process;
 static int capture_effects,capture_filter,capture_frame_rider,capture_return;
 static DWORD effect_query_count,effect_query_result;
@@ -45,7 +45,15 @@ static int player_active;
 // Explicit read-only focus; never combines with scripted input/checkpoint writes.
 static DWORD observe_ai,observed_random_address,observed_random_thread;
 static int capture_ai_environment;
+static int capture_ai_rider,ai_rider_active,capture_ai_queries;
+static FILE *ai_rider_out;
+static DWORD ai_rider_dt,ai_rider_thread,ai_rider_sequence;
+static int trace_ai_rider(const char*,DWORD,DWORD);
 static void configure_ai_frame_hooks(void){hook_count=6;addresses[4]=0x4a56d9;lengths[4]=5;const BYTE a[]={0xe9,0xe2,0,0,0};memcpy(expected[4],a,5);addresses[5]=0x4a5991;lengths[5]=2;expected[5][0]=0x8b;expected[5][1]=0xce;}
+
+static void configure_ai_rider_hooks(void){configure_ai_frame_hooks();hook_count=8;addresses[6]=0x40e990;lengths[6]=4;const BYTE a[]={0x8b,0x44,0x24,0x04};memcpy(expected[6],a,4);addresses[7]=0x40f99c;lengths[7]=5;const BYTE b[]={0xb8,1,0,0,0};memcpy(expected[7],b,5);}
+
+static void configure_ai_query_hooks(void){configure_ai_rider_hooks();hook_count=9;}
 
 static int read_memory(DWORD address, void *buffer, SIZE_T size) {
     SIZE_T count;
@@ -141,6 +149,7 @@ static int export_checkpoint(DWORD bike) {
     }
     if(capture_ai_environment&&!capture_mcm_ai_environment(process,bike,getenv("MCM_AI_ENVIRONMENT"),capture_id))return 0;
     memcpy(frame_capture_id,capture_id,sizeof frame_capture_id);
+    if(capture_ai_rider){DWORD rider;if(!read_memory(bike+0x874,&rider,4)||!trace_ai_rider("initial-rider",rider,0))return 0;}
     FILE *out=fopen(path,"wx");if(!out)return 0;
     fprintf(out,"{\"schemaVersion\":1,\"kind\":\"mcm-partial-local-checkpoint\",\"bikeAddress\":%lu,\"playerFrame\":%lu,\"blockCount\":%u,\"blocks\":[",bike,player_frame,block_count);
     for(unsigned i=0;i<block_count;i++){
@@ -190,6 +199,8 @@ static int observe_rider_collision(FILE *out,DWORD rider) {
     fprintf(out,"\",\"pairColumnHex\":\"");for(unsigned i=0;i<sizeof column;i++)fprintf(out,"%02x",column[i]);
     fprintf(out,"\"}");return !ferror(out);
 }
+
+#include "capture-ai-rider.c"
 
 static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CONTEXT *context) {
     // At 0x4ad078 the rider delta has been pushed. Normalize only the observation.
@@ -316,6 +327,10 @@ int main(int argc, char **argv) {
     if(getenv("MCM_AI_GROUNDED")&&!capture_ai_environment)return 2;
     if(capture_ai_environment&&!observe_ai){fprintf(stderr,"AI environment requires explicit AI observation\n");return 2;}
     if(capture_ai_environment)configure_ai_frame_hooks();
+    capture_ai_rider=getenv("MCM_AI_RIDER_TRACE")!=NULL;
+    if(capture_ai_rider){if(!capture_ai_environment)return 2;configure_ai_rider_hooks();}
+    capture_ai_queries=getenv("MCM_AI_WORLD_QUERIES")!=NULL;
+    if(capture_ai_queries){if(!capture_ai_rider)return 2;configure_ai_query_hooks();}
     capture_stack = getenv("MCM_STACK") != NULL;
     capture_collision = getenv("MCM_COLLISION") != NULL;
     checkpoint_collision_callbacks = getenv("MCM_COLLISION_CALLBACKS") != NULL;
@@ -444,7 +459,25 @@ int main(int argc, char **argv) {
                     TerminateProcess(process, 5);
                     done = 2;
                 } else {
-                    if(matched==7){if(player_active){effect_query_count++;effect_query_result=context.Eax;if(!read_memory(context.Esp+0x834,effect_query_start,12)||!read_memory(context.Esp+0xb88,effect_query_output,12))done=2;}} else if(matched==5&&!capture_ai_environment){
+                    if(capture_ai_queries&&matched==8){
+                        if(player_frame&&!player_active&&!ai_rider_active){
+                            for(unsigned i=0;i<block_count;i++)if(blocks[i].size==0x114&&blocks[i].address==context.Ecx){
+                                DWORD caller,position_caller=0;if(!read_memory(context.Esp,&caller,4)||(caller==0x4b797f&&!read_memory(context.Esp+0x1c,&position_caller,4)))done=2;
+                                else {fprintf(ai_rider_out,"{\"phase\":\"world-query\",\"captureId\":\"%s\",\"eventSequence\":%lu,\"completedBikeFrames\":%lu,\"node\":%lu,\"caller\":%lu,\"positionCaller\":%lu}\n",frame_capture_id,ai_rider_sequence++,player_frame,context.Ecx,caller,position_caller);if(fflush(ai_rider_out))done=2;}break;
+                            }
+                        }
+                    } else if(capture_ai_rider&&matched>=6){
+                        if(player_frame){DWORD rider=matched==6?context.Ecx:context.Ebx,bike;
+                            if(!read_memory(rider+0x15c,&bike,4))done=2;
+                            else if(bike==observe_ai){
+                                if(matched==6){ai_rider_active=1;ai_rider_thread=event.dwThreadId;if(!read_memory(context.Esp+4,&ai_rider_dt,4))done=2;}
+                                else if(ai_rider_thread!=event.dwThreadId)done=2;
+                                if(!done&&!trace_ai_rider(matched==6?"before-rider":"after-rider",rider,ai_rider_dt))done=2;
+                                else start=GetTickCount();
+                                if(matched==7)ai_rider_active=0;
+                            }
+                        }
+                    } else if(matched==7){if(player_active){effect_query_count++;effect_query_result=context.Eax;if(!read_memory(context.Esp+0x834,effect_query_start,12)||!read_memory(context.Esp+0xb88,effect_query_output,12))done=2;}} else if(matched==5&&!capture_ai_environment){
                         if(capture_contact&&!contact_exported&&player_frame){DWORD collider,owner,kind,bike,ai;
                             if(!read_memory(context.Esi+8+context.Edi*4,&collider,4)||!read_memory(collider+0x94,&owner,4)||!read_memory(collider+0x104,&kind,4))done=2;
                             else if(kind<=1){bike=owner;if(kind==1&&!read_memory(owner+0x15c,&bike,4))done=2;
@@ -575,6 +608,7 @@ int main(int argc, char **argv) {
     }
     DebugActiveProcessStop(pid);
     fclose(out);
+    if(ai_rider_out&&fclose(ai_rider_out))done=2;
     CloseHandle(process);
     fprintf(stderr, "captured=%lu status=%d\n", count, done);
     return done == 1 ? 0 : 4;

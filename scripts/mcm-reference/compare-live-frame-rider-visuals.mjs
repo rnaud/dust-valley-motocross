@@ -15,6 +15,9 @@ export function compareFrameRiderVisuals(loaded,row,after,compare){
   if(child)for(const [key,o] of [['forward',8],['up',0x14],['position',0x20]])child[key].forEach((v,k)=>bytes.writeUInt32LE(floatBits(v),o+4*k));
   compare('frame-animation-'+before.address.toString(16),before.hex,actual.hex,bytes);
  }
+ compareFrameVisuals(loaded,row,after,compare);
+}
+export function compareFrameVisuals(loaded,row,after,compare){
  if(!row.visualState?.length||row.visualState.length!==after.visualState?.length)throw Error('Missing frame-rider visual observations');
  for(let i=0;i<row.visualState.length;i++){
   const before=row.visualState[i],actual=after.visualState[i];

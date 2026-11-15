@@ -1,5 +1,16 @@
 # Motocross Madness physics parity roadmap
 
+## Separate AI rider tick and identified scene-query writer (2026-11-15)
+
+The consecutive AI diagnostic can now connect the existing recovered rider tick to the same bike/animation/collision objects, initialized once at the first bike entry. Read-only hooks at `40e990` and `40f99c` record its real timestep, child allocation, full shared particle pool, rider allocation, visual graph and collision observations. A separate optional `4b6930` hook records external world-transform query targets/callers; these observations are diagnostic evidence and never select model writes.
+
+Two maintained two-frame captures match all eight bike-body/RNG boundaries and the separate rider's before/after allocations and child state (5,000 bytes). A grounded contact exposed the missing float `bike+6b4` front-load radius in the raw/semantic bridge; it is now included, with full-body original comparison. One capture retains 376 shared-particle DWORD differences across its two rider boundaries from external activity; another matches the entire captured pool and particle allocations. Neither silently imports those external changes. Collision snapshots are captured but not yet asserted by this sequence diagnostic.
+
+The remaining 153 visual DWORD differences are now localized to three joint world caches after the rider tick. Original execution identifies `422fad` as the position-query caller, inside the scene-object update at `422f50`, followed by recursive parent resolution at `4b6956`. Disassembly `422f95..422fad` confirms selection of `bike+874 -> rider+fc`, before the visibility query. The scene-object gates and invocation order still need to be connected to the shared world runtime; recorded query nodes are not used as replacement commands. Negative tests retain that distinction and reject mixed rider capture IDs, altered rider/child outputs and missing ticks.
+
+Evidence: `ai-frame-rider-wine11.json.br` (eight restored hooks), `ai-frame-rider-callers-wine11.json.br` (nine), and extended capture/archive/verifier/sequence tools. Every native capture independently confirmed restored bytes and debugger detachment. An earlier natural capture began mid-trick and remains diagnostic-only because the initializer rejects that state. Capture overhead is still large (second intervals about 33.781 and 24.810 seconds); normal-rate trajectory parity remains unproved. Preview player handling is unchanged. Next: connect the scene-object query's real gates/order, shared particle/world writers, and reduce observation overhead.
+
+
 ## Consecutive AI frame diagnostic (2026-11-15)
 
 A new natural two-frame capture initializes the model once and carries computed state through both frames, including the final saved-position stores between them. All eight entry/controller/steering/tail bike-body boundaries match (26,176 bytes), as do the observed shared RNG states with two draws. The first frame executes two substeps and the second eleven. No later body, graph, RNG, or stack observation is imported into the model.
