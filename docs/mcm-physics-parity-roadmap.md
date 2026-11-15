@@ -1,5 +1,11 @@
 # Motocross Madness physics parity roadmap
 
+## Final camera pose and bike/rider node fields recovered
+
+Original finalization matches **2,048 cases / 63,488 words**. A fresh 60-frame capture matches computed eye/target through the final native pose, roll and node fields (1,860 additional words), with pose/flags/nodes retained between frames. **Refresh-counter continuity remains outside this claim**: the analyzer explicitly supplies that counter at source entry because the later camera update and FOV setter also write it. All eleven hooks were restored and debugger detachment verified. See `mcm-chase-finalize-recovery.md` and validation report.
+
+Next: mode transitions, seventh-filter FOV, full camera update and renderer scheduling, then resolve the frame-38 steering discrepancy. Preview handling is unchanged.
+
 ## Camera bounds and terrain clearance recovered (2026-11-15)
 
 The retained camera validation now reaches `0x47d945`: original world bounds, an intact native terrain query, ground clearance, negative-pitch correction and scene-specific height caps. **8,192 course cases / 49,152 words match** across Canyon and Dunes, including corrective branches. A fresh 60-frame capture also matches all ground-query and clearance outputs with retained controller state. Live coverage is the ordinary world gate with no correction; special/corrective branches remain isolated-oracle coverage. All ten hooks were restored and debugger detachment verified. See `mcm-chase-clearance-validation.json` and recovery notes.

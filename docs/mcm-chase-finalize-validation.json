@@ -1,0 +1,35 @@
+{
+  "scope": "Immediate-mode camera final pose/roll and node fields; not full camera/render continuity or physics parity",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "native": {
+    "cases": 2048,
+    "words": 63488,
+    "differences": 0,
+    "range": "0x47d945..0x47d9f4; inactive 0x47dbde..0x47dc06"
+  },
+  "live": {
+    "frames": 60,
+    "mode": 0,
+    "finalizeWords": 1860,
+    "differences": 0,
+    "poseAndNodeStateRetained": true,
+    "refreshCounterBoundaryInputs": 60,
+    "refreshCounterContinuityProven": false,
+    "captureSha256": "f6242e0b0484f0d56eb4c23a30f80878eba3f6c6245fc44cbddd0cdd2b3bfaf6",
+    "restoredHooks": 11,
+    "debuggerDetached": true
+  },
+  "remaining": [
+    "Action-11 mode transitions and seventh-filter FOV smoothing",
+    "Full 0x479e40 update and counter continuity",
+    "View/render scheduling and frame-38 negative-steering mismatch",
+    "Whole-world physics and complete original scene port"
+  ],
+  "previewHandlingChanged": false,
+  "tests": {
+    "passed": 520,
+    "failed": 0,
+    "focusedPassed": 13,
+    "build": true
+  }
+}
