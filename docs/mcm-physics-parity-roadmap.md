@@ -1,5 +1,13 @@
 # Motocross Madness physics parity roadmap
 
+## AI race handicap (2026-11-15)
+
+Recovered `0x46d535..0x46d707`: signed lap/route progress differences with integer wrap, progress normalization using the original signed float-bits gate, route-distance comparisons against the other actor, clamping and the body `ba8` speed scale. All three outputs match 8,192 repeated intact original executions, with synthetic route tables, inactive/active race branches and finite inputs. Native evidence caught and corrected premature float rounding in the final scale expression; the original retains double precision between stores.
+
+The 256-call mode-0 capture verifies unit scale at the intermediate and final body states. Its inactive progress scratch is uninitialized by this block and remains an explicit captured entry boundary; this is not a computed active-race live trace. Landing and pitch replay now consume the recovered block's results. The live analyzer rejects active races because this capture lacks the other actor's route table. Tests reject modified progress and scale. Evidence: `ai-race-handicap.js`, maintained native oracle/case generator, `analyze-ai-race-handicap.mjs`, native fixture and three regression tests.
+
+Full parity still requires active-race live route/graph capture, controller integration with retained motion, actual transform and trick/nearby graphs, allocator accounting and natural whole-world replay. Keep AI frame dispatch guards. Preview handling is unchanged.
+
 ## AI startup and optional route data (2026-11-15)
 
 Recovered `0x46d240..0x46d3c2` startup and `0x46bdc0` optional `.aid` loading. Startup preserves empty-route braking, low-byte jump-counter increment and wraparound, target selection before index clamping, race flags, mode-specific steering coefficients, pitch and velocity heading. The loader preserves sequential actor selection despite the file's validated actor index, signed actor-limit clamping, and partial DWORD writes on truncated reads. The attempted-load flag is set even when loading fails. Both blocks match 4,096 cases each, repeated against the pinned original executable. Startup executes the real loader; only host file IO is substituted. Valid memory/table and finite floating-point inputs remain the oracle domain.

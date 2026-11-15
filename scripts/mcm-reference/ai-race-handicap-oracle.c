@@ -1,0 +1,10 @@
+#define main unused_helper_main
+#include "oracle.c"
+#undef main
+uint32_t race_stack[48],race_output[3];unsigned char other[0xcc8];
+static uint32_t routes[2][8][11],tables[2][8];
+void race_start(void);void race_end(void);
+__asm__(".text\n_race_start:\n push %ebx\n push %esi\n push %edi\n push %ebp\n sub $0xc0,%esp\n mov %esp,%edi\n mov $_race_stack,%esi\n mov $48,%ecx\n cld\n rep movsl\n mov $_bike,%edi\n mov $_other,%esi\n push $0x2006d535\n ret\n_race_end:\n mov 0x58(%esp),%eax\n mov %eax,_race_output\n mov 0x14(%esp),%eax\n mov %eax,_race_output+4\n mov 0xba8(%edi),%eax\n mov %eax,_race_output+8\n add $0xc0,%esp\n pop %ebp\n pop %edi\n pop %esi\n pop %ebx\n ret\n");
+int main(int argc,char**argv){if(argc!=4)return 2;map_image(argv[1]);if(memcmp((void*)0x2006d535,"\x8b\x84\x24\x80\x00\x00\x00",7)||memcmp((void*)0x2006d707,"\x8b\x84\x24\x90\x00\x00\x00",7))fail("guards");unsigned char*p=(void*)0x2006d707;p[0]=0xe9;*(uint32_t*)(p+1)=(uint32_t)(uintptr_t)race_end-0x2006d70c;
+FILE*in=fopen(argv[2],"rb"),*out=fopen(argv[3],"wb");if(!in||!out)fail("open");uint32_t w[30];size_t n;unsigned count=0;unsigned short cw=0x027f;
+while((n=fread(w,1,sizeof w,in))==sizeof w){memset(bike,0,sizeof bike);memset(other,0,sizeof other);memset(race_stack,0,sizeof race_stack);race_stack[32]=w[0];race_stack[22]=w[1];put32(0xbe4,w[2]);*(uint32_t*)(other+0xbe4)=w[3];put32(0xc10,w[4]);*(uint32_t*)(other+0xc10)=w[5];put32(0xb00,w[6]);const unsigned offsets[]={0xb90,0xb94,0xb98,0xb9c,0xba0,0xba4,0xc04};for(unsigned i=0;i<7;i++)put32(offsets[i],w[7+i]);if(w[4]>=8||w[5]>=8)fail("index");for(unsigned a=0;a<2;a++)for(unsigned i=0;i<8;i++){routes[a][i][8]=w[14+a*8+i];tables[a][i]=(uint32_t)(uintptr_t)routes[a][i];}put32(0xaf4,(uint32_t)(uintptr_t)tables[0]);*(void**)(other+0xaf4)=tables[1];__asm__ volatile("fninit; fldcw %0"::"m"(cw));race_start();if(fwrite(race_output,sizeof race_output,1,out)!=1)fail("write");count++;}if(n||ferror(in)||fclose(out))fail("finish");fprintf(stderr,"cases=%u\n",count);return 0;}
