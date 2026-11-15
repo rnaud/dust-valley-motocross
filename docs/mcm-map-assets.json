@@ -1,0 +1,266 @@
+[
+  {
+    "id": "canyon-canyon01",
+    "title": "Canyon Country 01",
+    "source": "teraform/canyon/canyon01.trn",
+    "sha256": "39a8e3278ed5dae9f8a4f20b8dc1e1327340e333bebbc0fd7b6d911d930d72c4",
+    "nodes": 257,
+    "banks": 257
+  },
+  {
+    "id": "canyon-canyon02",
+    "title": "Canyon Country 02",
+    "source": "teraform/canyon/canyon02.trn",
+    "sha256": "7c4ef2cbd56ca140833a7058bd38e1867a7a0fad47ddc1619393e9cbe7f90d59",
+    "nodes": 257,
+    "banks": 257
+  },
+  {
+    "id": "canyon-canyon03",
+    "title": "Canyon Country 03",
+    "source": "teraform/canyon/canyon03.trn",
+    "sha256": "59c11f3214ac1bdd7ade4a4373c04a5ad0cc91eef0a9d63297b9bc9800cc8c2c",
+    "nodes": 257,
+    "banks": 257
+  },
+  {
+    "id": "canyon-canyon04",
+    "title": "Canyon Country 04",
+    "source": "teraform/canyon/canyon04.trn",
+    "sha256": "736f9983008ac1f24c531a018eda93426651e1222498b14e2f9d5bcf3b734da2",
+    "nodes": 257,
+    "banks": 257
+  },
+  {
+    "id": "canyon-canyon05",
+    "title": "Canyon Country 05",
+    "source": "teraform/canyon/canyon05.trn",
+    "sha256": "14be988dba65ba76f5cc9c162148f1679599bb97e4e1c8587def2be4a31fa44f",
+    "nodes": 257,
+    "banks": 257
+  },
+  {
+    "id": "quarries-track13",
+    "title": "Widowmaker",
+    "source": "teraform/quarries/TRACK13.TRN",
+    "sha256": "d2e3587b66216f18f18000ba96238f4b3f774236c35e927fc24225225ba007ec",
+    "nodes": 12594,
+    "banks": 882
+  },
+  {
+    "id": "quarries-dunes",
+    "title": "Yuma Sand Dunes",
+    "source": "teraform/quarries/dunes.trn",
+    "sha256": "942b756572b407adf9223ecc1afb22556c5bc5636d3bd5e3ac51ef5419543d0b",
+    "nodes": 12594,
+    "banks": 882
+  },
+  {
+    "id": "quarries-quarry00",
+    "title": "Arizona Exploration",
+    "source": "teraform/quarries/quarry00.trn",
+    "sha256": "336947757905b43e18001ee2279719fffd52d9e8ed102b86f9b77a38a1edff56",
+    "nodes": 12594,
+    "banks": 882
+  },
+  {
+    "id": "quarries-quarry01",
+    "title": "T-rific",
+    "source": "teraform/quarries/quarry01.trn",
+    "sha256": "d8b5c721841fe604aa0415b6da78ec7cd2d33544a5bd44953502331c67d24c96",
+    "nodes": 12594,
+    "banks": 882
+  },
+  {
+    "id": "quarries-quarry02",
+    "title": "Rocky Road",
+    "source": "teraform/quarries/quarry02.trn",
+    "sha256": "922717171b9022696cac3ed60e380e93d0ea4cb69124a41877213f6976995d3e",
+    "nodes": 12594,
+    "banks": 882
+  },
+  {
+    "id": "quarries-quarry03",
+    "title": "Painted Desert",
+    "source": "teraform/quarries/quarry03.trn",
+    "sha256": "ddd8d04e1016ee9be5f95fa4e625f6596b0735f29e17b01e4a18ddbf122d0ec9",
+    "nodes": 12594,
+    "banks": 882
+  },
+  {
+    "id": "quarries-quarry19",
+    "title": "Bowling Greens",
+    "source": "teraform/quarries/quarry19.trn",
+    "sha256": "cc9da27509102e27c3fd5c86cc39089224cb254f66d242420693edcf529b4fb6",
+    "nodes": 12594,
+    "banks": 882
+  },
+  {
+    "id": "season-week01",
+    "title": "Week 01 - San Diego",
+    "source": "teraform/season/week01.trn",
+    "sha256": "2b58a1453ffa35f56c963cc9c21e45f12e714c506f12917dcbe840438bf61599",
+    "nodes": 257,
+    "banks": 257
+  },
+  {
+    "id": "season-week02",
+    "title": "Week 02 - Indianapolis",
+    "source": "teraform/season/week02.trn",
+    "sha256": "4601e9b87119e083786021762ea72b30736a142721ce850aa9159b11ef68655e",
+    "nodes": 257,
+    "banks": 257
+  },
+  {
+    "id": "season-week03",
+    "title": "Week 03 - Phoenix",
+    "source": "teraform/season/week03.trn",
+    "sha256": "1c8e5db4cab9df9c71cf5c2d70c44f420047c7fecd1e155acdd08efc4f4a92a7",
+    "nodes": 257,
+    "banks": 257
+  },
+  {
+    "id": "season-week04",
+    "title": "Week 04 - Minneapolis",
+    "source": "teraform/season/week04.trn",
+    "sha256": "5e428a29f2b7a861f305fbf152336f3a5d612a9943f4fe7b2c762bdacbdbd560",
+    "nodes": 257,
+    "banks": 257
+  },
+  {
+    "id": "season-week05",
+    "title": "Week 05 - Denver",
+    "source": "teraform/season/week05.trn",
+    "sha256": "8d09356b98ded541b9d202803d5b7e6692ef8030eb99eb5d3fc16a5f46d57f10",
+    "nodes": 257,
+    "banks": 257
+  },
+  {
+    "id": "season-week06",
+    "title": "Week 06 - Houston",
+    "source": "teraform/season/week06.trn",
+    "sha256": "efe264f48b1bcac97d07ec9777a971df8cdcdb501fd81dad2354c0ec72b1ff68",
+    "nodes": 257,
+    "banks": 257
+  },
+  {
+    "id": "season-week07",
+    "title": "Week 07 - Pittsburgh",
+    "source": "teraform/season/week07.trn",
+    "sha256": "aa6d5367fe6ba6a60318d6222eb9962b971d1daef69aaa7cc4175e3c5a6605d6",
+    "nodes": 257,
+    "banks": 257
+  },
+  {
+    "id": "season-week08",
+    "title": "Week 08 - Detroit",
+    "source": "teraform/season/week08.trn",
+    "sha256": "0d5154b6b2d716cd5d218821921f824949fd4d6f0c90a87eb683249b3f5a00ec",
+    "nodes": 257,
+    "banks": 257
+  },
+  {
+    "id": "season-week09",
+    "title": "Week 09 - Seattle",
+    "source": "teraform/season/week09.trn",
+    "sha256": "7413590b2500faed31f546483397da0131e52473be44d67825d54bca8185e831",
+    "nodes": 257,
+    "banks": 257
+  },
+  {
+    "id": "season-week10",
+    "title": "Week 10 - Boston",
+    "source": "teraform/season/week10.trn",
+    "sha256": "5e64b4e00d31e7586c8f351cbb9d54f03365fb4b5626da26d19377770827f0cb",
+    "nodes": 257,
+    "banks": 257
+  },
+  {
+    "id": "season-week11",
+    "title": "Week 11 - Atlanta",
+    "source": "teraform/season/week11.trn",
+    "sha256": "9d86f7b04961504250e9406fdb6a171f2f651e216567e70078592d596565c1c0",
+    "nodes": 257,
+    "banks": 257
+  },
+  {
+    "id": "season-week12",
+    "title": "Week 12 - Tampa Bay",
+    "source": "teraform/season/week12.trn",
+    "sha256": "a51231bef4755c3bb7615146475ac8787332ffc3488d45cbf2cff1cc76b707b9",
+    "nodes": 257,
+    "banks": 257
+  },
+  {
+    "id": "season-week13",
+    "title": "Week 13 - Charlotte",
+    "source": "teraform/season/week13.trn",
+    "sha256": "c9e3a0ec9469370c31b68462a67e47b261e015503add2ac6c09ad65a45e36f97",
+    "nodes": 257,
+    "banks": 257
+  },
+  {
+    "id": "season-week14",
+    "title": "Week 14 - Cleveland",
+    "source": "teraform/season/week14.trn",
+    "sha256": "ab1c1a4dd473d5cb42972f255dcddabede6002c448adfb9571105206d7ae0e10",
+    "nodes": 257,
+    "banks": 257
+  },
+  {
+    "id": "season-week15",
+    "title": "Week 15 - Dallas",
+    "source": "teraform/season/week15.trn",
+    "sha256": "f77065eba777e120bed54a168f35efd803a6c91505b301ebcca8f493b046e5d3",
+    "nodes": 257,
+    "banks": 257
+  },
+  {
+    "id": "waypoint-baja00",
+    "title": "BAJA00",
+    "source": "teraform/waypoint/BAJA00.TRN",
+    "sha256": "f59ac2fd172889ba4aa68e7cd70430bc20f91d3ab6283cf4b0b5fca8dcf9e704",
+    "nodes": 12594,
+    "banks": 882
+  },
+  {
+    "id": "waypoint-baja01",
+    "title": "BAJA01",
+    "source": "teraform/waypoint/BAJA01.TRN",
+    "sha256": "d2409a6c7fa263b0ba0703fb79c3915eb80ff2cbd568de522387ad58a6a7cedd",
+    "nodes": 12594,
+    "banks": 882
+  },
+  {
+    "id": "waypoint-baja02",
+    "title": "BAJA02",
+    "source": "teraform/waypoint/BAJA02.TRN",
+    "sha256": "b17fb0b6ff80ede3882cee471fdde2aecd82cae3b686a041c3f3d8e251f7cf75",
+    "nodes": 12594,
+    "banks": 882
+  },
+  {
+    "id": "waypoint-baja03",
+    "title": "BAJA03",
+    "source": "teraform/waypoint/BAJA03.TRN",
+    "sha256": "309828af54d24769935e86c2fd4c9f4e89ca95b9c6386f025e4914c959fd3c7a",
+    "nodes": 12594,
+    "banks": 882
+  },
+  {
+    "id": "waypoint-baja19",
+    "title": "BAJA19",
+    "source": "teraform/waypoint/BAJA19.TRN",
+    "sha256": "2921f45072f3659956b0bdbab54a8054560ba84b60e4570af1265b50ae6c6d3f",
+    "nodes": 12594,
+    "banks": 882
+  },
+  {
+    "id": "waypoint-dunebaja",
+    "title": "DUNEBAJA",
+    "source": "teraform/waypoint/DUNEBAJA.TRN",
+    "sha256": "0edc7d4fb68345e82b9bf9cd0da529c6e158e55198ff660a7cb7178866313ebc",
+    "nodes": 12594,
+    "banks": 882
+  }
+]

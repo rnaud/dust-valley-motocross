@@ -1,0 +1,274 @@
+{
+  "scope": "First playable original terrain and articulated model port; full scene/render/physics equivalence remains incomplete.",
+  "models": {
+    "bikeParts": 7,
+    "riderParts": 15,
+    "drawableSurfaces": 21,
+    "riderSkins": 12,
+    "bikeLiveries": 12,
+    "bundleSha256": "485c173cc10df5a621a3ec1b1b4a19973c50d9a663f915fbb64c6c7834d720e2",
+    "sources": {
+      "sbike/bike.slt": "7777e81ed1da7e732a95dbe6ab3955ffa9a00ba273a3e62c4750806a7db000f7",
+      "sbike/rider.slt": "159c8c7dd8b511290ec32c76e3a990abb1fb45d19cd976734ea0ffc946355224",
+      "sbike/blubkrid.cmp": "a835b96d93420d2792c16fc686d57198762053852050dd324fd6c38aabcee3bb",
+      "sbike/blubkrid.tex": "b91c36b7b433d93e4b9a8714d918e94014d057ac611203acfbfdbb767d985fd0",
+      "sbike/grnbkrid.cmp": "b76b54cd7f2e70ebc5a1ed67b273e5ad2439473d9b53fde150b79940ed73317a",
+      "sbike/grnbkrid.tex": "8fa875d3780ad9049ab27b8a9ee1327864da1beb349794168f59e42972ba6681",
+      "sbike/redbkrid.cmp": "aa16fb56a43efb4cf38a85aac7851304399eeedc35862a4c229bbe750b50942f",
+      "sbike/redbkrid.tex": "05eeaaea9368851dabe96cc54b58afa1e6441260768a5f8b12ec5373ce289dbc",
+      "sbike/ylwbkrid.cmp": "0233df3673e201852cef343937e5b43d96c64c52a3509495472ef6c4b2bac6f8",
+      "sbike/ylwbkrid.tex": "403a620d92e70087e8b14e3e80a35c09fbef8ffc2d6228432ac2bef60e866b30"
+    }
+  },
+  "terrains": {
+    "count": 33,
+    "catalogSha256": "15b4e12d2af2b12c8a3e45441572041511df10bc6f2cd074a3dff67a7cd08b78",
+    "startupFramesPerCourse": 30,
+    "results": [
+      {
+        "map": "canyon-canyon01",
+        "speed": 8.280490358693003,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "canyon-canyon02",
+        "speed": 8.381506288312156,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "canyon-canyon03",
+        "speed": 7.977550012181017,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "canyon-canyon04",
+        "speed": 8.300311381735106,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "canyon-canyon05",
+        "speed": 8.299758714703323,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "quarries-track13",
+        "speed": 8.302437414550782,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "quarries-dunes",
+        "speed": 8.275855871273517,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "quarries-quarry00",
+        "speed": 8.302437414550782,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "quarries-quarry01",
+        "speed": 8.302437414550782,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "quarries-quarry02",
+        "speed": 8.302437414550782,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "quarries-quarry03",
+        "speed": 8.302437414550782,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "quarries-quarry19",
+        "speed": 8.302437414550782,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "season-week01",
+        "speed": 8.300311381735106,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "season-week02",
+        "speed": 8.300867267809702,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "season-week03",
+        "speed": 8.300311381735106,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "season-week04",
+        "speed": 8.339650533600755,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "season-week05",
+        "speed": 8.305908640626388,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "season-week06",
+        "speed": 8.301652004575244,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "season-week07",
+        "speed": 8.300560698395099,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "season-week08",
+        "speed": 8.2934403124528,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "season-week09",
+        "speed": 8.336100371307419,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "season-week10",
+        "speed": 8.30069976116322,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "season-week11",
+        "speed": 8.317662730633366,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "season-week12",
+        "speed": 6.086947555501614,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "season-week13",
+        "speed": 8.301199688104676,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "season-week14",
+        "speed": 8.336098600937293,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "season-week15",
+        "speed": 8.336409003704397,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "waypoint-baja00",
+        "speed": 8.302437414550782,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "waypoint-baja01",
+        "speed": 8.302437414550782,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "waypoint-baja02",
+        "speed": 8.302437414550782,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "waypoint-baja03",
+        "speed": 8.302437414550782,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "waypoint-baja19",
+        "speed": 8.302437414550782,
+        "crashed": false,
+        "frame": 30
+      },
+      {
+        "map": "waypoint-dunebaja",
+        "speed": 8.302437414550782,
+        "crashed": false,
+        "frame": 30
+      }
+    ]
+  },
+  "browser": [
+    {
+      "touch": false,
+      "assets": {
+        "map": "canyon-canyon01",
+        "rider": "rider12",
+        "bike": "bike02",
+        "parts": 21
+      },
+      "frame": 6,
+      "errors": []
+    },
+    {
+      "touch": true,
+      "assets": {
+        "map": "season-week10",
+        "rider": "rider12",
+        "bike": "bike02",
+        "parts": 21
+      },
+      "frame": 5,
+      "errors": []
+    }
+  ],
+  "controls": {
+    "desktop": true,
+    "touch": true,
+    "throttleRelease": true,
+    "bothKeyboardSteeringDirections": true,
+    "neutralTouch": true,
+    "sand": true,
+    "classicDistinct": true,
+    "javascriptErrors": 0
+  },
+  "tests": {
+    "fullSuitePassed": 504,
+    "focusedAssetTestsAfterCourseTypeChange": 3,
+    "build": true
+  },
+  "limitations": [
+    "Original terrain textures, scene objects, skies and race layouts remain to port.",
+    "Central practice starts use recovered reset alignment, not original starting-grid checkpoints.",
+    "Course type and declared shadow target are connected; remaining world/AI setup is still supplied from the dunes checkpoint.",
+    "Rider welded-vertex seam processing remains unimplemented; flags preserved.",
+    "Short startup/control checks do not prove sustained riding stability or full physics parity."
+  ]
+}

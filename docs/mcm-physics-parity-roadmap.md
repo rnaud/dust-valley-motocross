@@ -1,5 +1,11 @@
 # Motocross Madness physics parity roadmap
 
+## Original terrain and rider preview milestone (2026-11-14)
+
+The preview now offers **33 original terrain files, 12 rider skins and 12 bike liveries**. The original 7-part bike and 15-part rider meshes bind to the recovered articulated component graph without mutating physics transforms or cache flags. Imported terrains preserve physical banks, hierarchy, normals and scale. Non-dunes selections use recovered reset alignment at a central practice spawn, the original course-type event value, and the scene's declared shadow-light target.
+
+All 33 terrains passed 30-frame acceleration startup checks; desktop/touch selector and control checks passed. The full suite passed 504 tests; focused asset tests passed after the course-type connection. This is not a complete scene or physics port: terrain texture placement, scenery, original race layouts/starts, welded rider vertices and whole-world native comparisons remain. See `mcm-assets-port-status.md` for the asset tally and `mcm-original-assets-validation.json` for this milestone's evidence. User-requested map/rider work remains active alongside physics parity.
+
 ## Normal chase input controls recovered (2026-11-14)
 
 Original `0x47b52a..0x47c30c` now has a recovered control step for normal chase modes, including inactive-camera handling, modes 3/6 reset flags, keyboard pitch/yaw/distance controls, joystick POV and modifier-gated buttons, native angle limits/wrapping and the camera-field/109 multiplier. Fixed-target mode 5 and free-camera controls explicitly remain unsupported.

@@ -5,6 +5,7 @@ import {composeMcmWorldMatrix} from './physics/mcm/world-transform.js';
 import {floatBits} from './physics/mcm/math.js';
 import {displayMcmHeight} from './mcm-display-terrain.js';
 import {deformableMcmTerrain} from './mcm-sand-terrain.js';
+import {resetMcmBikePose} from './physics/mcm/reset-pose.js';
 import {SandSurface} from './sand-physics.js';
 const sceneUrl=new URL('./assets/mcm-core-scene.bin',import.meta.url).href;
 const METRES=.3048;
@@ -28,6 +29,7 @@ export function createMcmCoreState(scene,{spawn={x:0,z:0,yaw:0},sand:trueSand=tr
  };
  const terrain={root:node(scene.terrain.root),heightScale:scene.terrain.heightScale,worldToGrid:scene.terrain.worldToGrid};
  const runtime=createCapturedFrameRuntime({...scene.input,terrain},scene.row,scene.child),c=runtime.loaded.context;
+ if(scene.mapId&&scene.mapId!=='quarries-dunes'){const center=(16**(terrain.root.level+1)/2)/terrain.worldToGrid;c.pose={position:[center,100,center],forward:[0,0,1],up:[0,1,0]};resetMcmBikePose(c);c.contactPhase.normalEventDecision.terrainMode=scene.terrainMode;runtime.loaded.environment.terrainMode=scene.terrainMode;c.frameEffects.occlusion=!!scene.shadowTarget;if(scene.shadowTarget)c.frameEffects.resolveTarget=()=>scene.shadowTarget.map(Math.fround);}
  const initial=[...c.bike.position],ground=queryMcmTerrainHeight({...terrain,point:initial})[1];
  const angle=(spawn.yaw??0)-Math.atan2(c.bike.forward[0],c.bike.forward[2]),rotation=new Quaternion().setFromAxisAngle(new Vector3(0,1,0),angle),inverse=rotation.clone().invert();
  const vector=v=>new Vector3(...v).applyQuaternion(rotation);
