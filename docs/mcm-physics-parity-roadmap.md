@@ -1,5 +1,14 @@
 # Motocross Madness physics parity roadmap
 
+## AI airborne state and flight-time calculation (2026-11-15)
+
+Recovered `0x46f0a4..0x46f41a`: airborne-entry latches and route pointer, initial trick flag, projected landing distance, capped vertical-velocity correction, route word9 clearing, flight-time estimate and conditional random draws. All fourteen output words (including both route flags, random state and draw count) match 4,096 repeated isolated original executions. Finite cases cover ground/air transitions, modes 0/1/2, route categories, handicap branches and velocity limits. The oracle substitutes only the CRT thread-pointer lookup at the random entry; original random arithmetic and state stores execute unchanged.
+
+The mode-0 live diagnostic checks eight body fields and flight time across 256 calls, predicting 123 jump-block draws within a shared 138-draw thread stream. Random state is initialized once; other consumers advance the same stream at captured call boundaries. This is **stage-local validation**, using observed body/stack inputs, not retained whole-controller parity. The later steering snapshot follows trick dispatch, which changes `b4c`; that field is checked in the isolated oracle but excluded from the later live boundary. No claim of full live jump-state parity is made. All seventeen capture hooks were independently restored and the debugger detached.
+
+Evidence: `ai-jump-state.js`, the original-code oracle, deterministic cases, `analyze-ai-jump-state.mjs`, and `tests/mcm-ai-jump-state.test.js` with `ai-jump-state-wine11.json.br`. Changed velocity, flight time, random state and missing observations fail. Next: recover automatic trick selection `0x49d6a0` and dispatch `0x46f41a..0x46f4c4`, then join retained state and computed lookahead inputs. Longitudinal controls, retained AI motion and natural whole-world replay remain open. Preview control is unchanged; full physics parity is not established.
+
+
 ## Final AI steering command retained through crash clears (2026-11-15)
 
 Recovered steering smoothing `0x46f4ea..0x46f69e`, including the signed-bit timestep gate, asymmetric native clamps, snap/decay paths, rounding boundaries and absolute-angle output. Both output words match 4,096 repeated original executions with varied finite angles, current commands and zero/negative/positive timesteps.
