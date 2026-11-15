@@ -14,5 +14,5 @@ test('scan rejects altered native outputs and intermediate inputs instead of see
  let r=rows();r.find(r=>r.phase==='scan-after').stack[11]^=1;assert.throws(()=>analyzeAiAvoidanceScan(r),/Computed scan output/);
  r=rows();r.find(r=>r.phase==='scan-before').stack[0x40/4]^=1;assert.throws(()=>analyzeAiAvoidanceScan(r),/Computed scan input/);
  r=rows();r.find(r=>r.phase==='scan-before').stack[0x8c/4]^=1;assert.throws(()=>analyzeAiAvoidanceScan(r),/Computed scan input/);
- r=rows();const sequence=r.find(r=>r.phase==='scan-before').sequence,entry=r.find(r=>r.phase==='before'&&r.sequence===sequence),b=Buffer.from(entry.hex,'hex');b.writeUInt32LE(1,0xbfc);entry.hex=b.toString('hex');assert.throws(()=>analyzeAiAvoidanceScan(r),/Unrecovered heading override/);
+ r=rows();const sequence=r.find(r=>r.phase==='scan-before').sequence,entry=r.find(r=>r.phase==='before'&&r.sequence===sequence),b=Buffer.from(entry.hex,'hex');b.writeUInt32LE(1,0xbfc);entry.hex=b.toString('hex');assert.throws(()=>analyzeAiAvoidanceScan(r),/Computed scan input/);
 });

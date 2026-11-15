@@ -1,5 +1,14 @@
 # Motocross Madness physics parity roadmap
 
+## Ground and airborne steering differences joined (2026-11-15)
+
+Recovered heading override `0x46dec6..0x46df48` and airborne steering difference `0x46e9f0..0x46eb14`. The override uses the retained target's segment heading, nearest-segment threshold and computed lateral error. The airborne path selects between target and velocity heading using route category, lateral velocity and the original wrapped-angle tests. Both intact regions match 8,192 repeated original executions (4,096 per branch, finite inputs).
+
+The live analyzer joins retained target selection, route guidance, heading override and either the complete avoidance scan or airborne branch. All 64 heading and steering-difference outputs match: 36 ground and 28 airborne calls. Velocity heading is derived from earlier bike velocity, not seeded from intermediate stack memory. Ground scans now compute preceding overrides rather than reject them. Changed observed headings, airborne outputs and missing observations are rejected. All eleven live hooks were independently verified restored with no debugger attached.
+
+Evidence: `ai-heading.js`, oracle/generator and `analyze-ai-steering-difference.mjs`, `tests/mcm-ai-heading.test.js`, and `ai-heading-wine11.json.br`. Live override enable is zero in this capture; isolated cases cover enabled and disabled behavior. Final steering/throttle outputs, subsequent route/jump lookahead, allocator effects, retained AI motion and whole-world replay remain unfinished. This does not change preview control or establish full physics parity.
+
+
 ## AI avoidance scan and steering difference (2026-11-15)
 
 Recovered the complete scan at `0x46e340..0x46e9c7`: alternating candidate offsets, wrapped heading cones, player and actor records, self exclusion, route-category obstacles, persistent avoidance flags, speed fallback and final steering difference. Preserved the original second-list behavior: identity pointers advance while the first avoidance record is reused. The isolated oracle executes the intact scan, including both actor loops and route traversal, before allocator cleanup.
