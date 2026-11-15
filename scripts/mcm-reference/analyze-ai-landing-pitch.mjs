@@ -1,3 +1,4 @@
+import {replayAiEntry} from './analyze-ai-entry.mjs';
 import {analyzeAiLookahead} from './analyze-ai-lookahead.mjs';
 import {selectMcmAiRouteSegment} from '../../src/physics/mcm/ai-route-segment.js';
 import {computeMcmAiLandingPitch} from '../../src/physics/mcm/ai-landing-pitch.js';
@@ -9,7 +10,7 @@ import assert from 'node:assert/strict';import {computeMcmAiJumpState,AI_JUMP_OF
 // lookahead inputs. Per-call pose and race/handicap configuration remain boundaries.
 // The live difficulty-zero scene excludes nearby interaction and full event graphs.
 export function replayAiLandingPitch(rows,options){
-const checks=[];
+const checks=[],startup=replayAiEntry(rows);
 const look=analyzeAiLookahead(rows,options),entries=new Map(rows.filter(r=>r.phase==='before').map(r=>[r.sequence,r])),route=rows.find(r=>r.phase==='route'),table=route.nodes.map(n=>n.address),routeNodes=new Map(route.nodes.map(n=>[n.address,{x:float(n.words[0]),y:float(n.words[1]),z:float(n.words[2]),kind:n.words[4],speed:float(n.words[3]),next:n.words[10]}]));
 let landingInput,landingQueries=0,exits=0;
 const rng=createMcmRandom(rows.find(r=>r.phase==='random').state);const nodes=new Map(rows.find(r=>r.phase==='route').nodes.map(n=>[n.address,n.words[9]]));let trickResult,expectedDelay,expectedAnimation,expectedControl;let selections=0,rejected=0;let pending=[],out,ids,calls=0,draws=0;const offsets=[0x514,0xb44,0xb64,0xb68,0xb40,0xb18,0xb20,0xb4c,0xb38];
@@ -24,7 +25,7 @@ for(const r of rows){
  for(const o of [...AI_JUMP_OFFSETS.filter(o=>![0xb80,0xb84,0xb88].includes(o)),0x6c8,0x4c0,0x4c8,0x81c,0x614,0x814,0x710])assert.equal(b.readUInt32LE(o),observed.readUInt32LE(o),`Jump input boundary ${o.toString(16)}`);
  if(out)for(let i=1;i<9;i++)assert.equal(out[i],b.readUInt32LE(offsets[i]),'Retained jump stage');
  ids=[0,out?out[4]:b.readUInt32LE(0xb40),segment.address];
- w[1]=0;w[2]=Number(segment.class3456);w[3]=r.stack[32];w[4]=r.stack[22];w[5]=r.stack[13];w[6]=2;
+ w[1]=0;w[2]=Number(segment.class3456);w[3]=Number(startup.checks.find(x=>x.sequence===r.sequence).stage.raceActive);w[4]=r.stack[22];w[5]=r.stack[13];w[6]=2;
  AI_JUMP_OFFSETS.forEach((o,i)=>w[7+i]=b.readUInt32LE(o));
  if(out)for(let i=1;i<9;i++)w[7+AI_JUMP_OFFSETS.indexOf(offsets[i])]=out[i];
  const point=look.checks.find(x=>x.sequence===r.sequence).words;for(let i=0;i<3;i++)w[22+i]=point[i];

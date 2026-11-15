@@ -1,5 +1,13 @@
 # Motocross Madness physics parity roadmap
 
+## AI startup and optional route data (2026-11-15)
+
+Recovered `0x46d240..0x46d3c2` startup and `0x46bdc0` optional `.aid` loading. Startup preserves empty-route braking, low-byte jump-counter increment and wraparound, target selection before index clamping, race flags, mode-specific steering coefficients, pitch and velocity heading. The loader preserves sequential actor selection despite the file's validated actor index, signed actor-limit clamping, and partial DWORD writes on truncated reads. The attempted-load flag is set even when loading fails. Both blocks match 4,096 cases each, repeated against the pinned original executable. Startup executes the real loader; only host file IO is substituted. Valid memory/table and finite floating-point inputs remain the oracle domain.
+
+The established-world capture matches eight computed startup values and retains the jump counter across 256 calls, including one increment. Lookahead consumes computed mode coefficients; landing/trick replay consumes the computed race flag. Changed stage values or counter reseeding fail. The live route-data loaded flag is an explicit initial boundary, not observed evidence of first-load behavior; isolated executions cover that behavior. Evidence: `ai-entry.js`, `ai-route-data.js`, their maintained oracle/case generators, `analyze-ai-entry.mjs`, `tests/mcm-ai-entry.test.js`, and `ai-entry-wine11.json.br`.
+
+Still open: retained whole-controller integration, handicap/race producers, allocator accounting, actual live transform and trick/nearby graphs, external event scheduling and natural whole-world replay. Per-call pose inputs remain captured. Keep AI dispatch guards; preview handling is unchanged. Full physics parity is not established.
+
 ## AI throttle, brake and direct motion outputs (2026-11-15)
 
 Recovered `0x470174..0x4703c2` throttle/brake decisions, lateral-speed and route-boundary limits, turn-rate adjustment and the mode-1 pitch override. Recovered `0x4703c2..0x470553` direct velocity/axis rotation, original `0x4b7000` normalization and graph invalidation, low-speed forward boost, speed recomputation, output-history fields and packed jump-flag clearing. The motion helper accepts a caller-owned transform graph. Five throttle outputs match 8,192 repeated original cases; all 49 motion/body/root-matrix/cache outputs match 4,096 repeated cases. The original orientation callee is intact, with synthetic root/child/sibling graphs and varied cache flags. Coverage is finite and does not establish every exceptional x87 value.
