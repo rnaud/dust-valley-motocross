@@ -101,7 +101,7 @@ export function applyTerrainTexture(material,textures){
     shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nsoilPosition = (modelMatrix * vec4(position, 1.0)).xyz;');
     shader.fragmentShader='uniform sampler2D soilDetail;\nuniform vec4 sandBounds;\nvarying vec3 soilPosition;\n'+shader.fragmentShader;
     shader.fragmentShader=shader.fragmentShader.replace('#include <map_fragment>',`#include <map_fragment>
-      if (sandBounds.y > sandBounds.x && soilPosition.x > sandBounds.x && soilPosition.x < sandBounds.y && soilPosition.z > sandBounds.z && soilPosition.z < sandBounds.w) discard;
+      if (sandBounds.y > sandBounds.x && soilPosition.x > sandBounds.x + 0.125 && soilPosition.x < sandBounds.y - 0.125 && soilPosition.z > sandBounds.z + 0.125 && soilPosition.z < sandBounds.w - 0.125) discard;
       vec3 grain = texture2D(soilDetail, soilPosition.xz * .22).rgb;
       vec3 broadGrain = texture2D(soilDetail, soilPosition.xz * .043).rgb;
       diffuseColor.rgb *= mix(vec3(1.0), grain * 1.65, .65) * mix(vec3(1.0), broadGrain * 1.5, .2);`);

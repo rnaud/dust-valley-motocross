@@ -32,15 +32,16 @@ test('deformed collision vertices also update the rendered surface and disturbed
  assert.ok(geo.attributes.position.getY(index)<-.03);assert.ok(geo.attributes.color.getX(index)<.8);
 });
 
-test('outer skirts bridge higher and lower coarse terrain without moving collision vertices',()=>{
+test('distant patch edges meet coarse terrain without changing collision samples',()=>{
  const t=new THREE.Texture(),textures={macro:t,freeMacro:t,detail:t,soilRelief:{normal:t,roughness:t}};
  const surface=new SandSurface(new THREE.Scene(),textures,{userData:{sandBounds:{value:new THREE.Vector4()}}},{coarseHeight:x=>x===0?6:-5});
  const sand={displacementAt:()=>0,compaction:()=>0,height:()=>0,bounds:{minX:0,maxX:.25,minZ:0,maxZ:.25},tiles:new Map([['tile',{x:0,z:.25,revision:1,data:[[0,0],[0,0]]}]])};
  surface.update(sand);const geometry=surface.meshes.get('tile').geometry,p=geometry.attributes.position;
- for(let i=0;i<4;i++)assert.equal(p.getY(i),0);
- geometry.userData.skirtSources.forEach((source,k)=>{const top=4+k*2,coarse=p.getX(source)===0?6:-5;assert.ok(p.getY(top)>=Math.max(0,coarse));assert.ok(p.getY(top+1)<=Math.min(0,coarse));});
+ for(let i=0;i<4;i++)assert.equal(p.getY(i),p.getX(i)===0?6:-5);
+ assert.deepEqual(sand.tiles.get('tile').data,[[0,0],[0,0]]);
+ geometry.userData.skirtSources.forEach((source,k)=>{const top=4+k*2,coarse=p.getX(source)===0?6:-5;assert.equal(p.getY(top),coarse);assert.ok(Math.abs(p.getY(top+1)-(coarse-.05))<1e-6);});
  assert.equal(surface.material.side,THREE.DoubleSide);
  // When the patch grows, old outer edges become interior without a tile revision.
- sand.bounds={minX:-1,maxX:1,minZ:-1,maxZ:1};surface.update(sand);
+ sand.bounds={minX:-10,maxX:10,minZ:-10,maxZ:10};surface.update(sand);
  geometry.userData.skirtSources.forEach((source,k)=>assert.equal(p.getY(4+k*2),0));
 });

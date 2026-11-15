@@ -55,3 +55,7 @@ Original bike/rider meshes now interpolate between the same fixed-step snapshots
 Reproduced sky-visible white gaps at the detailed-sand/coarse-terrain boundary in the live Dunes preview. Render skirts now span the actual heights on both sides, render from either direction, refresh when patch bounds move, and collapse on interior tile edges. Stitching normals continue the terrain shading. Top-surface collision samples and physics are unchanged. Some coarse/fine geometry transitions remain visible; this is not full original-scene rendering parity.
 
 Softened the extra wheel-contact shadows to avoid solid discs over the directional shadow, and blended the visible sky horizon toward the active fog color. Checked four Dunes viewing directions and desktop/touch acceleration, release, steering/reset, sand and Classic-mode browser flows. All 644 tests and the production build pass.
+
+### Follow-up: distant ribbons and horizon color
+
+The outer 2.5 metres of the detailed render patch now blend to the coarse triangles, with a narrow overlap and depth bias to close rasterization cracks. This removes the reproduced dark ribbon and dotted white boundary in the Dunes rear-facing view. Interior render heights and all collision samples remain unchanged. The same boundary treatment applies to Classic sand. Sky horizon fog now uses output-encoded color, matching Three's fog blending. Checked four Dunes camera directions in Chrome, four focused terrain tests, and production build. This remains presentation work, not additional physics parity evidence.

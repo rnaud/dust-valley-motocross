@@ -32,7 +32,9 @@ export function createMcmTerrainMaterial(resources,state,{bounds,dense=false}={}
  const uniforms={mcmAtlas:{value:resources.atlas},mcmLeaves:{value:resources.lookup},mcmAtlasLayout:{value:new THREE.Vector4(resources.columns,resources.rows,resources.size,resources.side)},
   mcmNativeX:{value:new THREE.Vector3((b.x-a.x)*scale,(c.x-a.x)*scale,a.x*scale)},mcmNativeZ:{value:new THREE.Vector3((b.z-a.z)*scale,(c.z-a.z)*scale,a.z*scale)},
   mcmQuarter:{value:physics.scene.terrainMode===1?0:1},mcmBounds:bounds??{value:new THREE.Vector4()},mcmDense:{value:dense?1:0}};
- const material=new THREE.MeshStandardMaterial({roughness:1,vertexColors:dense,side:dense?THREE.DoubleSide:THREE.FrontSide});
+ // A narrow overlap covers sample-coverage cracks at the coarse discard edge.
+ // Depth bias keeps the dense surface stable where both meshes coincide.
+ const material=new THREE.MeshStandardMaterial({roughness:1,vertexColors:dense,polygonOffset:dense,polygonOffsetFactor:-1,polygonOffsetUnits:-1,side:dense?THREE.DoubleSide:THREE.FrontSide});
  material.onBeforeCompile=shader=>{
   Object.assign(shader.uniforms,uniforms);
   shader.vertexShader='varying vec2 mcmWorld;\n'+shader.vertexShader;
@@ -44,7 +46,7 @@ export function createMcmTerrainMaterial(resources,state,{bounds,dense=false}={}
    uniform float mcmQuarter,mcmDense;
   `+shader.fragmentShader;
   shader.fragmentShader=shader.fragmentShader.replace('#include <map_fragment>',`
-   if(mcmDense<0.5 && mcmBounds.y>mcmBounds.x && mcmWorld.x>mcmBounds.x && mcmWorld.x<mcmBounds.y && mcmWorld.y>mcmBounds.z && mcmWorld.y<mcmBounds.w)discard;
+   if(mcmDense<0.5 && mcmBounds.y>mcmBounds.x && mcmWorld.x>mcmBounds.x+0.125 && mcmWorld.x<mcmBounds.y-0.125 && mcmWorld.y>mcmBounds.z+0.125 && mcmWorld.y<mcmBounds.w-0.125)discard;
    vec2 grid=vec2(dot(mcmNativeX,vec3(mcmWorld,1.0)),dot(mcmNativeZ,vec3(mcmWorld,1.0)));
    float extent=mcmAtlasLayout.w*16.0;
    grid=clamp(grid,vec2(0.0),vec2(extent-0.0001));
@@ -66,6 +68,6 @@ export function createMcmTerrainMaterial(resources,state,{bounds,dense=false}={}
    diffuseColor.rgb*=info.w>0.5 && info.x>=0.0?originalColor:vec3(0.35);
   `);
  };
- material.customProgramCacheKey=()=>`mcm-original-terrain-${dense?'dense':'coarse'}-v1`;
+ material.customProgramCacheKey=()=>`mcm-original-terrain-${dense?'dense':'coarse'}-v2`;
  return material;
 }

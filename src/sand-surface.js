@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import {applyTerrainTexture} from './textures.js';
 
-// Render the exact CPU collision samples; no visual-only displacement.
+// Render CPU collision samples, with a distant edge transition to the coarse mesh.
 export class SandSurface {
  constructor(scene,textures,coarseMaterial,{coarseHeight}={}){
   this.coarseHeight=coarseHeight;
   this.scene=scene;this.meshes=new Map();this.coarseMaterial=coarseMaterial;
-  this.material=new THREE.MeshStandardMaterial({roughness:1,side:THREE.DoubleSide});
+  this.material=new THREE.MeshStandardMaterial({roughness:1,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1});
   applyTerrainTexture(this.material,textures);this.material.map=textures.freeMacro;this.material.vertexColors=true;
  }
  update(sand){
@@ -39,7 +39,14 @@ export class SandSurface {
     mesh=new THREE.Mesh(geo,this.material);mesh.receiveShadow=true;mesh.userData.revision=-1;this.scene.add(mesh);this.meshes.set(key,mesh);
    }
    if(mesh.userData.revision!==tile.revision||boundsChanged){
-    const p=mesh.geometry.attributes.position;for(let j=0;j<n;j++)for(let i=0;i<n;i++)p.setY(j*n+i,tile.data[i][j]);
+    // Match the distant patch boundary to the actual coarse triangles. A
+    // vertical skirt alone closes holes but remains visible as a lit ribbon.
+    const visualHeight=(x,z,height)=>{
+     const edge=Math.min(x-b.minX,b.maxX-x,z-b.minZ,b.maxZ-z);
+     const t=Math.max(0,Math.min(1,(edge-.25)/2.25)),blend=t*t*(3-2*t);
+     return this.coarseHeight&&blend<1?this.coarseHeight(x,z)*(1-blend)+height*blend:height;
+    };
+    const p=mesh.geometry.attributes.position;for(let j=0;j<n;j++)for(let i=0;i<n;i++){const v=j*n+i;p.setY(v,visualHeight(p.getX(v),p.getZ(v),tile.data[i][j]));}
     mesh.geometry.userData.skirtSources.forEach((source,k)=>{
      const v=n*n+k*2,x=p.getX(source),z=p.getZ(source),y=p.getY(source);
      const boundary=x===b.minX||x===b.maxX||z===b.minZ||z===b.maxZ;
@@ -59,7 +66,7 @@ export class SandSurface {
     colors.needsUpdate=true;p.needsUpdate=true;mesh.geometry.computeVertexNormals();
     // Shared edge gradients avoid lighting seams between independently rebuilt tiles.
     const normals=mesh.geometry.attributes.normal;
-    for(const source of mesh.geometry.userData.skirtSources){const x=p.getX(source),z=p.getZ(source),dx=sand.height(x-.25,z)-sand.height(x+.25,z),dz=sand.height(x,z-.25)-sand.height(x,z+.25),length=Math.hypot(dx,.5,dz);normals.setXYZ(source,dx/length,.5/length,dz/length);}
+    for(const source of mesh.geometry.userData.skirtSources){const x=p.getX(source),z=p.getZ(source),dx=visualHeight(x-.25,z,sand.height(x-.25,z))-visualHeight(x+.25,z,sand.height(x+.25,z)),dz=visualHeight(x,z-.25,sand.height(x,z-.25))-visualHeight(x,z+.25,sand.height(x,z+.25)),length=Math.hypot(dx,.5,dz);normals.setXYZ(source,dx/length,.5/length,dz/length);}
     // Stitching faces should continue the terrain lighting, not create bright
     // vertical ribbons. Interior faces collapse to avoid overlapping tile walls.
     mesh.geometry.userData.skirtSources.forEach((source,k)=>{for(let side=0;side<2;side++)normals.setXYZ(n*n+k*2+side,normals.getX(source),normals.getY(source),normals.getZ(source));});
