@@ -54,12 +54,33 @@ unsigned sampler index, stack-fill word. Each output is 2,120 bytes: caller
 ESP, formatted length, 64 text bytes, then 512 stack DWORDs from caller minus
 `800` through caller minus four.
 
-## Remaining live connection
+## Live connection and ordered world writes
 
-The 519-site live trace isolates zero to `ec5e0`, and that routine calls this
-formatter with `%s_sampler%u`. The follow-up 270-site trace observes the nested
-formatter and UCRT boundaries. It must establish the actual call path before
-this model can explain a live overwrite, and retained shader eligibility and
-world ordering must be recovered before it can replace an external boundary.
-The model is not wired into continuous world replay or browser handling yet.
-Older whole-world and negative-steering failures remain unresolved.
+A completed 270-site trace captures one sampler-binding invocation formatting
+eight names. The checker derives each formatter caller stack from the binding
+entry, verifies wrapper/common-formatter/parser stacks, and checks all 24
+output callbacks. The two substitutions per name produce 16 saved-EBX writes
+at the predicted physics input address; all values match zero. The literal
+between substitutions uses a different callback stack. All 270 hooks were
+restored and debugger detachment independently verified.
+
+The same trace first changes the matrix word to the memcpy return address
+inside callback 733c0, then changes it to zero during sampler formatting.
+The census retains both transitions; the sampler model covers the latter.
+
+The ordered world analyzer now commits computed sampler saves after completing
+prior state-application writes. Without these saves, interval 23 predicts
+1064518239 while the original enters with zero. With them, all 41 next-bike
+checks pass. The retained replay matches 42 bike and 41 rider updates with
+zero modeled physics differences, 41 computed caller words and zero observed
+scratch substitutions. The scene check retains 76 nodes and verifies 3,040
+node comparisons and 2,640 callback boundaries.
+
+The live formatter checker rejects changed stack addresses, saved values and
+missing entries. Its invocation boundaries and sampler counts are still
+observed, not produced by a complete shader-cache simulation. The separately
+recovered sampler-binding gate validates its own ordering against native
+execution, but its mapping producer and upstream eligibility remain open.
+The older negative captures lack these detailed boundaries and continue to
+fail strictly. The original frame-38 steering failure is not closed by this
+42-frame validation. Preview handling remains unchanged.

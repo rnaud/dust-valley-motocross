@@ -27,3 +27,29 @@ test('sampler formatter save and text match 480 intact native executions',()=>{
  // Original program-selection body 22f4cc -> ec5e0 body/caller 22f478.
  assert.deepEqual(mcmSamplerFormatStackStore({callerEsp:0x22f478}),{address:0x22f038,value:0});
 });
+
+import {analyzeSamplerFormatter} from '../scripts/mcm-reference/analyze-sampler-formatter.mjs';
+import {analyzeIndexedDrawWindows} from '../scripts/mcm-reference/analyze-indexed-draw-windows.mjs';
+const liveFixture=()=>JSON.parse(brotliDecompressSync(fs.readFileSync(new URL('./fixtures/mcm/shader-format-windows-wine11.json.br',import.meta.url))));
+test('live sampler stack chain predicts all 16 overlapping register saves',()=>{
+ const f=liveFixture(),r=analyzeSamplerFormatter(f.render),draws=analyzeIndexedDrawWindows(f.render);
+ assert.deepEqual({...r,stores:undefined},{bindings:1,formats:8,callbacks:24,overlappingSaves:16,stores:undefined});
+ assert.deepEqual(r.stores,Array.from({length:16},()=>({frame:23,address:0x22f038,value:0})));
+ assert.equal(draws.completeDraws,8238);assert.equal(draws.pendingDraws,0);
+ assert.deepEqual(draws.changes,[
+  {frame:23,before:'shader-ucrt-733c0',after:'shader-ucrt-733ee',esp:0x22f03c,from:1064518239,to:0x7bb733ee},
+  {frame:23,before:'shader-ucrt-733c0',after:'shader-ucrt-733ee',esp:0x22f02c,from:0x7bb733ee,to:0},
+ ]);
+ assert.match(f.provenance.cleanup,/debugger=0 clean=1/);assert.equal((f.provenance.cleanup.match(/restored=1/g)||[]).length,270);assert.match(f.provenance.run,/captured=84 status=1/);
+});
+test('live formatter rejects altered stores, stack positions and missing entries',()=>{
+ let f=liveFixture(),start=f.render.findIndex(r=>r.phase==='shader-ec5e0');
+ f.render.find((r,i)=>i>start&&r.phase==='shader-ucrt-733ee').value=1;
+ assert.throws(()=>analyzeSamplerFormatter(f.render),/Sampler formatter register save/);
+ f=liveFixture();start=f.render.findIndex(r=>r.phase==='shader-ec5e0');
+ f.render.find((r,i)=>i>start&&r.phase==='shader-138260').esp+=4;
+ assert.throws(()=>analyzeSamplerFormatter(f.render));
+ f=liveFixture();start=f.render.findIndex(r=>r.phase==='shader-ec5e0');
+ f.render.splice(f.render.findIndex((r,i)=>i>start&&r.phase==='shader-138260'),1);
+ assert.throws(()=>analyzeSamplerFormatter(f.render),/Missing formatter entry/);
+});

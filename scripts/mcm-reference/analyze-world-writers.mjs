@@ -1,3 +1,4 @@
+import {analyzeSamplerFormatter,samplerFormatterPhases} from './analyze-sampler-formatter.mjs';
 import {analyzeUploadCopy} from './analyze-upload-copy.mjs';
 import assert from 'node:assert/strict';
 import {deriveActorApplyStacks} from './derive-actor-apply-stacks.mjs';
@@ -15,7 +16,7 @@ const float=x=>new Float32Array(Uint32Array.of(x).buffer)[0];
 const bits=x=>new Uint32Array(Float32Array.of(x).buffer)[0];
 const floats=x=>new Float32Array(Uint32Array.from(x).buffer);
 export const bindingPhases=new Set(['state-1bd500','state-prepared','binding-gate-input','binding-producer-input','binding-input','binding-call-store','binding-call-return']);
-export const worldWriterPhases=new Set([...bindingPhases,'state-declaration','upload-config','wrapper','wrapper-exit','wrapper-cull','store-before','store-after','hud-clock-input','hud-line-clear','bike-function-entry','upload-input','upload-resource-input','resource-input','resource-stage','command-producer','command-bytes','handler-1b6460','heap-store-value','upload-command-allocation','upload-command-bytes','resource-upload-callback','upload-copy-save']);
+export const worldWriterPhases=new Set([...samplerFormatterPhases,...bindingPhases,'state-declaration','upload-config','wrapper','wrapper-exit','wrapper-cull','store-before','store-after','hud-clock-input','hud-line-clear','bike-function-entry','upload-input','upload-resource-input','resource-input','resource-stage','command-producer','command-bytes','handler-1b6460','heap-store-value','upload-command-allocation','upload-command-bytes','resource-upload-callback','upload-copy-save']);
 
 // Predict writes from ordered invocation/stage inputs. Store observations never
 // become state. Invocation order, wrapper/non-actor stack depth, prepared graphics state, camera,
@@ -24,6 +25,8 @@ export function analyzeWorldWriters(render, physicsRows, {player, scratch, modul
   assert.equal(scratch,parseInt(physicsRows[0].stackAddress,16)+0x54);
   const actorStacks=deriveActorApplyStacks(render,{actorDrawSchedules});render=actorStacks.rows;
   const copies=analyzeUploadCopy(render,moduleBase);
+  const samplerStores=new Map();
+  const samplerFormats=analyzeSamplerFormatter(render,{onStore:(index,store)=>samplerStores.set(index,store)});
   const bindings=analyzeBindingGates(render.filter(r=>bindingPhases.has(r.phase)),moduleBase);
   const wrappers=new Map(),checks=[],counts={hud:0,sse:0,binding:0,heap:0},resources=[];
   let app=null,upload=null,pendingSse=null,line=null,clock=null,clockPending=false,expectedLines=0;
@@ -68,6 +71,7 @@ export function analyzeWorldWriters(render, physicsRows, {player, scratch, modul
   };
   for(const [index,r] of render.entries()){
     assert.ok(worldWriterPhases.has(r.phase),'Unknown world writer event');
+    if(samplerStores.has(index)){finishApply();commit('sampler',r.frame,samplerStores.get(index));}
     if(r.phase==='wrapper')wrappers.set(`${r.frame}/${r.actor}`,r);
     if(r.phase==='state-1bd500'){finishApply();app={entry:r,actual:[],uploads:[],copies:[]};}
     if(copies.stores.has(index)){assert.ok(app);const store=copies.stores.get(index);app.copies.push(store);if(store.address===scratch)app.actual.push({kind:'uploadCopy',address:r.address,value:r.value});}
@@ -126,5 +130,5 @@ export function analyzeWorldWriters(render, physicsRows, {player, scratch, modul
   assert.equal(checks.length,physicsRows.length/2-1,'Missing next-bike checks');
   const uploads=analyzeRenderResourceUploads(resources,heapHandle);
   return {scope:'Actor application stacks derived from wrapper entries; other invocations and stage inputs; predicted write values, no scratch injection. Draw scheduling and continuous graphics state are not recovered.',
-    applications,uploadCopyCalls:copies.calls,sceneScheduledWrappers:actorStacks.scheduledWrappers,derivedActorApplications:actorStacks.applications,derivedChildWrappers:actorStacks.childWrappers,observedRootWrappers:actorStacks.rootWrappers,observedNonActorApplications:actorStacks.observedNonActorApplications,bindings,uploads,clockChecks,refreshes,lineCalls,counts,checks};
+    applications,samplerFormatCalls:samplerFormats.formats,samplerSaveCalls:samplerFormats.stores.length,uploadCopyCalls:copies.calls,sceneScheduledWrappers:actorStacks.scheduledWrappers,derivedActorApplications:actorStacks.applications,derivedChildWrappers:actorStacks.childWrappers,observedRootWrappers:actorStacks.rootWrappers,observedNonActorApplications:actorStacks.observedNonActorApplications,bindings,uploads,clockChecks,refreshes,lineCalls,counts,checks};
 }

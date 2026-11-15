@@ -1,5 +1,9 @@
 # Motocross Madness physics parity roadmap
 
+## Live sampler saves joined to world replay — 2026-11-15
+
+The 270-site capture verifies eight sampler-name formats, 24 output callbacks and 16 computed zero saves. Joining them to ordered world writes closes this capture's interval-23 failure: 41 next-bike checks pass, and retained physics matches 42 bike / 41 rider updates with zero modeled physics differences and zero observed scratch substitution. A separate intact sampler-binding oracle matches 4,096 cases, including read timing and format-before-location-query ordering. See `mcm-shader-sampler-format-recovery.md` and `mcm-shader-sampler-bindings-recovery.md`. Shader-cache scheduling, mapping production and the older frame-38 steering failure remain open; preview handling is unchanged.
+
 ## Sampler formatter stack save recovered in isolation — 2026-11-15
 
 The pinned sampler-name formatter now has a computed register-save address/value model matching 480 intact native cases across four stack alignments, three prefixes and unsigned indices through ffffffff; repeat output is byte-identical. Its predicted save lands on the original physics input slot at the observed alignment. Live path confirmation, shader eligibility and continuous writer ordering remain outstanding. See `mcm-shader-sampler-format-recovery.md`. No preview handling change or full parity claim.
