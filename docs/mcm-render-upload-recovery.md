@@ -54,7 +54,7 @@ Use the capture and cleanup commands in mcm-render-heap-recovery.md. The
 additional metadata observes state-input, state-prepared, state-declaration
 and upload-input without adding breakpoint sites.
 
-Still required: live viewport-payload validation, the remaining upload gates,
+Still required: the remaining upload gates,
 temporary-buffer lifetime/free conditions, and shared-world particle
 visibility/order. The transform-upload model is isolated; preview handling
 does not invoke it yet. A transform upload alone does not prove a free or
@@ -88,16 +88,39 @@ MXCSR is 0x1f80. The fixture preserves raw inputs and outputs:
 
 All 225,536 words match, and fresh native reruns reproduced both saved output
 files byte for byte. Signaling NaNs and alternate MXCSR modes are outside this
-coverage. This is isolated arithmetic validation: live captures currently
-record upload addresses, not payload bytes. It does not yet close the shared
-stack writer schedule or change preview handling.
+coverage. The subsequent live validation below joins this arithmetic to actual
+uploads. It does not yet close the shared stack writer schedule or change
+preview handling.
 
 A subsequent live-payload capture attempt on PID 288 stopped after one record,
 before renderer observations. The retained launcher reported game exit
 0x80000004. The pre-capture check verified all 167 instructions and no debugger;
 the post-capture check could not read the exited process and therefore does not
 prove restoration. No payload observations from that attempt are used here.
-Recovering the live capture is still required.
+The fresh-process capture below recovered this validation path.
+
+### Fresh live payload validation
+
+After restarting the original through its menus, a fresh five-frame capture
+completed all ten requested records. The capture adds input/payload reads at
+existing hooks without adding breakpoint sites. It records state +0x2300,
+the command stream's device +0x28, and all 16 upload words. The command stream
+comes from apply argument 1 +0x12d0; its device pointer is at +8.
+
+All 12 pre-transformed uploads match all 192 computed words. The regression
+also checks matching input/frame ownership, command-stream identity, byte count,
+and the derived stack payload address. Inputs are captured at apply entry;
+observed output words are comparison targets only. This is one live viewport
+configuration, supplemented by the broader isolated cases above.
+
+The independent verifier confirmed all 167 instructions restored and
+`debugger=0 clean=1`. The fixture is
+`tests/fixtures/mcm/render-viewport-live-wine11.json.br`; the capture source
+remains `scripts/mcm-reference/capture-render-heap.c`. The earlier failed
+attempt is retained as a separate failure, not included in this evidence.
+The retained replay of these five bike/four rider updates has zero modeled
+physics differences and 70,318 visual differences (70,296 particle words).
+It does not reach or resolve the older frame-38 steering failure.
 
 To reproduce, decompress `tests/fixtures/mcm/render-viewport-wine11.json.br`,
 decode each group's base64 `input` to a file, compile the oracle with

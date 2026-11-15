@@ -1,6 +1,6 @@
 # Motocross Madness physics parity roadmap
 
-Viewport upload arithmetic: [pinned SSE matrix recovered](mcm-render-upload-recovery.md#viewport-matrix-arithmetic), 14,096 isolated native cases / 225,536 output words with zero differences. Live payload bytes, other upload/free gates and shared-world scheduling remain unvalidated; preview handling is unchanged.
+Viewport upload arithmetic: [pinned SSE matrix recovered](mcm-render-upload-recovery.md#viewport-matrix-arithmetic), 14,096 isolated native cases / 225,536 output words plus 12 live uploads / 192 words with zero differences. Other upload/free gates and shared-world scheduling remain unvalidated; preview handling is unchanged.
 
 Transform-upload gate: [both vertex paths recovered](mcm-render-upload-recovery.md), 868 native applications / 16 uploads / 852 skips with zero gate or source-address differences. Other uploads, frees and world visibility remain open.
 
