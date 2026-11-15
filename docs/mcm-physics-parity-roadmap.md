@@ -1,6 +1,8 @@
 # Motocross Madness physics parity roadmap
 
-Latest milestone: [retained renderer dirty state](mcm-render-dirty-recovery.md) predicts 286 products and 4,507 skips across 4,793 apply calls, including all 59 physics-stack overlaps. Original draw scheduling and the frame-38 mismatch remain open.
+Latest milestone: [player-rider draw dispatch](mcm-node-draw-recovery.md). All 625 native dispatcher cases match. A fresh trace links 59 stack stores to the player rider, verifies 120 recursive child depths and 118 computed camera visibility states. Projected-bounds arithmetic, the remaining draw stack and steering replay are still open.
+
+Previous milestone: [retained renderer dirty state](mcm-render-dirty-recovery.md) predicts 286 products and 4,507 skips across 4,793 apply calls, including all 59 physics-stack overlaps. Original draw scheduling and the frame-38 mismatch remain open.
 
 Previous milestone: [fog restoration and original model world submissions](mcm-render-gates-recovery.md). Native 4,096 cases / 274,432 words match; live 59 render-to-next-update restorations and 59 derived-world scratch products match. Draw scheduling and the frame-38 steering divergence remain open.
 

@@ -172,7 +172,7 @@ export function analyzeLiveChaseController(rows,{postSmoothing=false,terrain=nul
     assert.deepEqual(r.inputs.slice(98,102),matrixContext,'Projection context changed during update');
     if(!renderCamera.skipUpdate){const m=composeMcmCameraMatrices(renderCamera);matrixWords=bits(Float32Array.from([...m.projection,...m.view,...m.combined,...m.screen,m.screenScale]));}
     assert.deepEqual(r.matrices,matrixWords,'Native camera matrices differ');
-    if(onMatrices)onMatrices({frame:pairs,camera:r.camera,words:matrixWords.slice(),state:structuredClone(renderCamera)});
+    if(onMatrices)onMatrices({frame:pairs,camera:r.camera,words:matrixWords.slice(),state:structuredClone(renderCamera),nodes:structuredClone(renderNodes)});
    }
    pairs++;
   }
