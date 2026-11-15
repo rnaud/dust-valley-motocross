@@ -2,6 +2,15 @@
 // atomic entry boundary. Later records supply assertions and real scheduling,
 // never a checkpoint restoration or a forced rider timestep.
 #include "capture-particle-pool.c"
+static int trace_ai_scene(const char*phase,DWORD point){
+ DWORD link,view,world,gate,bike,enabled,disabled,excluded,position[3]={0};
+ if(!read_memory(ai_scene_object+0x1c,&link,4)||!read_memory(link+4,&view,4)||!read_memory(view+0x110,&enabled,4)||
+    !read_memory(ai_scene_object+0xf8,&world,4)||!read_memory(world+0x48,&gate,4)||!read_memory(gate+0x20,&disabled,4)||
+    !read_memory(ai_scene_object+0xec,&bike,4)||bike!=observe_ai||!read_memory(bike+0xc30,&excluded,4)||
+    (point&&!read_memory(point,position,sizeof position)))return 0;
+ fprintf(ai_rider_out,"{\"phase\":\"%s\",\"captureId\":\"%s\",\"eventSequence\":%lu,\"completedBikeFrames\":%lu,\"bikeActive\":%d,\"riderActive\":%d,\"address\":%lu,\"bike\":%lu,\"enabled\":%lu,\"disabled\":%lu,\"excluded\":%lu,\"positionBits\":[%lu,%lu,%lu]}\n",phase,frame_capture_id,ai_rider_sequence++,player_frame,player_active,ai_rider_active,ai_scene_object,bike,enabled,disabled,excluded,position[0],position[1],position[2]);
+ return !ferror(ai_rider_out)&&fflush(ai_rider_out)==0;
+}
 static int trace_ai_rider(const char*phase,DWORD rider,DWORD dt){
  DWORD bike,child,world,paused,globalDt,link,owner,gate=0,vtable,update,pool,proxy;
  BYTE state[0x3ac],bytes[0x618];

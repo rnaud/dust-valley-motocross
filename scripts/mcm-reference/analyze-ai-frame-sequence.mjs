@@ -7,7 +7,7 @@ import {bitsFloat,floatBits} from '../../src/physics/mcm/math.js';
 
 // Diagnostic, not a whole-world parity verdict. Initialize once, retain all
 // computed state, and report external visual writes rather than importing them.
-export function analyzeAiFrameSequence(inputs,rows,riderEvents){
+export function analyzeAiFrameSequence(inputs,rows,riderEvents,{diagnosticBody=false}={}){
  const observations=rows.filter(r=>r.phase!=='random'),first=observations[0];
  assert.ok(observations.length>=8&&observations.length%4===0,'Expected consecutive complete AI frames');
  const phases=['before-update','after-ai-controller','after-ai-steering','after-update'];
@@ -20,6 +20,8 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents){
  const loaded=runtime?.loaded??loadLiveFrameBootstrap({...inputs,row:first}),c=loaded.context;
  let riderTicks=0,riderBytes=0,eventIndex=1;
  const particleDifferences=[],worldQueries=[];
+ const bodyDifferences=[];
+ const sceneReports=[];let pendingScene=null;
  const visualDifferences=[],intervals=[],substeps=[];let bodyBoundaries=0,bodyBytes=0;
  const visualCompare=(frame,stage)=>(name,before,after,bytes)=>{
   const expected=Buffer.from(after,'hex');assert.equal(bytes.length,expected.length);
@@ -28,7 +30,11 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents){
  const compare=(row,frame,stage)=>{
   const actual=c.aiController.projectBody(),expected=Buffer.from(row.stateHex,'hex');
   assert.equal(actual.byteLength,expected.length);
-  for(let o=0;o<expected.length;o+=4)assert.equal(actual.getUint32(o,true),expected.readUInt32LE(o),`AI sequence frame ${frame} ${stage} body ${o.toString(16)}`);
+  for(let o=0;o<expected.length;o+=4){
+   const a=actual.getUint32(o,true),b=expected.readUInt32LE(o);
+   if(diagnosticBody){if(a!==b)bodyDifferences.push({frame,stage,offset:o,actual:a,expected:b});}
+   else assert.equal(a,b,`AI sequence frame ${frame} ${stage} body ${o.toString(16)}`);
+  }
   assert.equal(loaded.random.state,row.randomState,`AI sequence frame ${frame} ${stage} RNG`);
   bodyBoundaries++;bodyBytes+=expected.length;
   // The original first snapshot supplies immutable allocation bytes throughout;
@@ -64,8 +70,29 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents){
    let ticks=0;
    while(riderEvents[eventIndex]?.completedBikeFrames===frame+1){
     const before=riderEvents[eventIndex++];
+    if(before.phase==='scene-entry'){
+     assert.ok(runtime.scenePosition,'Missing initial scene inputs');assert.equal(pendingScene,null,'Overlapping scene queries');
+     const {address,state}=runtime.scenePosition;
+     assert.equal(before.address,address);assert.equal(before.bike,inputs.checkpoint.bikeAddress);assert.equal(before.bikeActive,0);assert.equal(before.riderActive,0);
+     assert.equal(before.enabled,state.enabled,'Scene enabled gate');assert.equal(before.disabled,state.disabled,'Scene disabled gate');assert.equal(before.excluded,state.bike.fieldc30,'Scene bike gate');
+     const result=runtime.scenePosition.query();
+     if(result.position)pendingScene={...result,observedNodes:[],frame};
+     else sceneReports.push({frame,queried:false});
+     continue;
+    }
+    if(before.phase==='scene-position'){
+     assert.ok(pendingScene,'Unexpected scene position');assert.equal(before.address,runtime.scenePosition.address);
+     assert.equal(before.bikeActive,0);assert.equal(before.riderActive,0);
+     assert.deepEqual(before.positionBits,Array.from(pendingScene.position,floatBits),'Scene world position');
+     assert.deepEqual(pendingScene.observedNodes,pendingScene.nodes,'Scene resolver call chain');
+     sceneReports.push({frame,queried:true,nodes:pendingScene.nodes,positionBits:before.positionBits});pendingScene=null;continue;
+    }
     // Query targets/callers are evidence only; they do not select model writes.
-    if(before.phase==='world-query'){worldQueries.push(before);continue;}
+    if(before.phase==='world-query'){
+     worldQueries.push(before);
+     if(pendingScene){const first=pendingScene.observedNodes.length===0;assert.equal(before.caller,first?0x4b797f:0x4b6956);if(first)assert.equal(before.positionCaller,0x422fad);pendingScene.observedNodes.push(before.node);}
+     continue;
+    }
     const after=riderEvents[eventIndex++];
     assert.equal(before.phase,'before-rider');assert.equal(after?.phase,'after-rider');
     for(const e of [before,after]){assert.equal(e.completedBikeFrames,frame+1);assert.equal(e.bikeActive,0);assert.equal(e.bike,inputs.checkpoint.bikeAddress);assert.equal(e.rider,riderEvents[0].rider);assert.equal(e.address,riderEvents[0].address);assert.equal(e.ownerGate,0);assert.equal(e.updateAddress,0x43a0c0);}
@@ -79,5 +106,6 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents){
   }
  }
  if(riderEvents)assert.equal(eventIndex,riderEvents.length,'Unconsumed rider events');
- return {frames:intervals.length,intervals,substeps,bodyBoundaries,bodyBytes,randomDraws:loaded.random.calls,visualDifferences,...(riderEvents?{riderTicks,riderBytes,particleDifferences,worldQueries}:{})};
+ assert.equal(pendingScene,null,'Incomplete scene query');
+ return {frames:intervals.length,intervals,substeps,bodyBoundaries,bodyBytes,randomDraws:loaded.random.calls,visualDifferences,...(diagnosticBody?{diagnosticBody:true,bodyDifferences}:{}),...(riderEvents?{riderTicks,riderBytes,particleDifferences,worldQueries,...(runtime.scenePosition?{sceneReports}:{})}:{})};
 }

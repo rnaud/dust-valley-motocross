@@ -1,5 +1,16 @@
 # Motocross Madness physics parity roadmap
 
+## Scene-object rider query connected; later physics divergence retained (2026-11-15)
+
+The shared frame runtime now derives the scene object's initial gate inputs and ownership from an atomic AI-entry environment. `scene-rider-position.js` implements the original `422f50..422fad` prefix: owner enabled gate, world disabled gate, live bike exclusion flag, then `bike+874 -> rider+fc` world-position resolution. The queried joint and recursive parent-cache chain come from the retained graph. Observed query targets, callers and output position are assertions only. Later visibility/state transitions and the complete application scheduler remain unconnected.
+
+Added optional `MCM_AI_SCENE_OBJECT` observation with guarded entry `422f50` and post-position `422fad` hooks. The same initial environment captures the scene allocation and both gate chains; every invocation records gate values and the native position result. The first attempt timed out with zero qualifying frames and independently restored/detached cleanly. A subsequent capture completed eight bike boundaries plus rider and scene events; all eleven hook bytes were independently restored and the debugger detached. The original was never restarted.
+
+The maintained `ai-frame-scene-wine11.json.br` **does not pass whole-sequence physics parity**. Scene gates, the four-node resolver chain, position result, rider/child state and particle pool match. Bike body and all captured visual/animation state match through the second entry/controller/steering boundaries, resolving the earlier inter-frame joint-cache mismatch. At the second frame tail, 38 bike DWORDs and 28 transform DWORDs diverge. Strict analysis still throws at `bike+4f0`; the explicitly requested `diagnosticBody` mode reports every discrepancy without changing state. Tests preserve this failing parity case, reject altered scene inputs/targets/outputs, and do not classify a green regression suite as a full parity pass.
+
+The actual incoming intervals are approximately 0.604 and 24.779 seconds; capture overhead remains a limitation. A separate temporary observed-drive-scratch diagnostic did not remove this divergence and is not a runtime option. Next work is finer substep/component observation to locate the first physics difference, plus the remaining scene visibility/world scheduling and shared-particle writers. Preview player handling is unchanged.
+
+
 ## Separate AI rider tick and identified scene-query writer (2026-11-15)
 
 The consecutive AI diagnostic can now connect the existing recovered rider tick to the same bike/animation/collision objects, initialized once at the first bike entry. Read-only hooks at `40e990` and `40f99c` record its real timestep, child allocation, full shared particle pool, rider allocation, visual graph and collision observations. A separate optional `4b6930` hook records external world-transform query targets/callers; these observations are diagnostic evidence and never select model writes.

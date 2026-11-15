@@ -1,5 +1,6 @@
 import {loadLiveFrameBootstrap} from './live-frame-bootstrap.mjs';
 import {connectLiveRiderTick} from './live-rider-tick.mjs';
+import {connectLiveSceneRiderPosition} from './live-scene-rider-position.mjs';
 import {advanceMcmRetainedFrame} from '../../src/physics/mcm/retained-frame.js';
 import {advanceMcmRiderTick} from '../../src/physics/mcm/rider-tick.js';
 import {tickMcmParticlePool} from '../../src/physics/mcm/particle-pool-tick.js';
@@ -13,7 +14,8 @@ export function createCapturedFrameRuntime(inputs,row,child){
  if(child.rider!==r.address)throw Error('Retained rider ownership differs');
  for(const [key,field]of [['extentScale','fieldf8'],['field138','field138'],['field144','field144'],['contactClass','field154'],['selected','selected'],['eventKind','kind']])Object.defineProperty(r,key,{get:()=>c.rider[field],set:value=>{c.rider[field]=value;}});
  Object.defineProperty(external.context,'selectedRecord',{get:()=>{const token=c.rider.selected[0],record=loaded.animation.assets.records.find(a=>a.token===token);if(token&&!record)throw Error('Missing retained selected animation');return record;}});
- return {loaded,external,
+ const scenePosition=connectLiveSceneRiderPosition(loaded,inputs);
+ return {loaded,external,scenePosition,
   // 0x4b7a00 copies local +0x84 verbatim; it does not resolve world +0xc4.
   // 0x44f870 copies animated actor +0x218/+0x224, not physics-rider bounds.
   renderSources(){

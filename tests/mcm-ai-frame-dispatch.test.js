@@ -94,3 +94,30 @@ test('original scene-object position query identifies the unresolved rider cache
  const altered=structuredClone(events);altered[3].node=0;
  const diagnostic=analyzeAiFrameSequence(i,i.rows,altered);assert.deepEqual(diagnostic.visualDifferences,r.visualDifferences);
 });
+
+test('scene query computes the missing caches but strict replay retains the later physics divergence',()=>{
+ const f=fixture('ai-frame-scene');for(const [name,value] of Object.entries(f.files))assert.equal(createHash('sha256').update(value).digest('hex'),f.provenance.fileSha256[name]);
+ assert.equal(f.provenance.executableSha256,'e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b');assert.match(f.files['cleanup.log'],/debugger=0 clean=1/);assert.equal((f.files['cleanup.log'].match(/restored=1/g)||[]).length,11);
+ const i=input(f),events=f.files['rider.jsonl'].trim().split('\n').map(JSON.parse);
+ assert.throws(()=>analyzeAiFrameSequence(i,i.rows,events),/frame 1 frame-tail body 4f0/);
+ const r=analyzeAiFrameSequence(i,i.rows,events,{diagnosticBody:true});
+ assert.equal(r.bodyBoundaries,8);assert.equal(r.riderTicks,1);assert.equal(r.riderBytes,5000);assert.deepEqual(r.particleDifferences,[]);
+ assert.equal(r.sceneReports.length,1);assert.equal(r.sceneReports[0].queried,true);assert.equal(r.sceneReports[0].nodes.length,4);
+ assert.deepEqual(r.sceneReports[0].positionBits,events.find(e=>e.phase==='scene-position').positionBits);
+ assert.equal(r.bodyDifferences.length,38);assert.equal(r.visualDifferences.length,28);
+ assert.ok([...r.bodyDifferences,...r.visualDifferences].every(d=>d.frame===1&&d.stage==='frame-tail'));
+});
+
+test('scene query rejects altered gate inputs, ownership, observed targets and position outputs',()=>{
+ for(const kind of ['gate','ownership','target','position']){
+  const f=fixture('ai-frame-scene'),i=input(f),events=f.files['rider.jsonl'].trim().split('\n').map(JSON.parse);
+  if(kind==='target')events.find(e=>e.phase==='world-query').node^=4;
+  else if(kind==='position')events.find(e=>e.phase==='scene-position').positionBits[1]^=1;
+  else{
+   const m=checkpointMemory({...i.aiEnvironment,kind:'mcm-partial-local-checkpoint'}),a=i.aiEnvironment.sceneObjectAddress;
+   const address=kind==='ownership'?a+0xec:m.u32(m.u32(a+0x1c)+4)+0x110;
+   const block=i.aiEnvironment.blocks.find(b=>address>=b.address&&address+4<=b.address+b.size),bytes=Buffer.from(block.hex,'hex');bytes.writeUInt32LE(kind==='gate'?0:0xffffffff,address-block.address);block.hex=bytes.toString('hex');
+  }
+  assert.throws(()=>analyzeAiFrameSequence(i,i.rows,events,{diagnosticBody:true}),kind==='gate'?/Scene enabled gate/:kind==='ownership'?/ownership/:kind==='target'?/resolver call chain/:/Scene world position/);
+ }
+});

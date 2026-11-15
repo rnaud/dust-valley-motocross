@@ -22,12 +22,12 @@
 #include "capture-frame-environment.c"
 #include "capture-ai-frame-environment.c"
 
-static DWORD addresses[] = {0x4a54b6, 0x4ad0e1, 0x4ad5a2, 0x4bf195, 0x40e990, 0x42ce38, 0x4acfd8, 0x4acaad, 0x4b6930};
+static DWORD addresses[] = {0x4a54b6, 0x4ad0e1, 0x4ad5a2, 0x4bf195, 0x40e990, 0x42ce38, 0x4acfd8, 0x4acaad, 0x4b6930, 0x422f50, 0x422fad};
 static BYTE expected[][6] = {{0xd9, 0x86, 0xc8, 0x08, 0, 0},
-                                  {0x8b, 0x86, 0xf8, 0x04, 0, 0}, {0x85, 0xc0}, {0x8b, 0x48, 0x14}, {0x8b,0x44,0x24,0x04}, {0x8b,0x44,0xbe,0x08}, {0x8d,0x86,0x10,0x05,0,0}, {0x8b,0xf8}, {0x53}};
-static unsigned lengths[] = {6, 6, 2, 3, 4, 4, 6, 2, 1};
-static BYTE saved[9];
-static int armed[9];
+                                  {0x8b, 0x86, 0xf8, 0x04, 0, 0}, {0x85, 0xc0}, {0x8b, 0x48, 0x14}, {0x8b,0x44,0x24,0x04}, {0x8b,0x44,0xbe,0x08}, {0x8d,0x86,0x10,0x05,0,0}, {0x8b,0xf8}, {0x53}, {0x83,0xec,0x2c}, {0xd9,0x44,0x24,0x14}};
+static unsigned lengths[] = {6, 6, 2, 3, 4, 4, 6, 2, 1, 3, 4};
+static BYTE saved[11];
+static int armed[11];
 static HANDLE process;
 static int capture_effects,capture_filter,capture_frame_rider,capture_return;
 static DWORD effect_query_count,effect_query_result;
@@ -47,6 +47,7 @@ static DWORD observe_ai,observed_random_address,observed_random_thread;
 static int capture_ai_environment;
 static int capture_ai_rider,ai_rider_active,capture_ai_queries;
 static FILE *ai_rider_out;
+static DWORD ai_scene_object;
 static DWORD ai_rider_dt,ai_rider_thread,ai_rider_sequence;
 static int trace_ai_rider(const char*,DWORD,DWORD);
 static void configure_ai_frame_hooks(void){hook_count=6;addresses[4]=0x4a56d9;lengths[4]=5;const BYTE a[]={0xe9,0xe2,0,0,0};memcpy(expected[4],a,5);addresses[5]=0x4a5991;lengths[5]=2;expected[5][0]=0x8b;expected[5][1]=0xce;}
@@ -54,6 +55,8 @@ static void configure_ai_frame_hooks(void){hook_count=6;addresses[4]=0x4a56d9;le
 static void configure_ai_rider_hooks(void){configure_ai_frame_hooks();hook_count=8;addresses[6]=0x40e990;lengths[6]=4;const BYTE a[]={0x8b,0x44,0x24,0x04};memcpy(expected[6],a,4);addresses[7]=0x40f99c;lengths[7]=5;const BYTE b[]={0xb8,1,0,0,0};memcpy(expected[7],b,5);}
 
 static void configure_ai_query_hooks(void){configure_ai_rider_hooks();hook_count=9;}
+
+static void configure_ai_scene_hooks(void){configure_ai_query_hooks();hook_count=11;}
 
 static int read_memory(DWORD address, void *buffer, SIZE_T size) {
     SIZE_T count;
@@ -331,6 +334,7 @@ int main(int argc, char **argv) {
     if(capture_ai_rider){if(!capture_ai_environment)return 2;configure_ai_rider_hooks();}
     capture_ai_queries=getenv("MCM_AI_WORLD_QUERIES")!=NULL;
     if(capture_ai_queries){if(!capture_ai_rider)return 2;configure_ai_query_hooks();}
+    if(getenv("MCM_AI_SCENE_OBJECT")){char*end;ai_scene_object=strtoul(getenv("MCM_AI_SCENE_OBJECT"),&end,0);if(!ai_scene_object||*end||!capture_ai_queries)return 2;configure_ai_scene_hooks();}
     capture_stack = getenv("MCM_STACK") != NULL;
     capture_collision = getenv("MCM_COLLISION") != NULL;
     checkpoint_collision_callbacks = getenv("MCM_COLLISION_CALLBACKS") != NULL;
@@ -459,7 +463,12 @@ int main(int argc, char **argv) {
                     TerminateProcess(process, 5);
                     done = 2;
                 } else {
-                    if(capture_ai_queries&&matched==8){
+                    if(ai_scene_object&&matched>=9){
+                        if(player_frame&&(matched==9?context.Ecx:context.Esi)==ai_scene_object){
+                            if(!trace_ai_scene(matched==9?"scene-entry":"scene-position",matched==10?context.Esp+0x10:0))done=2;
+                            else start=GetTickCount();
+                        }
+                    } else if(capture_ai_queries&&matched==8){
                         if(player_frame&&!player_active&&!ai_rider_active){
                             for(unsigned i=0;i<block_count;i++)if(blocks[i].size==0x114&&blocks[i].address==context.Ecx){
                                 DWORD caller,position_caller=0;if(!read_memory(context.Esp,&caller,4)||(caller==0x4b797f&&!read_memory(context.Esp+0x1c,&position_caller,4)))done=2;
