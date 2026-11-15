@@ -1,5 +1,9 @@
 # Motocross Madness physics parity roadmap
 
+## Sampler formatter stack save recovered in isolation — 2026-11-15
+
+The pinned sampler-name formatter now has a computed register-save address/value model matching 480 intact native cases across four stack alignments, three prefixes and unsigned indices through ffffffff; repeat output is byte-identical. Its predicted save lands on the original physics input slot at the observed alignment. Live path confirmation, shader eligibility and continuous writer ordering remain outstanding. See `mcm-shader-sampler-format-recovery.md`. No preview handling change or full parity claim.
+
 ## Program-selection nested writers isolated — 2026-11-15
 
 A completed 519-site capture reproduces two overwrite sequences among 8,236 indexed windows: the `e1460` call leaves the C-runtime memcpy return address, then `ec5e0` writes zero. Both sequences are preserved in a regression fixture, and cleanup verifies all hooks restored with no debugger. Sampler-name formatting is the next candidate to validate; the exact zero instruction, eligibility and continuous scheduling remain unresolved. See `mcm-indexed-submit-recovery.md`. Preview handling is unchanged.
