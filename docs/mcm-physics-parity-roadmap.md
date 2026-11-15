@@ -1,5 +1,14 @@
 # Motocross Madness physics parity roadmap
 
+## Consecutive AI frame diagnostic (2026-11-15)
+
+A new natural two-frame capture initializes the model once and carries computed state through both frames, including the final saved-position stores between them. All eight entry/controller/steering/tail bike-body boundaries match (26,176 bytes), as do the observed shared RNG states with two draws. The first frame executes two substeps and the second eleven. No later body, graph, RNG, or stack observation is imported into the model.
+
+This is **not a passing whole-world trajectory**. `analyze-ai-frame-sequence.mjs` preserves 156 visual DWORD differences: 40 at the second entry, 40 after its controller, 40 after steering, and 36 at its tail. They are confined to captured world matrices and cache-valid flags (+c4 through +104); local transforms and animation records compare exactly. The four nodes belong to the rider hierarchy (root, body and two probe joints). Native rider position/previous-position words (+40..+54) also change between frames. The writer/order responsible for those cache changes is still unverified, so the diagnostic reports them instead of refreshing the model from the second entry. Tests reject corrupted second-frame body/RNG outputs and retain the visual mismatch explicitly.
+
+The incoming intervals are approximately 35 ms and **24.283 seconds**, including capture overhead. This evidence does not establish normal-rate continuous driving. Next work must reduce observation overhead and capture/execute the intervening rider, renderer and world updates in their actual order. The six guarded observation sites were independently verified restored and the original detached. Raw evidence and hashes are retained in `ai-frame-sequence-wine11.json.br`. The public preview's player handling is unchanged.
+
+
 ## Connected AI dispatch through the frame tail (2026-11-15)
 
 The retained frame driver now invokes the executable AI controller when a caller supplies a validated same-entry AI environment. Without that environment the existing `pending-controller` guard remains. `retained-ai-controller.js` synchronizes the original raw AI fields with live semantic bike state, preserves float bit-carriers and shared animation bounds, and uses the existing transform graph, trick resources, actor positions and RNG. Diagnostic body projection copies computed state without mutating the runtime. Unknown semantic fields fail explicitly instead of silently disappearing from comparison.

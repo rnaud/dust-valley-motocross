@@ -1,5 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import {brotliDecompressSync,gunzipSync} from 'node:zlib';import {createHash} from 'node:crypto';
 import {analyzeAiFrame} from '../scripts/mcm-reference/analyze-ai-frame.mjs';
+import {analyzeAiFrameSequence} from '../scripts/mcm-reference/analyze-ai-frame-sequence.mjs';
 import {loadLiveFrameBootstrap} from '../scripts/mcm-reference/live-frame-bootstrap.mjs';
 import {checkpointMemory} from '../scripts/mcm-reference/live-checkpoint.mjs';
 const fixture=(name='ai-frame-dispatch')=>JSON.parse(brotliDecompressSync(fs.readFileSync(new URL(`./fixtures/mcm/${name}-wine11.json.br`,import.meta.url))));
@@ -36,4 +37,24 @@ test('connected grounded AI frame also matches controller through contact physic
  const f=fixture('ai-frame-grounded');for(const [name,value] of Object.entries(f.files))assert.equal(createHash('sha256').update(value).digest('hex'),f.provenance.fileSha256[name]);assert.equal(f.provenance.executableSha256,'e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b');assert.match(f.files['cleanup.log'],/debugger=0 clean=1/);assert.equal((f.files['cleanup.log'].match(/restored=1/g)||[]).length,6);
  const i=input(f);assert.equal(Buffer.from(i.row.stateHex,'hex').readUInt32LE(0x4bc),0);assert.equal(Buffer.from(i.rows.find(r=>r.phase==='after-update').stateHex,'hex').readUInt32LE(0x4bc),0);
  assert.deepEqual(analyzeAiFrame(i,i.rows),{frames:1,substeps:2,boundaries:3,comparedBytes:4198424,graphRecords:78,randomDraws:0});
+});
+
+test('consecutive AI frames retain exact body and RNG while exposing unresolved visual cache writes',()=>{
+ const f=fixture('ai-frame-sequence');for(const [name,value] of Object.entries(f.files))assert.equal(createHash('sha256').update(value).digest('hex'),f.provenance.fileSha256[name]);
+ assert.equal(f.provenance.executableSha256,'e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b');assert.match(f.files['capture.log'],/captured=8 status=1/);assert.match(f.files['cleanup.log'],/debugger=0 clean=1/);assert.equal((f.files['cleanup.log'].match(/restored=1/g)||[]).length,6);
+ const i=input(f),r=analyzeAiFrameSequence(i,i.rows);
+ assert.equal(r.frames,2);assert.equal(r.bodyBoundaries,8);assert.equal(r.bodyBytes,26176);assert.deepEqual(r.substeps,[2,11]);assert.equal(r.randomDraws,2);
+ // Preserve the actual capture stall; this is not normal-rate trajectory proof.
+ assert.deepEqual(r.intervals,[Math.fround(.035),Math.fround(24.283)]);
+ assert.equal(r.visualDifferences.length,156);
+ assert.deepEqual(r.visualDifferences.reduce((counts,d)=>{const key=d.frame+':'+d.stage;counts[key]=(counts[key]||0)+1;return counts;},{}),{'1:entry':40,'1:ai-controller':40,'1:steering':40,'1:frame-tail':36});
+ assert.ok(r.visualDifferences.every(d=>d.name.startsWith('frame-rider-visual-')&&d.offset>=0xc4&&d.offset<=0x104));
+});
+
+test('consecutive AI comparison rejects second-frame body and RNG corruption without reseeding',()=>{
+ for(const kind of ['body','random']){
+  const i=input(fixture('ai-frame-sequence')),row=i.rows.filter(r=>r.phase==='after-update')[1];
+  if(kind==='body'){const b=Buffer.from(row.stateHex,'hex');b[0x510]^=1;row.stateHex=b.toString('hex');}else row.randomState^=1;
+  assert.throws(()=>analyzeAiFrameSequence(i,i.rows),kind==='body'?/frame 1 frame-tail body 510/:/frame 1 frame-tail RNG/);
+ }
 });
