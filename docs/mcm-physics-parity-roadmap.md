@@ -1,5 +1,11 @@
 # Motocross Madness physics parity roadmap
 
+## Computed world writes connected to retained physics — 2026-11-15
+
+The combined 42-frame capture now predicts all 41 next-bike scratch values from ordered invocation/stage inputs. HUD refresh/line stores, SSE gates/values, binding gates/CALL writes and resource staging/heap writes are checked together. An explicit modeled-world replay applies the computed stores between updates: 42 bike frames / 41 rider ticks, zero modeled physics differences, 881,090 visual differences, zero observed scratch inputs. Negative tests reject altered observations and missing player invocations. See `mcm-world-writers-recovery.md`.
+
+Draw ordering, stack positions, prepared graphics state, camera/font/allocator boundaries remain inputs. This does not close the older frame-38 failure or prove sustained throttle-release parity; the capture contains only two released-throttle frames. The next integration is recovered invocation scheduling and retained graphics state. Preview handling remains unchanged.
+
 ## Binding gates connected to stack writes — 2026-11-15
 
 Recovered the original shader-disable gate subgraph, with generated-shader paths exposed as unmodeled boundaries. An isolated native oracle matches 4,096 cases / 32,768 words, covering all 128 dirty/shader/declaration/adapter combinations. In the five-frame live capture, prepared state inputs predict all 36 commands across 871 applications. State-application entry ESP now predicts producer/handler ESP and all 36 CALL-store addresses, including four bike scratch overlaps. Actual handler locations and store values are comparison outputs, not model inputs. All 174 observation sites restored; debugger absent. See `mcm-render-binding-gates-recovery.md`.

@@ -9,7 +9,7 @@ const bits = values => [...new Uint32Array(values.buffer, values.byteOffset, val
 // Retained physics -> actor geometry -> visibility -> observed SSE value check.
 // Camera matrices and renderer world transform remain explicit stage inputs.
 // Observed stores are checked, never fed back into physics or used as gates.
-export function analyzeMovingVisibility(input, rows, events, render, worldMatrix) {
+export function analyzeMovingVisibility(input, rows, events, render, worldMatrix, {worldCallerWrites=null}={}) {
   assert.equal(worldMatrix.length, 16);
   const wrappers = new Map(), culls = new Map(), stores = new Map();
   let pending = null;
@@ -34,6 +34,7 @@ export function analyzeMovingVisibility(input, rows, events, render, worldMatrix
   const decisions = [], checkedKeys = new Set(), predictedStores = [];
   let sourceWords = 0, accepted = 0, rejected = 0;
   const replay = compareLiveRetainedRiderFrames(input, rows, events, {
+    worldCallerWrites,
     onWorldFrame({frame, sources}) {
       for (const source of sources) {
         const key = `${frame}/${source.actor}`, observed = wrappers.get(key);
@@ -68,9 +69,9 @@ export function analyzeMovingVisibility(input, rows, events, render, worldMatrix
     carryChecks++;
     laterWriterIntervals += Number(Buffer.from(next.stackHex, 'hex').readUInt32LE(0x54) !== store.value);
   }
-  return {scope: 'Retained actor geometry and computed visibility; camera/world matrices are stage inputs. SSE eligibility beyond visibility and subsequent world writes remain unmodeled. No scratch injection.',
+  return {scope: 'Retained actor geometry and computed visibility; camera/world matrices are stage inputs. '+(worldCallerWrites?'World writes are supplied by an explicit model callback. ':'SSE eligibility beyond visibility and subsequent world writes remain unmodeled. ')+'No observed scratch injection.',
     geometrySamples: checkedKeys.size, sourceWords, accepted, rejected, decisions,
     unmodeledActorWrappers: wrappers.size - checkedKeys.size, sseStores: predictedStores.length, carryChecks, laterWriterIntervals,
-    callerScratchMode: replay.callerScratchMode, observedCallerScratchWords: replay.observedCallerScratchWords, physicsScope: replay.scope,
+    callerScratchMode: replay.callerScratchMode, modeledCallerScratchWords: replay.modeledCallerScratchWords, observedCallerScratchWords: replay.observedCallerScratchWords, physicsScope: replay.scope,
     bikeFrames: replay.bikeFrames, riderTicks: replay.riderTicks, physicsDifferences: replay.physicsDifferences, visualDifferences: replay.visualDifferences};
 }

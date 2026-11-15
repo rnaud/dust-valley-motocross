@@ -1,3 +1,8 @@
+#ifdef MCM_CAPTURE_WORLD_WRITERS
+#define MCM_RENDER_RECORD_COUNT 84
+#else
+#define MCM_RENDER_RECORD_COUNT 10
+#endif
 #if defined(MCM_CAPTURE_BINDING_GATES) && (!defined(MCM_CAPTURE_RENDER_BINDING) || !defined(MCM_CAPTURE_HUD_LINE_STORES))
 #error Binding gates require binding and HUD hooks to preserve hook indices
 #endif
@@ -437,8 +442,8 @@ int main(int argc, char **argv) {
     capture_filter=capture_frame_rider||getenv("MCM_CAPTURE_FILTER")!=NULL;
     capture_effects=capture_filter||getenv("MCM_CAPTURE_EFFECTS")!=NULL;
     if(capture_effects){
-        if(!scripted||!capture_stack||limit!=10||capture_tires||capture_motion||capture_controls||capture_loop_rider||capture_finish||capture_contact||getenv("MCM_CAPTURE_FRAME")||!getenv("MCM_CHECKPOINT")||!getenv("MCM_FRAME_ENVIRONMENT")||!getenv("MCM_ANIMATIONS")||!getenv("MCM_COLLISION_WORLD")){
-            fprintf(stderr,"Heap capture requires scripted first frame, stack, ten records and checkpoint/environment/animation/world outputs.\n");return 2;
+        if(!scripted||!capture_stack||limit!=MCM_RENDER_RECORD_COUNT||capture_tires||capture_motion||capture_controls||capture_loop_rider||capture_finish||capture_contact||getenv("MCM_CAPTURE_FRAME")||!getenv("MCM_CHECKPOINT")||!getenv("MCM_FRAME_ENVIRONMENT")||!getenv("MCM_ANIMATIONS")||!getenv("MCM_COLLISION_WORLD")){
+            fprintf(stderr,"Heap capture requires scripted first frame, stack, %u records and checkpoint/environment/animation/world outputs.\n",MCM_RENDER_RECORD_COUNT);return 2;
         }
         hook_count=MCM_RENDER_HOOK_COUNT;addresses[1]=0x4ac95a;lengths[1]=2;expected[1][0]=0x33;expected[1][1]=0xff;
     }
@@ -591,6 +596,12 @@ int main(int argc, char **argv) {
    else fprintf(render_out,"{\"phase\":\"binding-gate-input\",\"frame\":%lu,\"block\":%lu,\"adapterFlags\":%u,\"pixelShader\":%lu,\"vertexShader\":%lu,\"declaration\":%lu,\"transformed\":%u}\n",player_frame-1,state,flags,ps,vs,decl,transformed);
   }
   if(matched==173){DWORD args[4];if(!read_memory(context.Esp,args,16))done=2;else fprintf(render_out,"{\"phase\":\"binding-producer-input\",\"frame\":%lu,\"esp\":%lu,\"caller\":%lu,\"cs\":%lu,\"slot\":%lu,\"value\":%lu}\n",player_frame-1,context.Esp,args[0],args[1],args[2],args[3]);}
+#endif
+#ifdef MCM_CAPTURE_WORLD_WRITERS
+  if(matched==19||matched==20){DWORD elapsed,count,period,world,enabled,dt;
+   if(!read_memory(context.Esi+0x100,&elapsed,4)||!read_memory(0x4e2ef4,&count,4)||!read_memory(0x4e2ef8,&period,4)||!read_memory(0x4e4fb4,&world,4)||!read_memory(world+0x6f4,&enabled,4)||!read_memory(context.Esp+0x24,&dt,4))done=2;
+   else fprintf(render_out,"{\"phase\":\"hud-clock-input\",\"frame\":%lu,\"stage\":%d,\"owner\":%lu,\"elapsedBits\":%lu,\"frames\":%lu,\"frameMillisecondsBits\":%lu,\"dtBits\":%lu,\"enabled\":%lu}\n",player_frame-1,matched,context.Esi,elapsed,count,period,dt,enabled);
+  }
 #endif
   static DWORD upload_command_address;
   if(matched==131){DWORD args[7],device,adapter,cached;BYTE adapter_flags;if(!read_memory(context.Esp,args,sizeof(args))||args[2]>=8||!read_memory(args[1]+4,&device,4)||!read_memory(device+0xc,&adapter,4)||!read_memory(adapter+0x5a,&adapter_flags,1)||!read_memory(device+0x12d4+args[2]*4,&cached,4))done=2;else fprintf(render_out,"{\"phase\":\"upload-resource-input\",\"frame\":%lu,\"cs\":%lu,\"device\":%lu,\"kind\":%lu,\"cachedResource\":%lu,\"adapterFlags\":%u}\n",player_frame-1,args[1],device,args[2],cached,adapter_flags);}
