@@ -8,8 +8,8 @@ import {writeMcmAiAvoidanceRecord} from '../../src/physics/mcm/ai-avoidance-reco
 import {scanMcmAiAvoidance} from '../../src/physics/mcm/ai-avoidance-scan.js';
 import {floatBits as bits,bitsFloat as float} from '../../src/physics/mcm/math.js';
 const body=b=>Object.fromEntries(['x','y','z','vx','vy','vz'].map((k,i)=>[k,b.readFloatLE([0x4f8,0x4fc,0x500,0x510,0x514,0x518][i])]));
-export function analyzeAiAvoidanceScan(rows){
- const records=analyzeAiAvoidanceRecords(rows),guidance=analyzeAiRouteGuidance(rows),route=rows.find(r=>r.phase==='route'),table=route.nodes.map(n=>n.address);
+export function analyzeAiAvoidanceScan(rows,options={}){
+ const records=analyzeAiAvoidanceRecords(rows,options),guidance=analyzeAiRouteGuidance(rows,options),route=rows.find(r=>r.phase==='route'),table=route.nodes.map(n=>n.address);
  const nodes=new Map(route.nodes.map(n=>[n.address,{x:float(n.words[0]),z:float(n.words[2]),speed:float(n.words[3]),kind:n.words[4],next:n.words[10]}]));
  const targets=analyzeAiRouteTargets(rows);let scans=0;const checks=[];
  for(const entry of rows.filter(r=>r.phase==='before')){

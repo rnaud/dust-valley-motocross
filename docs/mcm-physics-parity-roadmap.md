@@ -1,5 +1,13 @@
 # Motocross Madness physics parity roadmap
 
+## Constructed AI lookahead input (2026-11-15)
+
+Recovered constructor `0x4a3289..0x4a32db`: global lookahead is `f32(worldHeight * 16)`, then body `b5c` is computed from that stored float and the constructor's signed-integer argument (previously stored as float at `EBP-7c`). Both outputs match 4,096 repeated intact original executions, including signed zero and varied finite world heights/integer arguments. The argument's semantic meaning is not inferred from its numeric value. The original default data values 48/24 are not proof of immutable globals: lookahead has this constructor writer.
+
+Where explicit world configuration is available, the guidance/avoidance/lookahead/pitch/throttle replay chain now computes lookahead and asserts every observed global against it. The Dunes configuration (world height three) matches all 256 live guidance calls; altered world height or captured global fails. Older standalone diagnostics without configuration retain their explicitly observed initial-global boundary. The companion `b5c` output has isolated constructor coverage only; its constructor argument is not yet reconstructed from live scene setup.
+
+Evidence: `ai-initial-parameters.js`, maintained original oracle/case generator, native fixture and `tests/mcm-ai-initial-parameters.test.js`. This removes one observed input in the configured replay, but does not establish full construction, retained controller/frame integration or full physics parity. Preview handling is unchanged.
+
 ## AI contact-response event connection (2026-11-15)
 
 Added before/after `0x4a6c01..0x4a6eac` observations alongside AI calls and complete motion graphs. The existing recovered `updateMcmContactResponse` matches 2,901 live substeps: eleven body fields, component angle/rate, four scratch values and full captured graph bytes. Chronological controller replay now asserts the retained latch against each contact entry and applies the computed contact result. All 256 AI calls match, with 150 throttle/turning updates and no braking or low-speed boosts. No observed output is injected as a replacement state.

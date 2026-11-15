@@ -9,7 +9,7 @@ import {floatBits as bits,bitsFloat as float} from '../../src/physics/mcm/math.j
 // Mode-0 chain. Crash occurrence is still an observed outer-frame boundary;
 // its clearing behavior comes from the existing recovered frame-input routine.
 export function analyzeAiPitchControl(rows,options){
- const handicap=replayAiRaceHandicap(rows),replay=replayAiLandingPitch(rows,options),scans=analyzeAiAvoidanceScan(rows),route=rows.find(r=>r.phase==='route'),table=route.nodes.map(n=>n.address),nodes=new Map(route.nodes.map(n=>[n.address,{x:float(n.words[0]),z:float(n.words[2]),kind:n.words[4],speed:float(n.words[3]),next:n.words[10]}])),entries=new Map(rows.filter(r=>r.phase==='before').map(r=>[r.sequence,r])),bike=rows.find(r=>r.phase==='before').bike;
+ const handicap=replayAiRaceHandicap(rows),replay=replayAiLandingPitch(rows,options),scans=analyzeAiAvoidanceScan(rows,options),route=rows.find(r=>r.phase==='route'),table=route.nodes.map(n=>n.address),nodes=new Map(route.nodes.map(n=>[n.address,{x:float(n.words[0]),z:float(n.words[2]),kind:n.words[4],speed:float(n.words[3]),next:n.words[10]}])),entries=new Map(rows.filter(r=>r.phase==='before').map(r=>[r.sequence,r])),bike=rows.find(r=>r.phase==='before').bike;
  let current,calls=0,clears=0;const checks=[];
  for(const r of rows){
   if(r.phase==='before'){const b=Buffer.from(r.hex,'hex');current??=b.readUInt32LE(0x6ec);assert.equal(current,b.readUInt32LE(0x6ec),'Retained pitch entry');}

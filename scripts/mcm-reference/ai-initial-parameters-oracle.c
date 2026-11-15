@@ -1,0 +1,7 @@
+#define main unused_helper_main
+#include "oracle.c"
+#undef main
+unsigned char parameter_world[0x18c0];uint32_t parameter_frame[128],parameter_result[2];
+void parameter_start(void);void parameter_end(void);
+__asm__(".text\n_parameter_start:\n push %ebx\n push %esi\n push %edi\n push %ebp\n lea _parameter_frame+256,%ebp\n mov $_bike,%ebx\n push $0x200a3289\n ret\n_parameter_end:\n mov 0x200e7238,%eax\n mov %eax,_parameter_result\n mov 0xb5c(%ebx),%eax\n mov %eax,_parameter_result+4\n add $8,%esp\n pop %ebp\n pop %edi\n pop %esi\n pop %ebx\n ret\n");
+int main(int argc,char**argv){if(argc!=4)return 2;map_image(argv[1]);if(memcmp((void*)0x200a3289,"\x8b\x83\x84\x0c\x00\x00",6)||memcmp((void*)0x200a32db,"\x89\x07",2))fail("guards");unsigned char*p=(void*)0x200a32db;p[0]=0xe9;*(uint32_t*)(p+1)=(uint32_t)(uintptr_t)parameter_end-0x200a32e0;FILE*in=fopen(argv[2],"rb"),*out=fopen(argv[3],"wb");if(!in||!out)fail("open");uint32_t w[2];size_t n;unsigned count=0;unsigned short cw=0x027f;while((n=fread(w,1,sizeof w,in))==sizeof w){memset(bike,0,sizeof bike);memset(parameter_frame,0,sizeof parameter_frame);put32(0xc84,(uint32_t)(uintptr_t)parameter_world);memcpy(parameter_world+0x18bc,w,4);__asm__ volatile("fninit; fldcw %0"::"m"(cw));float argument=(float)(int32_t)w[1];memcpy((unsigned char*)parameter_frame+256-0x7c,&argument,4);parameter_start();if(fwrite(parameter_result,sizeof parameter_result,1,out)!=1)fail("write");count++;}if(n||ferror(in)||fclose(out))fail("finish");fprintf(stderr,"cases=%u\n",count);return 0;}

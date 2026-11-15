@@ -4,8 +4,8 @@ import {writeMcmAiAvoidanceRecord} from '../../src/physics/mcm/ai-avoidance-reco
 import {floatBits} from '../../src/physics/mcm/math.js';
 const offsets=[0x4f8,0x4fc,0x500,0x510,0x514,0x518];
 const body=b=>Object.fromEntries(['x','y','z','vx','vy','vz'].map((k,i)=>[k,b.readFloatLE(offsets[i])]));
-export function analyzeAiAvoidanceRecords(rows){
- const guidance=analyzeAiRouteGuidance(rows);let records=0,active=0,skipped=0;
+export function analyzeAiAvoidanceRecords(rows,options={}){
+ const guidance=analyzeAiRouteGuidance(rows,options);let records=0,active=0,skipped=0;
  for(const entry of rows.filter(r=>r.phase==='before')){
   const self=Buffer.from(entry.hex,'hex'),at=phase=>rows.find(r=>r.phase===phase&&r.sequence===entry.sequence);
   const observed=rows.filter(r=>r.phase==='avoidance'&&r.sequence===entry.sequence);
