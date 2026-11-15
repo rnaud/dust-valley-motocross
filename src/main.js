@@ -523,7 +523,7 @@ async function start(){
  $('preview-badge').textContent='MCM PREVIEW · RECOVERED PHYSICS';
  document.body.classList.toggle('mcm-preview',physicsMode==='mcm-preview');
  document.querySelector('.ride-hint').textContent=physicsMode==='mcm-preview'?'WASD ride · I / K rider lean · R recover':'WASD ride · SPACE boost · I / K rider lean · R recover';
- ridePose.reset(state);riderCrouch=0;riderBank=0;elapsed=0;lap=1;nextGate=1;score=0;lapStart=0;combo=0;comboTimer=0;wrongTime=0;shake=0;
+ ridePose.reset(state);if(state.physicsBackend==='recovered-core')originalModels?.reset(state);riderCrouch=0;riderBank=0;elapsed=0;lap=1;nextGate=1;score=0;lapStart=0;combo=0;comboTimer=0;wrongTime=0;shake=0;
  ghostRecord=[];ghostClock=0;activeGhost=physicsMode==='classic'?ghostBest:null;ghostBike.visible=false;countdown=mode==='free'?-.75:3;lastCountdownBeep=4;cameraReady=false;accumulator=0;clearInput();
  document.body.classList.add('playing');for(const id of ['menu','location','footer','overlay','tutorial'])$(id).hidden=true;for(const id of ['hud','pause'])$(id).hidden=false;$('touch').hidden=!mobile;
  $('lap-label').textContent=mode==='free'?'STUNT SCORE':'LAP';$('resume').hidden=false;$('wrong').hidden=true;$('combo').hidden=true;$('share').hidden=true;$('leaderboard').hidden=true;
@@ -534,7 +534,7 @@ async function start(){
 }
 $('tutorial-start').onclick=()=>{writeSetting('dust-valley-tutorial','1');$('tutorial').hidden=true;phase='playing';countdown=mode==='free'?-.75:3;lastCountdownBeep=4;$('lights').hidden=mode==='free';setLights(3,false);cameraReady=false;if(mode==='daily')beginDaily();};
 $('start').onclick=start;$('restart').onclick=start;$('reset').onclick=()=>{if(phase==='playing')recover();};
-function recover(){if(state.physicsBackend==='recovered-core'){const {scene,spawn,sand}=state.physics;state=corePreview.createMcmCoreState(scene,{spawn,sand:!!sand});updateOriginalTerrainMaterials();activeSand=state.physics.renderSurface;previewHeight=state.physics.baseHeight;ridePose.reset(state);accumulator=0;cameraReady=false;tireTracks.clear();sandSurface.update(activeSand);toast('BACK TO START');return;}tireTracks.breakTrail();combo=0;comboTimer=0;wrongTime=0;$('combo').hidden=true;if(mode==='free'){const radius=Math.hypot(state.x,state.z),scale=radius>380?380/radius:1;resetBike(state,state.x*scale,state.z*scale,state.yaw);ridePose.reset(state);accumulator=0;cameraReady=false;toast('BACK ON THE DIRT');return;}const g=gates[(nextGate+11)%12];resetBike(state,g.p.x,g.p.z,g.yaw);ridePose.reset(state);accumulator=0;cameraReady=false;toast('BACK ON THE DIRT');}
+function recover(){if(state.physicsBackend==='recovered-core'){const {scene,spawn,sand}=state.physics;state=corePreview.createMcmCoreState(scene,{spawn,sand:!!sand});updateOriginalTerrainMaterials();activeSand=state.physics.renderSurface;previewHeight=state.physics.baseHeight;ridePose.reset(state);originalModels?.reset(state);accumulator=0;cameraReady=false;tireTracks.clear();sandSurface.update(activeSand);toast('BACK TO START');return;}tireTracks.breakTrail();combo=0;comboTimer=0;wrongTime=0;$('combo').hidden=true;if(mode==='free'){const radius=Math.hypot(state.x,state.z),scale=radius>380?380/radius:1;resetBike(state,state.x*scale,state.z*scale,state.yaw);ridePose.reset(state);accumulator=0;cameraReady=false;toast('BACK ON THE DIRT');return;}const g=gates[(nextGate+11)%12];resetBike(state,g.p.x,g.p.z,g.yaw);ridePose.reset(state);accumulator=0;cameraReady=false;toast('BACK ON THE DIRT');}
 function togglePause(){if(phase==='playing'){phase='paused';clearInput();$('overlay').hidden=false;$('overlay-label').textContent='TAKE A BREATHER';$('overlay-title').textContent='Ride paused.';$('overlay-copy').textContent='The desert isn’t going anywhere.';$('resume').hidden=false;$('photo').hidden=false;}else if(phase==='paused'){phase='playing';$('overlay').hidden=true;}}$('pause').onclick=togglePause;$('resume').onclick=togglePause;
 $('home').onclick=()=>{$('preview-badge').hidden=true;document.body.classList.remove('mcm-preview');phase='menu';clearInput();document.body.classList.remove('playing');if(mode==='daily'){mode='race';updateEnvironment();}for(const id of ['menu','location','footer'])$(id).hidden=false;for(const id of ['hud','pause','touch','overlay','lights'])$(id).hidden=true;ghostBike.visible=false;refreshMenuBest();updateDailyButton();};
 const todayKey=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
@@ -644,7 +644,7 @@ if(phase==='playing'){
    let result;
    try{result=state.physicsBackend==='recovered-core'?corePreview.stepMcmCoreState(state,input,simulationStep()):stepBike(state,input,simulationStep());}
    catch(error){console.error(error);state.physicsError=error.message;phase='paused';clearInput();$('overlay').hidden=false;$('overlay-label').textContent='PREVIEW LIMIT';$('overlay-title').textContent='Recovered physics stopped.';$('overlay-copy').textContent='This riding path reached an unresolved original dependency. Restart to ride again.';$('resume').hidden=true;break;}
-   ridePose.push(state);tireTracks.update(state.crashed?[]:state.wheelContacts,surfaceHeight);
+   ridePose.push(state);if(state.physicsBackend==='recovered-core')originalModels?.push(state);tireTracks.update(state.crashed?[]:state.wheelContacts,surfaceHeight);
    if(result.landed>.5){
     impactFlash=Math.max(impactFlash,result.crashed?1:.28);
     puff(state.x,state.y-.3,state.z,result.crashed?18:12,1.05,1.2);shake=reduceMotion?0:Math.max(shake,Math.min(.3,result.landed*.035));rideAudio.land(Math.min(1,result.landed));if(reduceMotion)shake=0;
@@ -690,10 +690,11 @@ if(phase==='playing'){
  if(state.crashed)toast('WIPEOUT · R OR ↺ TO RECOVER',1);
  toastTime-=dt;if(toastTime<=0)$('toast').textContent='';
 }
-const visual=ridePose.sample(phase==='playing'?accumulator/simulationStep():1);
+const renderAlpha=phase==='playing'?accumulator/simulationStep():1;
+const visual=ridePose.sample(renderAlpha);
 const showOriginal=phase!=='menu'&&state.physicsBackend==='recovered-core'&&!!originalModels;
 bike.visible=showBike&&!showOriginal;wheels.forEach(w=>w.visible=showBike&&!showOriginal);forks.forEach(p=>p.visible=showBike&&!showOriginal);frontFender.visible=showBike&&!showOriginal;
-if(originalModels){originalModels.root.visible=showBike&&showOriginal;if(showOriginal)originalModels.update(state,$('mcm-rider').value,$('mcm-bike').value);}
+if(originalModels){originalModels.root.visible=showBike&&showOriginal;if(showOriginal)originalModels.update(state,$('mcm-rider').value,$('mcm-bike').value,renderAlpha);}
 
 if(phase==='photo'){
  const target=new THREE.Vector3(visual.position.x,visual.position.y+.85,visual.position.z);

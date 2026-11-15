@@ -45,3 +45,7 @@ Widowmaker additionally passed desktop/touch checks after restoring its uppercas
 ## Waypoint environments — 2026-11-15
 
 All six waypoint terrains now expose their two original named scene environments. The importer records source hashes and declared terrain/waypoint references; the two Yuma scene files omit WaypointFile and retain explicit null values. Scene selection changes the declared practice spawn, fog color and shadow target. These are not reconstructed race starts, checkpoint layouts, skies or full lighting. Rider geometry and the twelve skins remain available in the same preview selector.
+
+## Preview interpolation — November 15, 2026
+
+Original bike/rider meshes now interpolate between the same fixed-step snapshots used by the camera. Previously the camera interpolated while all 21 original surfaces displayed the latest 50 Hz physics pose directly, producing visible stepping on faster displays. Presentation snapshots are captured after each physics tick and reset on restart/recovery; rendering never changes native transforms or cache-valid flags. Unit coverage checks intermediate poses, multiple ticks between renders and reset history. The browser regression records motion between unchanged physics frames at a simulated 120 Hz display cadence on desktop and touch layouts.

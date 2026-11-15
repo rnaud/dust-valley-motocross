@@ -31,3 +31,23 @@ test('Widowmaker uses the declared scene start instead of the empty hierarchy ce
  for(let i=0;i<30;i++)stepMcmCoreState(s,{gas:true},.02);
  assert.ok([s.x,s.y,s.z,s.speed].every(Number.isFinite));assert.ok(s.speed>0);
 });
+
+test('original rider and bike interpolate between fixed ticks without touching native state',()=>{
+ const s=createMcmCoreState(base,{sand:false}),model=createMcmOriginalModels(assets);model.reset(s);
+ const matrices=()=>model.root.children.map(p=>[...p.matrix.elements]);
+ model.update(s);const start=matrices();
+ stepMcmCoreState(s,{gas:true},.02);model.push(s);model.update(s);const end=matrices();
+ const native=()=>JSON.stringify([...s.physics.runtime.loaded.visuals.nodes.values()].map(n=>[n.local,n.world,n.cacheValid]));const before=native();
+ let movingRider=false,movingBike=false;
+ for(const alpha of [0,.25,.5,.75,1]){
+  model.update(s,'rider01','bike01',alpha);
+  for(const [i,part]of model.root.children.entries())for(const at of [12,13,14]){
+   assert.ok(Math.abs(part.matrix.elements[at]-(start[i][at]+(end[i][at]-start[i][at])*alpha))<1e-9);
+   if(Math.abs(end[i][at]-start[i][at])>1e-7){if(part.name.startsWith('mcm-rider-'))movingRider=true;else movingBike=true;}
+  }
+ }
+ assert.ok(movingRider&&movingBike);assert.equal(native(),before);
+ // Multiple simulation steps in one render must interpolate the latest pair.
+ const prior=end;stepMcmCoreState(s,{gas:true},.02);model.push(s);model.update(s,'rider01','bike01',0);assert.deepEqual(matrices(),prior);
+ model.reset(s);model.update(s,'rider01','bike01',0);const reset=matrices();model.update(s,'rider01','bike01',1);assert.deepEqual(matrices(),reset);
+});
