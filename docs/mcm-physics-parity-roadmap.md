@@ -1,5 +1,11 @@
 # Motocross Madness physics parity roadmap
 
+## Post-smoothing reset and overrides recovered (2026-11-15)
+
+The retained camera path now extends through `0x47d71f`. Mode-6 transitions reset all six filter values/times while preserving bounds; the override flag selects raw eye/target values with the original previous-target exception. **864 native cases / 27,648 words match.** A fresh 60-frame nine-boundary capture matches **720 spatial, 3,120 downstream and 1,920 post-block words** with state retained between frames. Live coverage is pass-through only; reset/override branches are isolated-oracle coverage. All nine hooks were restored and debugger detachment verified. See `mcm-chase-post-smoothing-validation.json` and its recovery notes.
+
+World bounds, terrain clearance, final camera/view/render ordering and the frame-38 negative-steering mismatch remain open. Preview handling is unchanged.
+
 ## Joined initialized chase controller (2026-11-15)
 
 Source, backup restoration, the pre-input yaw gate, base, controls, heading and smoothing now run as one retained production controller. A fresh entry oracle matches **2,560 cases / 15,360 words**. Previously collected idle/pulse captures match **190 frames / 9,880 downstream words / 2,280 spatial words**, including a within-frame yaw threshold crossing that verifies gate-before-controls ordering. Camera/filter/target state is retained rather than reseeded per control entry. See `mcm-chase-controller-validation.json` and `mcm-chase-controller-recovery.md`.

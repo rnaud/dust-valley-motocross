@@ -1,3 +1,4 @@
+import {finishMcmChaseSmoothing} from '../../src/physics/mcm/chase-post-smoothing.js';
 import {stepMcmChaseController} from '../../src/physics/mcm/chase-controller.js';
 import {prepareMcmChaseEntry} from '../../src/physics/mcm/chase-entry.js';
 import {stepMcmChaseControls} from '../../src/physics/mcm/chase-controls.js';
@@ -8,13 +9,13 @@ const floats=w=>new Float32Array(Uint32Array.from(w).buffer),bits=f=>Array.from(
 const filterBits=state=>{const f=new Float32Array(24);state.filters.forEach((r,i)=>f.set(r,i*4));return bits(f);};
 const cameraWords=r=>[r.inputs[23],r.inputs[24],r.inputs[26],r.inputs[27],r.inputs[28],...r.inputs.slice(33,36),r.inputs[49],...r.inputs.slice(50,54)];
 const cameraState=s=>{const c=s.camera;return [...bits(Float32Array.of(c.pitch,c.radius,c.yaw,c.orbitAngle)),s.eyeResetFlag,...bits(c.backup),...bits(Float32Array.of(c.zoom)),...bits(s.settings)];};
-export function analyzeLiveChaseController(rows){
- let joinedState=null,controlsInput=null,sourceInput=null,baseInput=null;
+export function analyzeLiveChaseController(rows,{postSmoothing=false}={}){
+ let joinedState=null,controlsInput=null,sourceInput=null,baseInput=null,smoothed=null,postBefore=null;
  let state=null,pending=null,identity=null,pairs=0,active=0,bypassed=0;const modes=new Set();let resets=0;
- const phases=['source-entry','source-exit','restore-entry','base-entry','base-exit','controls-entry','before','after'];
+ const phases=['source-entry','source-exit','restore-entry','base-entry','base-exit','controls-entry','before','after',...(postSmoothing?['post']:[])];
  let eyeGate=0,motionGate=0,multiplier=0,restoreFlag=0;let phaseIndex=0,sourceEntry=null,baseEntry=null,source=null,base=null,retainedTarget=null,retainedTargetChecks=0;
  for(const r of rows){
-  for(const [name,n] of [['inputs',75],['filters',24],['pointers',6],['targets',6],['result',6]])assert.ok(Array.isArray(r[name])&&r[name].length===n&&r[name].every(v=>Number.isInteger(v)&&v>=0&&v<=0xffffffff),'Invalid '+name);
+  for(const [name,n] of [['inputs',postSmoothing?76:75],['filters',24],['pointers',6],['targets',6],['result',6]])assert.ok(Array.isArray(r[name])&&r[name].length===n&&r[name].every(v=>Number.isInteger(v)&&v>=0&&v<=0xffffffff),'Invalid '+name);
   assert.ok(Number.isInteger(r.deltaBits)&&r.deltaBits>=0&&r.deltaBits<=0xffffffff,'Invalid delta');
   assert.equal(r.phase,phases[phaseIndex],'Missing or reordered spatial stage');phaseIndex=(phaseIndex+1)%phases.length;
   assert.equal(r.frame,pairs,'Nonsequential spatial frame');
@@ -27,8 +28,8 @@ export function analyzeLiveChaseController(rows){
    }
    assert.ok(r.inputs[74],'Unrecovered camera initialization');
    assert.deepEqual(cameraWords(r),cameraState(state),'Retained camera differs at source entry');
-   if(pairs===0){restoreFlag=r.inputs[73];retainedTarget=floats(r.result.slice(0,3));joinedState={...structuredClone(state),restoreFlag,target:Float32Array.from(retainedTarget)};}
-   assert.equal(r.inputs[73],restoreFlag,'Retained restore flag differs');
+   if(pairs===0){restoreFlag=r.inputs[73];retainedTarget=floats(r.result.slice(0,3));joinedState={...structuredClone(state),restoreFlag,target:Float32Array.from(retainedTarget)};if(postSmoothing)state.previousMode=joinedState.previousMode=r.inputs[75];}
+   assert.equal(r.inputs[73],restoreFlag,'Retained restore flag differs');if(postSmoothing)assert.equal(r.inputs[75],state.previousMode,'Retained previous mode differs');
    sourceEntry=r;const v=floats(r.inputs);
    sourceInput={direction:v.slice(54,57),velocity:v.slice(36,39),bike6a4:v[40],bike620:r.inputs[57]};source=deriveMcmChaseSource(sourceInput).source;
   }else{
@@ -72,7 +73,7 @@ export function analyzeLiveChaseController(rows){
    assert.deepEqual(bits(joined.target),bits(result.target),'Joined controller target differs');assert.deepEqual(bits(joined.eye),bits(result.eye),'Joined controller eye differs');
    assert.deepEqual(filterBits(joinedState),filterBits(state),'Joined controller filters differ');assert.deepEqual(cameraState(joinedState),cameraState(state),'Joined controller camera differs');assert.equal(joinedState.restoreFlag,restoreFlag);
    assert.equal(joined.eyeGate,eyeGate,'Joined controller entry ordering differs');
-   retainedTarget=Float32Array.from(result.target);if(result.reset)resets++;modes.add(args.mode);if(result.rotation.active)active++;else bypassed++;
+   smoothed=result;retainedTarget=Float32Array.from(result.target);if(result.reset)resets++;modes.add(args.mode);if(result.rotation.active)active++;else bypassed++;
    pending={row:r,targets:bits(result.targets),result:bits(values)};
   }else if(r.phase==='after'){
    assert.ok(pending,'Missing entry');
@@ -81,9 +82,19 @@ export function analyzeLiveChaseController(rows){
    assert.deepEqual(r.inputs.slice(20,23),bits(state.axis),'Native shared axis differs');
    assert.deepEqual(r.targets,pending.targets,'Native targets differ');
    assert.deepEqual(r.filters,filterBits(state),'Native filters differ');
-   assert.deepEqual(r.result,pending.result,'Native result differs');assert.deepEqual(cameraWords(r),cameraState(state),'Native camera state differs');pairs++;pending=null;
+   assert.deepEqual(r.result,pending.result,'Native result differs');assert.deepEqual(cameraWords(r),cameraState(state),'Native camera state differs');if(postSmoothing){assert.equal(r.inputs[75],state.previousMode,'Previous mode changed before post-smoothing');postBefore=r;}else pairs++;pending=null;
+  }else if(r.phase==='post'){
+   assert.equal(r.esp,postBefore.esp,'Post-smoothing stack changed');
+   for(const index of [11,12,61])assert.equal(r.inputs[index],postBefore.inputs[index],'Post-smoothing input changed');
+   const input={mode:postBefore.inputs[11],actorType:postBefore.inputs[12],usePrevious:postBefore.inputs[61]};
+   const result=finishMcmChaseSmoothing(state,smoothed,input);finishMcmChaseSmoothing(joinedState,smoothed,input);
+   assert.deepEqual(r.result,[...bits(result.target),...bits(result.eye)],'Native post-smoothing output differs');
+   assert.deepEqual(r.filters,filterBits(state),'Native post-smoothing filters differ');
+   assert.deepEqual(cameraWords(r),cameraState(state),'Native post-smoothing camera differs');
+   assert.equal(r.inputs[75],state.previousMode,'Native post-smoothing mode differs');
+   retainedTarget=Float32Array.from(result.target);pairs++;
   }
  }
- assert.ok(state&&!pending&&phaseIndex===0,'Incomplete capture');return {pairs,downstreamWords:pairs*52,spatialWords:pairs*12,retainedTargetChecks,active,bypassed,resets,modes:[...modes].sort()};
+ assert.ok(state&&!pending&&phaseIndex===0,'Incomplete capture');return {pairs,downstreamWords:pairs*52,spatialWords:pairs*12,retainedTargetChecks,active,bypassed,resets,modes:[...modes].sort(),...(postSmoothing?{postWords:pairs*32}:{})};
 }
-if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href)console.log(JSON.stringify(analyzeLiveChaseController(fs.readFileSync(process.argv[2],'utf8').trim().split('\n').map(JSON.parse)),null,2));
+if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href)console.log(JSON.stringify(analyzeLiveChaseController(fs.readFileSync(process.argv[2],'utf8').trim().split('\n').map(JSON.parse),{postSmoothing:process.argv.includes('--post')}),null,2));

@@ -1,0 +1,68 @@
+{
+  "scope": "Post-smoothing mode reset and eye/target override, before world bounds and terrain clearance",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "native": {
+    "range": "0x47d606..0x47d71f",
+    "cases": 864,
+    "words": 27648,
+    "differences": 0,
+    "previousModes": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      999
+    ],
+    "modes": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "actorTypes": [
+      0,
+      1,
+      2
+    ],
+    "overrideFlags": [
+      0,
+      1
+    ],
+    "usePreviousFlags": [
+      0,
+      1
+    ]
+  },
+  "live": {
+    "frames": 60,
+    "spatialWords": 720,
+    "downstreamWords": 3120,
+    "postWords": 1920,
+    "retainedTargetChecks": 60,
+    "mode": 0,
+    "previousMode": 999,
+    "overrideFlag": 0,
+    "branch": "pass-through",
+    "hooksRestored": 9,
+    "debuggerDetached": true
+  },
+  "limits": [
+    "Reset and forced override branches are covered by isolated original execution, not live transitions.",
+    "World/actor inputs remain observed at controller boundaries.",
+    "World bounds, terrain clearance and final camera/view/render ordering remain open.",
+    "The frame-38 steering divergence is not resolved and preview handling is unchanged."
+  ],
+  "tests": {
+    "passed": 515,
+    "failed": 0,
+    "build": true
+  }
+}
