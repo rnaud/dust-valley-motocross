@@ -428,8 +428,10 @@ int main(int argc, char **argv) {
         return 2;
     }
     DebugSetProcessKillOnExit(FALSE);
-    int installed = 0, pending = -1, done = 0;
-    DWORD pending_thread = 0, count = 0, start = GetTickCount();
+    int installed = 0, done = 0;
+    int pending_steps[64]; DWORD step_threads[64]={0};
+    for(unsigned i=0;i<64;i++)pending_steps[i]=-1;
+    DWORD count = 0, start = GetTickCount();
     while (!done) {
         DEBUG_EVENT event;
         DWORD status = DBG_CONTINUE;
@@ -456,8 +458,15 @@ int main(int argc, char **argv) {
         if (event.dwDebugEventCode == EXCEPTION_DEBUG_EVENT) {
             DWORD code = event.u.Exception.ExceptionRecord.ExceptionCode;
             DWORD address = (DWORD)(uintptr_t)event.u.Exception.ExceptionRecord.ExceptionAddress;
+            unsigned slot=0;
+            while(slot<64 && step_threads[slot] && step_threads[slot]!=event.dwThreadId)slot++;
+            if(slot==64){fprintf(stderr,"Too many capture threads\n");TerminateProcess(process,5);done=2;ContinueDebugEvent(event.dwProcessId,event.dwThreadId,status);break;}
+            step_threads[slot]=event.dwThreadId;
+            int pending=pending_steps[slot];
+            DWORD pending_thread=event.dwThreadId;
+            if(getenv("MCM_DEBUG_EVENTS"))fprintf(stderr,"exception code=%08lx address=%08lx thread=%lu pending=%d first=%lu\n",code,address,event.dwThreadId,pending,event.u.Exception.dwFirstChance);
             int matched = -1;
-            for (unsigned i = 0; i < hook_count; i++) if (armed[i] && address == addresses[i]) matched = i;
+            for (unsigned i = 0; i < hook_count; i++) if (address == addresses[i]) matched = i;
             if (code == EXCEPTION_BREAKPOINT && !installed && !done) {
                 for (unsigned i = 0; i < hook_count; i++) {
                     write_byte(addresses[i], 0xcc);
@@ -499,6 +508,9 @@ int main(int argc, char **argv) {
   if(matched==57){DWORD args[3],cs,device,state2300,device28;if(!read_memory(context.Esp,args,sizeof(args))||!read_memory(args[1]+0x12d0,&cs,4)||!read_memory(cs+8,&device,4)||!read_memory(args[2]+0x2300,&state2300,4)||!read_memory(device+0x28,&device28,4))done=2;else fprintf(render_out,"{\"phase\":\"viewport-input\",\"frame\":%lu,\"block\":%lu,\"cs\":%lu,\"state2300\":%lu,\"device28\":%lu}\n",player_frame-1,args[2],cs,state2300,device28);}
   if(matched==131){DWORD args[7],words[16];if(!read_memory(context.Esp,args,sizeof(args)))done=2;else if(args[0]==0x7a92f994){if(args[5]!=64||!read_memory(args[6],words,sizeof(words)))done=2;else{fprintf(render_out,"{\"phase\":\"viewport-payload\",\"frame\":%lu,\"data\":%lu,\"words\":[",player_frame-1,args[6]);for(unsigned j=0;j<16;j++)fprintf(render_out,"%s%lu",j?",":"",words[j]);fprintf(render_out,"]}\n");}}}
   if(matched==57){DWORD args[3],state2540;if(!read_memory(context.Esp,args,sizeof(args))||!read_memory(args[2]+0x2540,&state2540,4))done=2;else fprintf(render_out,"{\"phase\":\"upload-config\",\"frame\":%lu,\"block\":%lu,\"state2540\":%lu}\n",player_frame-1,args[2],state2540);}
+  if(matched==154||matched==157){DWORD command=context.Ebx,words[3];if(matched==154&&!read_memory(context.Esp+8,&command,4))done=2;else if(!read_memory(command+0x24,words,sizeof(words)))done=2;else fprintf(render_out,"{\"phase\":\"command-free-input\",\"frame\":%lu,\"stage\":%d,\"command\":%lu,\"buffer\":%lu,\"pointer\":%lu,\"flags\":%lu}\n",player_frame-1,matched,command,words[0],words[1],words[2]);}
+  if(matched==150){DWORD args[5],box[6],upload[3];if(!read_memory(context.Esp,args,sizeof(args))||!read_memory(args[1],box,sizeof(box))||!read_memory(args[2],upload,sizeof(upload)))done=2;else{fprintf(render_out,"{\"phase\":\"command-producer\",\"frame\":%lu,\"cs\":%lu,\"resource\":%lu,\"subresource\":%lu,\"rowPitch\":%lu,\"slicePitch\":%lu,\"box\":[",player_frame-1,context.Eax,context.Edx,context.Ecx,args[3],args[4]);for(unsigned j=0;j<6;j++)fprintf(render_out,"%s%lu",j?",":"",box[j]);fprintf(render_out,"],\"upload\":[%lu,%lu,%lu]}\n",upload[0],upload[1],upload[2]);}}
+  if(matched==154){DWORD command,words[14];if(!read_memory(context.Esp+8,&command,4)||!read_memory(command,words,sizeof(words)))done=2;else{fprintf(render_out,"{\"phase\":\"command-bytes\",\"frame\":%lu,\"command\":%lu,\"words\":[",player_frame-1,command);for(unsigned j=0;j<14;j++)fprintf(render_out,"%s%lu",j?",":"",words[j]);fprintf(render_out,"]}\n");}}
   if(matched==22){if(!draw_depth)done=2;else draw_depth--;}
  }
 }else if(matched==14){
@@ -597,12 +609,15 @@ int main(int argc, char **argv) {
                 if(pending==14&&store_pending){DWORD value;if(!read_memory(scratch_address,&value,4))done=2;else fprintf(render_out,"{\"phase\":\"store-after\",\"frame\":%lu,\"value\":%lu}\n",player_frame-1,value);store_pending=0;}
                 if (thread) CloseHandle(thread);
                 if (!done && count >= limit){done=capture_contact&&!contact_exported?2:1;if(done==2)fprintf(stderr,"No requested contact boundary captured.\n");}
-                if (!done) {
+                int shared_step=0;
+                for(unsigned i=0;i<64;i++)if(i!=slot&&pending_steps[i]==pending)shared_step=1;
+                if (!done && !shared_step) {
                     write_byte(addresses[pending], 0xcc);
                     armed[pending] = 1;
                 }
                 pending = -1;
             } else if (code != EXCEPTION_BREAKPOINT) status = DBG_EXCEPTION_NOT_HANDLED;
+            pending_steps[slot]=pending;
         }
         // Menu RNG calls can produce debug events continuously. Check the
         // no-record deadline even when WaitForDebugEvent never times out.
@@ -617,8 +632,8 @@ int main(int argc, char **argv) {
                 armed[i] = 0;
             }
             // An error while stepping cannot safely leave TF set in the game.
-            if (pending >= 0) {
-                HANDLE thread = OpenThread(THREAD_GET_CONTEXT | THREAD_SET_CONTEXT, FALSE, pending_thread);
+            for(unsigned i=0;i<64;i++)if (pending_steps[i] >= 0) {
+                HANDLE thread = OpenThread(THREAD_GET_CONTEXT | THREAD_SET_CONTEXT, FALSE, step_threads[i]);
                 CONTEXT context = {.ContextFlags = CONTEXT_CONTROL};
                 if (thread && GetThreadContext(thread, &context)) {
                     context.EFlags &= ~0x100u;

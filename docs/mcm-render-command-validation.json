@@ -1,0 +1,62 @@
+{
+  "overlaps": 3,
+  "examples": [
+    {
+      "line": 17,
+      "pending": {
+        "420": "7bf904f3"
+      },
+      "events": [
+        "exception code=80000004 address=7bf904f3 thread=420 pending=165 first=1",
+        "exception code=80000003 address=7bf904f3 thread=420 pending=-1 first=1",
+        "exception code=80000003 address=004ad10d thread=296 pending=-1 first=1",
+        "exception code=80000004 address=004ad10e thread=296 pending=6 first=1",
+        "exception code=80000004 address=7bf904f6 thread=420 pending=166 first=1",
+        "exception code=80000003 address=004a52c0 thread=296 pending=-1 first=1",
+        "exception code=80000003 address=7bf904f0 thread=420 pending=-1 first=1"
+      ]
+    },
+    {
+      "line": 21,
+      "pending": {
+        "296": "004a52c0"
+      },
+      "events": [
+        "exception code=80000004 address=7bf904f6 thread=420 pending=166 first=1",
+        "exception code=80000003 address=004a52c0 thread=296 pending=-1 first=1",
+        "exception code=80000003 address=7bf904f0 thread=420 pending=-1 first=1",
+        "exception code=80000004 address=004a52c6 thread=296 pending=21 first=1",
+        "exception code=80000004 address=7bf904f3 thread=420 pending=165 first=1",
+        "exception code=80000003 address=004a54b6 thread=296 pending=-1 first=1",
+        "exception code=80000003 address=7bf904f3 thread=420 pending=-1 first=1"
+      ]
+    },
+    {
+      "line": 25,
+      "pending": {
+        "296": "004a54b6"
+      },
+      "events": [
+        "exception code=80000004 address=7bf904f3 thread=420 pending=165 first=1",
+        "exception code=80000003 address=004a54b6 thread=296 pending=-1 first=1",
+        "exception code=80000003 address=7bf904f3 thread=420 pending=-1 first=1",
+        "exception code=80000004 address=004a54bc thread=296 pending=0 first=1",
+        "exception code=80000004 address=7bf904f6 thread=420 pending=166 first=1",
+        "exception code=80000003 address=004bf195 thread=296 pending=-1 first=1",
+        "exception code=80000004 address=004bf198 thread=296 pending=3 first=1"
+      ]
+    }
+  ],
+  "failedTrace": "exception code=80000003 address=7bf4e228 thread=420 pending=-1 pending_thread=0 first=1\r\nexception code=80000003 address=7bf904f0 thread=420 pending=-1 pending_thread=0 first=1\r\nexception code=80000004 address=7bf904f3 thread=420 pending=165 pending_thread=420 first=1\r\nexception code=80000003 address=7bf904f3 thread=420 pending=-1 pending_thread=420 first=1\r\nexception code=80000004 address=7bf904f6 thread=420 pending=166 pending_thread=420 first=1\r\nexception code=80000003 address=7bf904f0 thread=420 pending=-1 pending_thread=420 first=1\r\nexception code=80000004 address=7bf904f3 thread=420 pending=165 pending_thread=420 first=1\r\nexception code=80000003 address=004a52c0 thread=296 pending=-1 pending_thread=420 first=1\r\nexception code=80000003 address=7bf904f3 thread=420 pending=21 pending_thread=296 first=1\r\nexception code=80000004 address=004a52c6 thread=296 pending=166 pending_thread=420 first=1\r\nexception code=80000004 address=7bf904f6 thread=420 pending=166 pending_thread=420 first=1\r\nexception code=80000004 address=004a52c6 thread=296 pending=-1 pending_thread=420 first=0\r\ncaptured=0 status=2\r\n",
+  "successTraceSha256": "397c18f43e0fa3decdcc35a5c1e103e53d2101205cf2ecf92e0980d7414bb3e2",
+  "cleanup": "004a54b6 restored=1\r\n004ac95a restored=1\r\n004ad5a2 restored=1\r\n004bf195 restored=1\r\n0040e990 restored=1\r\n0042ce38 restored=1\r\n004ad10d restored=1\r\n004acaad restored=1\r\n0040f99c restored=1\r\n004a5c8a restored=1\r\n0043b200 restored=1\r\n0043b334 restored=1\r\n0043b216 restored=1\r\n0044faf0 restored=1\r\n7a83308b restored=1\r\n00423a7d restored=1\r\n00423f24 restored=1\r\n00423f58 restored=1\r\n00423b22 restored=1\r\n00423b63 restored=1\r\n00423bc9 restored=1\r\n004a52c0 restored=1\r\n0044ff95 restored=1\r\n0044feec restored=1\r\n00467fcb restored=1\r\n00467fd0 restored=1\r\n00467fd8 restored=1\r\n004743f8 restored=1\r\n00467f40 restored=1\r\n00467c58 restored=1\r\n00467c64 restored=1\r\n00467d2f restored=1\r\n00467d3a restored=1\r\n00467eea restored=1\r\n00467f03 restored=1\r\n004206f2 restored=1\r\n004206f9 restored=1\r\n0043b402 restored=1\r\n0043b4b5 restored=1\r\n0043b582 restored=1\r\n0043b840 restored=1\r\n0043b87b restored=1\r\n0043b8ad restored=1\r\n0043b8e7 restored=1\r\n7aa9ea3f restored=1\r\n7aa9eaa5 restored=1\r\n7aa9eae1 restored=1\r\n7aa9eb19 restored=1\r\n7aa9eb4f restored=1\r\n7aa9eb76 restored=1\r\n7aa9eb88 restored=1\r\n7aa9eb9a restored=1\r\n7aa9ebb4 restored=1\r\n7aa9ebd8 restored=1\r\n7aa9ebf6 restored=1\r\n7aa9ebfe restored=1\r\n7aa9ec3d restored=1\r\n7a92d500 restored=1\r\n7a92d547 restored=1\r\n7a92da0e restored=1\r\n7a92da41 restored=1\r\n7a92db2b restored=1\r\n7a92db3c restored=1\r\n7a92db4d restored=1\r\n7a92dd4e restored=1\r\n7a92dd88 restored=1\r\n7a92dfaf restored=1\r\n7a92dff3 restored=1\r\n7a92e070 restored=1\r\n7a92e15c restored=1\r\n7a92e3a5 restored=1\r\n7a92e402 restored=1\r\n7a92e6d1 restored=1\r\n7a92e79e restored=1\r\n7a92e86e restored=1\r\n7a92e931 restored=1\r\n7a92e9fd restored=1\r\n7a92eacd restored=1\r\n7a92ec30 restored=1\r\n7a92ec7e restored=1\r\n7a92ecad restored=1\r\n7a92ed1c restored=1\r\n7a92eda4 restored=1\r\n7a92ee18 restored=1\r\n7a92ee60 restored=1\r\n7a92ee8f restored=1\r\n7a92ef04 restored=1\r\n7a92ef84 restored=1\r\n7a92eff8 restored=1\r\n7a92f040 restored=1\r\n7a92f06f restored=1\r\n7a92f0e0 restored=1\r\n7a92f13e restored=1\r\n7a92f16d restored=1\r\n7a92f1d0 restored=1\r\n7a92f3e6 restored=1\r\n7a92f468 restored=1\r\n7a92f4a8 restored=1\r\n7a92f58b restored=1\r\n7a92f5b7 restored=1\r\n7a92f602 restored=1\r\n7a92f640 restored=1\r\n7a92f677 restored=1\r\n7a92f7f5 restored=1\r\n7a92f830 restored=1\r\n7a92f895 restored=1\r\n7a92f8ba restored=1\r\n7a92f8ca restored=1\r\n7a92f994 restored=1\r\n7a92fa12 restored=1\r\n7a92fa7a restored=1\r\n7a92faaa restored=1\r\n7a92fb61 restored=1\r\n7a92fba4 restored=1\r\n7a92fd96 restored=1\r\n7a92fdad restored=1\r\n7a92fe06 restored=1\r\n7a92fe3c restored=1\r\n7a92feca restored=1\r\n7a92ff0d restored=1\r\n7a92ff42 restored=1\r\n7a92ff7e restored=1\r\n7a92ffd9 restored=1\r\n7a93001a restored=1\r\n7a93004f restored=1\r\n7a930104 restored=1\r\n7a930179 restored=1\r\n7a930249 restored=1\r\n7a930374 restored=1\r\n7a93044b restored=1\r\n7a9304b4 restored=1\r\n7a936e00 restored=1\r\n7a9356c0 restored=1\r\n7a92f98c restored=1\r\n7a93572a restored=1\r\n7a93578e restored=1\r\n7a9357b2 restored=1\r\n7a9357d4 restored=1\r\n7a935809 restored=1\r\n7a93585a restored=1\r\n7a935877 restored=1\r\n7a9359db restored=1\r\n7a935a06 restored=1\r\n7a935a65 restored=1\r\n7a935a75 restored=1\r\n7a935ae7 restored=1\r\n7a936f08 restored=1\r\n7a936f1f restored=1\r\n7a936f3e restored=1\r\n7a936fae restored=1\r\n7a93a180 restored=1\r\n7a93a1d8 restored=1\r\n7a93a237 restored=1\r\n7a93a246 restored=1\r\n7a926330 restored=1\r\n7a92638d restored=1\r\n7a9263c7 restored=1\r\n7a9263d9 restored=1\r\n7a926423 restored=1\r\n7a90ab70 restored=1\r\n7a909094 restored=1\r\n7a9090dc restored=1\r\n7a9090f5 restored=1\r\n7a9263d3 restored=1\r\n7a926460 restored=1\r\n7bf904f0 restored=1\r\n7bf904f3 restored=1\r\ndebugger=0 clean=1\r\n",
+  "repeat": {
+    "commands": 192,
+    "words": 2688,
+    "frees": 192,
+    "skips": 0,
+    "debugEvents": false,
+    "traceSha256": "29447eeb9b4ed18c5b975aadc9a8d65fd17d5c48384843332ee870c27f5f2078",
+    "cleanup": "004a54b6 restored=1\r\n004ac95a restored=1\r\n004ad5a2 restored=1\r\n004bf195 restored=1\r\n0040e990 restored=1\r\n0042ce38 restored=1\r\n004ad10d restored=1\r\n004acaad restored=1\r\n0040f99c restored=1\r\n004a5c8a restored=1\r\n0043b200 restored=1\r\n0043b334 restored=1\r\n0043b216 restored=1\r\n0044faf0 restored=1\r\n7a83308b restored=1\r\n00423a7d restored=1\r\n00423f24 restored=1\r\n00423f58 restored=1\r\n00423b22 restored=1\r\n00423b63 restored=1\r\n00423bc9 restored=1\r\n004a52c0 restored=1\r\n0044ff95 restored=1\r\n0044feec restored=1\r\n00467fcb restored=1\r\n00467fd0 restored=1\r\n00467fd8 restored=1\r\n004743f8 restored=1\r\n00467f40 restored=1\r\n00467c58 restored=1\r\n00467c64 restored=1\r\n00467d2f restored=1\r\n00467d3a restored=1\r\n00467eea restored=1\r\n00467f03 restored=1\r\n004206f2 restored=1\r\n004206f9 restored=1\r\n0043b402 restored=1\r\n0043b4b5 restored=1\r\n0043b582 restored=1\r\n0043b840 restored=1\r\n0043b87b restored=1\r\n0043b8ad restored=1\r\n0043b8e7 restored=1\r\n7aa9ea3f restored=1\r\n7aa9eaa5 restored=1\r\n7aa9eae1 restored=1\r\n7aa9eb19 restored=1\r\n7aa9eb4f restored=1\r\n7aa9eb76 restored=1\r\n7aa9eb88 restored=1\r\n7aa9eb9a restored=1\r\n7aa9ebb4 restored=1\r\n7aa9ebd8 restored=1\r\n7aa9ebf6 restored=1\r\n7aa9ebfe restored=1\r\n7aa9ec3d restored=1\r\n7a92d500 restored=1\r\n7a92d547 restored=1\r\n7a92da0e restored=1\r\n7a92da41 restored=1\r\n7a92db2b restored=1\r\n7a92db3c restored=1\r\n7a92db4d restored=1\r\n7a92dd4e restored=1\r\n7a92dd88 restored=1\r\n7a92dfaf restored=1\r\n7a92dff3 restored=1\r\n7a92e070 restored=1\r\n7a92e15c restored=1\r\n7a92e3a5 restored=1\r\n7a92e402 restored=1\r\n7a92e6d1 restored=1\r\n7a92e79e restored=1\r\n7a92e86e restored=1\r\n7a92e931 restored=1\r\n7a92e9fd restored=1\r\n7a92eacd restored=1\r\n7a92ec30 restored=1\r\n7a92ec7e restored=1\r\n7a92ecad restored=1\r\n7a92ed1c restored=1\r\n7a92eda4 restored=1\r\n7a92ee18 restored=1\r\n7a92ee60 restored=1\r\n7a92ee8f restored=1\r\n7a92ef04 restored=1\r\n7a92ef84 restored=1\r\n7a92eff8 restored=1\r\n7a92f040 restored=1\r\n7a92f06f restored=1\r\n7a92f0e0 restored=1\r\n7a92f13e restored=1\r\n7a92f16d restored=1\r\n7a92f1d0 restored=1\r\n7a92f3e6 restored=1\r\n7a92f468 restored=1\r\n7a92f4a8 restored=1\r\n7a92f58b restored=1\r\n7a92f5b7 restored=1\r\n7a92f602 restored=1\r\n7a92f640 restored=1\r\n7a92f677 restored=1\r\n7a92f7f5 restored=1\r\n7a92f830 restored=1\r\n7a92f895 restored=1\r\n7a92f8ba restored=1\r\n7a92f8ca restored=1\r\n7a92f994 restored=1\r\n7a92fa12 restored=1\r\n7a92fa7a restored=1\r\n7a92faaa restored=1\r\n7a92fb61 restored=1\r\n7a92fba4 restored=1\r\n7a92fd96 restored=1\r\n7a92fdad restored=1\r\n7a92fe06 restored=1\r\n7a92fe3c restored=1\r\n7a92feca restored=1\r\n7a92ff0d restored=1\r\n7a92ff42 restored=1\r\n7a92ff7e restored=1\r\n7a92ffd9 restored=1\r\n7a93001a restored=1\r\n7a93004f restored=1\r\n7a930104 restored=1\r\n7a930179 restored=1\r\n7a930249 restored=1\r\n7a930374 restored=1\r\n7a93044b restored=1\r\n7a9304b4 restored=1\r\n7a936e00 restored=1\r\n7a9356c0 restored=1\r\n7a92f98c restored=1\r\n7a93572a restored=1\r\n7a93578e restored=1\r\n7a9357b2 restored=1\r\n7a9357d4 restored=1\r\n7a935809 restored=1\r\n7a93585a restored=1\r\n7a935877 restored=1\r\n7a9359db restored=1\r\n7a935a06 restored=1\r\n7a935a65 restored=1\r\n7a935a75 restored=1\r\n7a935ae7 restored=1\r\n7a936f08 restored=1\r\n7a936f1f restored=1\r\n7a936f3e restored=1\r\n7a936fae restored=1\r\n7a93a180 restored=1\r\n7a93a1d8 restored=1\r\n7a93a237 restored=1\r\n7a93a246 restored=1\r\n7a926330 restored=1\r\n7a92638d restored=1\r\n7a9263c7 restored=1\r\n7a9263d9 restored=1\r\n7a926423 restored=1\r\n7a90ab70 restored=1\r\n7a909094 restored=1\r\n7a9090dc restored=1\r\n7a9090f5 restored=1\r\n7a9263d3 restored=1\r\n7a926460 restored=1\r\n7bf904f0 restored=1\r\n7bf904f3 restored=1\r\ndebugger=0 clean=1\r\n"
+  }
+}

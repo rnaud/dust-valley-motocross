@@ -1,5 +1,7 @@
 # Motocross Madness physics parity roadmap
 
+Update command and cleanup: [producer serialization and free predicate recovered](mcm-render-command-recovery.md), 4,096 isolated cases and 191 live commands with zero differences. Per-thread debugger step tracking fixes the observed concurrent-hook crash. Resource staging/allocation and full scratch scheduling remain open; preview handling is unchanged.
+
 Auxiliary upload gates: [three later families recovered](mcm-render-auxiliary-uploads-recovery.md), 871 native applications / 44 uploads with zero gate, order or descriptor differences. The 256-byte branch has static coverage only. Payloads, other upload families and free conditions remain open; follow-up capture single-step exits also require diagnosis.
 
 Viewport upload arithmetic: [pinned SSE matrix recovered](mcm-render-upload-recovery.md#viewport-matrix-arithmetic), 14,096 isolated native cases / 225,536 output words plus 12 live uploads / 192 words with zero differences. Other upload/free gates and shared-world scheduling remain unvalidated; preview handling is unchanged.
