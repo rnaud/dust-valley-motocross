@@ -1,6 +1,8 @@
 # Motocross Madness physics parity roadmap
 
-Latest milestone: [fog restoration and original model world submissions](mcm-render-gates-recovery.md). Native 4,096 cases / 274,432 words match; live 59 render-to-next-update restorations and 59 derived-world scratch products match. Draw scheduling and the frame-38 steering divergence remain open.
+Latest milestone: [retained renderer dirty state](mcm-render-dirty-recovery.md) predicts 286 products and 4,507 skips across 4,793 apply calls, including all 59 physics-stack overlaps. Original draw scheduling and the frame-38 mismatch remain open.
+
+Previous milestone: [fog restoration and original model world submissions](mcm-render-gates-recovery.md). Native 4,096 cases / 274,432 words match; live 59 render-to-next-update restorations and 59 derived-world scratch products match. Draw scheduling and the frame-38 steering divergence remain open.
 
 ## Computed camera reaches the exact physics-stack renderer write
 
