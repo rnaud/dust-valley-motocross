@@ -1,5 +1,13 @@
 # Motocross Madness physics parity roadmap
 
+## Live AI motion transform graphs (2026-11-15)
+
+Captured complete before/after motion-stage graphs for 256 calls in the existing Wine process: eight nodes per call, 2,048 node records, 163 turning updates and 457 cache invalidations. The recovered motion routine matches all node bytes, including local/world matrices, child cache flags and untouched fields, plus fourteen body outputs. This capture contains no low-speed boosts. All nineteen guarded hooks were independently verified restored with no debugger attached. The first attempt timed out with zero calls because the window was minimized; cleanup was verified, then the same process was restored and captured without restart.
+
+Computed upstream controller outputs now drive the actual captured graphs for the first 160 calls. The full retained replay correctly fails at call 160: `b4c` changes from one at exit159 to zero at entry160, alongside an `820` clear outside the controller. That external trick-latch clear is not yet modeled; a regression preserves the rejection. All 256 motion stages pass when their incoming commands/graphs are explicit observed boundaries. This is stage-local graph parity, not retained whole-controller or whole-world parity. No state reseeding or weakened guard was introduced.
+
+Evidence: maintained `capture-ai-motion-graph.c`/`verify-ai-motion-graph.c`, `analyze-ai-motion-graph.mjs`, graph-aware `analyze-ai-motion.mjs`, native live fixture and regression tests. Next: identify and compute the external latch-clear event and retain actual graphs through trick/nearby interactions and whole-frame dispatch. Preview handling remains unchanged.
+
 ## AI race handicap (2026-11-15)
 
 Recovered `0x46d535..0x46d707`: signed lap/route progress differences with integer wrap, progress normalization using the original signed float-bits gate, route-distance comparisons against the other actor, clamping and the body `ba8` speed scale. All three outputs match 8,192 repeated intact original executions, with synthetic route tables, inactive/active race branches and finite inputs. Native evidence caught and corrected premature float rounding in the final scale expression; the original retains double precision between stores.
