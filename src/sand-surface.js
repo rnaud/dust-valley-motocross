@@ -3,16 +3,17 @@ import {applyTerrainTexture} from './textures.js';
 
 // Render the exact CPU collision samples; no visual-only displacement.
 export class SandSurface {
- constructor(scene,textures,coarseMaterial){
+ constructor(scene,textures,coarseMaterial,{coarseHeight}={}){
+  this.coarseHeight=coarseHeight;
   this.scene=scene;this.meshes=new Map();this.coarseMaterial=coarseMaterial;
-  this.material=new THREE.MeshStandardMaterial({roughness:1});
+  this.material=new THREE.MeshStandardMaterial({roughness:1,side:THREE.DoubleSide});
   applyTerrainTexture(this.material,textures);this.material.map=textures.freeMacro;this.material.vertexColors=true;
  }
  update(sand){
   if(this.sand!==sand){for(const mesh of this.meshes.values()){this.scene.remove(mesh);mesh.geometry.dispose();}this.meshes.clear();this.sand=sand;}
   const bounds=this.coarseMaterial.userData.sandBounds.value;
   if(!sand){bounds.set(0,0,0,0);for(const mesh of this.meshes.values()){this.scene.remove(mesh);mesh.geometry.dispose();}this.meshes.clear();return;}
-  const b=sand.bounds;bounds.set(b.minX,b.maxX,b.minZ,b.maxZ);
+  const b=sand.bounds,boundsChanged=bounds.x!==b.minX||bounds.y!==b.maxX||bounds.z!==b.minZ||bounds.w!==b.maxZ;bounds.set(b.minX,b.maxX,b.minZ,b.maxZ);
   for(const [key,mesh] of this.meshes)if(!sand.tiles.has(key)){this.scene.remove(mesh);mesh.geometry.dispose();this.meshes.delete(key);}
   for(const [key,tile] of sand.tiles){
    let mesh=this.meshes.get(key);const n=tile.data.length,segments=n-1;
@@ -37,9 +38,16 @@ export class SandSurface {
     geo.setAttribute('position',new THREE.BufferAttribute(positions,3));geo.setAttribute('uv',new THREE.BufferAttribute(uv,2));geo.setIndex(indices);
     mesh=new THREE.Mesh(geo,this.material);mesh.receiveShadow=true;mesh.userData.revision=-1;this.scene.add(mesh);this.meshes.set(key,mesh);
    }
-   if(mesh.userData.revision!==tile.revision){
+   if(mesh.userData.revision!==tile.revision||boundsChanged){
     const p=mesh.geometry.attributes.position;for(let j=0;j<n;j++)for(let i=0;i<n;i++)p.setY(j*n+i,tile.data[i][j]);
-    mesh.geometry.userData.skirtSources.forEach((source,k)=>{const v=n*n+k*2;p.setY(v,p.getY(source));p.setY(v+1,p.getY(source)-2);});
+    mesh.geometry.userData.skirtSources.forEach((source,k)=>{
+     const v=n*n+k*2,x=p.getX(source),z=p.getZ(source),y=p.getY(source);
+     const boundary=x===b.minX||x===b.maxX||z===b.minZ||z===b.maxZ;
+     const coarse=boundary&&this.coarseHeight?this.coarseHeight(x,z):y;
+     // Join both sides of the actual coarse/fine height difference. A fixed
+     // downward skirt leaves sky-visible cracks when coarse terrain is higher.
+     p.setY(v,Math.max(y,coarse));p.setY(v+1,boundary?Math.min(y,coarse)-.05:y);
+    });
     const colors=mesh.geometry.attributes.color;
     for(let j=0;j<n;j++)for(let i=0;i<n;i++){
      const index=j*n+i,x=p.getX(index),z=p.getZ(index);
@@ -52,6 +60,9 @@ export class SandSurface {
     // Shared edge gradients avoid lighting seams between independently rebuilt tiles.
     const normals=mesh.geometry.attributes.normal;
     for(const source of mesh.geometry.userData.skirtSources){const x=p.getX(source),z=p.getZ(source),dx=sand.height(x-.25,z)-sand.height(x+.25,z),dz=sand.height(x,z-.25)-sand.height(x,z+.25),length=Math.hypot(dx,.5,dz);normals.setXYZ(source,dx/length,.5/length,dz/length);}
+    // Stitching faces should continue the terrain lighting, not create bright
+    // vertical ribbons. Interior faces collapse to avoid overlapping tile walls.
+    mesh.geometry.userData.skirtSources.forEach((source,k)=>{for(let side=0;side<2;side++)normals.setXYZ(n*n+k*2+side,normals.getX(source),normals.getY(source),normals.getZ(source));});
     normals.needsUpdate=true;mesh.geometry.computeBoundingSphere();mesh.userData.revision=tile.revision;
    }
   }

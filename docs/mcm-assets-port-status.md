@@ -49,3 +49,9 @@ All six waypoint terrains now expose their two original named scene environments
 ## Preview interpolation — November 15, 2026
 
 Original bike/rider meshes now interpolate between the same fixed-step snapshots used by the camera. Previously the camera interpolated while all 21 original surfaces displayed the latest 50 Hz physics pose directly, producing visible stepping on faster displays. Presentation snapshots are captured after each physics tick and reset on restart/recovery; rendering never changes native transforms or cache-valid flags. Unit coverage checks intermediate poses, multiple ticks between renders and reset history. The browser regression records motion between unchanged physics frames at a simulated 120 Hz display cadence on desktop and touch layouts.
+
+## Terrain joins and lighting — 2026-11-15
+
+Reproduced sky-visible white gaps at the detailed-sand/coarse-terrain boundary in the live Dunes preview. Render skirts now span the actual heights on both sides, render from either direction, refresh when patch bounds move, and collapse on interior tile edges. Stitching normals continue the terrain shading. Top-surface collision samples and physics are unchanged. Some coarse/fine geometry transitions remain visible; this is not full original-scene rendering parity.
+
+Softened the extra wheel-contact shadows to avoid solid discs over the directional shadow, and blended the visible sky horizon toward the active fog color. Checked four Dunes viewing directions and desktop/touch acceleration, release, steering/reset, sand and Classic-mode browser flows. All 644 tests and the production build pass.

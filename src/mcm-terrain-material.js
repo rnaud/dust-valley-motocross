@@ -32,7 +32,7 @@ export function createMcmTerrainMaterial(resources,state,{bounds,dense=false}={}
  const uniforms={mcmAtlas:{value:resources.atlas},mcmLeaves:{value:resources.lookup},mcmAtlasLayout:{value:new THREE.Vector4(resources.columns,resources.rows,resources.size,resources.side)},
   mcmNativeX:{value:new THREE.Vector3((b.x-a.x)*scale,(c.x-a.x)*scale,a.x*scale)},mcmNativeZ:{value:new THREE.Vector3((b.z-a.z)*scale,(c.z-a.z)*scale,a.z*scale)},
   mcmQuarter:{value:physics.scene.terrainMode===1?0:1},mcmBounds:bounds??{value:new THREE.Vector4()},mcmDense:{value:dense?1:0}};
- const material=new THREE.MeshStandardMaterial({roughness:1,vertexColors:dense});
+ const material=new THREE.MeshStandardMaterial({roughness:1,vertexColors:dense,side:dense?THREE.DoubleSide:THREE.FrontSide});
  material.onBeforeCompile=shader=>{
   Object.assign(shader.uniforms,uniforms);
   shader.vertexShader='varying vec2 mcmWorld;\n'+shader.vertexShader;

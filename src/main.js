@@ -1,3 +1,4 @@
+import {matchSkyHorizon} from './sky-haze.js';
 import mcmSceneVariants from './mcm-scene-variants.json';
 import mcmSceneSettings from './mcm-scene-settings.json';
 import * as THREE from 'three';
@@ -53,6 +54,7 @@ const environmentGenerator=new THREE.PMREMGenerator(renderer);
 let environmentTarget;
 const environmentScene=new THREE.Scene();
 const environmentSky=sky.clone();environmentSky.material=sky.material.clone();environmentScene.add(environmentSky);
+matchSkyHorizon(sky.material,scene.fog.color);
 const sunDir=new THREE.Vector3(-110,62,48).normalize(),glowTexture=createDustTexture();
 const sunGlow=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTexture,color:'#ffcf8a',transparent:true,opacity:.34,depthWrite:false,blending:THREE.AdditiveBlending,fog:false}));sunGlow.scale.set(170,170,1);scene.add(sunGlow);
 const sunCore=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTexture,color:'#fff0c8',transparent:true,opacity:.85,depthWrite:false,blending:THREE.AdditiveBlending,fog:false}));sunCore.scale.set(42,42,1);scene.add(sunCore);
@@ -89,7 +91,7 @@ materials.rock.map=textures.rock;materials.rock.color.set('#ffffff');materials.r
 materials.green.map=textures.cactus;materials.green.color.set('#ffffff');materials.green.bumpMap=textures.cactus;materials.green.bumpScale=.06;
 materials.dark.map=textures.rubber;materials.dark.color.set('#ffffff');
 const groundGeo=new THREE.PlaneGeometry(900,900,360,360);groundGeo.rotateX(-Math.PI/2);groundGeo.setIndex(terrainIndices(360));const pos=groundGeo.attributes.position,colors=[];const c=new THREE.Color();for(let i=0;i<pos.count;i++){const x=pos.getX(i),z=pos.getZ(i);pos.setY(i,terrain(x,z));const d=trackDistance(x,z);c.set(d<10?'#a66b42':d<12?'#be8a57':'#c49765');c.multiplyScalar(.94+.07*Math.sin(x*3+z*6));colors.push(c.r,c.g,c.b);}groundGeo.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));groundGeo.computeVertexNormals();const ground=new THREE.Mesh(groundGeo,materials.dirt);ground.receiveShadow=true;scene.add(ground);
-const sandSurface=new SandSurface(scene,textures,materials.dirt);
+const sandSurface=new SandSurface(scene,textures,materials.dirt,{coarseHeight:(x,z)=>sampleGrid(i=>pos.getY(i),x,z,360,2.5)});
 const classicSandMaterial=sandSurface.material;let originalTerrainTextures,originalTerrainMaterials=[];
 function updateOriginalTerrainMaterials(){
  originalTerrainMaterials.forEach(m=>m.dispose());originalTerrainMaterials=[];originalTerrainTextures?.dispose();originalTerrainTextures=null;
@@ -367,7 +369,7 @@ const ghostHead=new THREE.Mesh(new THREE.SphereGeometry(.2,8,6),ghostMat);ghostH
 ghostBike.visible=false;scene.add(ghostBike);
 const frontUp=new THREE.Vector3(),frontForward=new THREE.Vector3(),frontRotation=new THREE.Quaternion();
 // Contact patches anchor the wheels visually even when suspension and terrain disagree by millimetres.
-const shadowMat=new THREE.MeshBasicMaterial({color:0x2e2015,transparent:true,opacity:.38,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2});
+const shadowMat=new THREE.MeshBasicMaterial({color:0x2e2015,map:glowTexture,transparent:true,opacity:.2,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2});
 const wheelShadows=[0,1].map(()=>{const m=new THREE.Mesh(new THREE.CircleGeometry(1,20),shadowMat);m.rotation.x=-Math.PI/2;m.renderOrder=2;m.visible=false;scene.add(m);return m;});
 const dustCount=180,dustGeo=new THREE.BufferGeometry(),dustPositions=new Float32Array(dustCount*3);dustGeo.setAttribute('position',new THREE.BufferAttribute(dustPositions,3));
 const dust=new THREE.Points(dustGeo,new THREE.PointsMaterial({map:createDustTexture(),color:'#f5dcb2',size:1.6,transparent:true,opacity:.46,depthWrite:false,sizeAttenuation:true}));dust.frustumCulled=false;scene.add(dust);
@@ -480,11 +482,11 @@ const lightEls=[...document.querySelectorAll('#lights i')];
 function setLights(lit,go=false){lightEls.forEach((el,i)=>{el.classList.toggle('on',!go&&lit>i);el.classList.toggle('go',go);});}
 function highlight(){gates.forEach((g,i)=>{g.mat.color.set(i===nextGate?'#e4ff69':'#e4d8b2');g.mat.emissive.set(i===nextGate?'#556500':'#000000');});}
 function updateEnvironment(){
-  if(!originalTerrainTextures)sandSurface.material.map=mode==='free'?textures.freeMacro:textures.macro;sandSurface.update(activeSand);syncSandOption();
+  if(!originalTerrainTextures)sandSurface.material.map=mode==='free'?textures.freeMacro:textures.macro;syncSandOption();
   tireTracks.clear();
   trackObjects.visible=mode!=='free';tyreStacks.visible=mode!=='free';jumpMarkers.visible=mode==='free'&&!previewHeight;materials.dirt.map=mode==='free'?textures.freeMacro:textures.macro;
   for(let i=0;i<pos.count;i++)pos.setY(i,terrain(pos.getX(i),pos.getZ(i)));
-  pos.needsUpdate=true;groundGeo.computeVertexNormals();groundGeo.computeBoundingSphere();
+  pos.needsUpdate=true;groundGeo.computeVertexNormals();groundGeo.computeBoundingSphere();sandSurface.update(activeSand);
   gates.forEach(g=>{g.group.position.y=terrain(g.p.x,g.p.z);});
   let marker=0;
   for(let i=0;i<160;i++){const p=track(i/160*TAU);for(const side of [-1,1]){const x=p.x+p.tz*11*side,z=p.z-p.tx*11*side;stakes.setMatrixAt(marker++,stakeMatrix.makeTranslation(x,terrain(x,z)+.6,z));}}
