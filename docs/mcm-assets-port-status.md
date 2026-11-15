@@ -18,7 +18,7 @@ This is an asset-port tally, separate from physics equivalence. Matching geometr
 
 ## Scene settings and comparison scenery
 
-- Imported a source-hashed SCN settings record for every available matching course file; missing files are explicit null entries. Defaults are not presented as exact race starts.
+- Imported a source-hashed SCN settings record for every available matching course file; missing same-name files are explicit null entries. Filename matching is case-insensitive, including `TRACK13.TRN` / `TRACK13.SCN` (Widowmaker). Waypoint terrain files use differently named race scenes; selecting those race variants is still outstanding. Defaults are not presented as exact race starts.
 - Preview applies a scene’s declared fog color when present. Fog distance, sky cubes and lighting remain unported; imported sky/light metadata is preserved for that work.
 - Original-map rides now hide Dust Valley’s decorative mountains, cacti, rocks, arch, grass and nearby procedural ground details. Classic restores these decorations.
 - Desktop Dunes and touch Week 10 browser checks verify original meshes/textures and absence of procedural scenery.
@@ -35,3 +35,7 @@ This is an asset-port tally, separate from physics equivalence. Matching geometr
 ## Verification for the first playable milestone
 
 All 33 imported terrains completed 30 recovered acceleration frames with finite motion in a local run. Focused tests verify complete mesh-to-node binding, unchanged physics transform/cache state after rendering, malformed resource rejection, and terrain reset/shadow setup on two distinct maps. Browser validation and deployment results are tracked with the milestone report.
+
+## Deployed asset verification — 2026-11-14
+
+The public Pages build passed desktop Dunes and touch Week 10 startup checks with Rider 12 and Bike 02: 21 drawable parts, original terrain textures, no missing textures, recovered-core backend, and no browser errors. This checks asset delivery and startup, not sustained physics equivalence. `scripts/original-assets-smoke.mjs` accepts `MCM_MAP` to repeat the check on a selected course.

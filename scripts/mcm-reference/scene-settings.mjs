@@ -1,4 +1,8 @@
 // SCN files are INI-like; comments and repeated light sections must stay distinct.
+export function findMcmSceneFile(terrainFile, files){
+ const sceneName=terrainFile.split(/[\\/]/).at(-1).replace(/\.trn$/i,'.scn').toLowerCase();
+ return files.find(name=>name.toLowerCase()===sceneName);
+}
 export function readMcmSceneSettings(text){
  const sections={};let section=null;
  for(const raw of text.split(/\r?\n/)){

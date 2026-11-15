@@ -49,7 +49,61 @@
     "source": "teraform/canyon/canyon05.scn",
     "sha256": "cae3bb238b20679f555a6fe78fc5038316da132cbcbe62a3d54ed3e96dae0b5b"
   },
-  "quarries-track13": null,
+  "quarries-track13": {
+    "title": "Widowmaker",
+    "skyCube": "cube10.cub",
+    "fogColor": [
+      155,
+      195,
+      215
+    ],
+    "defaultStartPosition": [
+      1113,
+      100,
+      1197
+    ],
+    "defaultStartDirection": [
+      0,
+      0,
+      1
+    ],
+    "lights": [
+      {
+        "type": "Ambient",
+        "color": [
+          120,
+          120,
+          120
+        ],
+        "position": null,
+        "target": null,
+        "castsShadows": false,
+        "atInfinity": true
+      },
+      {
+        "type": "ObjectPoint",
+        "color": [
+          200,
+          200,
+          200
+        ],
+        "position": [
+          -780,
+          1807.5,
+          361.155
+        ],
+        "target": [
+          0,
+          0,
+          0
+        ],
+        "castsShadows": true,
+        "atInfinity": true
+      }
+    ],
+    "source": "teraform/quarries/TRACK13.SCN",
+    "sha256": "eca90f973982e271166a93503bd5ceb92a3bc2847ae0a06ad58f5421b996ffaa"
+  },
   "quarries-dunes": {
     "title": "Yuma Sand Dunes",
     "skyCube": "cube21.cub",
