@@ -1,3 +1,4 @@
+import {analyzeAiAllocations} from './analyze-ai-allocations.mjs';
 import {decodeAiMotionGraph} from './analyze-ai-motion-graph.mjs';
 import assert from 'node:assert/strict';
 import {analyzeAiThrottle} from './analyze-ai-throttle.mjs';
@@ -7,6 +8,7 @@ import {floatBits as bits,bitsFloat as float} from '../../src/physics/mcm/math.j
 // Graph captures supply actual motion-stage entry graphs; all node bytes are
 // checked using computed upstream controls. This is not retained graph replay.
 export function analyzeAiMotion(rows,options){
+ if(rows.some(r=>r.phase==='allocation-event'))analyzeAiAllocations(rows);
  const controls=analyzeAiThrottle(rows,options),offsets=[0x510,0x514,0x518,0x4c0,0x4c4,0x4c8,0x4cc,0x4d0,0x4d4,0x6a4,0xb14,0xb0c,0xb10,0xb6c];let calls=0,rotations=0,boosts=0;
  for(const entry of rows.filter(r=>r.phase==='before')){
   const b=Buffer.from(entry.hex,'hex'),c=controls.checks.find(r=>r.sequence===entry.sequence),rawAngle=Math.fround(Math.fround(Math.PI/2)-b.readFloatLE(0x4dc));
