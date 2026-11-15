@@ -27,3 +27,25 @@ Read-only inspection of the live device `0142a728` finds its callback table at `
 The earlier 20-record focused run observed 1,955 backend calls without a surviving overwrite, including the same interval-8 stack and matrix word as the previous failing run. That non-reproduction did not close the failure: these partial checkpoints do not reset all retained graphics state or timing.
 
 `capture-indexed-submit.c` reproduces the 84-record / 213-site configuration. Its extra sites are non-CALL/non-REP instructions; relocated absolute operands are guarded at the pinned live module base. Compile the independent verifier with the HUD, binding, binding-gate, upload-copy and indexed-submit capture macros. This diagnostic must not run alongside another debugger.
+
+## Program-selection boundary
+
+A completed 232-site native capture (84 bike records, 8,338 complete indexed
+windows) narrows the zero write to interval 23 between wined3d RVAs `dc5d7`
+and `dc601`, at body ESP `22f640`: `1064518239 → 0`. The intervening
+program-selection call is at `dc5fc`, targeting `d3120`. The preceding two
+selector callbacks resolve to literal RET routines in this pinned configuration.
+The constant-upload tail is outside this observed write window.
+
+`shader-draw-windows-wine11.json.br` retains the draw observations, raw trace
+hash and independent verification that all 232 hooks were restored and the
+debugger detached. This sample's next-bike world-writer comparisons pass:
+later world writers can replace the shader-written zero. It identifies another
+writer, not a newly demonstrated next-bike mismatch or a resolution of the
+older negative fixtures.
+
+The capture watchdog now treats guarded renderer boundaries as progress. An
+initial dense probe run stopped after six bike records despite productive
+renderer events; the revised run completed all 84. Menu RNG events still do
+not refresh the watchdog. Deeper program-selection tracing remains pending;
+preview handling is unchanged.

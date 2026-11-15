@@ -1,5 +1,9 @@
 # Motocross Madness physics parity roadmap
 
+## Shader program-selection overwrite isolated — 2026-11-15
+
+A completed 232-site trace checks 8,338 indexed draws and isolates one zero overwrite to the program-selection call `dc5fc → d3120`. All hooks were restored and debugger detachment verified. Later world writers replace this value in this sample, so its next-bike checks pass; older failing fixtures remain unresolved. The exact internal store and eligibility are the next tracing target. Dense renderer observations now refresh the capture watchdog, preventing a false inactivity stop. See `mcm-indexed-submit-recovery.md`. Preview handling is unchanged.
+
 ## Indexed submission eligibility recovered — 2026-11-15
 
 The gate leading into the unresolved indexed-draw window now matches 4,096 isolated native cases / 57,344 words. It preserves index-buffer eligibility, argument order, retained state-pointer timing and the separate immediate-context checks around lock/emission/unlock. A deeper trace reproduces two zero overwrites among 8,256 indexed draws, isolating both to the shader-state callback reached at backend `62a4f`. The exact store and its eligibility remain unresolved; the negative fixture still rejects interval 22. The backend and continuous scheduling remain external. See `mcm-indexed-submit-recovery.md`. This does not close the intermittent overwrite or change preview handling.

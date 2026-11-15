@@ -517,7 +517,7 @@ int main(int argc, char **argv) {
         DWORD status = DBG_CONTINUE;
         if (!WaitForDebugEvent(&event, 500)) {
             if (GetTickCount() - start < 30000) continue;
-            fprintf(stderr, "No player-bike records for 30 seconds.\n");
+            fprintf(stderr, "No player-bike records or renderer progress for 30 seconds.\n");
             if (!DebugBreakProcess(process) || !WaitForDebugEvent(&event, 5000)) {
                 fprintf(stderr, "Cannot stop game for breakpoint cleanup.\n");
                 TerminateProcess(process, 5);
@@ -570,6 +570,8 @@ int main(int argc, char **argv) {
  }
 }else if(matched>=15){
  if(observed_player&&scratch_address){
+  // Guarded renderer boundaries are progress even when one instrumented draw is slow.
+  start=GetTickCount();
   static const char*names[]={"hud-configured","hud-row-formatted","hud-row-drawn","hud-returned","clock-before","clock-after","bike-function-entry","wrapper-exit","wrapper-cull","root-draw-return","root-post-return","root-counter-return","world-return","world-entry","scene-draw-return","end-scene-return","stats-return","scene-post-return","overlay-return","camera-post-return","child-before","child-after","particle-identity-return","particle-transform-return","particle-cull-return","particle-texture-return","particle-before-draw","particle-draw-return","particle-state-restored","ddraw-ea3f","ddraw-eaa5","ddraw-eae1","ddraw-eb19","ddraw-eb4f","ddraw-eb76","ddraw-eb88","ddraw-eb9a","ddraw-ebb4","ddraw-ebd8","ddraw-ebf6","ddraw-ebfe","ddraw-ec3d","state-1bd500","state-1bd547","state-1bda0e","state-1bda41","state-1bdb2b","state-1bdb3c","state-1bdb4d","state-1bdd4e","state-1bdd88","state-1bdfaf","state-1bdff3","state-1be070","state-1be15c","state-1be3a5","state-1be402","state-1be6d1","state-1be79e","state-1be86e","state-1be931","state-1be9fd","state-1beacd","state-1bec30","state-1bec7e","state-1becad","state-1bed1c","state-1beda4","state-1bee18","state-1bee60","state-1bee8f","state-1bef04","state-1bef84","state-1beff8","state-1bf040","state-1bf06f","state-1bf0e0","state-1bf13e","state-1bf16d","state-1bf1d0","state-1bf3e6","state-1bf468","state-1bf4a8","state-1bf58b","state-1bf5b7","state-1bf602","state-1bf640","state-1bf677","state-1bf7f5","state-1bf830","state-1bf895","state-1bf8ba","state-1bf8ca","state-1bf994","state-1bfa12","state-1bfa7a","state-1bfaaa","state-1bfb61","state-1bfba4","state-1bfd96","state-1bfdad","state-1bfe06","state-1bfe3c","state-1bfeca","state-1bff0d","state-1bff42","state-1bff7e","state-1bffd9","state-1c001a","state-1c004f","state-1c0104","state-1c0179","state-1c0249","state-1c0374","state-1c044b","state-1c04b4","upload-1c6e00","upload-1c56c0","upload-1bf98c","upload-1c572a","upload-1c578e","upload-1c57b2","upload-1c57d4","upload-1c5809","upload-1c585a","upload-1c5877","upload-1c59db","upload-1c5a06","upload-1c5a65","upload-1c5a75","upload-1c5ae7","upload-1c6f08","upload-1c6f1f","upload-1c6f3e","upload-1c6fae","command-1ca180","command-1ca1d8","command-1ca237","command-1ca246","handler-1b6330","handler-1b638d","handler-1b63c7","handler-1b63d9","handler-1b6423","handler-19ab70","handler-199094","handler-1990dc","handler-1990f5","handler-1b63d3","handler-1b6460","heap-504f0","heap-504f3"
 #ifdef MCM_CAPTURE_HUD_LINE_STORES
 ,"hud-line-measured","hud-line-clear-before","hud-line-clear-after"
@@ -780,10 +782,11 @@ int main(int argc, char **argv) {
             pending_steps[slot]=pending;
         }
         // Menu RNG calls can produce debug events continuously. Check the
-        // no-record deadline even when WaitForDebugEvent never times out.
+        // no-progress deadline even when WaitForDebugEvent never times out.
+        // Renderer boundaries refresh it; menu RNG events do not.
         // This event still holds the process stopped for instruction cleanup.
         if (!done && GetTickCount() - start >= 30000) {
-            fprintf(stderr, "No player-bike records for 30 seconds.\n");
+            fprintf(stderr, "No player-bike records or renderer progress for 30 seconds.\n");
             done = 2;
         }
         if (done) {

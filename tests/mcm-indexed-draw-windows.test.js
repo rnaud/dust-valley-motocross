@@ -13,3 +13,10 @@ test('213-site trace localizes both zero overwrites to one backend callback',()=
  assert.match(f.provenance.cleanup,/debugger=0 clean=1/);assert.equal((f.provenance.cleanup.match(/restored=1/g)||[]).length,213);assert.match(f.provenance.run,/captured=84 status=1/);
  const damaged=structuredClone(f.render);damaged.find(x=>x.frame===22&&x.phase==='indexed-62a52'&&x.esp===2291328).value=1;assert.notDeepEqual(analyzeIndexedDrawWindows(damaged).changes,r.changes);
 });
+
+test('232-site shader trace isolates the zero write to program selection',()=>{
+ const f=JSON.parse(brotliDecompressSync(fs.readFileSync(new URL('./fixtures/mcm/shader-draw-windows-wine11.json.br',import.meta.url)))),r=analyzeIndexedDrawWindows(f.render);
+ assert.equal(r.completeDraws,8338);assert.equal(r.pendingDraws,0);assert.equal(r.unpairedReturns,0);
+ assert.deepEqual(r.changes,[{frame:23,before:'shader-dc5d7',after:'shader-dc601',esp:0x22f640,from:1064518239,to:0}]);
+ assert.match(f.provenance.cleanup,/debugger=0 clean=1/);assert.equal((f.provenance.cleanup.match(/restored=1/g)||[]).length,232);assert.match(f.provenance.run,/captured=84 status=1/);
+});
