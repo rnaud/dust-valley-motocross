@@ -1,5 +1,13 @@
 # Motocross Madness physics parity roadmap
 
+## Terrain-query merged-point stack writer (2026-11-15)
+
+Recovered the completed crossing-array stores in original `0x48e4c0`: its third recursive frame can overlap the caller word later read by bike physics. The `0x40ded0` vector constructors perform no initialization, so shorter later queries preserve unused slots. A controlled native scene query validates 12 splits / 501 float words in the retained interval. Its 29th point writes `1093338000` at `0x22f038`; a later shorter query leaves that value intact. The computed stores feed five bike frames / four rider ticks with zero physics differences and no observed scratch substitutions. Removing terrain writes fails frame 3 (`1063596045` versus `1093338000`).
+
+The fixture deliberately changes one visibility-query segment, then restores both input vectors with readback verification. All 291 hooks are restored and no debugger remains. It proves this writer, not reproduction of the older natural scene divergence or the 400-frame steering failure. Recursive invocation inputs, node metadata, other terrain stack stores, and continuous world scheduling remain boundaries. The repository capture wrapper records natural queries without these diagnostic overrides. Preview handling is unchanged.
+
+Evidence: `tests/mcm-terrain-merged-stores.test.js`, `terrain-merged-world-writers-wine11.json.br`, and `scripts/mcm-reference/capture-terrain-stack.c`.
+
 ## Live cache insertion and renderer writes joined (2026-11-15)
 
 A completed 42-frame capture validates 235 computed program selections, two computed pixel-tree insertions, 2,341 pixel-cache comparisons and 3,210 program-cache comparisons. Both misses lead to 16 sampler formats and 32 overlapping saves. The same capture's modeled writes feed 42 bike frames / 41 rider ticks with zero physics differences and zero observed scratch substitutions, including negative steering and two throttle-release frames. All 278 hooks restored and debugger absent. Allocation/GL IDs, initial graphics state, inherited seed producers and full scheduling remain boundaries. The older 400-frame failure and an active `422f50` scene-child writer observed in a separate capture remain unresolved. Preview handling is unchanged. See `mcm-fixed-pixel-recovery.md`.

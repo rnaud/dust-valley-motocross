@@ -1,4 +1,5 @@
 import {analyzeSamplerFormatter,samplerFormatterPhases} from './analyze-sampler-formatter.mjs';
+import {analyzeTerrainMergedStores,terrainMergedPhases} from './analyze-terrain-merged-stores.mjs';
 import {analyzeUploadCopy} from './analyze-upload-copy.mjs';
 import assert from 'node:assert/strict';
 import {deriveActorApplyStacks} from './derive-actor-apply-stacks.mjs';
@@ -16,7 +17,7 @@ const float=x=>new Float32Array(Uint32Array.of(x).buffer)[0];
 const bits=x=>new Uint32Array(Float32Array.of(x).buffer)[0];
 const floats=x=>new Float32Array(Uint32Array.from(x).buffer);
 export const bindingPhases=new Set(['state-1bd500','state-prepared','binding-gate-input','binding-producer-input','binding-input','binding-call-store','binding-call-return']);
-export const worldWriterPhases=new Set([...samplerFormatterPhases,...bindingPhases,'state-declaration','upload-config','wrapper','wrapper-exit','wrapper-cull','store-before','store-after','hud-clock-input','hud-line-clear','bike-function-entry','upload-input','upload-resource-input','resource-input','resource-stage','command-producer','command-bytes','handler-1b6460','heap-store-value','upload-command-allocation','upload-command-bytes','resource-upload-callback','upload-copy-save']);
+export const worldWriterPhases=new Set([...terrainMergedPhases,...samplerFormatterPhases,...bindingPhases,'state-declaration','upload-config','wrapper','wrapper-exit','wrapper-cull','store-before','store-after','hud-clock-input','hud-line-clear','bike-function-entry','upload-input','upload-resource-input','resource-input','resource-stage','command-producer','command-bytes','handler-1b6460','heap-store-value','upload-command-allocation','upload-command-bytes','resource-upload-callback','upload-copy-save']);
 
 // Predict writes from ordered invocation/stage inputs. Store observations never
 // become state. Invocation order, wrapper/non-actor stack depth, prepared graphics state, camera,
@@ -25,6 +26,7 @@ export function analyzeWorldWriters(render, physicsRows, {player, scratch, modul
   assert.equal(scratch,parseInt(physicsRows[0].stackAddress,16)+0x54);
   const actorStacks=deriveActorApplyStacks(render,{actorDrawSchedules});render=actorStacks.rows;
   const copies=analyzeUploadCopy(render,moduleBase);
+  const terrain=analyzeTerrainMergedStores(render);
   const samplerStores=new Map();
   const samplerFormats=analyzeSamplerFormatter(render,{onStore:(index,store)=>samplerStores.set(index,store)});
   const bindings=analyzeBindingGates(render.filter(r=>bindingPhases.has(r.phase)),moduleBase);
@@ -71,6 +73,7 @@ export function analyzeWorldWriters(render, physicsRows, {player, scratch, modul
   };
   for(const [index,r] of render.entries()){
     assert.ok(worldWriterPhases.has(r.phase),'Unknown world writer event');
+    if(terrain.stores.has(index)){finishApply();for(const store of terrain.stores.get(index))commit('terrainMerged',r.frame,store);}
     if(samplerStores.has(index)){finishApply();commit('sampler',r.frame,samplerStores.get(index));}
     if(r.phase==='wrapper')wrappers.set(`${r.frame}/${r.actor}`,r);
     if(r.phase==='state-1bd500'){finishApply();app={entry:r,actual:[],uploads:[],copies:[]};}
