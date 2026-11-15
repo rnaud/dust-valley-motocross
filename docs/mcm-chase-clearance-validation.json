@@ -1,0 +1,66 @@
+{
+  "scope": "Camera world bounds, intact terrain query, pitch correction and scene height caps; not complete camera/render or physics parity",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "native": {
+    "cases": 8192,
+    "words": 49152,
+    "differences": 0,
+    "range": "0x47d71f..0x47d945",
+    "terrainQuery": "0x411340 unmodified",
+    "coverage": {
+      "canyon-canyon01": {
+        "cases": 4096,
+        "boundsChanged": 185,
+        "eyeRaised": 1229,
+        "eyeCapped": 467,
+        "pitchChanged": 411
+      },
+      "quarries-dunes": {
+        "cases": 4096,
+        "boundsChanged": 185,
+        "eyeRaised": 1229,
+        "eyeCapped": 467,
+        "pitchChanged": 409
+      }
+    },
+    "courses": [
+      {
+        "id": "canyon-canyon01",
+        "source": "teraform/canyon/canyon01.trn",
+        "sha256": "39a8e3278ed5dae9f8a4f20b8dc1e1327340e333bebbc0fd7b6d911d930d72c4"
+      },
+      {
+        "id": "quarries-dunes",
+        "source": "teraform/quarries/dunes.trn",
+        "sha256": "942b756572b407adf9223ecc1afb22556c5bc5636d3bd5e3ac51ef5419543d0b"
+      }
+    ]
+  },
+  "live": {
+    "frames": 60,
+    "spatialWords": 720,
+    "downstreamWords": 3120,
+    "postWords": 1920,
+    "clearanceWords": 480,
+    "retainedTargetChecks": 60,
+    "worldMode": 0,
+    "eyeCorrections": 0,
+    "pitchCorrections": 0,
+    "sceneNameField": "stddom01 (inactive for world mode 0)",
+    "captureSha256": "c3566465424ce2a8cf3ed1d499a4011dd106fed385ff6e34e1e6173954fd29e6",
+    "restoredHooks": 10,
+    "debuggerDetached": true
+  },
+  "remaining": [
+    "Live corrective and special-world transitions",
+    "Active camera pose/roll and visibility, final setters, view/render scheduling",
+    "Known negative-steering frame-38 mismatch and whole-world parity"
+  ],
+  "previewHandlingChanged": false,
+  "tests": {
+    "passed": 518,
+    "failed": 0,
+    "focusedFinalPassed": 11,
+    "build": true
+  }
+}

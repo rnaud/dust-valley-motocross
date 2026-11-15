@@ -1,5 +1,11 @@
 # Motocross Madness physics parity roadmap
 
+## Camera bounds and terrain clearance recovered (2026-11-15)
+
+The retained camera validation now reaches `0x47d945`: original world bounds, an intact native terrain query, ground clearance, negative-pitch correction and scene-specific height caps. **8,192 course cases / 49,152 words match** across Canyon and Dunes, including corrective branches. A fresh 60-frame capture also matches all ground-query and clearance outputs with retained controller state. Live coverage is the ordinary world gate with no correction; special/corrective branches remain isolated-oracle coverage. All ten hooks were restored and debugger detachment verified. See `mcm-chase-clearance-validation.json` and recovery notes.
+
+Next: active-camera pose/roll and bike/rider visibility, final setters, view/render scheduling and the frame-38 steering mismatch. Preview handling is unchanged.
+
 ## Post-smoothing reset and overrides recovered (2026-11-15)
 
 The retained camera path now extends through `0x47d71f`. Mode-6 transitions reset all six filter values/times while preserving bounds; the override flag selects raw eye/target values with the original previous-target exception. **864 native cases / 27,648 words match.** A fresh 60-frame nine-boundary capture matches **720 spatial, 3,120 downstream and 1,920 post-block words** with state retained between frames. Live coverage is pass-through only; reset/override branches are isolated-oracle coverage. All nine hooks were restored and debugger detachment verified. See `mcm-chase-post-smoothing-validation.json` and its recovery notes.

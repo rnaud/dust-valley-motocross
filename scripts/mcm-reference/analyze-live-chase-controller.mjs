@@ -1,3 +1,5 @@
+import {readMcmTerrain} from './terrain-data.mjs';
+import {applyMcmChaseClearance} from '../../src/physics/mcm/chase-clearance.js';
 import {finishMcmChaseSmoothing} from '../../src/physics/mcm/chase-post-smoothing.js';
 import {stepMcmChaseController} from '../../src/physics/mcm/chase-controller.js';
 import {prepareMcmChaseEntry} from '../../src/physics/mcm/chase-entry.js';
@@ -9,13 +11,14 @@ const floats=w=>new Float32Array(Uint32Array.from(w).buffer),bits=f=>Array.from(
 const filterBits=state=>{const f=new Float32Array(24);state.filters.forEach((r,i)=>f.set(r,i*4));return bits(f);};
 const cameraWords=r=>[r.inputs[23],r.inputs[24],r.inputs[26],r.inputs[27],r.inputs[28],...r.inputs.slice(33,36),r.inputs[49],...r.inputs.slice(50,54)];
 const cameraState=s=>{const c=s.camera;return [...bits(Float32Array.of(c.pitch,c.radius,c.yaw,c.orbitAngle)),s.eyeResetFlag,...bits(c.backup),...bits(Float32Array.of(c.zoom)),...bits(s.settings)];};
-export function analyzeLiveChaseController(rows,{postSmoothing=false}={}){
- let joinedState=null,controlsInput=null,sourceInput=null,baseInput=null,smoothed=null,postBefore=null;
+export function analyzeLiveChaseController(rows,{postSmoothing=false,terrain=null}={}){
+ const clearance=!!terrain;if(clearance)postSmoothing=true;
+ let joinedState=null,controlsInput=null,sourceInput=null,baseInput=null,smoothed=null,postBefore=null,postResult=null,clearanceBefore=null;
  let state=null,pending=null,identity=null,pairs=0,active=0,bypassed=0;const modes=new Set();let resets=0;
- const phases=['source-entry','source-exit','restore-entry','base-entry','base-exit','controls-entry','before','after',...(postSmoothing?['post']:[])];
+ const phases=['source-entry','source-exit','restore-entry','base-entry','base-exit','controls-entry','before','after',...(postSmoothing?['post']:[]),...(clearance?['clearance']:[])];
  let eyeGate=0,motionGate=0,multiplier=0,restoreFlag=0;let phaseIndex=0,sourceEntry=null,baseEntry=null,source=null,base=null,retainedTarget=null,retainedTargetChecks=0;
  for(const r of rows){
-  for(const [name,n] of [['inputs',postSmoothing?76:75],['filters',24],['pointers',6],['targets',6],['result',6]])assert.ok(Array.isArray(r[name])&&r[name].length===n&&r[name].every(v=>Number.isInteger(v)&&v>=0&&v<=0xffffffff),'Invalid '+name);
+  for(const [name,n] of [['inputs',clearance?86:postSmoothing?76:75],['filters',24],['pointers',6],['targets',6],['result',6],...(clearance?[['groundPoint',3]]:[])])assert.ok(Array.isArray(r[name])&&r[name].length===n&&r[name].every(v=>Number.isInteger(v)&&v>=0&&v<=0xffffffff),'Invalid '+name);
   assert.ok(Number.isInteger(r.deltaBits)&&r.deltaBits>=0&&r.deltaBits<=0xffffffff,'Invalid delta');
   assert.equal(r.phase,phases[phaseIndex],'Missing or reordered spatial stage');phaseIndex=(phaseIndex+1)%phases.length;
   assert.equal(r.frame,pairs,'Nonsequential spatial frame');
@@ -92,9 +95,26 @@ export function analyzeLiveChaseController(rows,{postSmoothing=false}={}){
    assert.deepEqual(r.filters,filterBits(state),'Native post-smoothing filters differ');
    assert.deepEqual(cameraWords(r),cameraState(state),'Native post-smoothing camera differs');
    assert.equal(r.inputs[75],state.previousMode,'Native post-smoothing mode differs');
-   retainedTarget=Float32Array.from(result.target);pairs++;
+   postResult=result;retainedTarget=Float32Array.from(result.target);if(clearance)clearanceBefore=r;else pairs++;
+  }else if(r.phase==='clearance'){
+   assert.equal(r.esp,clearanceBefore.esp,'Clearance stack changed');
+   for(let i=76;i<86;i++)assert.equal(r.inputs[i],clearanceBefore.inputs[i],'Clearance context changed');
+   assert.deepEqual(r.inputs.slice(84,86),bits(Float32Array.of(terrain.heightScale,terrain.worldToGrid)),'Terrain scales differ');
+   assert.ok(r.inputs[83],'Missing original terrain root');
+   const nameBytes=Buffer.alloc(16);clearanceBefore.inputs.slice(79,83).forEach((v,i)=>nameBytes.writeUInt32LE(v,i*4));
+   const args={terrain,eye:postResult.eye,worldMode:clearanceBefore.inputs[76],worldEnabled:clearanceBefore.inputs[77],worldScale:floats([clearanceBefore.inputs[78]])[0],sceneName:nameBytes.toString('ascii').split('\0')[0]};
+   const result=applyMcmChaseClearance(state.camera,args);applyMcmChaseClearance(joinedState.camera,args);
+   assert.deepEqual(r.result,[...bits(retainedTarget),...bits(result.eye)],'Native clearance output differs');
+   assert.deepEqual(r.groundPoint,bits(Float32Array.of(result.eye[0],result.ground,result.eye[2])),'Native clearance ground query differs');
+   assert.equal(r.inputs[30],result.special,'Native clearance world gate differs');
+   assert.deepEqual(cameraWords(r),cameraState(state),'Native clearance camera differs');
+   assert.deepEqual(r.filters,filterBits(state),'Clearance changed filters');
+   pairs++;
   }
  }
- assert.ok(state&&!pending&&phaseIndex===0,'Incomplete capture');return {pairs,downstreamWords:pairs*52,spatialWords:pairs*12,retainedTargetChecks,active,bypassed,resets,modes:[...modes].sort(),...(postSmoothing?{postWords:pairs*32}:{})};
+ assert.ok(state&&!pending&&phaseIndex===0,'Incomplete capture');return {pairs,downstreamWords:pairs*52,spatialWords:pairs*12,retainedTargetChecks,active,bypassed,resets,modes:[...modes].sort(),...(postSmoothing?{postWords:pairs*32}:{}),...(clearance?{clearanceWords:pairs*8}:{})};
 }
-if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href)console.log(JSON.stringify(analyzeLiveChaseController(fs.readFileSync(process.argv[2],'utf8').trim().split('\n').map(JSON.parse),{postSmoothing:process.argv.includes('--post')}),null,2));
+if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
+ const terrainIndex=process.argv.indexOf('--terrain'),terrain=terrainIndex<0?null:readMcmTerrain(fs.readFileSync(process.argv[terrainIndex+1]));
+ console.log(JSON.stringify(analyzeLiveChaseController(fs.readFileSync(process.argv[2],'utf8').trim().split('\n').map(JSON.parse),{postSmoothing:process.argv.includes('--post'),terrain}),null,2));
+}
