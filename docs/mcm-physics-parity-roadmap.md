@@ -1,5 +1,16 @@
 # Motocross Madness physics parity roadmap
 
+## Executable mode-0 AI controller runtime (2026-11-15)
+
+`src/physics/mcm/ai-controller.js` now composes the recovered controller as an executable runtime routine. Its mutable inputs are bike/proxy/envelope DataViews, route nodes, transform/bounds graphs and animation resources. Terrain queries, actor/player bodies, shared RNG, heap policy and allocation accounting are explicit environment dependencies. It has no capture-row or Node/Buffer dependency. It computes entry, targeting, guidance, avoidance/allocation, jump/trick, steering, landing/pitch, throttle and final motion in original order. Modes other than zero and nearby interaction remain explicitly guarded.
+
+The separate validator filters the maintained 159-call original capture down to controller entry/exit, world/actor resources, route and RNG observations. No intermediate control, motion, trick or contact snapshots feed this runtime. All 520,248 bike-body bytes, 1,272 graph-node records, proxy/envelope/bounds updates, one successful trick and 92 shared RNG draws match. Entry graph/animation mutations and output body/graph/RNG corruption are rejected. Empty-route behavior preserves every byte except throttle/brake. A loader-boundary test checks the original ordering: increment/wrap `c44` before the loader, then clear controls after it returns (disassembly `46d27b`, `46d2ee`, `46d300`).
+
+This is complete **per-call** runtime comparison within the captured mode-0 domain, not retained whole-world proof. Controller-entry body and graph snapshots still supply outer-frame changes; route flags and shared RNG persist across calls. Heap pointer identity/global heap state remain environment boundaries. Ground-only unused scratch and inactive race progress are not claimed as stack parity. No new native capture was needed; pinned executable/hash and all 28 restored-hook/detach records are checked in the existing fixture.
+
+Current remaining work: connect the runtime to the frame driver's shared bike, animation and graph identities; supply real AI world/actor initialization; validate retained AI plus rider/contact evolution without per-call body/graph snapshots; finish uncovered nearby/race/scripted paths and existing player/world replay divergences. `retained-frame.js` still returns `pending-controller` for AI/scripted contexts until that connection is validated. Preview handling is unchanged. Full physics parity is not complete.
+
+
 ## AI route-controller modes 1 and 2 (2026-11-15)
 
 Extended `0x46d707..0x46dac1` targeting and `0x46dac1..0x46dec6` guidance beyond mode 0. Seven target outputs and six guidance outputs match 16,384 repeated intact original executions (4,096 per block/mode), while the original mode-0 fixtures remain unchanged and passing. Targeting preserves mode-1 flag-driven advancement and mode-2 route-gap rewinds. A rewind updates target/index but deliberately retains the pre-rewind successor and headings, matching original output. The loop detector includes the flag because a mode-1 one-node route can revisit the same index after consuming its advance flag.
