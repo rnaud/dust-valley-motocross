@@ -1,5 +1,7 @@
 # Motocross Madness physics parity roadmap
 
+Transform-upload gate: [both vertex paths recovered](mcm-render-upload-recovery.md), 868 native applications / 16 uploads / 852 skips with zero gate or source-address differences. Other uploads, frees and world visibility remain open.
+
 Latest renderer-scratch finding: [particle cleanup heap store](mcm-render-heap-recovery.md). The exact ntdll store, derived stack address and next-bike-frame carry are verified for four frees in one draw. Upload/visibility gates and the older frame-38 divergence remain unresolved; preview handling is unchanged.
 
 Latest milestone: [moving render capture](mcm-moving-render-recovery.md). One controlled 400-frame negative-steering run matches retained bike/rider source fields both at update return (17,600 words) and actual drawing (17,556 words). All modeled physics comparisons pass in this new starting state. The older frame-38 failure remains open. The same run exposes 59 scratch changes after the final observed renderer store and 10 frames with multiple stores; the idle last-writer result cannot be generalized. Shared-world/particle mismatches remain reported.

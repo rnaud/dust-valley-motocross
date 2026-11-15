@@ -97,3 +97,5 @@ audit, not a portable native save or a complete model of this render path.
 Next: recover the dirty-state/temporary-buffer/particle gates, combine the
 computed heap store with matrix and HUD writers in actual order, then rerun the
 older negative-steering fixture without observed scratch injection.
+
+Follow-up: [transform-upload gate recovery](mcm-render-upload-recovery.md) identifies both first-upload branches. The other uploads and temporary-buffer free conditions remain open.
