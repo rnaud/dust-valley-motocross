@@ -688,3 +688,11 @@ For retained-chain evidence, run `generate-chase-active-chain.mjs active-input.b
 Run `node scripts/mcm-reference/build-render-assets.mjs ORIGINAL_GAME` to decode the original SLT meshes and the four `sbike/*bkrid.tex/.cmp` resource archives into the lazy model bundle. Run `node scripts/mcm-reference/build-map-assets.mjs ORIGINAL_GAME` to serialize the original `teraform` terrain banks, preserving original height/normal values, hierarchy and scale. The generated catalog supplies lazy asset URLs and the source-hash inventory.
 
 `docs/mcm-assets-port-status.md` distinguishes connected terrain/models from remaining renderer, scene, race and native-checkpoint work. Rider weld flags are preserved but not applied yet. Selected courses use a central practice spawn aligned by the recovered reset routine; these are not captured native race starts. Rendering reads the shared recovered component graph without marking its native caches valid.
+
+### Particle cleanup heap store
+
+`capture-render-heap.c`, `verify-render-heap.c` and `analyze-render-heap.mjs`
+trace the pinned Wine upload-cleanup path through the exact heap-handle store
+that overlaps bike caller scratch. See `docs/mcm-render-heap-recovery.md` for
+capture flags, stack derivation, evidence and outstanding upload/visibility gates.
+This isolated recovery is not yet connected to preview handling.

@@ -1,5 +1,7 @@
 # Motocross Madness physics parity roadmap
 
+Latest renderer-scratch finding: [particle cleanup heap store](mcm-render-heap-recovery.md). The exact ntdll store, derived stack address and next-bike-frame carry are verified for four frees in one draw. Upload/visibility gates and the older frame-38 divergence remain unresolved; preview handling is unchanged.
+
 Latest milestone: [moving render capture](mcm-moving-render-recovery.md). One controlled 400-frame negative-steering run matches retained bike/rider source fields both at update return (17,600 words) and actual drawing (17,556 words). All modeled physics comparisons pass in this new starting state. The older frame-38 failure remains open. The same run exposes 59 scratch changes after the final observed renderer store and 10 frames with multiple stores; the idle last-writer result cannot be generalized. Shared-world/particle mismatches remain reported.
 
 Previous milestone: [retained wrapper sources](mcm-render-sources-recovery.md). The draw wrapper reads **local +0x84**, not cached world +0xc4. Recovered local matrices and animation bounds match 400 positive-steering bike samples plus one rider sample (8,822 words). Negative steering still produces 12 matrix-word differences at frame 38. This is update-return source coverage, not a joined moving render replay.
