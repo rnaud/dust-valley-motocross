@@ -1,5 +1,11 @@
 # Motocross Madness physics parity roadmap
 
+## Binding gates connected to stack writes — 2026-11-15
+
+Recovered the original shader-disable gate subgraph, with generated-shader paths exposed as unmodeled boundaries. An isolated native oracle matches 4,096 cases / 32,768 words, covering all 128 dirty/shader/declaration/adapter combinations. In the five-frame live capture, prepared state inputs predict all 36 commands across 871 applications. State-application entry ESP now predicts producer/handler ESP and all 36 CALL-store addresses, including four bike scratch overlaps. Actual handler locations and store values are comparison outputs, not model inputs. All 174 observation sites restored; debugger absent. See `mcm-render-binding-gates-recovery.md`.
+
+This is progress toward ordered world-write prediction, not full physics parity. Continuous state preparation, other binding producer paths and the old frame-38 mismatch remain open. Preview handling is unchanged by this milestone.
+
 Retained visibility connection: [42-frame physics-to-culling regression](mcm-moving-visibility-recovery.md), 82 computed bike/rider visibility decisions and 24 SSE values match. Camera/world matrices remain stage inputs; one later-writer interval and all visual differences are preserved. Full world ordering and the older frame-38 failure remain open.
 
 Binding CALL writes: [return-address store recovered and live-validated](mcm-render-binding-recovery.md), 4,096 native cases / 45,056 words and 38 live handlers including four bike-slot overlaps. Producer eligibility and final world ordering remain open; preview handling is unchanged.
