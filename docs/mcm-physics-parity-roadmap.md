@@ -1,5 +1,11 @@
 # Motocross Madness physics parity roadmap
 
+## Computed camera reaches the exact physics-stack renderer write
+
+Submission-time clip reset matches **4,096 native cases / 274,432 words**. A fresh neutral-input capture bridges the recovered camera to **59 view/projection submission pairs, 59 pinned Wine products, 59 exact writes to player scratch `0x22f038`, and 58 following bike-entry values**. No observed camera matrix or scratch output is supplied to the calculation. This captured path uses an identity world transform and no surface clears; the analyzer rejects other states. All 22 hooks were restored and detachment verified. See `mcm-camera-submission-recovery.md` and validation report.
+
+Submission resets far clipping from the observed 768 to original default 100000, then rebuilds projection. The later restoration and render/world/HUD/AI schedule remain open. Next connect those gates and replay controlled negative steering without observed scratch. The known frame-38 mismatch and full parity remain unresolved; preview handling is unchanged.
+
 ## Camera matrices connected to the retained live chain
 
 Complete original `0x47a670` matrix arithmetic matches **4,096 cases / 266,240 words**, including zero-FOV exceptional outputs. A fresh 60-frame camera-left-held capture matches all four matrices and screen scale (3,900 additional words) from the recovered pose/FOV, with matrix state retained between frames. All fourteen hooks were restored and detachment verified. See `mcm-camera-matrices-recovery.md` and validation report.

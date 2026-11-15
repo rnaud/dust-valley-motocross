@@ -16,7 +16,7 @@ const renderCameraWords=c=>[...bits(Float32Array.from(c.values)),c.upValid,c.for
 const renderNodeWords=nodes=>nodes.flatMap(n=>[n.flag12c,...bits(n.fields240)]);
 const cameraWords=r=>[r.inputs[23],r.inputs[24],r.inputs[26],r.inputs[27],r.inputs[28],...r.inputs.slice(33,36),r.inputs[49],...r.inputs.slice(50,54)];
 const cameraState=s=>{const c=s.camera;return [...bits(Float32Array.of(c.pitch,c.radius,c.yaw,c.orbitAngle)),s.eyeResetFlag,...bits(c.backup),...bits(Float32Array.of(c.zoom)),...bits(s.settings)];};
-export function analyzeLiveChaseController(rows,{postSmoothing=false,terrain=null,finalize=false,fov=false,matrices=false}={}){
+export function analyzeLiveChaseController(rows,{postSmoothing=false,terrain=null,finalize=false,fov=false,matrices=false,onMatrices=null}={}){
  if(matrices)fov=true;if(fov)finalize=true;assert.ok(!finalize||terrain,'Finalization requires terrain');const clearance=!!terrain;if(clearance)postSmoothing=true;
  let matrixWords=null,matrixContext=null;
  let fovFilter=null,fovBefore=null,fovPointer=null;
@@ -172,6 +172,7 @@ export function analyzeLiveChaseController(rows,{postSmoothing=false,terrain=nul
     assert.deepEqual(r.inputs.slice(98,102),matrixContext,'Projection context changed during update');
     if(!renderCamera.skipUpdate){const m=composeMcmCameraMatrices(renderCamera);matrixWords=bits(Float32Array.from([...m.projection,...m.view,...m.combined,...m.screen,m.screenScale]));}
     assert.deepEqual(r.matrices,matrixWords,'Native camera matrices differ');
+    if(onMatrices)onMatrices({frame:pairs,camera:r.camera,words:matrixWords.slice(),state:structuredClone(renderCamera)});
    }
    pairs++;
   }

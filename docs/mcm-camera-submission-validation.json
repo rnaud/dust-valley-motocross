@@ -1,0 +1,43 @@
+{
+  "scope": "Computed camera through active submission and identity-world renderer scratch store; not default physics replay or full renderer scheduling",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "wineSha256": "25feee6100619bd123fc00568d4e5107a3a20d60f62d160e12c368731fa32f1c",
+  "native": {
+    "cases": 4096,
+    "words": 274432,
+    "rebuilt": 2048,
+    "differences": 0
+  },
+  "live": {
+    "cameraFrames": 60,
+    "cameraKeyMask": 0,
+    "submissions": 59,
+    "submissionWords": 1888,
+    "products": 59,
+    "productWords": 944,
+    "exactScratchStores": 59,
+    "nextBikeEntryChecks": 58,
+    "submissionScratchChanges": 0,
+    "differences": 0,
+    "scratchAddress": "0x22f038",
+    "writer": "wined3d RVA 0xc308b",
+    "worldTransform": "identity only; other states rejected",
+    "surfaceClearGate": 0,
+    "captureSha256": "32bd8e73beb435546027a6baa2846d8badd7d65714d838d24e906c23f7d636e4",
+    "restoredHooks": 22,
+    "debuggerDetached": true
+  },
+  "remaining": [
+    "World-transform setters and render gates/order",
+    "Later far-plane restoration from 100000 to 768",
+    "Surface clears, HUD/AI scheduling and controlled physics replay",
+    "Known frame-38 negative-steering mismatch and full parity"
+  ],
+  "previewHandlingChanged": false,
+  "tests": {
+    "passed": 527,
+    "failed": 0,
+    "focusedPassed": 7,
+    "build": true
+  }
+}
