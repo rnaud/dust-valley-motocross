@@ -8,16 +8,16 @@ const read = name => JSON.parse(brotliDecompressSync(fs.readFileSync(new URL(`./
 test('native measured-line branches and all four local stores match 4096 cases', () => {
   const f = read('hud-line-stores-wine11'), input = Buffer.from(f.input, 'base64'), output = Buffer.from(f.output, 'base64');
   assert.equal(input.length, 4096 * 28); assert.equal(output.length, 4096 * 20);
-  const offsets = [0x8ac, 0x89c, 0x87c, 0x8b8], counts = {draw: 0, prefix: 0, overflow: 0};
+  const offsets = [0x8ac, 0x89c, 0x87c, 0x8b8], counts = {draw: 0, ellipsis: 0, overflow: 0};
   for (let i = 0; i < 4096; i++) {
     const a = Array.from({length: 7}, (_, j) => input.readUInt32LE(i * 28 + j * 4));
     const r = mcmHudMeasuredLineStores({frameBase: 0x10000, fit: a[0], count: a[1], format: a[2]});
-    const actual = [['draw', 'prefix', 'overflow'].indexOf(r.branch), ...a.slice(3)];
+    const actual = [['draw', 'ellipsis', 'overflow'].indexOf(r.branch), ...a.slice(3)];
     for (const w of r.writes) actual[1 + offsets.indexOf(0x10000 - w.address)] = w.value;
     counts[r.branch]++;
     for (let j = 0; j < 5; j++) assert.equal(actual[j], output.readUInt32LE(i * 20 + j * 4), `case ${i}, word ${j}`);
   }
-  assert.deepEqual(counts, {draw: 2006, prefix: 699, overflow: 1391});
+  assert.deepEqual(counts, {draw: 2006, ellipsis: 699, overflow: 1391});
 });
 
 test('the predicted HUD store overlaps the live bike slot and clears it at the exact instruction', () => {
