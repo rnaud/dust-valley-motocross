@@ -1,0 +1,61 @@
+{
+  "node": {
+    "render": {
+      "render": {
+        "submission": {
+          "chain": {
+            "pairs": 60,
+            "downstreamWords": 3120,
+            "spatialWords": 720,
+            "retainedTargetChecks": 60,
+            "active": 60,
+            "bypassed": 0,
+            "resets": 0,
+            "modes": [
+              0
+            ],
+            "postWords": 1920,
+            "clearanceWords": 480,
+            "finalizeWords": 1860,
+            "refreshCounterBoundaryInputs": 0,
+            "fovWords": 480,
+            "matrixWords": 3900
+          },
+          "submissions": 59,
+          "submissionWords": 1888,
+          "products": 59,
+          "productWords": 944,
+          "stores": 59,
+          "bikeCarryChecks": 58,
+          "submissionScratchChanges": 0
+        },
+        "fogSubmissions": 177,
+        "resets": 59,
+        "worldSubmissions": 177,
+        "worldSetters": 177,
+        "restoredLoops": 59,
+        "derivedProducts": 59,
+        "otherWorldSetters": 102,
+        "warmupEvents": 15
+      },
+      "seeded": 1,
+      "setters": 756,
+      "applies": 4730,
+      "products": 282,
+      "skipped": 4448,
+      "overlaps": 59
+    },
+    "wrappers": 240,
+    "rejected": 120,
+    "nodes": 120,
+    "visibilityChecks": 118,
+    "childDepthChecks": 120,
+    "riderStores": 59,
+    "warmupStores": 0
+  },
+  "bounds": 240,
+  "accepted": 120,
+  "rejected": 120,
+  "cornerWords": 7680,
+  "rectangleWords": 960
+}
