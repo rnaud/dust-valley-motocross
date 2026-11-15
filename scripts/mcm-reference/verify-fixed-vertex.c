@@ -1,0 +1,4 @@
+#define main capture_main
+#include "capture-fixed-vertex.c"
+#undef main
+int main(int argc,char **argv){if(argc!=2){fprintf(stderr,"Usage: verify-render-heap.exe PID\n");return 2;}DWORD pid=strtoul(argv[1],NULL,0);if(!pid)return 2;process=OpenProcess(PROCESS_QUERY_INFORMATION|PROCESS_VM_READ,FALSE,pid);BOOL attached=FALSE;int bad=!process||!CheckRemoteDebuggerPresent(process,&attached)||attached;addresses[1]=0x4ac95a;lengths[1]=2;expected[1][0]=0x33;expected[1][1]=0xff;addresses[6]=0x4ad10d;lengths[6]=6;BYTE ret[]={0x5e,0x5b,0x81,0xc4,0xe8,0x0b};memcpy(expected[6],ret,6);for(unsigned i=0;i<sizeof(addresses)/sizeof(addresses[0]);i++){BYTE b[8];int ok=read_memory(addresses[i],b,lengths[i])&&!memcmp(b,expected[i],lengths[i]);printf("%08lx restored=%d\n",addresses[i],ok);bad|=!ok;}printf("debugger=%d clean=%d\n",attached,!bad);if(process)CloseHandle(process);return bad;}
