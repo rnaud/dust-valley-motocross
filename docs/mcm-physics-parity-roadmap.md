@@ -1,5 +1,9 @@
 # Motocross Madness physics parity roadmap
 
+## Program-selection nested writers isolated — 2026-11-15
+
+A completed 519-site capture reproduces two overwrite sequences among 8,236 indexed windows: the `e1460` call leaves the C-runtime memcpy return address, then `ec5e0` writes zero. Both sequences are preserved in a regression fixture, and cleanup verifies all hooks restored with no debugger. Sampler-name formatting is the next candidate to validate; the exact zero instruction, eligibility and continuous scheduling remain unresolved. See `mcm-indexed-submit-recovery.md`. Preview handling is unchanged.
+
 ## Shader program-selection overwrite isolated — 2026-11-15
 
 A completed 232-site trace checks 8,338 indexed draws and isolates one zero overwrite to the program-selection call `dc5fc → d3120`. All hooks were restored and debugger detachment verified. Later world writers replace this value in this sample, so its next-bike checks pass; older failing fixtures remain unresolved. The exact internal store and eligibility are the next tracing target. Dense renderer observations now refresh the capture watchdog, preventing a false inactivity stop. See `mcm-indexed-submit-recovery.md`. Preview handling is unchanged.

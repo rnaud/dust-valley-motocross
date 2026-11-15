@@ -20,3 +20,13 @@ test('232-site shader trace isolates the zero write to program selection',()=>{
  assert.deepEqual(r.changes,[{frame:23,before:'shader-dc5d7',after:'shader-dc601',esp:0x22f640,from:1064518239,to:0}]);
  assert.match(f.provenance.cleanup,/debugger=0 clean=1/);assert.equal((f.provenance.cleanup.match(/restored=1/g)||[]).length,232);assert.match(f.provenance.run,/captured=84 status=1/);
 });
+
+test('program selection exposes formatter return-address and zero writes',()=>{
+ const f=JSON.parse(brotliDecompressSync(fs.readFileSync(new URL('./fixtures/mcm/shader-select-windows-wine11.json.br',import.meta.url)))),r=analyzeIndexedDrawWindows(f.render);
+ assert.equal(r.completeDraws,8236);assert.equal(r.pendingDraws,0);assert.equal(r.unpairedReturns,0);
+ assert.deepEqual(r.changes,[19,23].flatMap((frame,i)=>[
+  {frame,before:'shader-d6426',after:'shader-d650d',esp:0x22f4cc,from:[1064459546,1064518239][i],to:0x7bb733ee},
+  {frame,before:'shader-d4d1c',after:'shader-d5a98',esp:0x22f4cc,from:0x7bb733ee,to:0},
+ ]));
+ assert.match(f.provenance.cleanup,/debugger=0 clean=1/);assert.equal((f.provenance.cleanup.match(/restored=1/g)||[]).length,519);assert.match(f.provenance.run,/captured=84 status=1/);
+});

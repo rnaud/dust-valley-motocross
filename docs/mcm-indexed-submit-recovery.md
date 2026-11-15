@@ -57,3 +57,21 @@ with the indexed-submit prerequisites plus `MCM_CAPTURE_SHADER_APPLY`.
 The promoted configuration's addresses, guarded bytes, lengths and phase names
 were compared with the completed capture and are identical. The base,
 indexed-submit and shader variants all compile independently with 32-bit MinGW.
+
+## Two nested program-selection writes
+
+A completed 519-site trace (84 records / 8,236 complete indexed windows)
+reproduces the write at intervals 19 and 23. At program-selection body ESP
+`22f4cc`, the call `d6508 → e1460` changes the retained word to `7bb733ee`.
+That value is the return address of the pinned ucrtbase `733e9 → 61280`
+memcpy call inside formatted output. Later, `d5a93 → ec5e0` changes it to zero.
+The exact final zero instruction remains unresolved.
+
+`ec5e0` formats sampler names through `138260 → 100830 →
+__stdio_common_vsprintf`; its null shader path uses `%s_sampler%u` with `ps`.
+This supplies a concrete nested-call hypothesis for the zero writer, not yet
+its live proof. The follow-up diagnostic targets those formatting boundaries.
+`shader-select-windows-wine11.json.br` preserves both intermediate changes,
+the trace hash, and independent verification of 519 restored hooks with no
+attached debugger. Older whole-world failure fixtures remain unresolved;
+this boundary census does not claim trajectory parity or change the preview.
