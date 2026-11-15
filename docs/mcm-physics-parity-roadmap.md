@@ -1,5 +1,14 @@
 # Motocross Madness physics parity roadmap
 
+## AI avoidance scan and steering difference (2026-11-15)
+
+Recovered the complete scan at `0x46e340..0x46e9c7`: alternating candidate offsets, wrapped heading cones, player and actor records, self exclusion, route-category obstacles, persistent avoidance flags, speed fallback and final steering difference. Preserved the original second-list behavior: identity pointers advance while the first avoidance record is reused. The isolated oracle executes the intact scan, including both actor loops and route traversal, before allocator cleanup.
+
+All five output words match 4,096 repeated original executions. Finite coverage includes 2,863 adjusted offsets and 1,215 speed fallbacks; final flags are 0 in 1,233 cases, 1 in 1,703 and 2 in 1,160. A 64-call live capture also matches all 40 eligible scans across 30 retained route-target advances; 24 calls skip avoidance. Live scans are unobstructed. Their range derives from entry bike `+0x6a4`, threshold from the recovered nearest segment, target from retained guidance, and records from earlier actor inputs. Intermediate snapshots are assertions. All nine live hooks were independently verified restored with no debugger attached.
+
+Evidence: `ai-avoidance-scan.js`, oracle/generator/analyzer in `scripts/mcm-reference/`, `tests/mcm-ai-avoidance-scan.test.js`, and `ai-avoidance-scan-wine11.json.br`. Negative tests reject changed scan outputs, intermediate inputs and unsupported preceding heading overrides. Exceptional-value scan coverage, allocator effects, alternate heading/airborne branches, downstream steering/throttle control, retained AI motion and the longer whole-world replay remain open. This module does not yet change preview control or prove full physics parity.
+
+
 ## Live AI avoidance records joined to guidance (2026-11-15)
 
 A 64-call original capture now joins nearest-route selection, retained target advancement (21 advances), guidance and avoidance record preparation. The recovered calculations match all written fields in 114 records: 57 inactive player records and 57 active self-actor records. Seven calls skip avoidance through the original `+0x4bc` eligibility branch. Input pose/velocity/radius and actor identities come from earlier captures; output-time body snapshots are assertions. Inactive angle slots are not interpreted as outputs, and their preservation remains covered by the isolated original-code oracle.
