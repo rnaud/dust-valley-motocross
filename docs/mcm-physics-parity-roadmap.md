@@ -1,5 +1,14 @@
 # Motocross Madness physics parity roadmap
 
+## AI avoidance record preparation (2026-11-15)
+
+Recovered pairwise avoidance records in the player region `0x46df56..0x46e060` and both actor-list regions `0x46e0a9..0x46e1ac` and `0x46e214..0x46e317`. Each record carries eligibility, distance (or squared distance while inactive), heading, relative speed squared plus one, and angular half-width. Inactive records preserve the two inherited angle slots. The implementation preserves the distinct player/actor comparison rules identified in the native instructions.
+
+All five words match 12,288 isolated original executions (4,096 per region), repeated with identical output. Finite test inputs cover active/inactive records, coincident bikes, exact radius equality, zero and negative radius, and distinct inherited angle values. Evidence: `tests/mcm-ai-avoidance-record.test.js`, `ai-avoidance-record-wine11.json.br`, and the oracle/generator alongside the other reference tools. No live debugger was attached for this milestone.
+
+Live record capture, exceptional-value execution coverage, list allocation/count/eligibility behavior, heading overrides, the subsequent avoidance-angle scan, steering/throttle outputs and retained AI motion remain open. These helpers are not connected to preview control. Full physics parity remains unproven.
+
+
 ## AI target guidance joined to retained selection (2026-11-15)
 
 Recovered mode-0 guidance at `0x46dac1..0x46dec6`: original square-root lookup distance, route-offset/lookahead interpolation, aim heading with coincident-point fallback, speed-limit value and signed lateral error using the correct nearest-segment side. The current target and nearest segment remain distinct. All six words match 4,096 intact original executions, including direct/interpolated targets, category-8 bypass and degenerate nearest segments. Repeat native output is identical.
