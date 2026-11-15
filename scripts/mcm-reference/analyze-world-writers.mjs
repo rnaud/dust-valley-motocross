@@ -1,3 +1,4 @@
+import {analyzeUploadCopy} from './analyze-upload-copy.mjs';
 import assert from 'node:assert/strict';
 import {deriveActorApplyStacks} from './derive-actor-apply-stacks.mjs';
 import {analyzeBindingGates} from './analyze-binding-gates.mjs';
@@ -14,7 +15,7 @@ const float=x=>new Float32Array(Uint32Array.of(x).buffer)[0];
 const bits=x=>new Uint32Array(Float32Array.of(x).buffer)[0];
 const floats=x=>new Float32Array(Uint32Array.from(x).buffer);
 export const bindingPhases=new Set(['state-1bd500','state-prepared','binding-gate-input','binding-producer-input','binding-input','binding-call-store','binding-call-return']);
-export const worldWriterPhases=new Set([...bindingPhases,'state-declaration','upload-config','wrapper','wrapper-exit','wrapper-cull','store-before','store-after','hud-clock-input','hud-line-clear','bike-function-entry','upload-input','upload-resource-input','resource-input','resource-stage','command-producer','command-bytes','handler-1b6460','heap-store-value','upload-command-allocation','upload-command-bytes']);
+export const worldWriterPhases=new Set([...bindingPhases,'state-declaration','upload-config','wrapper','wrapper-exit','wrapper-cull','store-before','store-after','hud-clock-input','hud-line-clear','bike-function-entry','upload-input','upload-resource-input','resource-input','resource-stage','command-producer','command-bytes','handler-1b6460','heap-store-value','upload-command-allocation','upload-command-bytes','resource-upload-callback','upload-copy-save']);
 
 // Predict writes from ordered invocation/stage inputs. Store observations never
 // become state. Invocation order, wrapper/non-actor stack depth, prepared graphics state, camera,
@@ -22,11 +23,12 @@ export const worldWriterPhases=new Set([...bindingPhases,'state-declaration','up
 export function analyzeWorldWriters(render, physicsRows, {player, scratch, moduleBase, heapHandle, worldMatrix, actorDrawSchedules=null}) {
   assert.equal(scratch,parseInt(physicsRows[0].stackAddress,16)+0x54);
   const actorStacks=deriveActorApplyStacks(render,{actorDrawSchedules});render=actorStacks.rows;
+  const copies=analyzeUploadCopy(render,moduleBase);
   const bindings=analyzeBindingGates(render.filter(r=>bindingPhases.has(r.phase)),moduleBase);
   const wrappers=new Map(),checks=[],counts={hud:0,sse:0,binding:0,heap:0},resources=[];
   let app=null,upload=null,pendingSse=null,line=null,clock=null,clockPending=false,expectedLines=0;
   let last=null,applications=0,clockChecks=0,refreshes=0,lineCalls=0;
-  const commit=(kind,frame,store)=>{if(store.address===scratch){last={kind,frame,value:store.value};counts[kind]++;}};
+  const commit=(kind,frame,store)=>{if(store.address===scratch){last={kind,frame,value:store.value};counts[kind]=(counts[kind]??0)+1;}};
   const finishApply=()=>{
     if(!app)return;
     assert.equal(upload,null,'Incomplete upload');assert.equal(pendingSse,null,'Incomplete SSE store');
@@ -56,17 +58,19 @@ export function analyzeWorldWriters(render, physicsRows, {player, scratch, modul
         expected.push({kind:'heap',...heap});
       }
     }
-    // The three stack offsets are distinct. No relative ordering between these
+    expected.push(...app.copies.filter(store=>store.address===scratch).map(store=>({kind:'uploadCopy',...store})));
+    // The stack offsets are distinct for these observed call paths. No relative ordering between these
     // families is inferred when they do not overlap the target in this call.
     assert.ok(new Set(expected.map(s=>s.kind)).size<=1,'Conflicting stack families');
     assert.deepEqual(app.actual,expected,'Application writes differ');
     for(const store of expected)commit(store.kind,entry.frame,store);
     applications++;app=null;
   };
-  for(const r of render){
+  for(const [index,r] of render.entries()){
     assert.ok(worldWriterPhases.has(r.phase),'Unknown world writer event');
     if(r.phase==='wrapper')wrappers.set(`${r.frame}/${r.actor}`,r);
-    if(r.phase==='state-1bd500'){finishApply();app={entry:r,actual:[],uploads:[]};}
+    if(r.phase==='state-1bd500'){finishApply();app={entry:r,actual:[],uploads:[],copies:[]};}
+    if(copies.stores.has(index)){assert.ok(app);const store=copies.stores.get(index);app.copies.push(store);if(store.address===scratch)app.actual.push({kind:'uploadCopy',address:r.address,value:r.value});}
     if(r.phase==='state-prepared')app.prepared=r;
     if(r.phase==='binding-gate-input')app.config=r;
     if(r.phase==='state-declaration')app.declaration=r;
@@ -122,5 +126,5 @@ export function analyzeWorldWriters(render, physicsRows, {player, scratch, modul
   assert.equal(checks.length,physicsRows.length/2-1,'Missing next-bike checks');
   const uploads=analyzeRenderResourceUploads(resources,heapHandle);
   return {scope:'Actor application stacks derived from wrapper entries; other invocations and stage inputs; predicted write values, no scratch injection. Draw scheduling and continuous graphics state are not recovered.',
-    applications,sceneScheduledWrappers:actorStacks.scheduledWrappers,derivedActorApplications:actorStacks.applications,derivedChildWrappers:actorStacks.childWrappers,observedRootWrappers:actorStacks.rootWrappers,observedNonActorApplications:actorStacks.observedNonActorApplications,bindings,uploads,clockChecks,refreshes,lineCalls,counts,checks};
+    applications,uploadCopyCalls:copies.calls,sceneScheduledWrappers:actorStacks.scheduledWrappers,derivedActorApplications:actorStacks.applications,derivedChildWrappers:actorStacks.childWrappers,observedRootWrappers:actorStacks.rootWrappers,observedNonActorApplications:actorStacks.observedNonActorApplications,bindings,uploads,clockChecks,refreshes,lineCalls,counts,checks};
 }

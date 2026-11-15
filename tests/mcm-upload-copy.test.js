@@ -1,3 +1,4 @@
+import {analyzeUploadCopy} from '../scripts/mcm-reference/analyze-upload-copy.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import {brotliDecompressSync} from 'node:zlib';
 import {mcmHostUploadCopyStores} from '../src/physics/mcm/render-upload-copy.js';
 const fixture=()=>JSON.parse(brotliDecompressSync(fs.readFileSync(new URL('./fixtures/mcm/upload-copy-wine11.json.br',import.meta.url))));
@@ -20,10 +21,10 @@ function checkLive(rows){let expected=null,before=false,calls=0;for(const r of r
  }
 }assert.equal(expected,null);return calls;}
 test('194 live copy calls match predicted register-save addresses and values',()=>{
- const f=fixture();assert.equal(checkLive(f.rows),194);assert.match(f.provenance.cleanup,/debugger=0 clean=1/);assert.equal((f.provenance.cleanup.match(/restored=1/g)||[]).length,176);assert.match(f.provenance.run,/captured=10 status=1/);
+ const f=fixture();assert.equal(checkLive(f.rows),194);assert.equal(analyzeUploadCopy(f.rows,0x7a770000).calls,194);assert.match(f.provenance.cleanup,/debugger=0 clean=1/);assert.equal((f.provenance.cleanup.match(/restored=1/g)||[]).length,176);assert.match(f.provenance.run,/captured=10 status=1/);
 });
 test('corrupted saved values and missing copies are rejected; buffer paths stay explicit',()=>{
- let f=fixture();f.rows.find(r=>r.phase==='upload-copy-save'&&r.after).value^=1;assert.throws(()=>checkLive(f.rows));
- f=fixture();f.rows.splice(f.rows.findIndex(r=>r.phase==='upload-copy-save'&&r.after),1);assert.throws(()=>checkLive(f.rows));
+ let f=fixture();f.rows.find(r=>r.phase==='upload-copy-save'&&r.after).value^=1;assert.throws(()=>checkLive(f.rows));assert.throws(()=>analyzeUploadCopy(f.rows,0x7a770000));
+ f=fixture();f.rows.splice(f.rows.findIndex(r=>r.phase==='upload-copy-save'&&r.after),1);assert.throws(()=>checkLive(f.rows));assert.throws(()=>analyzeUploadCopy(f.rows,0x7a770000));
  for(const [sourceBuffer,destinationBuffer]of [[1,0],[0,1],[1,1]])assert.deepEqual(mcmHostUploadCopyStores({sourceBuffer,destinationBuffer,count:1}),{boundary:'buffer-backed',stores:[]});
 });

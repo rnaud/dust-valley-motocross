@@ -1,5 +1,9 @@
 # Motocross Madness physics parity roadmap
 
+## Copy saves joined; indexed-draw overwrite exposed — 2026-11-15
+
+The ordered writer diagnostic now validates and incorporates computed host-copy register saves. A fresh 42-frame trace checks 1,874 such calls and matches the first eight next-bike intervals. Interval 8 then exposes a later zero overwrite inside the indexed-draw/mutex-return window, after the last modeled matrix write. The exact negative result is retained, not injected as an input. All 176 hooks restored and debugger absent. See `mcm-upload-copy-recovery.md`. The previous pointer-carry mismatch and older steering failure remain open; preview handling is unchanged.
+
 ## Scene traversal and an additional stack writer — 2026-11-15
 
 Recovered original child traversal (4,681 native cases / 84,258 words), retained scene hierarchy, and actor-wrapper scheduling from the world entry. The short scene sample checks 198 callback entries/returns and six actor application addresses. Unknown callback bodies remain boundaries. See `mcm-scene-traversal-recovery.md`.
