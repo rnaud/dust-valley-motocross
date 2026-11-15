@@ -1,0 +1,31 @@
+{
+  "scope": "FOV smoothing, immediate-mode setter and refresh-counter prefix; live idle retained continuity, not full camera/render parity",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "native": {
+    "cases": 4096,
+    "words": 32768,
+    "differences": 0
+  },
+  "live": {
+    "frames": 60,
+    "mode": 0,
+    "fovWords": 480,
+    "refreshCounterBoundaryInputs": 0,
+    "differences": 0,
+    "captureSha256": "7ad9cf11672fb977f9ede0ae318286a0cdf273cc872a73959476085227cf0f2b",
+    "restoredHooks": 14,
+    "debuggerDetached": true
+  },
+  "remaining": [
+    "Action-11 and FOV/viewport controls",
+    "Full camera/view update at 0x47a670 and renderer ordering",
+    "Frame-38 steering divergence and whole-world parity"
+  ],
+  "previewHandlingChanged": false,
+  "tests": {
+    "passed": 522,
+    "failed": 0,
+    "focusedPassed": 15,
+    "build": true
+  }
+}

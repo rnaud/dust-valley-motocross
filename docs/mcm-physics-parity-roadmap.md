@@ -1,5 +1,9 @@
 # Motocross Madness physics parity roadmap
 
+## FOV filter and live refresh-counter continuity recovered
+
+The original seventh filter, FOV setter and update-counter prefix match **4,096 cases / 32,768 words**. A fresh 60-frame idle capture extends the camera chain through FOV and update return, now retaining the refresh counter without per-frame telemetry reseeding. All fourteen hooks were restored and detachment verified. Mode-transition/FOV controls and remaining camera/view updates are still outside this coverage; the analyzer rejects control-state changes. See `mcm-chase-fov-recovery.md` and its validation report. Preview handling is unchanged; full physics parity remains open.
+
 ## Final camera pose and bike/rider node fields recovered
 
 Original finalization matches **2,048 cases / 63,488 words**. A fresh 60-frame capture matches computed eye/target through the final native pose, roll and node fields (1,860 additional words), with pose/flags/nodes retained between frames. **Refresh-counter continuity remains outside this claim**: the analyzer explicitly supplies that counter at source entry because the later camera update and FOV setter also write it. All eleven hooks were restored and debugger detachment verified. See `mcm-chase-finalize-recovery.md` and validation report.
