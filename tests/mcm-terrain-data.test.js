@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {readMcmTerrainBanks,decompressMcmBlock} from '../scripts/mcm-reference/terrain-data.mjs';
+import {readMcmTerrainBanks,readMcmTerrainResources,decompressMcmBlock} from '../scripts/mcm-reference/terrain-data.mjs';
 
 test('terrain LZW matches original literals, dictionary expansion, width and reset codes',()=>{
   const {fixtures}=JSON.parse(fs.readFileSync(new URL('./fixtures/mcm/terrain-compression-wine11.json',import.meta.url)));
@@ -45,4 +45,25 @@ test('terrain hierarchy connects file offsets, sample banks and world-coordinate
   assert.deepEqual(queryMcmTerrainHeight({...r,point:[16,0,16]}),[16,1.125,16]);
   data.writeUInt32LE(rootAt,tableAt);
   assert.throws(()=>readMcmTerrain(data),/cycle/);
+});
+
+
+test('terrain rendering resources preserve shared texture, palette, base pixels and mip boundaries',()=>{
+  const word=n=>{const b=Buffer.alloc(4);b.writeUInt32LE(n);return b;};
+  const group=(count,width,height)=>Buffer.concat([word(width),word(height),word(4),
+    ...Array.from({length:count},(_,i)=>Buffer.concat([Buffer.alloc(width*height,10+i),Buffer.alloc(width*height/4,90+i)]))]);
+  const palette=Buffer.from(Array.from({length:768},(_,i)=>i%256));
+  const bytes=Buffer.concat([word(2),word(1),group(1,2,2),group(2,4,4),Buffer.from('hierarchy')]);
+  const prefix={nextOffset:0,blocks:[{kind:'palette',size:768,compressed:false,data:palette}]};
+  const r=readMcmTerrainResources(bytes,prefix);
+  assert.deepEqual(r.palette,palette);
+  assert.deepEqual([...r.sharedTexture.pixels],[10,10,10,10]);
+  assert.deepEqual([...r.sharedTexture.mip],[90]);
+  assert.equal(r.textures.length,2);
+  assert.deepEqual([...r.textures[1].pixels],Array(16).fill(11));
+  assert.deepEqual([...r.textures[1].mip],Array(4).fill(91));
+  assert.equal(bytes.subarray(r.nextOffset).toString(),'hierarchy');
+  assert.throws(()=>readMcmTerrainResources(bytes.subarray(0,r.nextOffset-1),prefix),/Truncated/);
+  const invalid=Buffer.from(bytes);invalid.writeUInt32LE(0,8);
+  assert.throws(()=>readMcmTerrainResources(invalid,prefix),/Unsupported/);
 });

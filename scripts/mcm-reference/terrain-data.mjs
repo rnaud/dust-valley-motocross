@@ -1,5 +1,5 @@
 // TRN v2 prefix recovery: 0x410260, palette 0x404230, sample banks 0x44ea00.
-// Rendering resources and the following tile hierarchy are not parsed here.
+// The prefix reader is shared by physical hierarchy and rendering resource readers.
 export function readMcmTerrainBanks(bytes) {
   let offset=0;
   const take=n=>{if(!Number.isSafeInteger(n)||n<0||offset+n>bytes.length)throw new Error('Truncated TRN');const b=bytes.subarray(offset,offset+n);offset+=n;return b;};
@@ -56,22 +56,34 @@ export function decompressMcmBlock(bytes,size) {
   return output.subarray(0,used);
 }
 
-// Physical terrain hierarchy from 0x48a2f0. Texture payloads are skipped using
-// their serialized dimensions; only the physics-relevant node fields are kept.
-export function readMcmTerrain(bytes) {
-  const prefix=readMcmTerrainBanks(bytes);
+// Keep serialized texture bytes and mip levels intact; palette entries are RGB.
+export function readMcmTerrainResources(bytes,prefix=readMcmTerrainBanks(bytes)) {
   let offset=prefix.nextOffset;
   const u32=()=>{if(offset+4>bytes.length)throw new Error('Truncated terrain resources');const n=bytes.readUInt32LE(offset);offset+=4;return n;};
   const textureCount=u32(),hasSharedTexture=u32();
-  const skipTextures=count=>{
+  const readTextures=count=>{
     const width=u32(),height=u32(),format=u32();
     const pixelBytes=[0,3,2,2,1,3,1,2,2,3,2,2,4,2,2,4][format];
-    if(!pixelBytes||width%2||height%2)throw new Error('Unsupported terrain texture format/dimensions');
+    if(!pixelBytes||!width||!height||width%2||height%2)throw new Error('Unsupported terrain texture format/dimensions');
+    const begin=offset;
     offset+=count*width*height*pixelBytes*5/4;
     if(!Number.isSafeInteger(offset)||offset>bytes.length)throw new Error('Truncated terrain textures');
+    const size=width*height*pixelBytes;
+    return Array.from({length:count},(_,i)=>{const at=begin+i*size*5/4;return {width,height,format,pixelBytes,offset:at,pixels:bytes.subarray(at,at+size),mip:bytes.subarray(at+size,at+size*5/4)};});
   };
-  if(hasSharedTexture)skipTextures(1);
-  if(textureCount)skipTextures(textureCount);
+  const sharedTexture=hasSharedTexture?readTextures(1)[0]:null;
+  const textures=textureCount?readTextures(textureCount):[];
+  const block=prefix.blocks.find(b=>b.kind==='palette'&&b.size===768);
+  const palette=block?(block.compressed?decompressMcmBlock(block.data,block.size).subarray(0,768):block.data):null;
+  return {textureCount,hasSharedTexture,sharedTexture,textures,palette,nextOffset:offset};
+}
+
+
+// Physical terrain hierarchy and serialized rendering fields from 0x48a2f0.
+export function readMcmTerrain(bytes) {
+  const prefix=readMcmTerrainBanks(bytes);
+  const resources=readMcmTerrainResources(bytes,prefix);
+  const {nextOffset:offset,textureCount,hasSharedTexture}=resources;
   const rootOffset=offset,nodes=new Map(),pending=new Set(),bankCache=new Map();
   const bank=index=>{
     if(bankCache.has(index))return bankCache.get(index);
@@ -90,7 +102,8 @@ export function readMcmTerrain(bytes) {
     if(at<rootOffset||at+60>bytes.length)throw new Error('Invalid terrain node offset');
     const level=bytes.readUInt32LE(at+20),shift=bytes.readUInt32LE(at+24),bankIndex=bytes.readUInt32LE(at+40),table=bytes.readUInt32LE(at+56);
     if(level>2||shift>30)throw new Error('Unsupported terrain node level/shift');
-    const node={offset:at,level,shift,bankIndex,bias:bytes.readFloatLE(at),scale:bytes.readFloatLE(at+4),
+    const node={offset:at,level,shift,bankIndex,tileIndex:bytes.readUInt32LE(at+36),
+      textureIndex:bytes.readInt32LE(at+44),textureOrientation:bytes.readUInt32LE(at+48),textureField4c:bytes.readUInt32LE(at+52),bias:bytes.readFloatLE(at),scale:bytes.readFloatLE(at+4),
       minimumHeight:bytes.readInt32LE(at+8),maximumHeight:bytes.readInt32LE(at+12),
       originX:bytes.readInt32LE(at+28),originY:bytes.readInt32LE(at+32),...bank(bankIndex)};
     nodes.set(at,node);pending.add(at);
@@ -103,5 +116,5 @@ export function readMcmTerrain(bytes) {
   const root=readNode(rootOffset),exponent=root.shift-4*root.level;
   if(exponent<0||exponent>30)throw new Error('Invalid terrain grid scale');
   const worldToGrid=Math.fround(1/((2**exponent)*prefix.heightScale));
-  return {...prefix,rootOffset,root,nodes,worldToGrid,textureCount,hasSharedTexture};
+  return {...prefix,rootOffset,root,nodes,worldToGrid,textureCount,hasSharedTexture,resources};
 }

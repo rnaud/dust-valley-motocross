@@ -1,0 +1,27 @@
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
+import {mcmTerrainUv} from '../../src/mcm-terrain-uv.js';
+const exe=process.argv[2];if(!exe)throw Error('Usage: generate-terrain-uv-fixture.mjs /absolute/path/to/mcm.exe');
+const sha=createHash('sha256').update(fs.readFileSync(exe)).digest('hex');
+if(sha!=='e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b')throw Error('Reference executable hash mismatch');
+const dir=fs.mkdtempSync(path.join(os.tmpdir(),'mcm-terrain-uv-')),binary=path.join(dir,'oracle.exe');
+const cc=process.env.MCM_CC||'/opt/homebrew/bin/i686-w64-mingw32-gcc';
+execFileSync(cc,['-O0','-Wall','-Wextra','-Werror','-Wl,--image-base,0x10000000','-Wl,--disable-dynamicbase',fileURLToPath(new URL('./terrain-uv-oracle.c',import.meta.url)),'-o',binary]);
+const cases=[];
+for(const terrainMode of [0,1])for(const tileIndex of [0,1,3,4,16,17,63,255])for(const width of [128,256])for(let orientation=0;orientation<8;orientation++)for(const [localX,localY] of [[0,0],[16,16],[3,11],[11,3]])cases.push({terrainMode,tileIndex,width,height:width,orientation,localX,localY});
+const input=Buffer.alloc(cases.length*28);cases.forEach((c,i)=>Object.values(c).forEach((v,j)=>input.writeUInt32LE(v,i*28+j*4)));
+const inputPath=path.join(dir,'input.bin'),outputPath=path.join(dir,'output.bin');fs.writeFileSync(inputPath,input);
+const wine=process.env.MCM_WINE||'/Applications/Wine Stable.app/Contents/Resources/wine/bin/wine';
+execFileSync(wine,[binary,'Z:'+path.resolve(exe),'Z:'+inputPath,'Z:'+outputPath],{env:{...process.env,WINEDEBUG:'-all',MVK_CONFIG_LOG_LEVEL:'0'},timeout:60000});
+const output=fs.readFileSync(outputPath);if(output.length!==cases.length*20)throw Error('Oracle result length mismatch');
+const fixture={executableSha256:sha,cases:cases.map((args,i)=>{
+  const r=mcmTerrainUv(args),actual=Buffer.alloc(20);[r.vOffset,r.uOffset,r.scale,r.u,r.v].forEach((v,j)=>actual.writeFloatLE(v,j*4));
+  const expected=output.subarray(i*20,i*20+20);if(!actual.equals(expected))throw Error('UV mismatch: '+JSON.stringify(args));
+  return {args,expected:expected.toString('hex')};
+})};
+fs.writeFileSync(new URL('../../tests/fixtures/mcm/terrain-uv-wine11.json',import.meta.url),JSON.stringify(fixture));
+console.log({cases:cases.length,words:cases.length*5,differences:0,artifacts:dir});

@@ -11,6 +11,11 @@ This is an asset-port tally, separate from physics equivalence. Matching geometr
 - Selected terrains use the recovered bike reset/ground-alignment routine at a central practice location. Dunes retains the previously validated initial checkpoint. Each imported scene's declared shadow light replaces the dunes light target; scenes without a declared shadow light omit that occlusion query.
 - Original animation/component transforms are read without changing native transform caches.
 
+## Recovered for the next rendering milestone
+
+- Original TRN palettes and 1,068 indexed textures across all 33 courses now parse with their mip levels and tile metadata preserved.
+- Original texture layout and orientation math matches 1,024 isolated native cases / 5,120 output words. See `mcm-terrain-rendering-recovery.md` for scope and reproduction. Renderer integration is still pending; this does not change the deployed map appearance yet.
+
 ## Still required for a complete asset port
 
 - Original terrain texture placement, rotations, skies, fog and scene lighting in the renderer. Current terrain shading remains Dust Valley's.

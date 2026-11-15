@@ -1,0 +1,524 @@
+[
+  {
+    "id": "canyon-canyon01",
+    "textures": 49,
+    "dimensions": [
+      "128x128"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0,
+      3,
+      4,
+      7
+    ],
+    "resourceSha256": "edcc0d1ababea487654f48089087edf908434c0dfeefd2e81a9fc253ed29b1aa"
+  },
+  {
+    "id": "canyon-canyon02",
+    "textures": 49,
+    "dimensions": [
+      "128x128"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0,
+      3,
+      4,
+      7
+    ],
+    "resourceSha256": "edcc0d1ababea487654f48089087edf908434c0dfeefd2e81a9fc253ed29b1aa"
+  },
+  {
+    "id": "canyon-canyon03",
+    "textures": 49,
+    "dimensions": [
+      "128x128"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0,
+      3,
+      4,
+      7
+    ],
+    "resourceSha256": "edcc0d1ababea487654f48089087edf908434c0dfeefd2e81a9fc253ed29b1aa"
+  },
+  {
+    "id": "canyon-canyon04",
+    "textures": 49,
+    "dimensions": [
+      "128x128"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0,
+      3,
+      4,
+      7
+    ],
+    "resourceSha256": "edcc0d1ababea487654f48089087edf908434c0dfeefd2e81a9fc253ed29b1aa"
+  },
+  {
+    "id": "canyon-canyon05",
+    "textures": 49,
+    "dimensions": [
+      "128x128"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0,
+      3,
+      4,
+      7
+    ],
+    "resourceSha256": "edcc0d1ababea487654f48089087edf908434c0dfeefd2e81a9fc253ed29b1aa"
+  },
+  {
+    "id": "quarries-track13",
+    "textures": 16,
+    "dimensions": [
+      "256x256"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0
+    ],
+    "resourceSha256": "3984563e9ae321fdb7862facabd5e8968d9c885d1d6818eda1dba3981bda15c2"
+  },
+  {
+    "id": "quarries-dunes",
+    "textures": 16,
+    "dimensions": [
+      "256x256"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0
+    ],
+    "resourceSha256": "f3a3e28c55cc99a40c12228942fe50c9ab67fee06faf0d09c06645622ee6c479"
+  },
+  {
+    "id": "quarries-quarry00",
+    "textures": 16,
+    "dimensions": [
+      "256x256"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0
+    ],
+    "resourceSha256": "8430f448e4bb3cf577fe0e8e941e5fef72cb8bbba9b9a9ba53b58869796bdf2f"
+  },
+  {
+    "id": "quarries-quarry01",
+    "textures": 16,
+    "dimensions": [
+      "256x256"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0
+    ],
+    "resourceSha256": "242607de069dff2274a0f8f8ecf8aadfcb8fe980e177725026598468e55e3bc1"
+  },
+  {
+    "id": "quarries-quarry02",
+    "textures": 16,
+    "dimensions": [
+      "256x256"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0
+    ],
+    "resourceSha256": "2d2c0efe34141a9f3a50210c9fbbe13915b74622f15f90951247a6975806a4e1"
+  },
+  {
+    "id": "quarries-quarry03",
+    "textures": 16,
+    "dimensions": [
+      "256x256"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0
+    ],
+    "resourceSha256": "1456cf73fab4ff716280c6c79b80adbcd335ae038e422285171e14efb95d940e"
+  },
+  {
+    "id": "quarries-quarry19",
+    "textures": 16,
+    "dimensions": [
+      "256x256"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0
+    ],
+    "resourceSha256": "138b78353202017710387c68f6802a6cc5e18fea734946c8906f780ad16f4845"
+  },
+  {
+    "id": "season-week01",
+    "textures": 41,
+    "dimensions": [
+      "128x128"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0,
+      3,
+      4,
+      7
+    ],
+    "resourceSha256": "d354204087184972404e89959af2321bc443c67ca460b3ef96ef6ffde615d7ec"
+  },
+  {
+    "id": "season-week02",
+    "textures": 41,
+    "dimensions": [
+      "128x128"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0,
+      3,
+      4,
+      7
+    ],
+    "resourceSha256": "d354204087184972404e89959af2321bc443c67ca460b3ef96ef6ffde615d7ec"
+  },
+  {
+    "id": "season-week03",
+    "textures": 41,
+    "dimensions": [
+      "128x128"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0,
+      3,
+      4,
+      7
+    ],
+    "resourceSha256": "d354204087184972404e89959af2321bc443c67ca460b3ef96ef6ffde615d7ec"
+  },
+  {
+    "id": "season-week04",
+    "textures": 41,
+    "dimensions": [
+      "128x128"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0,
+      3,
+      4,
+      7
+    ],
+    "resourceSha256": "d354204087184972404e89959af2321bc443c67ca460b3ef96ef6ffde615d7ec"
+  },
+  {
+    "id": "season-week05",
+    "textures": 41,
+    "dimensions": [
+      "128x128"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0,
+      3,
+      4,
+      7
+    ],
+    "resourceSha256": "d354204087184972404e89959af2321bc443c67ca460b3ef96ef6ffde615d7ec"
+  },
+  {
+    "id": "season-week06",
+    "textures": 41,
+    "dimensions": [
+      "128x128"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0,
+      3,
+      4,
+      7
+    ],
+    "resourceSha256": "7e69ff4e8e0f33d33077a9dc4de7dd36feed5cfa161a11877aa621f8ae0765d1"
+  },
+  {
+    "id": "season-week07",
+    "textures": 41,
+    "dimensions": [
+      "128x128"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0,
+      3,
+      4,
+      7
+    ],
+    "resourceSha256": "d354204087184972404e89959af2321bc443c67ca460b3ef96ef6ffde615d7ec"
+  },
+  {
+    "id": "season-week08",
+    "textures": 41,
+    "dimensions": [
+      "128x128"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0,
+      3,
+      4,
+      7
+    ],
+    "resourceSha256": "d354204087184972404e89959af2321bc443c67ca460b3ef96ef6ffde615d7ec"
+  },
+  {
+    "id": "season-week09",
+    "textures": 41,
+    "dimensions": [
+      "128x128"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0,
+      3,
+      4,
+      7
+    ],
+    "resourceSha256": "d354204087184972404e89959af2321bc443c67ca460b3ef96ef6ffde615d7ec"
+  },
+  {
+    "id": "season-week10",
+    "textures": 41,
+    "dimensions": [
+      "128x128"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0,
+      3,
+      4,
+      7
+    ],
+    "resourceSha256": "d354204087184972404e89959af2321bc443c67ca460b3ef96ef6ffde615d7ec"
+  },
+  {
+    "id": "season-week11",
+    "textures": 41,
+    "dimensions": [
+      "128x128"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0,
+      3,
+      4,
+      7
+    ],
+    "resourceSha256": "d354204087184972404e89959af2321bc443c67ca460b3ef96ef6ffde615d7ec"
+  },
+  {
+    "id": "season-week12",
+    "textures": 41,
+    "dimensions": [
+      "128x128"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0,
+      3,
+      4,
+      7
+    ],
+    "resourceSha256": "d354204087184972404e89959af2321bc443c67ca460b3ef96ef6ffde615d7ec"
+  },
+  {
+    "id": "season-week13",
+    "textures": 41,
+    "dimensions": [
+      "128x128"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0,
+      3,
+      4,
+      7
+    ],
+    "resourceSha256": "d354204087184972404e89959af2321bc443c67ca460b3ef96ef6ffde615d7ec"
+  },
+  {
+    "id": "season-week14",
+    "textures": 41,
+    "dimensions": [
+      "128x128"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0,
+      3,
+      4,
+      7
+    ],
+    "resourceSha256": "d354204087184972404e89959af2321bc443c67ca460b3ef96ef6ffde615d7ec"
+  },
+  {
+    "id": "season-week15",
+    "textures": 41,
+    "dimensions": [
+      "128x128"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0,
+      3,
+      4,
+      7
+    ],
+    "resourceSha256": "d354204087184972404e89959af2321bc443c67ca460b3ef96ef6ffde615d7ec"
+  },
+  {
+    "id": "waypoint-baja00",
+    "textures": 16,
+    "dimensions": [
+      "256x256"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0
+    ],
+    "resourceSha256": "8430f448e4bb3cf577fe0e8e941e5fef72cb8bbba9b9a9ba53b58869796bdf2f"
+  },
+  {
+    "id": "waypoint-baja01",
+    "textures": 16,
+    "dimensions": [
+      "256x256"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0
+    ],
+    "resourceSha256": "3e838d7d5ea3af6b66d0ccfff5d0135f0570ad45f667e773c67368c121d9fd53"
+  },
+  {
+    "id": "waypoint-baja02",
+    "textures": 16,
+    "dimensions": [
+      "256x256"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0
+    ],
+    "resourceSha256": "2d2c0efe34141a9f3a50210c9fbbe13915b74622f15f90951247a6975806a4e1"
+  },
+  {
+    "id": "waypoint-baja03",
+    "textures": 16,
+    "dimensions": [
+      "256x256"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0
+    ],
+    "resourceSha256": "1456cf73fab4ff716280c6c79b80adbcd335ae038e422285171e14efb95d940e"
+  },
+  {
+    "id": "waypoint-baja19",
+    "textures": 16,
+    "dimensions": [
+      "256x256"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0
+    ],
+    "resourceSha256": "138b78353202017710387c68f6802a6cc5e18fea734946c8906f780ad16f4845"
+  },
+  {
+    "id": "waypoint-dunebaja",
+    "textures": 16,
+    "dimensions": [
+      "256x256"
+    ],
+    "formats": [
+      4
+    ],
+    "orientations": [
+      0
+    ],
+    "resourceSha256": "f3a3e28c55cc99a40c12228942fe50c9ab67fee06faf0d09c06645622ee6c479"
+  }
+]
