@@ -1,0 +1,3 @@
+import {composeMcmWrapperProduct} from '../../src/physics/mcm/wrapper-product.js';
+export function compareWrapperProduct(input,output){if(!input.length||input.length%128||output.length!==input.length/2)throw Error('Incomplete wrapper matrix oracle');let differences=0;const examples=[];
+ for(let i=0;i<input.length/128;i++){const a=Float32Array.from({length:32},(_,j)=>input.readFloatLE(i*128+j*4)),actual=new Uint32Array(composeMcmWrapperProduct(a.slice(0,16),a.slice(16)).buffer);for(let j=0;j<16;j++){const expected=output.readUInt32LE(i*64+j*4);if(actual[j]!==expected){differences++;if(examples.length<10)examples.push({case:i,word:j,expected,actual:actual[j]});}}}return {cases:input.length/128,words:output.length/4,differences,examples};}

@@ -8,7 +8,7 @@ const float=b=>new Float32Array(Uint32Array.of(b).buffer)[0];
 const identity=bits([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]);
 const oldPhases=new Set(['bike-entry','submit-entry','submit-view','submit-projection','submit-exit','product-before','product-after','product-store','scratch-store']);
 const matrixWords=m=>bits([...m.projection,...m.view,...m.combined,...m.screen,m.screenScale]);
-export function analyzeRenderGates(rows,terrain){
+export function analyzeRenderGates(rows,terrain,{onWrapperCamera=null}={}){
  // Independently preserve the existing computed-camera -> exact-store proof.
  const submission=analyzeCameraSubmission(rows.filter(r=>r.inputs||(r.frame>0&&oldPhases.has(r.phase))),terrain);
  const computed=new Map();analyzeLiveChaseController(rows.filter(r=>r.inputs),{terrain,matrices:true,onMatrices:r=>computed.set(r.frame,r)});
@@ -39,6 +39,7 @@ export function analyzeRenderGates(rows,terrain){
   }else if(r.phase==='product-before'){
    assert.ok(worldKnown,'Product world was not derived from original draw');assert.deepEqual(r.words.slice(16),identity);derivedProducts++;
   }
+  if(onWrapperCamera&&r.phase==='wrapper-inputs'){assert.ok(matrices,'Missing computed wrapper camera');onWrapperCamera({event:r,camera:computed.get(latest).camera,state:structuredClone(camera),matrices:structuredClone(matrices)});}
  }
  assert.ok(!fog&&!world&&!pendingWorld,'Incomplete draw sequence');assert.ok(restoredLoops&&derivedProducts&&resets&&worldSetters,'Missing draw evidence');
  return {submission,fogSubmissions,resets,worldSubmissions,worldSetters,restoredLoops,derivedProducts,otherWorldSetters,warmupEvents};
