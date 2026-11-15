@@ -66,7 +66,7 @@ int main(int argc,char**argv){
  for(unsigned i=0;i<HOOK_COUNT;i++){BYTE b[8];if(instructions[i][0]==0xe8){fprintf(stderr,"Unsafe direct-CALL hook\n");CloseHandle(process);return 2;}if(!readmem(addresses[i],b,lengths[i])||memcmp(b,instructions[i],lengths[i])){fprintf(stderr,"Instruction guard failed %08lx\n",addresses[i]);CloseHandle(process);return 2;}}
  FILE*out=fopen(argv[2],"wx");if(!out){CloseHandle(process);return 2;}setbuf(out,NULL);
  if(!DebugActiveProcess(pid)){fclose(out);CloseHandle(process);return 2;}DebugSetProcessKillOnExit(FALSE);
- DWORD contact_before=0,contact_changes=0,trick_events=0,trick_selected=0,product=0,tracked_before=0;int tracking=0;int route_captured=0,installed=0,pending=-1,done=0,draw_active=0;DWORD pending_thread=0,frame=0,scratch=0,start=GetTickCount();
+ DWORD first_contact_change=0,contact_before=0,contact_changes=0,trick_events=0,trick_selected=0,product=0,tracked_before=0;int tracking=0;int route_captured=0,installed=0,pending=-1,done=0,draw_active=0;DWORD pending_thread=0,frame=0,scratch=0,start=GetTickCount();
  while(!done){
   DEBUG_EVENT e;DWORD status=DBG_CONTINUE;
   if(!WaitForDebugEvent(&e,500)){
@@ -90,7 +90,7 @@ int main(int argc,char**argv){
     if(match==2){DWORD stack[42],settings=0,raceFlag=0;WORD mode=0,enabled=0;BYTE other[0xcc8];if(!readmem(c.Esp,stack,sizeof stack)||!readmem(0x4e4fb4,&settings,4)||!readmem(settings+0x1072,&mode,2)||!readmem(settings+0x1070,&enabled,2)||!readmem(settings+0x6c0,&raceFlag,4)||!readmem(c.Esi,other,sizeof other))done=2;else{fprintf(out,"{\"phase\":\"race-context\",\"sequence\":%lu,\"bike\":%lu,\"other\":%lu,\"settings\":%lu,\"mode\":%u,\"enabled\":%u,\"raceFlag\":%lu,\"stack\":[",frame,bike,c.Esi,settings,mode,enabled,raceFlag);for(unsigned j=0;j<42;j++)fprintf(out,"%s%lu",j?",":"",stack[j]);fprintf(out,"],\"otherHex\":\"");for(unsigned j=0;j<sizeof other;j++)fprintf(out,"%02x",other[j]);fprintf(out,"\"}\n");}}
     if(match==3){DWORD settings=0,world=0,list=0,pointers[64];BYTE count=0;int ok=readmem(0x4e4fb4,&settings,4)&&readmem(settings+0x107e,&count,1)&&readmem(bike+0x41c,&world,4)&&readmem(world+0x34,&list,4)&&count<=64&&(!count||readmem(list,pointers,count*4));if(!ok)done=2;else{fprintf(out,"{\"phase\":\"second-actors\",\"sequence\":%lu,\"bike\":%lu,\"world\":%lu,\"actors\":[",frame,bike,world);for(unsigned j=0;j<count;j++){BYTE data[0xcc8];if(!readmem(pointers[j],data,sizeof data)){done=2;break;}fprintf(out,"%s{\"address\":%lu,\"hex\":\"",j?",":"",pointers[j]);for(unsigned k=0;k<sizeof data;k++)fprintf(out,"%02x",data[k]);fprintf(out,"\"}");}fprintf(out,"]}\n");}}
     if(match==3){DWORD settings=0,world=0,list=0,pointers[64];WORD count=0;int ok=readmem(0x4e4fb4,&settings,4)&&readmem(settings+0x107a,&count,2)&&readmem(bike+0x41c,&world,4)&&readmem(world+0x38,&list,4)&&count<=64&&(!count||readmem(list,pointers,count*4));if(!ok)done=2;else{fprintf(out,"{\"phase\":\"actors\",\"sequence\":%lu,\"bike\":%lu,\"world\":%lu,\"actors\":[",frame,bike,world);for(unsigned j=0;j<count;j++){BYTE data[0xcc8];if(!readmem(pointers[j],data,sizeof data)){done=2;break;}fprintf(out,"%s{\"address\":%lu,\"hex\":\"",j?",":"",pointers[j]);for(unsigned k=0;k<sizeof data;k++)fprintf(out,"%02x",data[k]);fprintf(out,"\"}");}fprintf(out,"]}\n");}}
-    if(match>=26){if(c.Esi==85947800){DWORD latch=0;if(!readmem(c.Esi+0xb4c,&latch,4)||!contact_graph(out,c.Esi,frame,match==27,c.Esp,1))done=2;else if(match==26)contact_before=latch;else if(latch!=contact_before)contact_changes++;}}
+    if(match>=26){if(c.Esi==85947800){DWORD latch=0;if(!readmem(c.Esi+0xb4c,&latch,4)||!contact_graph(out,c.Esi,frame,match==27,c.Esp,1))done=2;else if(match==26)contact_before=latch;else if(latch!=contact_before){if(!contact_changes)first_contact_change=frame;contact_changes++;}}}
     else if(match>=24){DWORD tb=match==24?c.Ecx:c.Esi;if(draw_active&&tb==85947800){if(match==25)trick_events++;if(match==24&&!readmem(c.Esp+4,&trick_selected,4))done=2;else if(!trick_graph(out,tb,frame,match==25,trick_selected)){fprintf(stderr,"Trick graph capture failed\n");done=2;}}}
     else if(match>=19){
      DWORD owner=match==19?c.Ecx:c.Edi;
@@ -130,7 +130,7 @@ int main(int argc,char**argv){
     HANDLE thread=OpenThread(THREAD_GET_CONTEXT|THREAD_SET_CONTEXT,FALSE,e.dwThreadId);CONTEXT c={.ContextFlags=CONTEXT_CONTROL};if(!thread||!GetThreadContext(thread,&c))return fatal_stop();
     if(tracking){DWORD after=0;if(!readmem(scratch,&after,4))done=2;else fprintf(out,"{\"phase\":\"store-after\",\"frame\":%lu,\"instruction\":%lu,\"scratchAddress\":%lu,\"beforeBits\":%lu,\"scratchBits\":%lu}\n",frame,addresses[pending],scratch,tracked_before,after);tracking=0;}
     c.EFlags&=~0x100u;if(!SetThreadContext(thread,&c))return fatal_stop();CloseHandle(thread);
-    if(frame>=limit||(pending==1&&frame>=64&&contact_changes&&trick_events))done=1;
+    if(frame>=limit||(pending==1&&frame>=128&&contact_changes&&frame>=first_contact_change+33&&trick_events))done=1;
     if(!done){if(!writebyte(addresses[pending],0xcc))return fatal_stop();armed[pending]=1;}pending=-1;
    }else if(code!=EXCEPTION_BREAKPOINT){fprintf(stderr,"Exception=%08lx address=%08lx first=%lu\n",code,a,e.u.Exception.dwFirstChance);status=DBG_EXCEPTION_NOT_HANDLED;}
   }

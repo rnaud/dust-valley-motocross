@@ -3,7 +3,7 @@ import {decodeAiMotionGraph} from './analyze-ai-motion-graph.mjs';
 import {startMcmTrick} from '../../src/physics/mcm/trick-start.js';
 import {floatBits as bits} from '../../src/physics/mcm/math.js';
 const vector=(b,o)=>[0,4,8].map(i=>b.readFloatLE(o+i));
-export function analyzeAiTrickGraph(rows){
+export function replayAiTrickGraph(rows){
  let calls=0,resets=0,nodes=0;const checks=[];
  for(let index=0;index<rows.length;index++){
   const entry=rows[index];if(entry.phase!=='trick-graph-before')continue;
@@ -30,7 +30,9 @@ export function analyzeAiTrickGraph(rows){
   assert.equal(exit.bounds,entry.bounds,'Unchanged bounds resource');assert.equal(exit.records.length,entry.records.length);entry.records.forEach((record,i)=>{const expected=Buffer.from(record.hex,'hex'),child=boundsChildren[i];if(b.readUInt32LE(0x820)){child.forward.forEach((v,k)=>expected.writeUInt32LE(bits(v),8+k*4));child.up.forEach((v,k)=>expected.writeUInt32LE(bits(v),0x14+k*4));}assert.equal(exit.records[i].address,record.address);assert.equal(exit.records[i].component,record.component);assert.deepEqual(expected,Buffer.from(exit.records[i].hex,'hex'),'Computed bounds record');});
   assert.equal(exit.nodes.length,graph.size);const seen=new Set();
   for(const observed of exit.nodes){assert.ok(!seen.has(observed.address),'Duplicate trick node');seen.add(observed.address);const node=graph.get(observed.address);assert.ok(node,'Unexpected trick node');const bytes=Buffer.from(node.bytes);for(const [offset,values] of [[0x84,node.local],[0xc4,node.world]])values.forEach((v,i)=>bytes.writeUInt32LE(bits(v),offset+i*4));bytes.writeUInt32LE(node.cacheValid>>>0,0x104);assert.deepEqual(bytes,Buffer.from(observed.hex,'hex'),`Computed trick graph node ${entry.sequence}:${observed.address}`);nodes++;}
-  calls++;resets+=Number(!!b.readUInt32LE(0x820));checks.push({sequence:entry.sequence,selected:entry.selected});
+  calls++;resets+=Number(!!b.readUInt32LE(0x820));checks.push({sequence:entry.sequence,selected:entry.selected,body:expected});
  }
  assert.ok(calls,'No successful trick starts captured');assert.equal(rows.filter(r=>r.phase==='trick-graph-after').length,calls,'Unmatched trick exits');return {calls,resets,nodes,checks};
 }
+
+export function analyzeAiTrickGraph(rows){const {checks,...summary}=replayAiTrickGraph(rows);return {...summary,checks:checks.map(({sequence,selected})=>({sequence,selected}))};}

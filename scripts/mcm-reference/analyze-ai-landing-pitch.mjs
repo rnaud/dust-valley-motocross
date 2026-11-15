@@ -49,7 +49,7 @@ for(const r of rows){
  }
  if(r.phase==='after'){
   const pitch=computeMcmAiLandingPitch(landingInput);out[2]=pitch.flag;out[3]=bits(pitch.angle);landingQueries+=Number(pitch.queried);
-  const b=Buffer.from(r.hex,'hex');for(let i=0;i<9;i++)assert.equal(out[i],b.readUInt32LE(offsets[i]),`Computed full-controller jump exit ${r.sequence} field ${offsets[i].toString(16)}`);checks.push({sequence:r.sequence,bodyWords:out.slice(0,9),lookahead:[...look.checks.find(x=>x.sequence===r.sequence).words]});exits++;
+  const b=Buffer.from(r.hex,'hex');for(let i=0;i<9;i++)assert.equal(out[i],b.readUInt32LE(offsets[i]),`Computed full-controller jump exit ${r.sequence} field ${offsets[i].toString(16)}`);checks.push({sequence:r.sequence,bodyWords:out.slice(0,9),trickDelay:expectedDelay,trickAnimation:expectedAnimation,trickControl:expectedControl,lookahead:[...look.checks.find(x=>x.sequence===r.sequence).words]});exits++;
  }
  if(r.phase==='random'){
  if(pending.length){const expected=pending.shift();assert.equal(r.state,expected.state,'Predicted AI random state');assert.ok((expected.consumer==='jump'?[0x46f10b,0x46f14d,0x46f20a,0x46f3f2]:[0x49d741,0x49d7a8]).includes(r.caller),'Predicted random consumer');draws++;}else{assert.equal(r.inAi,0,'Unmodeled AI random draw');assert.equal(r.state,rng.state,'Shared random state');rng.draw();}

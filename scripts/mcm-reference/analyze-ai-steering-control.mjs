@@ -5,9 +5,9 @@ import {prepareMcmFrameInput} from '../../src/physics/mcm/frame-input.js';
 import {floatBits as bits,bitsFloat as float} from '../../src/physics/mcm/math.js';
 // Crash occurrence remains an observed outer-frame boundary. Its zeroing
 // behavior is computed by the existing frame-input routine, not reseeded.
-export function analyzeAiSteeringControl(rows,options){
+export function replayAiSteeringControl(rows,options){
  const recovered=analyzeAiLookahead(rows,options),bike=rows.find(r=>r.phase==='before').bike;
- let steering,calls=0,clears=0,pending;
+ const checks=[];let steering,calls=0,clears=0,pending;
  for(const r of rows){
   if(r.phase==='before'){const b=Buffer.from(r.hex,'hex');steering??=b.readUInt32LE(0x6f4);assert.equal(steering,b.readUInt32LE(0x6f4),'Retained steering entry');}
   if(r.phase==='crash-control-clear'&&r.bike===bike&&steering!==undefined){
@@ -19,8 +19,10 @@ export function analyzeAiSteeringControl(rows,options){
    pending=computeMcmAiSteeringControl({dt:float(entry.dtBits),difference:float(computed.words[4]),current:float(steering)});steering=bits(pending.steering);
   }
   if(r.phase==='steering-control-after'){assert.equal(steering,Buffer.from(r.hex,'hex').readUInt32LE(0x6f4),'Computed steering output');assert.equal(bits(pending.absoluteDifference),r.stack[13],'Computed absolute difference');}
-  if(r.phase==='after'){assert.equal(steering,Buffer.from(r.hex,'hex').readUInt32LE(0x6f4),'Retained steering exit');calls++;}
+  if(r.phase==='after'){assert.equal(steering,Buffer.from(r.hex,'hex').readUInt32LE(0x6f4),'Retained steering exit');checks.push({sequence:r.sequence,steering});calls++;}
  }
  assert.equal(calls,recovered.calls);for(const phase of ['steering-control-before','steering-control-after'])assert.equal(rows.filter(r=>r.phase===phase).length,calls,'Steering observation count');
- return {calls,clears,targetChanges:recovered.targetChanges,steeringChanges:recovered.steeringChanges};
+ return {calls,clears,targetChanges:recovered.targetChanges,steeringChanges:recovered.steeringChanges,checks};
 }
+
+export function analyzeAiSteeringControl(rows,options){const {checks,...summary}=replayAiSteeringControl(rows,options);return summary;}

@@ -2,8 +2,8 @@ import assert from 'node:assert/strict';
 import {allocateMcmOwnedArray,freeMcmOwned} from '../../src/physics/mcm/owned-allocation.js';
 // Pointer identity and initial per-call global accounting are environment inputs.
 // Block sizes are computed over the native-oracle-validated bounded domain.
-export function analyzeAiAllocations(rows){
- const owner={bytes:0},blocks=new Map();let initialized=false,allocations=0,frees=0,calls=0,skipped=0;
+export function replayAiAllocations(rows){
+ const checks=[],owner={bytes:0},blocks=new Map();let initialized=false,allocations=0,frees=0,calls=0,skipped=0;
  for(const before of rows.filter(r=>r.phase==='before')){
   const at=phase=>rows.find(r=>r.sequence===before.sequence&&r.phase===phase),after=at('after');
   assert.ok(after,'Missing allocation controller exit');assert.equal(after.bike,before.bike);
@@ -31,8 +31,10 @@ export function analyzeAiAllocations(rows){
     freeMcmOwned(owner,accounting,{size:p=>{const event=lookup++?middle:e;check(event);assert.ok(blocks.has(p),'Free of unknown block');const size=blocks.get(p);assert.equal(event.eax,size,'Computed original CRT size');return size;},free:p=>{check(exit);blocks.delete(p);}},pointer);frees++;
    }
   }
-  assert.equal(owner.bytes,end.readUInt32LE(0x40c),'Computed allocation controller exit');calls++;
+  assert.equal(owner.bytes,end.readUInt32LE(0x40c),'Computed allocation controller exit');checks.push({sequence:before.sequence,ownerBytes:owner.bytes});calls++;
  }
  assert.equal(blocks.size,0);assert.equal(rows.filter(r=>r.phase==='allocation-event').length,allocations*2+frees*3,'Unmatched allocation events');
- return {calls,allocations,frees,skipped,finalOwnerBytes:owner.bytes};
+ return {calls,allocations,frees,skipped,finalOwnerBytes:owner.bytes,checks};
 }
+
+export function analyzeAiAllocations(rows){const {checks,...summary}=replayAiAllocations(rows);return summary;}
