@@ -1,5 +1,9 @@
 # Motocross Madness physics parity roadmap
 
+## Indexed submission eligibility recovered — 2026-11-15
+
+The gate leading into the unresolved indexed-draw window now matches 4,096 isolated native cases / 57,344 words. It preserves index-buffer eligibility, argument order, retained state-pointer timing and the separate immediate-context checks around lock/emission/unlock. A deeper trace reproduces two zero overwrites among 8,256 indexed draws, isolating both to the shader-state callback reached at backend `62a4f`. The exact store and its eligibility remain unresolved; the negative fixture still rejects interval 22. The backend and continuous scheduling remain external. See `mcm-indexed-submit-recovery.md`. This does not close the intermittent overwrite or change preview handling.
+
 ## Copy saves joined; indexed-draw overwrite exposed — 2026-11-15
 
 The ordered writer diagnostic now validates and incorporates computed host-copy register saves. A fresh 42-frame trace checks 1,874 such calls and matches the first eight next-bike intervals. Interval 8 then exposes a later zero overwrite inside the indexed-draw/mutex-return window, after the last modeled matrix write. The exact negative result is retained, not injected as an input. All 176 hooks restored and debugger absent. See `mcm-upload-copy-recovery.md`. The previous pointer-carry mismatch and older steering failure remain open; preview handling is unchanged.

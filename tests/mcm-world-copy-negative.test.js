@@ -16,3 +16,9 @@ test('complete initial intervals include computed copy saves without observed sc
  const r=analyzeWorldWriters(f.render.slice(0,end+1).filter(r=>worldWriterPhases.has(r.phase)),f.rows.slice(0,18),f.world);
  assert.equal(r.checks.length,8);assert.ok(r.uploadCopyCalls>300);
 });
+
+test('deeper indexed trace still rejects the unresolved shader callback carry',()=>{
+ const f=JSON.parse(brotliDecompressSync(fs.readFileSync(new URL('./fixtures/mcm/indexed-world-negative-wine11.json.br',import.meta.url))));
+ const scene=analyzeSceneActorDraws(f.render.filter(r=>sceneActorPhases.has(r.phase)),f.world.ownerDrawTarget),actorDrawSchedules=new Map(scene.reports.map(r=>[r.frame,r.wrappers]));
+ assert.throws(()=>analyzeWorldWriters(f.render.filter(r=>worldWriterPhases.has(r.phase)),f.rows,{...f.world,actorDrawSchedules}),e=>e.code==='ERR_ASSERTION'&&e.message.startsWith('Next bike entry differs from predicted last writer')&&e.actual===1064500121&&e.expected===0);
+});
