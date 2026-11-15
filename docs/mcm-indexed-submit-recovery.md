@@ -49,3 +49,11 @@ initial dense probe run stopped after six bike records despite productive
 renderer events; the revised run completed all 84. Menu RNG events still do
 not refresh the watchdog. Deeper program-selection tracing remains pending;
 preview handling is unchanged.
+
+`capture-shader-apply.c` reproduces the 84-record / 232-site configuration.
+It includes the indexed-submit hooks and adds shader call-return boundaries,
+the shader entry and constant-upload entry. Compile the independent verifier
+with the indexed-submit prerequisites plus `MCM_CAPTURE_SHADER_APPLY`.
+The promoted configuration's addresses, guarded bytes, lengths and phase names
+were compared with the completed capture and are identical. The base,
+indexed-submit and shader variants all compile independently with 32-bit MinGW.
