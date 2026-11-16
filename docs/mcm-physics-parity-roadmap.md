@@ -6269,3 +6269,11 @@ The new eight-frame fixture matches 32 complete bike boundaries, 528 substep bod
 Regression checks corrupt a native particle output and verify that only that comparison changes, with later computed state still matching. Altered prepared positions and missing visibility returns are rejected. No observed particle output is imported into retained state. This improves replay validation, not the browser particle renderer.
 
 Validation: all 758 tests pass (94 seconds), production build passes, and the new retained draw regression also passes on x64 Node 22.
+
+## Original sound recordings recovered (2026-11-15)
+
+At the user's request, recovered all 45 WAV files from the pinned installation into `public/mcm-audio`, byte-for-byte (13,113,236 bytes). `build-audio-assets.mjs` validates the executable hash, parses every RIFF/PCM stream, preserves the complete original file and records SHA-256, original filename, duration, channel count and sample rate in `manifest.json`. All are 16-bit PCM; most are 22,050 Hz, with two wreck samples at 44,100 Hz. The exporter normalizes output filename case and rejects collisions.
+
+Original executable references confirm deceleration (`425b07`, string `4e322c`), idle (`425b6d`, `4e3220`), bike (`425bdb`, `4e3214`), landing (`425cab`, `4e31fc`), wreck variants (`425cc0`, `4e31ec`) and maximum-engine (`425e68`, `4e31d4`) resource loading. The executable also references `skid.wav`, which is absent from this installation; the manifest records that gap rather than inventing a replacement.
+
+These are recovered recordings, not audio-behavior parity. The browser still uses `RideAudio` synthesis. Remaining audio work: recover loop selection, pitch/rate and gain rules, throttle-release transitions, landing/crash triggers, spatialization and pause/reset lifecycle, then wire the original recordings into preview and validate against original playback. Assets are served without loading them during startup. Production build passes; exported and built WAV bytes are checked against the manifest hashes.
