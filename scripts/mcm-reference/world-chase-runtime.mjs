@@ -1,3 +1,4 @@
+import {connectWorldCameraVisibility} from './world-camera-visibility.mjs';
 import {resolveMcmWorldMatrix} from '../../src/physics/mcm/world-transform.js';
 import assert from 'node:assert/strict';
 import {decodeChaseFrameMemory} from './chase-frame-memory.mjs';
@@ -43,7 +44,13 @@ export function connectWorldChaseRuntime(runtime,files,terrain){
  };
  projectEntry(initial);
  const comparison=createChaseFrameComparison(terrain,{initial,projectEntry});
- return {address:raw.camera,target,reports,
+ const renderRider=bikeBytes.readUInt32LE(0xc8c),rootPointer=renderRider+0x434;
+ const rootBlock=raw.blocks.find(b=>rootPointer>=b.address&&rootPointer+4<=b.address+b.hex.length/2);
+ assert.ok(rootBlock,'Missing camera rider visibility root');
+ const renderRoot=Buffer.from(rootBlock.hex,'hex').readUInt32LE(rootPointer-rootBlock.address);
+ const visibility=connectWorldCameraVisibility(runtime.meshes,[bikeBytes.readUInt32LE(0x434),renderRoot],[initial.nodeVisibility[0],initial.nodeVisibility[9]],()=>comparison.state);
+
+ return {address:raw.camera,target,reports,visibility,
   get cameraState(){return comparison.state;},
   get projection(){return comparison.state?.matrices.slice(32,48)??new Float32Array(Uint32Array.from(initial.matrices.slice(32,48)).buffer);},
   step(frame,delta){

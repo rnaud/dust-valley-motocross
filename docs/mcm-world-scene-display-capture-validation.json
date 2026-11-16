@@ -1,0 +1,26 @@
+{
+  "scope": "Existing retained two-bike replay with additional assertion-only display observations. Display update not integrated yet.",
+  "worldUpdates": 64,
+  "bikeEntries": 128,
+  "bikeTails": 128,
+  "displayObservations": 256,
+  "displayChangedOffsets": [
+    "0x100"
+  ],
+  "chase": {
+    "frames": 63,
+    "words": 9450,
+    "intermediateEvolutionInputs": 0,
+    "tailControlAssertions": 63,
+    "comparedInputWords": 1728,
+    "target": 82612896
+  },
+  "renderer": {
+    "frames": 63,
+    "words": 12663,
+    "deviceResultsExternal": true
+  },
+  "nonemptyDifferenceFields": 0,
+  "restoredHooks": 52,
+  "debuggerDetached": true
+}

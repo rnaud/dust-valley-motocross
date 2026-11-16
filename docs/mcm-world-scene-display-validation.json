@@ -1,0 +1,30 @@
+{
+  "scope": "Retained scene display timer and visibility state; graphics refresh and scene child 422df0 remain external. No preview changes.",
+  "worldUpdates": 64,
+  "bikeEntries": 128,
+  "bikeTails": 128,
+  "displayTicks": 63,
+  "displayAssertions": 256,
+  "displayComparedWords": 49408,
+  "displayDifferences": 0,
+  "externalGraphicsRefreshCalls": 62,
+  "remainingExternalSceneMethods": [
+    "411000",
+    "422df0"
+  ],
+  "chase": {
+    "frames": 63,
+    "words": 9450,
+    "intermediateEvolutionInputs": 0,
+    "tailControlAssertions": 63,
+    "comparedInputWords": 1728,
+    "target": 82612896
+  },
+  "renderer": {
+    "frames": 63,
+    "words": 12663,
+    "deviceResultsExternal": true
+  },
+  "restoredHooks": 52,
+  "debuggerDetached": true
+}
