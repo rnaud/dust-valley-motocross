@@ -1,0 +1,7 @@
+import fs from 'node:fs';import {createHash} from 'node:crypto';import {brotliCompressSync,constants} from 'node:zlib';import assert from 'node:assert/strict';
+import {compareParticleVisibility} from './compare-particle-visibility.mjs';
+const [exe,inputPath,outputPath,destination]=process.argv.slice(2);if(!destination)throw Error('Usage: build-particle-visibility-fixture.mjs ORIGINAL INPUT OUTPUT FIXTURE');
+const hash=b=>createHash('sha256').update(b).digest('hex'),input=fs.readFileSync(inputPath),output=fs.readFileSync(outputPath),executableSha256=hash(fs.readFileSync(exe));
+assert.equal(executableSha256,'e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b');const report=compareParticleVisibility(input,output);assert.deepEqual(report.differences,[]);
+const provenance={executableSha256,inputSha256:hash(input),outputSha256:hash(output),oracleSha256:hash(fs.readFileSync(new URL('./particle-visibility-oracle.c',import.meta.url))),generatorSha256:hash(fs.readFileSync(new URL('./generate-particle-visibility.mjs',import.meta.url))),scope:'Original 43b4b5..43b582 culling region, return patch at stage end. Explicit projected-center and camera inputs; no device projection, sorting, draw submission or world scheduling validation.'};
+fs.writeFileSync(destination,brotliCompressSync(Buffer.from(JSON.stringify({provenance,report,input:input.toString('base64'),output:output.toString('base64')})),{params:{[constants.BROTLI_PARAM_QUALITY]:9}}));console.log(report);
