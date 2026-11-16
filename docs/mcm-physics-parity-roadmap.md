@@ -7250,3 +7250,27 @@ parity. Three custom actors, autonomous outer presentation/camera scheduling,
 external heap-boundary values, active impact-world verification and sustained
 normal-rate validation remain open. Sustained impact-v3 recording is in progress
 separately and is not included as passing evidence in this milestone.
+
+### Main shipment and extended shared-particle recovery evidence (2026-11-16)
+
+Milestone `d142484` was pushed to origin/main. GitHub Pages run 43897767743
+started successfully and reached its test step. Future substantial tested
+milestones are to be pushed to main as requested, without waiting for full parity.
+
+Impact-v3 completed 163 world updates / 643 physics records (crash paths do not
+all produce four records per update), with verified 46-hook, debugger, control
+and camera restoration. `world-particle-recovery-wine11.json.br` retains 1,463
+particle boundaries, all matching. Both bikes match 326 entries and 326 tails
+with shared RNG, 648 both-rider observations, 325 collision and visual records,
+and 162 AI rider observations. Eighteen callbacks cover bike primary/secondary
+and crashed-rider primary/secondary paths. No impact emitter was active before
+its update: these are rider-bike contacts, not active impact-burst validation.
+The longer fixture's dedicated regression passes. See
+`mcm-world-particle-recovery-validation.json`.
+
+This additional validation milestone is ready for main. Active impact-world
+coverage, the three deferred custom actors, independent outer presentation and
+camera scheduling, heap-boundary input recovery and normal-rate validation remain
+open. Raw impact-v3 files and archive remain in /tmp; scheduler-v1 and impact-v2
+large frames/grid files were losslessly compressed after archiving. No capture
+or debugger is currently running.

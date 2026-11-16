@@ -201,3 +201,19 @@ test('64-update shared emitter and pool integration matches both bikes and all p
  for(const report of result.worldRiderReports){assert.deepEqual(report.rider.differences,[]);assert.deepEqual(report.collision.differences,[]);}
  for(const report of [...result.entryReports,...result.reports])assert.equal(report.random.actual,report.random.expected);
 });
+
+test('163-update recovery retains shared particles across original rider-bike contacts',()=>{
+ const captured=JSON.parse(brotliDecompressSync(fs.readFileSync(new URL('./fixtures/mcm/world-particle-recovery-wine11.json.br',import.meta.url))));
+ for(const [name,value]of Object.entries(captured.files))assert.equal(createHash('sha256').update(value).digest('hex'),captured.provenance.fileSha256[name]);
+ const result=analyzeWorldBikes(captured.files,terrain(),{renderCameraInputs:true,particleIntegration:true});
+ assert.equal(result.particleReports.length,1463);
+ for(const report of result.particleReports)assert.equal(report.differences,0,`${report.phase} frame ${report.frame}`);
+ assert.equal(result.entryReports.length,326);assert.equal(result.reports.length,326);assert.equal(result.worldRiderReports.length,648);
+ assert.equal(result.contactReports.length,18);
+ assert.deepEqual([...new Set(result.contactReports.map(r=>r.kind))].sort(),[0,1,2,3]);
+ // This recording covers rider-bike contact, not an active impact burst.
+ assert.equal(result.impactReports.filter(r=>r.phase==='before'&&r.active).length,0);
+ for(const group of ['entryReports','reports','collisionReports','riderReports','visualReports'])for(const report of result[group])assert.deepEqual(report.differences,[],`${group} frame ${report.frame}`);
+ for(const report of result.worldRiderReports){assert.deepEqual(report.rider.differences,[]);assert.deepEqual(report.collision.differences,[]);}
+ for(const report of [...result.entryReports,...result.reports])assert.equal(report.random.actual,report.random.expected);
+});
