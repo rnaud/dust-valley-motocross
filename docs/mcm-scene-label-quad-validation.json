@@ -1,0 +1,32 @@
+{
+  "originalSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracle": {
+    "routine": "429e70",
+    "cases": 4096,
+    "words": 290816,
+    "differences": 0,
+    "covers": [
+      "pixel and scaled rectangle coordinates",
+      "texture crop enabled/disabled",
+      "right/bottom clipping",
+      "alpha enabled/disabled"
+    ],
+    "fixture": "tests/fixtures/mcm/scene-label-quad-wine11.json.br"
+  },
+  "integration": {
+    "fixture": "tests/fixtures/mcm/world-rider-heap-wine11.json.br",
+    "frames": 64,
+    "bikeBoundaryWords": 209408,
+    "sceneDisplayReports": 256,
+    "differences": 0,
+    "resolvedDisplayMismatchReports": 52,
+    "firstFormerMismatchFrame": 51
+  },
+  "scope": "Retained label projection, rectangle and TL vertex stores. Texture/device rasterization remains external. Instrumented original capture; autonomous allocator placement and normal-rate two-bike browser completion remain pending.",
+  "regression": {
+    "tests": 947,
+    "passed": 947,
+    "failed": 0,
+    "productionBuild": "passed"
+  }
+}

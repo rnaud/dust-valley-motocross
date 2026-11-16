@@ -1,3 +1,6 @@
+import {buildMcmSceneLabelQuad} from '../../src/physics/mcm/scene-label-quad.js';
+import {projectMcmCameraPoint} from '../../src/physics/mcm/camera-point.js';
+import {mcmFtolLowWord} from '../../src/physics/mcm/x87-integer.js';
 import {updateMcmSceneVisibility} from '../../src/physics/mcm/scene-visibility.js';
 import {queryMcmTerrainSegment} from '../../src/physics/mcm/terrain-segment.js';
 import {traverseMcmTerrainSegment} from '../../src/physics/mcm/terrain-segment-traversal.js';
@@ -50,7 +53,17 @@ export function connectWorldSceneDisplay(runtime,chase,{refresh,fade=false,visib
   const seed=initial.visibility.find(r=>r.bike===bike);assert.ok(seed,'Unknown display bike');
   const bytes=displays.get(seed.display.address).bytes,view=new DataView(bytes.buffer,bytes.byteOffset,bytes.length);
   const target=Array.from(position,Math.fround);target[1]=Math.fround(target[1]+Math.fround(1.62));
-  return updateMcmSceneVisibility(view,()=>{visibilityQueries++;return queryMcmTerrainSegment(terrain,chase.position,target,[0,0,0],0,traverseMcmTerrainSegment);});
+  const occluded=updateMcmSceneVisibility(view,()=>{visibilityQueries++;return queryMcmTerrainSegment(terrain,chase.position,target,[0,0,0],0,traverseMcmTerrainSegment);});
+  if(view.getUint32(0xe4,true)){
+   const projected=projectMcmCameraPoint(chase.projection,target,chase.viewport[2],chase.viewport[3]);
+   if(projected.visible){
+    const x=mcmFtolLowWord(projected.screen[0]),y=mcmFtolLowWord(projected.screen[1]);
+    for(const [o,v]of [[0xc0,x],[0xc4,y],[0xc8,x+view.getInt32(0xf0,true)],[0xcc,y+view.getInt32(0xf4,true)]])view.setInt32(o,v,true);
+    const surface=initial.surfaces.find(s=>s.address===view.getUint32(0x30,true));assert.ok(surface,'Missing label texture metadata');const texture=Buffer.from(surface.hex,'hex');
+    buildMcmSceneLabelQuad(view,{viewport:chase.viewport,textureWidth:texture.readInt32LE(0x38),textureHeight:texture.readInt32LE(0x3c)});
+   }
+  }
+  return occluded;
  },get fadeTicks(){return fadeTicks;},stepFade(node,delta){assert.ok(fade&&displays.has(node.address),'Unconnected fade actor');const bytes=displays.get(node.address).bytes;fadeTicks++;return tickMcmSceneFade(new DataView(bytes.buffer,bytes.byteOffset,bytes.length),delta);},get ticks(){return ticks;},get refreshCalls(){return refreshCalls;},step(delta,children){
   const result=tickMcmSceneDisplay(actor.address,delta,memory,{children,refresh(address){assert.equal(address,actor.address);assert.equal(typeof refresh,'function','Unconnected display graphics refresh');refreshCalls++;refresh(address);},
    visibility(address,method){const state=displays.get(address);assert.ok(state,'Uncaptured display visibility target');const value=method===0x10?0:method===0x14?1:null;assert.notEqual(value,null);state.node.enabled=value;state.bytes.writeUInt32LE(value,0x20);state.bytes.writeUInt32LE(value,0x24);if(state.node.stateBytes){state.node.stateBytes.writeUInt32LE(value,0x20);state.node.stateBytes.writeUInt32LE(value,0x24);}}

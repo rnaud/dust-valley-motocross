@@ -7,10 +7,6 @@ test('terrain allocation operations derive both rider boundary headers across li
  const r=analyzeWorldBikes(fixture.files,terrain(),options);
  assert.deepEqual(r.riderHeapReport,[{child:82698896,updates:0},{child:83086264,updates:11}]);
  assert.equal(r.worldRiderReports.length,252);assert.equal(r.entryReports.length,128);
- // This capture also exposes an open display-quad update gap from frame 51.
- // Assert the physics/terrain/heap scope separately, without hiding that gap.
- const {sceneDisplayReports,...physics}=r;
- const check=v=>{if(v&&typeof v==='object')for(const[k,x]of Object.entries(v)){if(/differences$/i.test(k))assert.ok(Array.isArray(x)?x.length===0:x===0,k);else check(x);}};check(physics);
- const displayGaps=sceneDisplayReports.filter(x=>x.differences.length);
- assert.equal(displayGaps.length,52);assert.equal(displayGaps[0].frame,51);
+ const check=v=>{if(v&&typeof v==='object')for(const[k,x]of Object.entries(v)){if(/differences$/i.test(k))assert.ok(Array.isArray(x)?x.length===0:x===0,k);else check(x);}};check(r);
+ assert.equal(r.sceneDisplayReports.length,256);
 });

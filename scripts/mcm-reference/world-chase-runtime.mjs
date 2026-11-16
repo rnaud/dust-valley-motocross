@@ -10,10 +10,12 @@ const bits=v=>new Uint32Array(Float32Array.of(v).buffer)[0];
 export function connectWorldChaseRuntime(runtime,files,terrain){
  const raw=JSON.parse(files['world-camera-initial.json']);
  const {initial,target,bike,riderPoint,retained,visibility}=connectMcmWorldCamera(runtime,raw,terrain);
+ const cameraBytes=Buffer.from(raw.blocks.find(b=>b.address===raw.camera).hex,'hex'),viewport=Array.from({length:4},(_,i)=>cameraBytes.readUInt32LE(0x178+i*4));
  const rows=files['world-camera-observations.jsonl'].trim().split('\n').filter(Boolean).map(JSON.parse).map(row=>{
   assert.equal(row.camera,raw.camera,'Joined camera identity changed');
   const bytes=Buffer.from(row.blocks.find(b=>b.address===row.camera).hex,'hex');
   assert.equal(bytes.readUInt32LE(0x1ec),target,'Joined camera target changed');
+  assert.deepEqual(Array.from({length:4},(_,i)=>bytes.readUInt32LE(0x178+i*4)),viewport,'Unrecovered viewport change');
   return decodeChaseFrameMemory(row);
  }),reports=[];
  let comparedInputWords=0,consumed=0;
@@ -43,7 +45,7 @@ export function connectWorldChaseRuntime(runtime,files,terrain){
   return retained.step(delta,services);
  }});
 
- return {address:raw.camera,target,reports,visibility,
+ return {address:raw.camera,target,reports,visibility,viewport,
   get cameraState(){return comparison.state;},
   get position(){return comparison.state?.renderCamera.values.slice(0,3)??Array.from(new Float32Array(Uint32Array.from(initial.cameraPose.slice(0,3)).buffer));},
   get projection(){return comparison.state?.matrices.slice(32,48)??new Float32Array(Uint32Array.from(initial.matrices.slice(32,48)).buffer);},

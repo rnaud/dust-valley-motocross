@@ -18,9 +18,8 @@
   "aiDistinctHeaders": 3,
   "physicsDifferences": 0,
   "remainingDisplayDifferences": {
-    "reports": 52,
-    "firstFrame": 51,
-    "fields": "display visibility actor screen-space quad and rectangle"
+    "reports": 0,
+    "resolvedBy": "Recovered visible label projection and 429e70 quad construction; see mcm-scene-label-quad-validation.json"
   },
   "captureCleanup": "captured=256 status=1; 78 hooks restored; debugger=0 clean=1; input released; camera restored",
   "scope": "Instrumented original timing, not normal-rate parity. Heap headers derived from atomic neighborhood state and recovered terrain malloc/free requests. Native allocator placement remains an external service. Ordinary tracked neighborhood only; LFH groups are opaque boundaries. Autonomous browser heap integration is still pending."
