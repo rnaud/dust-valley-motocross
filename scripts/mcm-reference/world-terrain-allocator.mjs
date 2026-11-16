@@ -3,7 +3,7 @@ import {allocateMcmOwned,freeMcmOwned} from '../../src/physics/mcm/owned-allocat
 // Explicit CRT service boundary. Request order, owner counters and copied mesh
 // bytes are computed. Pointer/size-query results are external observations; this
 // adapter does not claim to reconstruct the original CRT heap.
-export function connectTerrainAllocator(initial,buffers,nodes,eventText,runtime){
+export function connectTerrainAllocator(initial,buffers,nodes,eventText,runtime,heapObserver){
  assert.equal(typeof eventText,'string','Missing terrain allocator events');
  const events=eventText.trim().split('\n').filter(Boolean).map(JSON.parse),allocations=new Map();
  for(const item of buffers.values())if(item.pointer){assert.ok(!allocations.has(item.pointer),'Shared terrain mesh allocation');allocations.set(item.pointer,Buffer.from(item.bytes));}
@@ -17,9 +17,9 @@ export function connectTerrainAllocator(initial,buffers,nodes,eventText,runtime)
  };
  let sizePhase=0;
  const heap={
-  malloc(size){const e=next('malloc-result');assert.equal(e.esi,size);if(e.eax){assert.ok(!allocations.has(e.eax),'Allocator reused live terrain pointer');allocations.set(e.eax,Buffer.alloc(size));}return e.eax;},
+  malloc(size){const e=next('malloc-result');assert.equal(e.esi,size);if(e.eax){assert.ok(!allocations.has(e.eax),'Allocator reused live terrain pointer');allocations.set(e.eax,Buffer.alloc(size));heapObserver?.malloc(e.eax,size);}return e.eax;},
   size(pointer){const e=next(sizePhase++?'size-owner':'size-global');assert.equal(e.esi,pointer);return e.eax;},
-  free(pointer){const e=next('free-call');assert.equal(e.esi,pointer);if(pointer){assert.ok(allocations.has(pointer),'Free of uncaptured terrain allocation');allocations.delete(pointer);}},
+  free(pointer){const e=next('free-call');assert.equal(e.esi,pointer);if(pointer){assert.ok(allocations.has(pointer),'Free of uncaptured terrain allocation');allocations.delete(pointer);heapObserver?.free(pointer);}},
  };
  if(runtime&&events.some(e=>e.terrain===false)){
   for(const [address,bike]of runtime.bikes){

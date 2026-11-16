@@ -1,0 +1,27 @@
+{
+  "fixture": "tests/fixtures/mcm/world-rider-heap-wine11.json.br",
+  "fixtureSha256": "f07c6da320ab78d1e211a6fdb02acac69f561913ffd1223b151c6989939c926c",
+  "frames": 64,
+  "bikeBoundaryWords": 209408,
+  "riderBoundaries": 252,
+  "riderHeap": [
+    {
+      "child": 82698896,
+      "updates": 0
+    },
+    {
+      "child": 83086264,
+      "updates": 11
+    }
+  ],
+  "riderHeaderComparisons": 252,
+  "aiDistinctHeaders": 3,
+  "physicsDifferences": 0,
+  "remainingDisplayDifferences": {
+    "reports": 52,
+    "firstFrame": 51,
+    "fields": "display visibility actor screen-space quad and rectangle"
+  },
+  "captureCleanup": "captured=256 status=1; 78 hooks restored; debugger=0 clean=1; input released; camera restored",
+  "scope": "Instrumented original timing, not normal-rate parity. Heap headers derived from atomic neighborhood state and recovered terrain malloc/free requests. Native allocator placement remains an external service. Ordinary tracked neighborhood only; LFH groups are opaque boundaries. Autonomous browser heap integration is still pending."
+}

@@ -1,3 +1,4 @@
+#include "capture-rider-heap.c"
 static int capture_world_effects(DWORD bike,const char*path,const char*id){
  DWORD world,owner,event,settings,shape,enabled,occlusion,selected,state,disabled;BYTE target[12];
  if(!read_memory(0x4e4fb4,&world,4)||!read_memory(world+0x718,&enabled,4)||!read_memory(world+0x714,&occlusion,4)||
@@ -69,6 +70,10 @@ static int capture_world_entry(DWORD actor,DWORD esp){
   if(ai){snprintf(path,sizeof path,"%s\\world-ai-environment-%u.json",dir,i);if(!capture_mcm_ai_environment_at(process,bike,path,id,"world-frame-entry",bike==observe_ai?ai_scene_object:0))return 0;}
   DWORD rider,child,pool,dampingBits;BYTE riderBytes[0x3ac],childBytes[0x618],poolBytes[0x2004],particle[0x48];
   if(!read_memory(0x4e21bc,&dampingBits,4)||!read_memory(bike+0x874,&rider,4)||!read_memory(rider,riderBytes,sizeof riderBytes)||!read_memory(rider+0x14,&child,4)||!read_memory(child,childBytes,sizeof childBytes)||!read_memory(child+0x34,&pool,4)||!read_memory(pool,poolBytes,sizeof poolBytes))return 0;
+  if(getenv("MCM_WORLD_RIDER_HEAP")){
+   snprintf(path,sizeof path,"%s\\world-rider-heap-%u.json",dir,i);out=fopen(path,"wx");if(!out)return 0;
+   int heapOk=capture_rider_heap(out,child);if(fclose(out))heapOk=0;if(!heapOk)return 0;
+  }
   snprintf(path,sizeof path,"%s\\world-child-%u.json",dir,i);out=fopen(path,"wx");if(!out)return 0;
   fprintf(out,"{\"captureId\":\"%s\",\"captureBoundary\":\"world-frame-entry\",\"bikeAddress\":%lu,\"rider\":%lu,\"address\":%lu,\"hex\":\"",id,bike,rider,child);ok=write_particle_hex(out,childBytes,0x610);
   fprintf(out,"\",\"boundaryWords\":[%lu,%lu],\"dampingBits\":%lu,\"riderHex\":\"",*(DWORD*)(childBytes+0x610),*(DWORD*)(childBytes+0x614),dampingBits);ok=ok&&write_particle_hex(out,riderBytes,sizeof riderBytes);fprintf(out,"\",\"poolAddress\":%lu,\"poolHex\":\"",pool);ok=ok&&write_particle_hex(out,poolBytes,sizeof poolBytes);fprintf(out,"\",\"particlesHex\":\"");
