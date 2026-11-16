@@ -4,12 +4,16 @@ import {applyMcmAnimationChild} from '../../src/physics/mcm/animation-seek.js';
 
 // Initializes the normal pose branch. Extended captures also preserve animation
 // history for later retained-frame wiring; this is not a complete frame context.
-export function loadLiveNormalRider(checkpoint,observation,{visuals:sharedVisuals}={}){
+export function loadLiveNormalRider(checkpoint,observation,{visuals:sharedVisuals,allowRetainedTrick=false}={}){
  if(!/^[0-9a-f]{16}$/.test(checkpoint.captureId??'')||checkpoint.captureId!==observation.captureId||
     !['player-frame-entry','ai-frame-entry'].includes(checkpoint.captureBoundary)||observation.captureBoundary!==checkpoint.captureBoundary||
     observation.bikeAddress!==checkpoint.bikeAddress)throw Error('Animation/checkpoint boundary differs');
  const m=checkpointMemory(checkpoint),address=checkpoint.bikeAddress;
- if(m.u32(address+0x844)||m.u32(address+0x710)||m.u32(address+0xbfc)===2)throw Error('Unsupported normal rider state');
+ const trick=m.u32(address+0x710),index=m.u32(address+0x814)&255;
+ // Full retained dispatch already advances tricks; its initializer must retain
+ // their current frame/history rather than require a normal pose first.
+ const retainedTrick=allowRetainedTrick&&checkpoint.captureBoundary==='ai-frame-entry'&&observation.retainedFrames&&index<16;
+ if(m.u32(address+0x844)||(trick&&!retainedTrick)||m.u32(address+0xbfc)===2)throw Error('Unsupported normal rider state');
  for(let i=0;i<21;i++)if(observation.records[i]!==m.u32(address+0x740+i*4))throw Error('Animation table differs from checkpoint');
  const assets=loadLiveAnimationAssets(observation),visuals=sharedVisuals??loadLiveVisuals(checkpoint);
  const vec=(p,o)=>[0,4,8].map(i=>m.f32(p+o+i));

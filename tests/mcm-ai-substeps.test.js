@@ -201,3 +201,31 @@ test('device matrices produce original particle projection without observed proj
  const changed=rider(f);changed.find(e=>e.phase==='before-particle-cull').projectionMatricesHex='00'.repeat(192);
  assert.throws(()=>analyzeAiSubsteps(i,i.rows,changed,trace(f)),/Computed particle projection/);
 });
+
+test('retained AI replay can initialize during an original active trick',()=>{
+ const f=fixture('ai-active-trick-entry');
+ for(const [name,value]of Object.entries(f.files))assert.equal(createHash('sha256').update(value).digest('hex'),f.provenance.fileSha256[name]);
+ assert.match(f.files['cleanup.log'],/debugger=0 clean=1/);assert.equal((f.files['cleanup.log'].match(/restored=1/g)||[]).length,40);
+ assert.match(f.files['camera-restoration.log'],/target_changed=051f7598->051c8d40 verified=1/);
+ const i=input(f),m=checkpointMemory(i.checkpoint),a=i.checkpoint.bikeAddress;
+ assert.equal(m.u32(a+0x710),1);assert.equal(m.u32(a+0x844),0);assert.equal(m.u32(a+0xbfc),0);assert.ok((m.u32(a+0x814)&255)<16);
+ const r=analyzeAiSubsteps(i,i.rows,rider(f),trace(f));
+ assert.equal(r.frames,8);assert.equal(r.bodyBoundaries,32);assert.equal(r.substepBoundaries,465);assert.equal(r.componentWords,5580);assert.equal(r.randomDraws,6);
+ assert.deepEqual(r.visualDifferences,[]);assert.deepEqual(r.particleDifferences,[]);assert.equal(r.riderBytes,35000);assert.equal(r.drawNodeWords,24150);
+ assert.equal(r.particleDrawReports.length,5);assert.ok(r.particleDrawReports.every(d=>d.accepted===0&&d.projectionMode==='computed-from-device-matrices'));
+ // Initializing a trick does not authorize importing later observed outputs.
+ const changed=trace(f),sample=changed.find(e=>e.phase==='contact'),block=sample.blocks.find(b=>b.address===sample.bike),body=Buffer.from(block.hex,'hex');body[0x710]^=1;block.hex=body.toString('hex');
+ assert.throws(()=>analyzeAiSubsteps(i,i.rows,rider(f),changed),/body 710/);
+});
+
+test('active-trick initialization keeps normal-only and unsupported-state guards',async()=>{
+ const {loadLiveNormalRider}=await import('../scripts/mcm-reference/live-normal-rider.mjs');
+ const original=input(fixture('ai-active-trick-entry'));
+ assert.throws(()=>loadLiveNormalRider(original.checkpoint,original.animations),/Unsupported normal rider state/);
+ for(const [offset,value]of [[0x844,1],[0xbfc,2],[0x814,255]]){
+  const i=input(fixture('ai-active-trick-entry')),block=i.checkpoint.blocks.find(b=>b.address===i.checkpoint.bikeAddress),bytes=Buffer.from(block.hex,'hex');bytes.writeUInt32LE(value,offset);block.hex=bytes.toString('hex');
+  assert.throws(()=>loadLiveNormalRider(i.checkpoint,i.animations,{allowRetainedTrick:true}),/Unsupported normal rider state/);
+ }
+ const i=input(fixture('ai-active-trick-entry'));delete i.animations.retainedFrames;
+ assert.throws(()=>loadLiveNormalRider(i.checkpoint,i.animations,{allowRetainedTrick:true}),/Unsupported normal rider state/);
+});

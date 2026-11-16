@@ -21,7 +21,7 @@ export function loadLiveFrameBootstrap({checkpoint,animations,environment,collis
  const m=checkpointMemory(checkpoint),a=checkpoint.bikeAddress,component=m.u32(a+0x8ec);
  if(checkpoint.captureBoundary==='ai-frame-entry'&&!m.u32(a+0x614))throw Error('AI frame entry requires an AI bike');
  const world=loadLiveCollisionWorld(checkpoint,collision),visuals=loadLiveVisuals(checkpoint,{nodes:world.transformNodes,extraRoots:[m.u32(component+0x50)]});
- const animation=loadLiveNormalRider(checkpoint,animations,{visuals}),env=loadLiveFrameEnvironment(checkpoint,environment);
+ const animation=loadLiveNormalRider(checkpoint,animations,{visuals,allowRetainedTrick:true}),env=loadLiveFrameEnvironment(checkpoint,environment);
  if(!env.input||!animations.retainedFrames)throw Error('Complete input/animation observations required');
  // The retained adapter builds a live view of c.bike at frame end. Do not
  // retain the normal-pose helper's detached bike view in its spread arguments.
