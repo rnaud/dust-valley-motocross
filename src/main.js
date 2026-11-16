@@ -36,7 +36,7 @@ $('mcm-map').addEventListener('change',updateMcmScenes);updateMcmScenes();
 const mapCache=new Map();
 async function loadSelectedMcmMap(base){const id=$('mcm-map').value;let asset=mapCache.get(id);if(!asset){const response=await fetch(mcmMaps.find(m=>m.id===id).url);if(!response.ok)throw Error('Original terrain download failed');asset=await new Response(response.body.pipeThrough(new DecompressionStream('gzip'))).json();mapCache.set(id,asset);}const settings=mcmSceneVariants[id]?.find(scene=>scene.source===$('mcm-scene').value)??mcmSceneSettings[id];const shadow=settings?.lights.find(light=>light.type==='ObjectPoint'&&light.castsShadows)?.position??asset.shadowTarget;return {...base,mapId:id,terrainMode:asset.terrainMode,shadowTarget:shadow,sceneSettings:settings,rendering:asset.rendering,terrain:asset.terrain};}
 
-$('physics-mode').onchange=()=>{$('mcm-assets').hidden=$('physics-mode').value!=='mcm-preview';physicsMode=$('physics-mode').value;syncSandOption();$('physics-note').textContent=physicsMode==='mcm-preview'?'Recovered bike and rider physics on original terrain. Full matching is still in progress.':'Original Dust Valley handling.';$('menu-extra-control').innerHTML=physicsMode==='mcm-preview'?'I / K <b>Rider lean</b>':'SPACE <b>Boost</b>';$('tutorial-throttle').textContent=physicsMode==='mcm-preview'?'Hold W or GAS. Release to coast; S or BRAKE slows down.':'Hold W or GAS. Tap SPACE for boost.';};
+$('physics-mode').onchange=()=>{$('mcm-assets').hidden=$('physics-mode').value!=='mcm-preview';physicsMode=$('physics-mode').value;syncSandOption();$('physics-note').textContent=physicsMode==='mcm-preview'?'Original bike and rider physics, maps and sounds. Full matching is still in progress.':'Original Dust Valley handling.';$('menu-extra-control').innerHTML=physicsMode==='mcm-preview'?'I / K <b>Rider lean</b>':'SPACE <b>Boost</b>';$('tutorial-throttle').textContent=physicsMode==='mcm-preview'?'Hold W or GAS. Release to coast; S or BRAKE slows down.':'Hold W or GAS. Tap SPACE for boost.';};
 function syncSandOption(){$('sand-option').hidden=false;$('sand-mode').disabled=false;$('sand-note').textContent='Tires carve soft sand in every mode. Switch off for hardpack.';}
 $('physics-mode').onchange();
 const speedCanvas=$('speedlines'),speedCtx=speedCanvas?speedCanvas.getContext('2d'):null;
@@ -570,8 +570,8 @@ function shareResult(isDaily){
 }
 function finish(){
  if(physicsMode==='mcm-preview'){
-  phase='finished';clearInput();$('overlay').hidden=false;$('overlay-label').textContent='MCM PREVIEW';$('overlay-title').textContent='Preview complete.';
-  $('overlay-copy').textContent=`Time ${formatTime(elapsed)}. Experimental handling — results are separate from the circuit leaderboard.`;
+  phase='finished';clearInput();$('overlay').hidden=false;$('overlay-label').textContent='RIDE COMPLETE';$('overlay-title').textContent='Ride complete.';
+  $('overlay-copy').textContent=`Time ${formatTime(elapsed)}. Results are separate from the legacy circuit leaderboard.`;
   $('resume').hidden=true;$('leaderboard').hidden=true;$('share').hidden=true;return;
  }
 
@@ -646,7 +646,7 @@ if(phase==='playing'){
   while(accumulator>=simulationStep()){
    let result;
    try{result=state.physicsBackend==='recovered-core'?corePreview.stepMcmCoreState(state,input,simulationStep()):stepBike(state,input,simulationStep());}
-   catch(error){console.error(error);state.physicsError=error.message;phase='paused';clearInput();$('overlay').hidden=false;$('overlay-label').textContent='PREVIEW LIMIT';$('overlay-title').textContent='Recovered physics stopped.';$('overlay-copy').textContent='This riding path reached an unresolved original dependency. Restart to ride again.';$('resume').hidden=true;break;}
+   catch(error){console.error(error);state.physicsError=error.message;phase='paused';clearInput();$('overlay').hidden=false;$('overlay-label').textContent='PHYSICS STOPPED';$('overlay-title').textContent='Recovered physics stopped.';$('overlay-copy').textContent='This riding path reached an unresolved original dependency. Restart to ride again.';$('resume').hidden=true;break;}
    rideAudio.step(state,input,simulationStep(),camera.position);
    ridePose.push(state);if(state.physicsBackend==='recovered-core')originalModels?.push(state);tireTracks.update(state.crashed?[]:state.wheelContacts,surfaceHeight);
    if(result.landed>.5){

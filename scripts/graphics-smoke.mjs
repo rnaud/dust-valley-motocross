@@ -10,7 +10,7 @@ try{
   await page.addInitScript(({mobile})=>{localStorage.setItem('dust-valley-tutorial','1');localStorage.setItem('dust-valley-quality',mobile?'low':'high');},{mobile});
   await page.goto(url);await page.waitForFunction(()=>window.__game);
   await page.click('[data-mode=free]');await page.check('#sand-mode');
-  await page.selectOption('#physics-mode','mcm-preview');assert.equal(await page.locator('#sand-mode').isDisabled(),false);
+  await page.click('#legacy-game summary');await page.selectOption('#physics-mode','mcm-preview');assert.equal(await page.locator('#sand-mode').isDisabled(),false);
   await page.selectOption('#physics-mode',mobile?'mcm-preview':'classic');await page.click('#start');
   await page.waitForFunction(()=>window.__game.snapshot().phase==='playing');
   await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));

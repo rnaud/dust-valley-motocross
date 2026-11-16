@@ -13,6 +13,8 @@ try{
   assert.equal(await page.locator('#physics-mode').inputValue(),'mcm-preview');
   assert.equal(await page.locator('[data-mode=free]').getAttribute('aria-pressed'),'true');
   assert.equal(await page.locator('#mcm-assets').isVisible(),true);
+  assert.equal(await page.locator('#physics-mode').isVisible(),false);
+  assert.equal(await page.locator('#daily').isVisible(),false);
   assert.ok(!(await page.locator('#menu-extra-control').innerText()).includes('Boost'));
   if(!touch)await page.uncheck('#sand-mode');
   await page.click('#start');await page.waitForFunction(()=>__game.snapshot().phase==='playing',null,{timeout:90000});
@@ -34,7 +36,7 @@ try{
    }
    await page.keyboard.press('KeyR');await page.keyboard.press('Escape');assert.equal((await snapshot(page)).phase,'paused');await page.click('#photo');await page.screenshot({path:'/tmp/mcm-core-preview-bike.png'});await page.keyboard.press('Escape');await page.click('#home');
    await page.click('[data-mode=race]');await page.click('#start');await page.waitForFunction(()=>__game.snapshot().phase==='playing');await frames(page,3);assert.equal((await snapshot(page)).backend,'recovered-core');await page.screenshot({path:'/tmp/mcm-core-preview-circuit.png'});await page.keyboard.press('Escape');await page.click('#home');
-   await page.selectOption('#physics-mode','classic');await page.click('[data-mode=free]');await page.click('#start');await page.waitForFunction(()=>__game.snapshot().phase==='playing');assert.equal((await snapshot(page)).backend,undefined);
+   await page.click('#legacy-game summary');await page.selectOption('#physics-mode','classic');await page.click('[data-mode=free]');await page.click('#start');await page.waitForFunction(()=>__game.snapshot().phase==='playing');assert.equal((await snapshot(page)).backend,undefined);
    assert.equal(await page.locator('#preview-badge').isVisible(),false);
    await page.keyboard.down('KeyW');
    await page.waitForFunction(()=>__game.snapshot().elapsed>=.4);

@@ -8,7 +8,7 @@ try{
  await page.addInitScript(()=>{localStorage.setItem('dust-valley-tutorial','1');localStorage.setItem('dust-valley-quality','high');});
  await page.goto(url);await page.waitForFunction(()=>window.__game);
  for(const handling of ['classic','mcm-preview']){
-  await page.click('[data-mode=free]');await page.selectOption('#physics-mode',handling);await page.check('#sand-mode');await page.click('#start');
+  await page.click('[data-mode=free]');if(!await page.locator('#physics-mode').isVisible())await page.click('#legacy-game summary');await page.selectOption('#physics-mode',handling);await page.check('#sand-mode');await page.click('#start');
   await page.evaluate(()=>{window.__trail=[];const capture=()=>{const s=window.__game.snapshot();if(s.phase==='playing'){for(const c of s.wheelContacts||[])if(c&&s.speed>5)window.__trail.push({...c});requestAnimationFrame(capture);}};requestAnimationFrame(capture);});
   await page.keyboard.down('KeyW');await page.waitForFunction(()=>window.__game.snapshot().z>18);await page.keyboard.up('KeyW');await page.keyboard.press('Escape');
   const result=await page.evaluate(()=>{

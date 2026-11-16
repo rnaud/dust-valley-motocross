@@ -19,3 +19,5 @@
 .mcm-preview .boost-track,.mcm-preview .boost-track+small,.mcm-preview [data-control=boost]{display:none}
 
 .sand-option{margin:0 0 18px;color:#e7e9d9;font-size:13px}.sand-option label{display:flex;align-items:center;gap:9px;font-weight:700}.sand-option input{accent-color:#d5f461;width:17px;height:17px}.sand-option p{font-size:11px;opacity:.65;margin:6px 0 0 26px}.sand-option[hidden]{display:none}
+
+.game-note{font-size:11px;line-height:1.4;color:#d2d4bf}#legacy-game{margin-top:16px;border-top:1px solid #ffffff30;padding-top:12px}#legacy-game summary{cursor:pointer;font-size:11px;color:#d2d4bf;letter-spacing:.08em}
