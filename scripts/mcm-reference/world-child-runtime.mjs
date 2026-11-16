@@ -21,7 +21,7 @@ export function connectWorldChildRuntime(runtime){
      // The recovered rider tick owns its particle-child traversal.
      return invoke('rider',bike,dt);
     }
-    return invoke('actor',node,dt);
+    return invoke('actor',node,dt,()=>tickMcmActorChildren(node,dt,callbacks));
    },
    destroy:node=>invoke('destroy',node),poll:()=>{throw Error('Uncaptured world child polling state');},clock:()=>{throw Error('Uncaptured world child clock');}
   };

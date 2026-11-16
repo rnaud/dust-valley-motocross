@@ -1,0 +1,12 @@
+{
+  "provenance": {
+    "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+    "inputSha256": "3b8b5df2879de1c232797c415f163f2121c667f8196b1325e7049c4923573390",
+    "outputSha256": "42388743e6ffc45f20b1d54fe2a67696f78f69ed142e998c4e93ad84e5a50d4a",
+    "scope": "Original 475450 marker state updates and calls; child traversal and shape rotation are instrumented boundaries, not executed by this isolated oracle."
+  },
+  "cases": 512,
+  "comparedWords": 26112,
+  "changedWords": 542,
+  "differences": []
+}

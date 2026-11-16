@@ -217,3 +217,20 @@ test('163-update recovery retains shared particles across original rider-bike co
  for(const report of result.worldRiderReports){assert.deepEqual(report.rider.differences,[]);assert.deepEqual(report.collision.differences,[]);}
  for(const report of [...result.entryReports,...result.reports])assert.equal(report.random.actual,report.random.expected);
 });
+
+test('captured marker transforms and child updates preserve the two-bike world comparison',()=>{
+ const captured=JSON.parse(brotliDecompressSync(fs.readFileSync(new URL('./fixtures/mcm/world-marker-wine11.json.br',import.meta.url))));
+ for(const [name,value]of Object.entries(captured.files))assert.equal(createHash('sha256').update(value).digest('hex'),captured.provenance.fileSha256[name]);
+ const result=analyzeWorldBikes(captured.files,terrain(),{renderCameraInputs:true,particleIntegration:true,markerIntegration:true});
+ const missing={...captured.files,'world-bikes.jsonl':captured.files['world-bikes.jsonl'].replaceAll('\"markerObservation\":','\"omittedMarkerObservation\":')};
+ assert.throws(()=>analyzeWorldBikes(missing,terrain(),{renderCameraInputs:true,particleIntegration:true,markerIntegration:true}),/Missing direct marker assertion/);
+ assert.equal(result.markerReports.length,32);
+ for(const report of result.markerReports){assert.deepEqual(report.differences,[]);assert.deepEqual(report.cacheDifferences,[]);}
+ assert.equal(result.worldChildReports.length,7);
+ for(const report of result.worldChildReports)assert.deepEqual(report.externalActors.map(a=>a.update),[0x426490]);
+ assert.equal(result.particleReports.length,63);
+ for(const report of result.particleReports)assert.equal(report.differences,0);
+ for(const group of ['entryReports','reports','collisionReports','riderReports','visualReports'])for(const report of result[group])assert.deepEqual(report.differences,[]);
+ for(const report of result.worldRiderReports){assert.deepEqual(report.rider.differences,[]);assert.deepEqual(report.collision.differences,[]);}
+ for(const report of [...result.entryReports,...result.reports])assert.equal(report.random.actual,report.random.expected);
+});

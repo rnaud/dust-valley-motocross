@@ -7274,3 +7274,84 @@ camera scheduling, heap-boundary input recovery and normal-rate validation remai
 open. Raw impact-v3 files and archive remain in /tmp; scheduler-v1 and impact-v2
 large frames/grid files were losslessly compressed after archiving. No capture
 or debugger is currently running.
+
+### Marker timer/rotation dispatch recovered (2026-11-16, in progress)
+
+Recovered 475450 in `marker-tick.js`: child traversal precedes timer state;
+visibility expiry, repeat-count gating (including sentinel 999), elapsed resets,
+and rotation use the original branch order. Rotation angle is rate times delta,
+not accumulated angle, with a double 2*pi comparison and float32 2*pi subtraction.
+Unordered comparisons retain native carry semantics. Rotation/children remain
+explicit services.
+
+An isolated original oracle compares all marker allocation words, return value,
+and child/rotation call arguments in 512 cases: 26,112 words, 542 changed state
+words, zero differences. `mcm-marker-tick-validation.json` and its fixture record
+hashes and the instrumentation scope. The oracle instruments 420760 and 4b7d90;
+it does not independently establish child traversal or shape rotation parity.
+The dedicated regression passes, including rejection of a changed native output.
+
+World connection remains pending: the marker references shape 0x04ea5d90 and
+has a 446200 child at shape+0x14c. 446200 writes delta at +0x114 before traversing
+its children. Both 446200 nodes report owned size 0x278. Their full owned/shape
+state is not yet included in the world initialization, so no inferred no-op is
+substituted. The three deferred custom actors remain a full-world gap.
+
+Impact-v3 frames/grid raw files are now losslessly compressed, with source hashes
+preserved in the accepted archive. Latest main is a17c65a; deployment run
+43898336327 is live at the npm test step. This marker recovery is uncommitted and
+is not claimed as shipped or as another completed world milestone.
+
+### Marker shape dependencies captured and connected (2026-11-16, in progress)
+
+Main deployment a17c65a completed successfully in run 43898336327. The watch
+process exited successfully; no deployment or recording remains active.
+
+Marker-v1 captured eight atomic updates with both 446200 child allocations and
+the marker's real transform dependencies. Its transform graph contains one root
+at 0x04ea5d90. The recorder follows captured parent/child/sibling links with an
+8192-node bound, rather than inventing missing transforms. All hooks, debugger,
+controls and camera were restored. `world-marker-wine11.json.br` preserves it.
+
+`world-marker-runtime.mjs` connects 475450 timer/rotation updates, 446200 child
+elapsed stores, and 43d850's captured inactive gate (after its real child walk).
+475390 marker-position updates now write local translation and invalidate the
+transform; active collision-refresh requests fail explicitly until dependencies
+are captured. Overlap with another retained transform graph also fails explicitly
+instead of creating disconnected copies. `--marker-integration` is an explicit
+comparator mode. Only custom actor 426490 remains deferred in this recording.
+
+Both-bike, rider/RNG and all 63 particle boundaries still match; the dedicated
+regression passes, including after connecting marker movement. This proves no
+regression in those observations, NOT marker state equality against native
+updates. Marker-v1 has initial marker/shape state but no later direct marker
+assertions. The recorder now additionally emits assertion-only marker allocation
+and shape snapshots at existing world-bike boundaries; it compiles as
+`/tmp/mcm-capture-world-marker-observations.exe`. Next: record with that build,
+compare marker words and local matrices directly, account for render-cache
+changes separately, then consider the marker integration milestone validated.
+
+The marker work remains uncommitted/unshipped. The previous pursuit-v7 large
+frames/grid were losslessly compressed after their archive was preserved.
+
+### Direct marker-state validation milestone (2026-11-16)
+
+Marker-v2 uses the new direct snapshots at all before/after-bike boundaries.
+All 32 marker observations match: complete 0xa4 marker allocation, local matrix,
+world matrix and cache-valid word (2,368 compared words). Both bikes, riders,
+shared RNG and all 63 particle boundaries remain equal to the original. The
+accepted `world-marker-wine11.json.br` and validation report now contain v2;
+v1 remains in /tmp as initialization-only evidence.
+
+The marker integration mode now rejects missing direct assertion boundaries.
+The regression checks both native equality and that missing-observation guard.
+All 20 targeted marker/actor-tree/child-scheduler/pursuit/contact/recovery tests
+pass; the marker test was rerun after adding the assertion guard and passes.
+Production build and whitespace checks pass. This validates the marker's
+captured world movement, rotation and retained cache behavior, not independent
+camera/render dispatch or an active marker collision-refresh branch.
+
+Publishing this marker integration milestone to main per the requested cadence.
+Still open: actor 426490 and its children, autonomous outer pool/presentation and
+camera scheduling, dynamic external heap-boundary inputs, active impact-burst
+world coverage and sustained normal-rate validation. Full parity is not claimed.
