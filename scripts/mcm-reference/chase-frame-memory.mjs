@@ -1,3 +1,4 @@
+import {CapturedBytes} from '../../src/physics/mcm/captured-bytes.js';
 // Read native addresses into the existing chase assertion format. Stack locals
 // have no representation here: frame evolution must derive them itself.
 export function readChaseFrameMemory(memory,camera){
@@ -20,7 +21,7 @@ export function readChaseFrameMemory(memory,camera){
  return {camera,alternate,inputs,pointers,filters:pointers.flatMap(a=>words(a,4)),result:[...words(camera+0x22c,3),...words(camera+0x144,3)],cameraPose:[...words(camera+0x144,10),...words(camera+0x1c4,2),u32(camera+0x1bc)],nodeVisibility:[root,renderRoot].flatMap(a=>[u32(a+0x12c),...words(a+0x240,8)]),matrices:[...words(camera+0x30,64),u32(camera+0x16c)]};
 }
 export function decodeChaseFrameMemory(row){
- const blocks=row.blocks.map(b=>({...b,bytes:Buffer.from(b.hex,'hex')}));
+ const blocks=row.blocks.map(b=>({...b,bytes:CapturedBytes.from(b.hex,'hex')}));
  for(const b of blocks)if(b.size!==b.bytes.length)throw Error('Invalid chase memory block');
  const u32=address=>{
   const matches=blocks.filter(b=>address>=b.address&&address+4<=b.address+b.size);

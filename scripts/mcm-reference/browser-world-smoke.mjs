@@ -21,6 +21,9 @@ async function run({files,t,worldServices},base){
  if(worldServices){
   const {connectMcmWorldUpdate}=await import(base+'src/physics/mcm/world-update.js');
   const {projectWorldRider}=await import(base+'scripts/mcm-reference/world-rider-comparison.mjs');
+  const {connectMcmWorldCamera}=await import(base+'src/physics/mcm/world-camera.js');
+  const {projectMcmChaseState}=await import(base+'src/physics/mcm/chase-state.js');
+  const {retained:chase}=connectMcmWorldCamera(runtime,JSON.parse(files['world-camera-initial.json']),{root:node(t.root),heightScale:t.heightScale,worldToGrid:t.worldToGrid});
   runtime.setPlayerInput({throttle:worldServices.throttle});
   connectMcmWorldUpdate(runtime).step(runtime.world.delta,{
    beforeBike:address=>runtime.setFrameInput(address,worldServices.inputs[address]),
@@ -29,7 +32,8 @@ async function run({files,t,worldServices},base){
    afterRider:address=>{const bike=runtime.world.bikes.find(b=>b.address===address);riders.push({address,hex:projectWorldRider(runtime,address,bike.artifacts.child).toString('hex'),childHex:runtime.bikes.get(address).external.childBytes.subarray(0,0x610).toString('hex')});},
    observeEmitter(phase,state){if(phase==='after')emitters.push({address:state.address,hex:state.bytes.toString('hex'),poolHex:runtime.particles.poolBytes.toString('hex'),particlesHex:runtime.particles.particleBytes.toString('hex')});},
   });
-  return {outputs,riders,emitters,sharedIdentities:true};
+  const cameraResult=chase.step(worldServices.cameraDelta,{tailControls:()=>{}});
+  return {outputs,riders,emitters,cameraWords:projectMcmChaseState(chase.state,cameraResult),sharedIdentities:true};
  }
  for(const address of runtime.world.entry.bikes){
   let body;
@@ -60,9 +64,15 @@ const joined=JSON.parse(brotliDecompressSync(fs.readFileSync(new URL('../../test
 for(const[name,value]of Object.entries(joined.files))assert.equal(createHash('sha256').update(value).digest('hex'),joined.provenance.fileSha256[name]);
 const joinedRows=joined.files['world-bikes.jsonl'].trim().split('\n').map(JSON.parse),joinedRiders=joined.files['world-riders.jsonl'].trim().split('\n').map(JSON.parse);
 const worldPayload={t,files:Object.fromEntries(Object.entries(joined.files).filter(([name])=>name.startsWith('world-')&&name!=='world-animation-observations.json'&&(name.endsWith('.json')||/^world-mesh-[0-9]+\.jsonl$/.test(name)))),worldServices:{throttle:1,inputs:Object.fromEntries(joinedRows.slice(0,4).filter(r=>r.phase==='before-bike').map(r=>[r.bike,r.frameInput])),boundaryWords:Object.fromEntries(joinedRiders.filter(r=>r.completedBikeFrames===1&&r.phase==='before-rider').map(r=>[r.bike,r.boundaryWords]))}};
+const cameraRows=joined.files['world-camera-observations.jsonl'].trim().split('\n').map(JSON.parse);
+worldPayload.worldServices.cameraDelta=new Float32Array(Uint32Array.of(cameraRows.find(r=>r.frame===1&&r.phase==='source-entry').deltaBits).buffer)[0];
 const worldExpected=await run(worldPayload,new URL('../../',import.meta.url).href);
 for(const row of worldExpected.outputs){const native=joinedRows.find(r=>r.phase==='after-bike'&&r.bike===row.address),bytes=Buffer.from(native.bodyHex,'hex');assert.deepEqual(row.body,Array.from({length:bytes.length/4},(_,i)=>bytes.readUInt32LE(i*4)));assert.equal(row.random,native.randomState);}
 for(const row of worldExpected.riders){const native=joinedRiders.find(r=>r.phase==='after-rider'&&r.bike===row.address);assert.equal(row.hex,native.riderHex);assert.equal(row.childHex,native.hex.slice(0,0x610*2));}
+const {decodeChaseFrameMemory}=await import('./chase-frame-memory.mjs');
+const nativeCamera=decodeChaseFrameMemory(cameraRows.find(r=>r.frame===1&&r.phase==='updated')),w=nativeCamera.inputs;
+const expectedCamera=[w[23],w[24],w[26],w[27],w[28],...w.slice(33,36),w[49],...w.slice(50,54),...nativeCamera.filters,...w.slice(20,23),...nativeCamera.result,w[73],w[75],...nativeCamera.cameraPose,...nativeCamera.nodeVisibility,...w.slice(94,98),w[90],w[92],...nativeCamera.matrices,new Uint32Array(Float32Array.of(nativeCamera.alternate.height).buffer)[0]];
+assert.deepEqual(worldExpected.cameraWords,expectedCamera);
 const particleRows=joined.files['particle-observations.jsonl'].trim().split('\n').map(JSON.parse);
 let comparedEmitters=0;
 for(const row of worldExpected.emitters){const native=particleRows.find(r=>r.completedBikeFrames===1&&r.emitter===row.address&&r.phase.startsWith('after-'));if(!native)continue;assert.equal(row.hex,native.emitterHex);assert.equal(row.poolHex,native.poolHex);assert.equal(row.particlesHex,native.particlesHex);comparedEmitters++;}
@@ -80,5 +90,5 @@ try{
  assert.deepEqual(actual,expected);
  const worldActual=await page.evaluate(async({source,payload})=>{if(typeof Buffer!=='undefined'||typeof process!=='undefined')throw Error('Unexpected Node polyfill');return await (0,eval)('('+source+')')(payload,'/');},{source:run.toString(),payload:worldPayload});
  assert.deepEqual(worldActual,worldExpected);assert.deepEqual(errors,[]);
- console.log(JSON.stringify({browser:'Chrome',bikes:actual.outputs.length,comparedNativeBodyWords:actual.outputs.reduce((n,r)=>n+r.body.length,0),sharedIdentities:actual.sharedIdentities,errors,worldRiders:worldActual.riders.length,comparedEmitters,scope:'Atomic first bike pair plus complete first world update with both riders and shared emitters. Input-device and rider boundary words are explicit services. Continuous browser scene scheduling remains unproven.'}));
+ console.log(JSON.stringify({browser:'Chrome',bikes:actual.outputs.length,comparedNativeBodyWords:actual.outputs.reduce((n,r)=>n+r.body.length,0),sharedIdentities:actual.sharedIdentities,errors,worldRiders:worldActual.riders.length,comparedEmitters,cameraWords:worldActual.cameraWords.length,scope:'Atomic first bike pair plus complete first world update with both riders and shared emitters. Input-device and rider boundary words are explicit services. The next chase update also derives all camera inputs from retained bike/rider state. Continuous browser scene scheduling remains unproven.'}));
 }finally{await browser?.close();await server.close();}

@@ -1,4 +1,4 @@
-import assert from 'node:assert/strict';
+import assert from '../../src/physics/mcm/captured-invariants.js';
 // Camera finalization (47d945 / 47dbde) and mesh drawing address the same
 // mesh +12c word. Keep that alias live rather than copying at frame boundaries.
 export function connectWorldCameraVisibility(meshes, roots, initialFlags, state) {

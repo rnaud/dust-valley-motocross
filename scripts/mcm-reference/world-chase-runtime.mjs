@@ -1,4 +1,4 @@
-import {connectWorldCameraVisibility} from './world-camera-visibility.mjs';
+import {connectMcmWorldCamera} from '../../src/physics/mcm/world-camera.js';
 import {resolveMcmWorldMatrix} from '../../src/physics/mcm/world-transform.js';
 import assert from 'node:assert/strict';
 import {decodeChaseFrameMemory} from './chase-frame-memory.mjs';
@@ -8,16 +8,8 @@ const bits=v=>new Uint32Array(Float32Array.of(v).buffer)[0];
 // Subsequent camera entries supply world/device context only. Bike and rider
 // inputs are projected from the retained simulation and compared before use.
 export function connectWorldChaseRuntime(runtime,files,terrain){
- const raw=JSON.parse(files['world-camera-initial.json']),initial=decodeChaseFrameMemory(raw);
- assert.equal(raw.phase,'world-entry');assert.equal(raw.frame,0);assert.equal(raw.deltaBits,runtime.world.entry.dtBits);
- assert.equal(raw.camera,runtime.world.entry.view,'Camera/world checkpoint identity differs');
- assert.equal(raw.blocks.find(b=>b.address===runtime.world.entry.world)?.hex,runtime.world.entry.worldHex,'Camera/world checkpoint bytes differ');
- const cameraBytes=Buffer.from(raw.blocks.find(b=>b.address===raw.camera).hex,'hex'),target=cameraBytes.readUInt32LE(0x1ec),bike=runtime.bikes.get(target);
- if(!bike)throw Error('Camera target is outside retained bikes');
- const bikeBytes=Buffer.from(raw.blocks.find(b=>b.address===target).hex,'hex'),riderAddress=bikeBytes.readUInt32LE(0x874);
- const riderPointAddress=Buffer.from(raw.blocks.find(b=>b.address===riderAddress).hex,'hex').readUInt32LE(0xfc),riderPoint=bike.loaded.visuals.nodes.get(riderPointAddress);
- assert.ok(riderPoint,'Missing retained crash-camera rider point');
- assert.equal(raw.blocks.find(b=>b.address===target)?.hex,runtime.world.bikes.find(b=>b.address===target).artifacts.bike.blocks.find(b=>b.address===target).hex,'Camera/bike checkpoint bytes differ');
+ const raw=JSON.parse(files['world-camera-initial.json']);
+ const {initial,target,bike,riderPoint,retained,visibility}=connectMcmWorldCamera(runtime,raw,terrain);
  const rows=files['world-camera-observations.jsonl'].trim().split('\n').filter(Boolean).map(JSON.parse).map(row=>{
   assert.equal(row.camera,raw.camera,'Joined camera identity changed');
   const bytes=Buffer.from(row.blocks.find(b=>b.address===row.camera).hex,'hex');
@@ -43,12 +35,13 @@ export function connectWorldChaseRuntime(runtime,files,terrain){
   return {...row,inputs,alternate};
  };
  projectEntry(initial);
- const comparison=createChaseFrameComparison(terrain,{initial,projectEntry});
- const renderRider=bikeBytes.readUInt32LE(0xc8c),rootPointer=renderRider+0x434;
- const rootBlock=raw.blocks.find(b=>rootPointer>=b.address&&rootPointer+4<=b.address+b.hex.length/2);
- assert.ok(rootBlock,'Missing camera rider visibility root');
- const renderRoot=Buffer.from(rootBlock.hex,'hex').readUInt32LE(rootPointer-rootBlock.address);
- const visibility=connectWorldCameraVisibility(runtime.meshes,[bikeBytes.readUInt32LE(0x434),renderRoot],[initial.nodeVisibility[0],initial.nodeVisibility[9]],()=>comparison.state);
+ const comparison=createChaseFrameComparison(terrain,{initial,projectEntry,initialState:retained.state,advance(state,input,delta,services){
+  assert.equal(state,retained.state);
+  // The native entry only checks the derived inputs; it never supplies them.
+  const derived=retained.input();
+  assert.deepEqual(derived,input,'Autonomous retained chase input differs');
+  return retained.step(delta,services);
+ }});
 
  return {address:raw.camera,target,reports,visibility,
   get cameraState(){return comparison.state;},

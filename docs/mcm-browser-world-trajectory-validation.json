@@ -1,0 +1,22 @@
+{
+  "browser": "Chrome",
+  "frames": 64,
+  "bikeEntries": 128,
+  "bikeTails": 128,
+  "nodeWords": 209408,
+  "browserWords": 209408,
+  "differences": 0,
+  "errors": [],
+  "scope": "Continuous retained bikes, riders, pool, camera and mesh-cache updates; clock deltas and scripted controls are external. Only atomic initial state enters browser; last frame stops inside world update. Particle drawing, full outer scene/terrain execution and normal-rate parity remain unproven.",
+  "fixture": "tests/fixtures/mcm/world-application-frame-wine11.json.br",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "normalRateStability": {
+    "completedUpdates": 595,
+    "stepSeconds": 0.02,
+    "error": "Rider particle table boundary bytes are not captured",
+    "bike": "player",
+    "index": 32,
+    "originalNormalRateParityTested": false
+  },
+  "tests": 943
+}

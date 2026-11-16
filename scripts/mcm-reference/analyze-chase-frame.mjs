@@ -1,3 +1,4 @@
+import {createMcmChaseState,createMcmChaseInput} from '../../src/physics/mcm/chase-state.js';
 import assert from 'node:assert/strict';
 import {stepMcmChaseFrame} from '../../src/physics/mcm/chase-frame.js';
 const floats=w=>new Float32Array(Uint32Array.from(w).buffer);
@@ -9,7 +10,7 @@ const visibility=nodes=>nodes.flatMap(n=>[n.flag12c,...bits(n.fields240)]);
 const filterWords=c=>c.filters.flatMap(f=>bits(f));
 // Entry-only numerical evolution. The intermediate FOV-entry row is an
 // assertion that uncaptured mode/FOV buttons caused no changes; never an input.
-export function createChaseFrameComparison(terrain,{initial=null,projectEntry=null}={}){
+export function createChaseFrameComparison(terrain,{initial=null,projectEntry=null,initialState=null,advance=stepMcmChaseFrame}={}){
  let state=null,pending=null,tail=null,frames=initial?1:0,words=0,expectedPhase='source-entry',cameraAddress=null,identity=null,entry=null;
  const fixedFields=[10,11,61,72,74,78,88,91,93,98,99,100,101];
  const observe=observed=>{
@@ -24,7 +25,7 @@ export function createChaseFrameComparison(terrain,{initial=null,projectEntry=nu
     const r=initial??observed,v=floats(r.inputs);
     cameraAddress=r.camera;
     identity={pointers:r.pointers.slice(),fixed:fixedFields.map(i=>r.inputs[i]),alternate:r.alternate&&['width','screenHeight','boundWidth','boundHeight'].map(k=>r.alternate[k])};
-    state={controller:{settings:v.slice(50,54),eyeResetFlag:r.inputs[28],restoreFlag:r.inputs[73],previousMode:r.inputs[75],target:floats(r.result.slice(0,3)),camera:{height:r.alternate?.height,zoom:v[49],pitch:v[23],radius:v[24],yaw:v[26],orbitAngle:v[27],backup:v.slice(33,36)},axis:v.slice(20,23),filters:Array.from({length:6},(_,i)=>floats(r.filters.slice(i*4,i*4+4)))},renderCamera:{values:Array.from(floats(r.cameraPose.slice(0,10))),upValid:r.cameraPose[10],forwardValid:r.cameraPose[11],refreshCounter:r.cameraPose[12],retainedMode:r.inputs[88],fov:v[90],refreshByte:r.inputs[92],skipUpdate:r.inputs[91],near:v[98],far:v[99],aspect:v[100],width:r.inputs[101]},nodes:[0,1].map(i=>({flag12c:r.nodeVisibility[i*9],fields240:floats(r.nodeVisibility.slice(i*9+1,i*9+9))})),fovFilter:v.slice(94,98),matrices:floats(r.matrices)};
+    state=initialState??createMcmChaseState(r);
    }
    assert.equal(r.camera,cameraAddress,'Camera identity changed');
    assert.deepEqual(r.pointers,identity.pointers,'Camera filter identity changed');
@@ -42,20 +43,14 @@ export function createChaseFrameComparison(terrain,{initial=null,projectEntry=nu
    assert.deepEqual(r.inputs.slice(98,102),[...bits([state.renderCamera.near,state.renderCamera.far,state.renderCamera.aspect]),state.renderCamera.width],'Projection context changed');
    assert.equal(r.inputs[88],state.renderCamera.retainedMode);assert.equal(r.inputs[91],state.renderCamera.skipUpdate);
    assert.ok(r.inputs[62],'Inactive path has no FOV/update assertions in this format');
-   const name=Buffer.alloc(16);r.inputs.slice(79,83).forEach((x,i)=>name.writeUInt32LE(x,i*4));
-   const input={initialized:r.inputs[74],source:{direction:v.slice(54,57),velocity:v.slice(36,39),bike6a4:v[40],bike620:r.inputs[57]},base:{position:v.slice(58,61),velocity:v.slice(36,39),usePrevious:r.inputs[61]},
-    controls:{mode:r.inputs[11],active:r.inputs[62],keys:r.inputs[64],joystick:r.inputs[65],count:r.inputs[66]|0,pov:r.inputs[67],button2:r.inputs[68],button3:r.inputs[69],modifierA:r.inputs[70],modifierB:r.inputs[71],multiplierField:v[63],usePrevious:r.inputs[61],freeCamera:r.inputs[72]},
-    heading:{mode:r.inputs[11],actorType:r.inputs[12],distance:v[10],bank:v[17],lean:v[18],speedBits:r.inputs[29],crashed:r.inputs[32],velocity:v.slice(36,39),denominator5ec:v[39],denominator6a4:v[40],bike6b0:v[42],bikeBfc:r.inputs[43],manager314:r.inputs[44],bike8b4:r.inputs[45],rider144:r.inputs[46],rider170:r.inputs[47],rider140:r.inputs[48]},
-    clearance:{terrain,worldMode:r.inputs[76],worldEnabled:r.inputs[77],worldScale:v[78],sceneName:name.toString('ascii').split('\0')[0]},
-    finalize:{active:r.inputs[62],bike4e8:v[86],bike4d8:v[87],ownerCounter:r.inputs[89]}};
+   const input=createMcmChaseInput(r,terrain,state);
    assert.deepEqual(r.inputs.slice(84,86),bits([terrain.heightScale,terrain.worldToGrid]));
    if(r.alternate){
     assert.deepEqual(['width','screenHeight','boundWidth','boundHeight'].map(k=>r.alternate[k]),identity.alternate,'Crash-camera projection context changed');
     assert.equal(bits([state.controller.camera.height])[0],bits([r.alternate.height])[0],'Entry crash-camera height differs');
-    input.heading.alternate={...r.alternate,height:r.alternate.screenHeight,matrix:state.matrices.slice(32,48),reference:[0,0,1]};
    }
    entry=r;
-   pending=stepMcmChaseFrame(state,input,floats([r.deltaBits])[0],{tailControls:controller=>{tail=cameraFields(controller);}});
+   pending=advance(state,input,floats([r.deltaBits])[0],{tailControls:controller=>{tail=cameraFields(controller);}});
    expectedPhase='fov-entry';
   }else if(r.phase==='fov-entry'){
    assert.equal(r.camera,cameraAddress);assert.equal(r.deltaBits,entry.deltaBits,'Frame delta changed');
