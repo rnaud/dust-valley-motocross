@@ -1,3 +1,4 @@
+import {CapturedBytes as Buffer} from '../../src/physics/mcm/captured-bytes.js';
 import {createCrtSmallPage} from './crt-small-page.mjs';
 // Original 4c55d0 / 4c5580 / 4c5440. OS memory operations remain explicit
 // services; an absent service never means success or an invented address.

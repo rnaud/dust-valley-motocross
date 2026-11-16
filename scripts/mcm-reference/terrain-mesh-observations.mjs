@@ -1,4 +1,5 @@
-import assert from 'node:assert/strict';
+import {CapturedBytes as Buffer} from '../../src/physics/mcm/captured-bytes.js';
+import assert from '../../src/physics/mcm/captured-invariants.js';
 // Observation-only delta decoder. The retained simulation must own separate
 // buffers and must not receive these later snapshot bytes as state inputs.
 export function createTerrainMeshObservationDecoder(initial,nodes){

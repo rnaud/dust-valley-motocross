@@ -1,4 +1,5 @@
-import assert from 'node:assert/strict';
+import {CapturedBytes as Buffer} from '../../src/physics/mcm/captured-bytes.js';
+import assert from '../../src/physics/mcm/captured-invariants.js';
 // Segment traversal may read beyond the 289 height entries into the bank's
 // following lookup tables. Use the same immutable captured bank allocation.
 export function connectWorldTerrainBankReads(runtime,terrain){

@@ -1,3 +1,4 @@
+import {CapturedBytes as Buffer} from '../../src/physics/mcm/captured-bytes.js';
 // Retained committed-page map for the CRT's already-reserved 4 MiB regions.
 // Commit/decommit addresses are calculated by the CRT, never observed outputs.
 // Choosing a new reservation requires the wider process virtual-address map.

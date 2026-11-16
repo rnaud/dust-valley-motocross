@@ -1,6 +1,10 @@
 // Little-endian captured memory, usable in both the browser and native replay
 // tools. from() copies; subarray() shares storage, like the original Buffer API.
 export class CapturedBytes extends Uint8Array {
+  static alloc(size) {
+    if (!Number.isInteger(size) || size < 0 || size > 0x7fffffff) throw new RangeError('Invalid captured allocation size');
+    return new CapturedBytes(size);
+  }
   equals(other) {
     if (!(other instanceof Uint8Array)) throw new TypeError('Expected captured bytes');
     return this.length === other.length && this.every((value, index) => value === other[index]);

@@ -1,0 +1,55 @@
+{
+  "date": "2026-11-16",
+  "nativeTrajectory": {
+    "browser": "Chrome",
+    "fullHeap": true,
+    "heap": {
+      "allocations": 5229,
+      "frees": 4801,
+      "sizeQueries": 9602,
+      "affinity": 6,
+      "virtualMemory": {
+        "commits": 1,
+        "decommits": 0,
+        "releases": 0,
+        "reservations": 1,
+        "committedPages": 896
+      }
+    },
+    "terrainTicks": 63,
+    "frames": 64,
+    "bikeEntries": 128,
+    "bikeTails": 128,
+    "nodeWords": 209408,
+    "browserWords": 209408,
+    "differences": 0,
+    "errors": [],
+    "scope": "Continuous retained bikes, riders, pool, camera and mesh-cache updates; clock deltas and recorded user controls are external. Only atomic initial state enters browser; last frame stops inside world update. Particle drawing, full outer scene execution and normal-rate parity remain unproven. In full-heap mode terrain traversal/emission and allocator placement are computed from initial state."
+  },
+  "normalRateStability": {
+    "browser": "Chrome",
+    "frames": 1500,
+    "stepSeconds": 0.019999999552965164,
+    "simulatedSeconds": 30,
+    "crashFrames": 706,
+    "callbacks": 130,
+    "heap": {
+      "allocations": 18214,
+      "frees": 17044,
+      "sizeQueries": 34088,
+      "affinity": 6,
+      "virtualMemory": {
+        "commits": 1,
+        "decommits": 0,
+        "releases": 0,
+        "reservations": 1,
+        "committedPages": 896
+      }
+    },
+    "terrainTicks": 1499,
+    "comparedCheckpointWords": 26176,
+    "differences": 0,
+    "errors": [],
+    "scope": "Continuous two-bike runtime stability and exact Node/Chrome agreement at fixed 50 Hz. This does not prove native normal-speed parity or verify the playable site integration."
+  }
+}

@@ -1,4 +1,5 @@
-import assert from 'node:assert/strict';
+import {CapturedBytes as Buffer} from '../../src/physics/mcm/captured-bytes.js';
+import assert from '../../src/physics/mcm/captured-invariants.js';
 import {createWineFreeList} from './wine-free-list.mjs';
 import {createWineLfhGroup} from './wine-lfh-group.mjs';
 // Validate one atomic ordinary-region/LFH metadata snapshot. Large arenas,

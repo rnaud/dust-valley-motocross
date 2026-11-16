@@ -1,4 +1,5 @@
-import assert from 'node:assert/strict';
+import {CapturedBytes as Buffer} from '../../src/physics/mcm/captured-bytes.js';
+import assert from '../../src/physics/mcm/captured-invariants.js';
 // Decoder for original observations only. Never bind its mutable buffers to
 // recovered simulation state: later snapshots are assertion targets.
 export function createTerrainNodeObservationDecoder(initial){

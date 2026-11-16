@@ -1,3 +1,4 @@
+import {CapturedBytes as Buffer} from '../../src/physics/mcm/captured-bytes.js';
 // Original CRT small-block page search, 0x4c5850. Units are 16 payload bytes.
 // Region selection and virtual-memory services belong to the enclosing heap.
 export function createCrtSmallPage(initial) {

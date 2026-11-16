@@ -18,7 +18,7 @@ test('joined terrain emission and AI share original allocation accounting withou
 test('recorded allocation requests cannot replace computed AI allocation requests',()=>{
  const files={...fixture.files},rows=files['terrain-allocation-events.jsonl'].trim().split('\n').map(JSON.parse),row=rows.find(x=>x.phase==='calloc-entry');assert.ok(row);row.argument++;
  files['terrain-allocation-events.jsonl']=rows.map(JSON.stringify).join('\n')+'\n';
- assert.throws(()=>analyzeWorldBikes(files,terrain(),options),/Expected values to be strictly equal/);
+ assert.throws(()=>analyzeWorldBikes(files,terrain(),options),/Computed AI allocation count differs/);
 });
 test('later mesh bytes remain comparison targets and cannot seed the vertex builder',()=>{
  const files={...fixture.files},rows=files['world-bikes.jsonl'].trim().split('\n').map(JSON.parse),row=rows.find(x=>x.sceneTerrainObservation?.meshSnapshot?.sequence===2);assert.ok(row);

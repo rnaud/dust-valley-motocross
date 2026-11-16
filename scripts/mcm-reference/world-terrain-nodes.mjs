@@ -1,7 +1,8 @@
+import {CapturedBytes as Buffer} from '../../src/physics/mcm/captured-bytes.js';
 import {emitMcmTerrain} from '../../src/physics/mcm/terrain-emission.js';
 import {createTerrainMeshObservationDecoder} from './terrain-mesh-observations.mjs';
 import {connectTerrainAllocator} from './world-terrain-allocator.mjs';
-import assert from 'node:assert/strict';
+import assert from '../../src/physics/mcm/captured-invariants.js';
 import {loadTerrainResources} from './terrain-resources.mjs';
 import {createTerrainNodeObservationDecoder} from './terrain-node-observations.mjs';
 import {setupMcmTerrainView} from '../../src/physics/mcm/terrain-view-setup.js';

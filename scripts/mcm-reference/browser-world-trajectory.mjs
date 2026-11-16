@@ -8,13 +8,14 @@ import {chromium} from '@playwright/test';
 
 // No later bike/rider/camera state or expected outputs enter the browser.
 
-const fixture=JSON.parse(brotliDecompressSync(fs.readFileSync(new URL('../../tests/fixtures/mcm/world-application-frame-wine11.json.br',import.meta.url))));
+const fullHeap=process.argv.includes('--full-heap');
+const fixture=JSON.parse(brotliDecompressSync(fs.readFileSync(new URL(`../../tests/fixtures/mcm/${fullHeap?'world-full-allocator':'world-application-frame'}-wine11.json.br`,import.meta.url))));
 assert.equal(fixture.provenance.executableSha256,'e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b');
 for(const[name,value]of Object.entries(fixture.files))assert.equal(createHash('sha256').update(value).digest('hex'),fixture.provenance.fileSha256[name]);
 const rows=fixture.files['world-bikes.jsonl'].trim().split('\n').map(JSON.parse);
 const files=Object.fromEntries(Object.entries(fixture.files).filter(([name])=>name.startsWith('world-')&&name!=='world-animation-observations.json'&&(name.endsWith('.json')||/^world-mesh-[0-9]+\.jsonl$/.test(name))));
 const {terrain:t}=JSON.parse(gunzipSync(fs.readFileSync(new URL('../../src/assets/mcm-maps/quarries-dunes.bin',import.meta.url))));
-const deltas=rows.filter((_,i)=>i%4===0).map(row=>Buffer.from(row.stackHex,'hex').readFloatLE(0xbfc)),payload={files,t,deltas};
+const deltas=rows.filter((_,i)=>i%4===0).map(row=>Buffer.from(row.stackHex,'hex').readFloatLE(0xbfc)),controls=fullHeap?rows.filter((_,i)=>i%4===0).map(row=>({steer:new Float32Array(Uint32Array.of(row.frameInput.steerBits).buffer)[0],lean:new Float32Array(Uint32Array.of(row.frameInput.longitudinalBits).buffer)[0]})):undefined,payload={files,t,deltas,fullHeap,throttleFrames:fullHeap?48:12,controls};
 function compare(result){
  assert.equal(result.frames,64);assert.equal(result.outputs.length,rows.length);
  let words=0;result.outputs.forEach((actual,i)=>{
@@ -33,5 +34,5 @@ try{
   return await (0,eval)('('+source+')')(payload,'/');
  },{source:run.toString(),payload});
  assert.deepEqual(actual,expected);assert.deepEqual(errors,[]);
- console.log(JSON.stringify({browser:'Chrome',frames:actual.frames,bikeEntries:128,bikeTails:128,nodeWords,browserWords:compare(actual),differences:0,errors,scope:'Continuous retained bikes, riders, pool, camera and mesh-cache updates; clock deltas and scripted controls are external. Only atomic initial state enters browser; last frame stops inside world update. Particle drawing, full outer scene/terrain execution and normal-rate parity remain unproven.'}));
+ console.log(JSON.stringify({browser:'Chrome',fullHeap,heap:actual.heap,terrainTicks:actual.terrainTicks,frames:actual.frames,bikeEntries:128,bikeTails:128,nodeWords,browserWords:compare(actual),differences:0,errors,scope:'Continuous retained bikes, riders, pool, camera and mesh-cache updates; clock deltas and recorded user controls are external. Only atomic initial state enters browser; last frame stops inside world update. Particle drawing, full outer scene execution and normal-rate parity remain unproven. In full-heap mode terrain traversal/emission and allocator placement are computed from initial state.'}));
 }finally{await browser?.close();await server.close();}

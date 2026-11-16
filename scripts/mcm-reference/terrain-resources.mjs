@@ -1,4 +1,5 @@
-import assert from 'node:assert/strict';
+import {CapturedBytes as Buffer} from '../../src/physics/mcm/captured-bytes.js';
+import assert from '../../src/physics/mcm/captured-invariants.js';
 import {createMcmTerrainDetailTables} from '../../src/physics/mcm/terrain-detail-tables.js';
 // Initial immutable inputs only. Later observations certify stability; no
 // observed node outputs are imported into a recovered graph by this loader.
