@@ -1,0 +1,45 @@
+{
+  "fixtures": {
+    "tests/fixtures/mcm/crt-small-create-wine11.json.br": "a618c783ab3c58706ae14046a3340c379f3061c0d2d3d3d7385c9cbf2571df0c",
+    "tests/fixtures/mcm/ordinary-raw-heap-wine11.json.br": "01a44d29034b2a274baefb8dd2b013685e30e4a428cd740bec4eff1ea6433227",
+    "tests/fixtures/mcm/crt-wine-create-wine11.json.br": "5a4c963b2f1de67469a14aea088e408b979cf24734f5c1c44f93069d36e7e28c"
+  },
+  "creation": {
+    "cases": 16,
+    "differences": 0,
+    "checks": [
+      "initial and additional region creation",
+      "metadata allocation failure",
+      "reservation failure",
+      "commit failure and cleanup",
+      "complete CRT region/page state"
+    ]
+  },
+  "rawWine": {
+    "cases": 32,
+    "steps": 1056,
+    "differences": 0,
+    "checks": [
+      "exact raw request size including 0x814-byte CRT bookkeeping",
+      "zero/small requests",
+      "chosen pointer",
+      "all block headers and free-list links"
+    ]
+  },
+  "coupled": {
+    "cases": 4,
+    "computedMetadataAllocations": 2,
+    "differences": 0,
+    "checks": [
+      "CRT region creation through retained ordinary Wine allocation",
+      "both complete allocator states",
+      "metadata pointer computed before comparing native result"
+    ]
+  },
+  "regression": {
+    "targetedTests": 18,
+    "passed": 18,
+    "twoBikeComparison": "zero differences"
+  },
+  "scope": "CRT region lifecycle is implemented with explicit underlying heap and OS memory services. The coupled oracle computes metadata placement for supported ordinary allocations. Wine LFH group creation/release, bin activation, region growth/release and virtual-address placement still need completion/integration before a fresh atomic world capture and sustained normal-rate validation."
+}

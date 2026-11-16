@@ -37,6 +37,29 @@ export function createCrtSmallHeap(initial,services={}) {
   r.bytes[16+start]-=units;r.pages.set(address,createCrtSmallPage({address,freeUnits:240-units,hex:b.toString('hex')}));
   return address+256;
  }
+ function createRegion(units){
+  const sentinel=regions.get(head),address=word(sentinel,0x810)?service('allocateRegion',0x814):head;
+  if(!address)return null;
+  const base=service('reserve',0x400000);
+  if(!base){if(address!==head)service('freeRegion',address);return null;}
+  if(!service('commit',base,65536)){
+   service('release',base);if(address!==head)service('freeRegion',address);return null;
+  }
+  const r=address===head?sentinel:{address,bytes:Buffer.alloc(0x814),pages:new Map()};
+  if(address!==head){
+   const previous=word(sentinel,4);put(r,0,head);put(r,4,previous);
+   put(sentinel,4,address);put(regions.get(previous),0,address);regions.set(address,r);
+  }
+  put(r,0x810,base);put(r,8,0);put(r,12,16);
+  r.bytes.fill(240,16,32);r.bytes.fill(255,32,0x410);r.bytes.fill(241,0x410,0x810);
+  r.pages.clear();
+  for(let i=0;i<16;i++){
+   const page=base+i*4096,b=Buffer.alloc(256);b.writeUInt32LE(page+8,0);b.writeUInt32LE(240,4);b[248]=255;
+   if(i===0){b[8]=units;b.writeUInt32LE(page+8+units,0);b.writeUInt32LE(240-units,4);}
+   r.pages.set(page,createCrtSmallPage({address:page,freeUnits:i===0?240-units:240,hex:b.toString('hex')}));
+  }
+  currentRegion=address;r.bytes[16]-=units;return base+256;
+ }
  function decommit(){
   let address=word(regions.get(head),4),remaining=16;
   do{
@@ -75,7 +98,7 @@ export function createCrtSmallHeap(initial,services={}) {
     address=word(r,0);
    }while(address!==currentRegion);
    for(const r of ordered())if(word(r,0x810)&&word(r,12)!==0xffffffff)return commit(r,units);
-   throw Error('CRT create-region service required');
+   return createRegion(units);
   },
   free(pointer){
    const r=ordered().find(r=>{const base=word(r,0x810);return base&&pointer>base&&pointer<base+0x400000;});

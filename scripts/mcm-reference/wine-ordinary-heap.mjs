@@ -8,10 +8,11 @@ export function createWineOrdinaryHeap(initial){
  const locate=pointer=>{for(const region of state.regions){const index=region.blocks.findIndex(b=>b.header===pointer-8);if(index>=0)return {region,index,block:region.blocks[index]};}throw Error('Uncaptured ordinary heap pointer');};
  const freeWords=(region,header,bytes)=>[bytes/8,(0x01460000|(Math.floor(header/65536)-Math.floor(region.address/65536)))>>>0];
  const previousFlag=(block,enabled)=>{if(block)block.words[1]=((block.words[1]&~0x02000000)|(enabled?0x02000000:0))>>>0;};
- return {allocate(request){
-  if(!Number.isInteger(request)||request<1024||request>0x7efe0)throw Error('Unsupported ordinary CRT request');
-  const pointer=freeList.select(Math.ceil(request/16)*16+8);if(pointer===null)return null;
-  const {region,index,block}=locate(pointer),oldBytes=size(block),result=freeList.allocate(request),bytes=(result.words[0]&65535)*8,remaining=oldBytes-bytes;
+ return {allocate(request,{raw=false}={}){
+  if(!Number.isInteger(request)||request<(raw?0:1024)||request>0x7efe0)throw Error('Unsupported ordinary CRT request');
+  const needed=raw?Math.max(24,Math.ceil((Math.max(8,request)+8)/8)*8):Math.ceil(request/16)*16+8;
+  const pointer=freeList.select(needed);if(pointer===null)return null;
+  const {region,index,block}=locate(pointer),oldBytes=size(block),result=freeList.allocate(request,{raw}),bytes=(result.words[0]&65535)*8,remaining=oldBytes-bytes;
   const used={header:block.header,words:result.words};
   if(remaining){const rest={header:block.header+bytes,words:freeWords(region,block.header+bytes,remaining)};region.blocks.splice(index,1,used,rest);previousFlag(region.blocks[index+2],true);}
   else{region.blocks[index]=used;previousFlag(region.blocks[index+1],false);}

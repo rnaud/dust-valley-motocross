@@ -33,9 +33,9 @@ export function createWineFreeList(snapshot){
   const sentinel=head+index*16,before=last?sentinel:byLink.get(sentinel).links[0],after=byLink.get(before).links[1];
   byLink.set(link,{header,words:words.slice(),links:[before,after],last});byLink.get(before).links[1]=link;byLink.get(after).links[0]=link;
  };
- return {select,remove,insert,allocate(request){
-  if(!Number.isInteger(request)||request<1024||request>0x7efe0)throw Error('Unsupported ordinary CRT request');
-  const payload=Math.ceil(request/16)*16,needed=payload+8,pointer=select(needed);
+ return {select,remove,insert,allocate(request,{raw=false}={}){
+  if(!Number.isInteger(request)||request<(raw?0:1024)||request>0x7efe0)throw Error('Unsupported ordinary CRT request');
+  const payload=raw?request:Math.ceil(request/16)*16,needed=raw?Math.max(24,Math.ceil((Math.max(8,payload)+8)/8)*8):payload+8,pointer=select(needed);
   if(pointer===null)return null; // The caller must supply the region-growth service.
   const block=byLink.get(pointer),oldBytes=block.words[0]*8;
   if(typeof block.last!=='boolean')throw Error('Missing terminal-block metadata');
