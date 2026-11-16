@@ -125,3 +125,19 @@ test('shared pool ticks retain state using their actual native timing and report
  const missing=rider(f);missing.splice(missing.findIndex(e=>e.phase==='after-pool'),1);missing.forEach((e,n)=>e.eventSequence=n);
  assert.throws(()=>analyzeAiSubsteps(i,i.rows,missing,trace(f)),/Missing pool return/);
 });
+
+test('dust updates retain emitter state and connect the original shared particle writes',()=>{
+ const f=fixture('ai-dust-world');
+ for(const [name,value]of Object.entries(f.files))assert.equal(createHash('sha256').update(value).digest('hex'),f.provenance.fileSha256[name]);
+ assert.match(f.files['cleanup.log'],/debugger=0 clean=1/);assert.equal((f.files['cleanup.log'].match(/restored=1/g)||[]).length,29);
+ const i=input(f),events=rider(f),r=analyzeAiSubsteps(i,i.rows,events,trace(f));
+ assert.equal(r.frames,8);assert.equal(r.bodyBoundaries,32);assert.equal(r.substepBoundaries,474);assert.equal(r.componentWords,5688);assert.deepEqual(r.visualDifferences,[]);
+ assert.equal(r.dustReports.length,7);assert.equal(r.poolReports.length,7);
+ assert.deepEqual(r.dustReports.map(d=>d.emitted),[58,104,118,171,0,0,0]);
+ assert.deepEqual(r.dustReports[0].entry,{words:20049,differences:0});assert.deepEqual(r.dustReports[0].exit,{words:20049,differences:0});
+ assert.equal(r.particleDifferences.length,433309);
+ const after=events.find(e=>e.phase==='after-dust'),bytes=Buffer.from(after.emitterHex,'hex');bytes[0x60]^=1;after.emitterHex=bytes.toString('hex');
+ assert.throws(()=>analyzeAiSubsteps(i,i.rows,events,trace(f)),/Retained dust return/);
+ const missing=rider(f);missing.splice(missing.findIndex(e=>e.phase==='after-dust'),1);missing.forEach((e,n)=>e.eventSequence=n);
+ assert.throws(()=>analyzeAiSubsteps(i,i.rows,missing,trace(f)),/Missing dust return/);
+});

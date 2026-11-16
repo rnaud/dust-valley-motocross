@@ -4,6 +4,7 @@ import {connectLiveSceneRiderPosition} from './live-scene-rider-position.mjs';
 import {advanceMcmRetainedFrame} from '../../src/physics/mcm/retained-frame.js';
 import {advanceMcmRiderTick} from '../../src/physics/mcm/rider-tick.js';
 import {tickMcmParticlePool} from '../../src/physics/mcm/particle-pool-tick.js';
+import {tickMcmDust} from '../../src/physics/mcm/dust-tick.js';
 import {bitsFloat} from '../../src/physics/mcm/math.js';
 
 // One initialization, shared identities, and explicit world update ordering.
@@ -42,6 +43,10 @@ export function createCapturedFrameRuntime(inputs,row,child){
   stepPool({delta,paused}){
    if(!external.pool)throw Error('Missing captured particle pool');
    return tickMcmParticlePool(external.pool,{dt:delta,paused});
+  },
+  stepDust({delta,paused}){
+   const emitter=c.frameEffects.emitters[0];
+   return tickMcmDust(emitter.bytes.view(0,0x84),{dt:delta,paused,pool:external.pool});
   }
  };
 }
