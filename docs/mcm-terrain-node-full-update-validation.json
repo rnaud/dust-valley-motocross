@@ -1,0 +1,7 @@
+{
+  "scope": "Original node updates, vertex decisions, rebuild sweeps, recursive dependencies and cross-patch propagation; optional update remains external",
+  "cases": 1024,
+  "words": 799744,
+  "differences": 0,
+  "examples": []
+}

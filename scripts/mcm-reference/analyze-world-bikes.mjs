@@ -1,3 +1,4 @@
+import {connectWorldTerrainNodes} from './world-terrain-nodes.mjs';
 import {connectWorldTerrainView} from './world-terrain-view.mjs';
 import {connectWorldSceneDisplay} from './world-scene-display.mjs';
 import {connectWorldSceneRenderer} from './world-scene-renderer.mjs';
@@ -22,13 +23,15 @@ import {createLiveRiderCollisionComparison} from './live-rider-collision-compari
 import {createWorldBikeRuntime} from './world-bike-runtime.mjs';
 // Diagnostic of the combined retained physics/rider path. Missing world/render
 // work remains visible as full-body differences; no output is copied back.
-export function analyzeWorldBikes(files,terrain,{renderCameraInputs=false,particleIntegration=false,markerIntegration=false,hudIntegration=false,sceneChildIntegration=false,chaseIntegration=false,sceneQueueIntegration=false,sceneRendererIntegration=false,sceneDisplayStateIntegration=false,sceneDisplayFadeIntegration=false,sceneDisplayVisibilityIntegration=false,terrainViewIntegration=false}={}){
+export function analyzeWorldBikes(files,terrain,{renderCameraInputs=false,particleIntegration=false,markerIntegration=false,hudIntegration=false,sceneChildIntegration=false,chaseIntegration=false,sceneQueueIntegration=false,sceneRendererIntegration=false,sceneDisplayStateIntegration=false,sceneDisplayFadeIntegration=false,sceneDisplayVisibilityIntegration=false,terrainViewIntegration=false,terrainNodeIntegration=false}={}){
  const initial=Object.fromEntries(Object.entries(files).filter(([name])=>name.startsWith('world-')&&name!=='world-animation-observations.json'&&(name.endsWith('.json')||/^world-mesh-[0-9]+\.jsonl$/.test(name))));
  const inputProtocol=validateWorldInputProtocol(files),contactReports=[];
  const runtime=createWorldBikeRuntime(initial,terrain,{throttle:0,brake:0});
  if(chaseIntegration&&(!sceneChildIntegration||!renderCameraInputs))throw Error('Chase integration requires scene scheduling and draw replay');
  const chase=chaseIntegration?connectWorldChaseRuntime(runtime,files,terrain):null;
  if(terrainViewIntegration&&!sceneChildIntegration)throw Error('Terrain view requires scene scheduling');
+ if(terrainNodeIntegration&&!sceneChildIntegration)throw Error('Terrain nodes require scene scheduling');
+ const terrainNodes=terrainNodeIntegration?connectWorldTerrainNodes(runtime,chase):null,terrainNodeReports=[];
  const terrainView=terrainViewIntegration?connectWorldTerrainView(runtime,chase):null,terrainViewReports=[];
  const sceneRenderer=sceneRendererIntegration?connectWorldSceneRenderer(runtime,chase,files):null;
  const emitters=particleIntegration?connectWorldEmitterRuntime(runtime):null,particleReports=[],impactReports=[];
@@ -99,6 +102,7 @@ export function analyzeWorldBikes(files,terrain,{renderCameraInputs=false,partic
    if(before.phase!=='before-bike'||after.phase!=='after-bike'||before.bike!==address||after.bike!==address)throw Error('Unexpected bike order');
    if(queue)sceneQueueReports.push({frame:frameNumber,phase:before.phase,bike:address,...queue.compare(before.sceneQueueObservation)});
    if(display)sceneDisplayReports.push({frame:frameNumber,phase:before.phase,bike:address,...display.compare(before.sceneDisplayObservation)});
+   if(terrainNodes){const result=terrainNodes.compare(before.sceneTerrainObservation);if(result)terrainNodeReports.push({frame:frameNumber,...result});}
    if(terrainView)terrainViewReports.push({frame:frameNumber,phase:before.phase,bike:address,...terrainView.compare(before.sceneTerrainObservation)});
    if(hud){if(!before.hudObservation||!after.hudObservation)throw Error('Missing HUD assertion boundary');hudReports.push({frame:frameNumber,phase:before.phase,bike:address,...hud.compare(before.hudObservation)});}
    if(markers&&(!before.markerObservation||!after.markerObservation))throw Error('Missing direct marker assertion boundary');
@@ -190,12 +194,13 @@ export function analyzeWorldBikes(files,terrain,{renderCameraInputs=false,partic
    const trace=scheduleSceneChildren(delta,{world:advanceWorld,actor:(node,dt)=>{
     if(sceneRenderer&&node.address===sceneRenderer.address){sceneRenderer.step(frameNumber,dt);return;}
     if(chase&&node.address===chase.address){if(frameNumber>0)advanceChase();return;}
+    if(terrainNodes&&node.address===terrainNodes.address)terrainNodes.step(frameNumber);
     if(terrainView&&node.address===terrainView.address)terrainView.step(frameNumber);
     externalActors.push({address:node.address,update:node.update,delta:dt});
    },beforePool:dt=>{poolCalls++;poolBoundary('before-pool',dt);},afterPool:dt=>poolBoundary('after-pool',dt)});
    if(poolCalls!==1)throw Error('Scene did not schedule exactly one observed pool tick');
    sceneChildReports.push({frame:frameNumber,trace,poolCalls,externalActors});
-  }else {if(chase&&frameNumber>0)advanceChase();if(sceneRenderer)sceneRenderer.step(frameNumber,delta);if(terrainView)terrainView.step(frameNumber);advanceWorld();}
+  }else {if(chase&&frameNumber>0)advanceChase();if(sceneRenderer)sceneRenderer.step(frameNumber,delta);if(terrainView)terrainView.step(frameNumber);if(terrainNodes)terrainNodes.step(frameNumber);advanceWorld();}
   if(emitters){
    // Recorded presentation invocations remain explicit diagnostic inputs until
    // the outer world/camera scheduler is connected. Pool state is retained.
@@ -242,11 +247,11 @@ export function analyzeWorldBikes(files,terrain,{renderCameraInputs=false,partic
  }
  if(particleIntegration&&particleReports.length!==particleRows.length)throw Error('Unconsumed particle assertion boundaries');
  if(worldRiderIndex!==worldRiders.length)throw Error('Unconsumed world rider observations');
- return {terrainViewIntegration,terrainViewTicks:terrainView?.ticks,terrainViewReports,sceneDisplayVisibilityDraws:display?.visibilityDraws,sceneDisplayVisibilityQueries:display?.visibilityQueries,sceneDisplayVisibilityIntegration,sceneDisplayFadeIntegration,sceneDisplayFadeTicks:display?.fadeTicks,sceneDisplayStateIntegration,sceneDisplayTicks:display?.ticks,externalDisplayRefreshes,sceneDisplayReports,sceneRendererIntegration,sceneRendererReport:sceneRenderer?.finish(),sceneQueueIntegration,sceneQueueTicks:queue?.ticks,sceneQueueReports,chaseIntegration,chaseReport:chase?.finish(),sceneChildIntegration,sceneChildReports,hudIntegration,hudReports,markerIntegration,markerReports,particleIntegration,particleReports,impactReports,inputProtocol,worldChildReports,worldSchedulerReports,contactReports,sceneReports,worldRiderReports,entryReports,renderCameraInputs,drawReports,collisionReports,riderReports,visualReports,scope:(chaseIntegration?'Camera bike/rider inputs, audio position and mesh projection are derived from retained state; camera world/device context remains external. ':'')+'Retained player/AI bike bodies and shared RNG compared at every boundary; both rider/child and rider collider observations compared when captured; AI visual allocations compared. Camera/world context, draw scheduling and particle boundary words remain explicit external inputs; full collision allocation and autonomous world scheduling coverage remain incomplete',reports};
+ return {terrainNodeIntegration,terrainNodeTicks:terrainNodes?.ticks,terrainNodeReports,terrainViewIntegration,terrainViewTicks:terrainView?.ticks,terrainViewReports,sceneDisplayVisibilityDraws:display?.visibilityDraws,sceneDisplayVisibilityQueries:display?.visibilityQueries,sceneDisplayVisibilityIntegration,sceneDisplayFadeIntegration,sceneDisplayFadeTicks:display?.fadeTicks,sceneDisplayStateIntegration,sceneDisplayTicks:display?.ticks,externalDisplayRefreshes,sceneDisplayReports,sceneRendererIntegration,sceneRendererReport:sceneRenderer?.finish(),sceneQueueIntegration,sceneQueueTicks:queue?.ticks,sceneQueueReports,chaseIntegration,chaseReport:chase?.finish(),sceneChildIntegration,sceneChildReports,hudIntegration,hudReports,markerIntegration,markerReports,particleIntegration,particleReports,impactReports,inputProtocol,worldChildReports,worldSchedulerReports,contactReports,sceneReports,worldRiderReports,entryReports,renderCameraInputs,drawReports,collisionReports,riderReports,visualReports,scope:(chaseIntegration?'Camera bike/rider inputs, audio position and mesh projection are derived from retained state; camera world/device context remains external. ':'')+'Retained player/AI bike bodies and shared RNG compared at every boundary; both rider/child and rider collider observations compared when captured; AI visual allocations compared. Camera/world context, draw scheduling and particle boundary words remain explicit external inputs; full collision allocation and autonomous world scheduling coverage remain incomplete',reports};
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
  const fixture=JSON.parse(brotliDecompressSync(fs.readFileSync(process.argv[2])));
  const {terrain:t}=JSON.parse(gunzipSync(fs.readFileSync(new URL('../../src/assets/mcm-maps/quarries-dunes.bin',import.meta.url)))),cache=new Map();
  const node=id=>{if(cache.has(id))return cache.get(id);const raw=t.nodes[id],n={...raw,...t.banks[raw.bankIndex]};cache.set(id,n);if(raw.children)n.children=raw.children.map(id=>id===null?null:node(id));return n;};
- console.log(JSON.stringify(analyzeWorldBikes(fixture.files,{root:node(t.root),worldToGrid:t.worldToGrid,heightScale:t.heightScale},{renderCameraInputs:process.argv.includes('--render-camera-inputs'),particleIntegration:process.argv.includes('--particle-integration'),markerIntegration:process.argv.includes('--marker-integration'),hudIntegration:process.argv.includes('--hud-integration'),sceneChildIntegration:process.argv.includes('--scene-child-integration'),chaseIntegration:process.argv.includes('--chase-integration'),sceneQueueIntegration:process.argv.includes('--scene-queue-integration'),sceneRendererIntegration:process.argv.includes('--scene-renderer-integration'),sceneDisplayStateIntegration:process.argv.includes('--scene-display-state-integration'),sceneDisplayFadeIntegration:process.argv.includes('--scene-display-fade-integration'),sceneDisplayVisibilityIntegration:process.argv.includes('--scene-display-visibility-integration'),terrainViewIntegration:process.argv.includes('--terrain-view-integration')}),null,2));
+ console.log(JSON.stringify(analyzeWorldBikes(fixture.files,{root:node(t.root),worldToGrid:t.worldToGrid,heightScale:t.heightScale},{renderCameraInputs:process.argv.includes('--render-camera-inputs'),particleIntegration:process.argv.includes('--particle-integration'),markerIntegration:process.argv.includes('--marker-integration'),hudIntegration:process.argv.includes('--hud-integration'),sceneChildIntegration:process.argv.includes('--scene-child-integration'),chaseIntegration:process.argv.includes('--chase-integration'),sceneQueueIntegration:process.argv.includes('--scene-queue-integration'),sceneRendererIntegration:process.argv.includes('--scene-renderer-integration'),sceneDisplayStateIntegration:process.argv.includes('--scene-display-state-integration'),sceneDisplayFadeIntegration:process.argv.includes('--scene-display-fade-integration'),sceneDisplayVisibilityIntegration:process.argv.includes('--scene-display-visibility-integration'),terrainViewIntegration:process.argv.includes('--terrain-view-integration'),terrainNodeIntegration:process.argv.includes('--terrain-node-integration')}),null,2));
 }

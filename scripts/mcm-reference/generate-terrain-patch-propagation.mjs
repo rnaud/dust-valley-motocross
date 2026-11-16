@@ -1,0 +1,2 @@
+import fs from'node:fs';const out=Buffer.alloc(4096*32),coordinates=[0,1,15,16,17,255,256,257,512,1024,4095,4096];
+for(let n=0;n<4096;n++){const mode=n&1,x=mode?[0,8,16][Math.floor(n/2)%3]:coordinates[Math.floor(n/2)%12],y=mode?[0,8,16][Math.floor(n/6)%3]:coordinates[Math.floor(n/24)%12];[mode,(n*37)>>>0,x,y,n%4?128:0,1<<(n%4),Math.floor(n/144)%2,Math.floor(n/288)%3].forEach((v,i)=>out.writeUInt32LE(v,n*32+i*4));}fs.writeFileSync(process.argv[2],out,{flag:'wx'});

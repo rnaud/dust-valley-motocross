@@ -1,4 +1,5 @@
 #include "capture-terrain-nodes.c"
+#include "capture-terrain-resources.c"
 // Assertion-only terrain state at existing world/bike boundaries. No writes to
 // the game, and no additional debugger pauses.
 static DWORD observed_world_terrain;
@@ -12,7 +13,7 @@ static int capture_scene_terrain_state(FILE*out,DWORD address,int nodeSnapshot,i
  fprintf(out,"\",\"owner\":%lu,\"ownerHex\":\"",owner);for(unsigned i=0;i<sizeof ownerBytes;i++)fprintf(out,"%02x",ownerBytes[i]);
  fprintf(out,"\",\"camera\":%lu,\"cameraHex\":\"",camera);for(unsigned i=0;i<sizeof cameraBytes;i++)fprintf(out,"%02x",cameraBytes[i]);
  fprintf(out,"\",\"globals\":[%lu,%lu],\"app\":%lu,\"debugEnabled\":%lu,\"debugCounter\":%lu",globals[0],globals[1],app,debug,debugCounter);
- if(nodeSnapshot&&getenv("MCM_WORLD_TERRAIN_NODES")&&!capture_terrain_nodes(out,address,initial))return 0;fprintf(out,"}");return !ferror(out);
+ if(nodeSnapshot&&getenv("MCM_WORLD_TERRAIN_NODES")){if(!capture_terrain_nodes(out,address,initial))return 0;if(getenv("MCM_WORLD_TERRAIN_RESOURCES")&&!capture_terrain_resources(out,initial))return 0;}fprintf(out,"}");return !ferror(out);
 }
 static int capture_scene_terrain_observation(FILE*out,int nodeSnapshot){
  if(!getenv("MCM_WORLD_TERRAIN"))return 1;if(!observed_world_terrain)return 0;

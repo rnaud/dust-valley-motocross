@@ -1,0 +1,7 @@
+{
+  "scope": "Original 48d6f0 and 48d680; actual 48d930/48ce60; propagation, rebuild and optional update remain explicit callbacks",
+  "cases": 1024,
+  "words": 846248,
+  "differences": 0,
+  "examples": []
+}

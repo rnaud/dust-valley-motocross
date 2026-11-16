@@ -1,0 +1,26 @@
+{
+  "scope": "Retained traversal and node updates from initial state and computed chase camera; emission, buffer allocations and clocks remain unconnected. Terrain actor is still external.",
+  "fixture": "world-terrain-resources-wine11.json.br",
+  "ticks": 63,
+  "snapshots": 64,
+  "nodeWordsCompared": 106394112,
+  "updateBytesCompared": 253089024,
+  "updateDifferences": 0,
+  "ownerWordsCompared": 19648,
+  "ownerDifferences": 0,
+  "globalDifferences": 0,
+  "remainingDifferencesByOffset": {
+    "0x1ac": 452,
+    "0x180": 15090,
+    "0x1a0": 14032,
+    "0x1a4": 12534,
+    "0x1c0": 13974,
+    "0x1c4": 14032,
+    "0x1c8": 13974,
+    "0x1cc": 14032,
+    "0x1a8": 12684,
+    "0x8": 13585,
+    "0x1b8": 14144,
+    "0x1bc": 14633
+  }
+}

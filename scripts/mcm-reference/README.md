@@ -696,3 +696,29 @@ trace the pinned Wine upload-cleanup path through the exact heap-handle store
 that overlaps bike caller scratch. See `docs/mcm-render-heap-recovery.md` for
 capture flags, stack derivation, evidence and outstanding upload/visibility gates.
 This isolated recovery is not yet connected to preview handling.
+
+### Retained terrain updates and cross-patch propagation
+
+The world recorder’s `capture-actor-tree.c` includes the terrain resource recorder when
+`MCM_WORLD_TERRAIN_RESOURCES=1` accompanies the existing terrain/node flags.
+It captures immutable render banks, detail tables and vertex metadata once,
+then rereads and compares them at every node snapshot. Resource changes fail
+explicitly. The accepted fixture is `world-terrain-resources-wine11.json.br`.
+
+`analyze-world-bikes.mjs --terrain-node-integration` requires scene-child and
+chase integration and runs retained traversal/node updates with the computed
+camera. Use all existing scene/display/terrain-view integration options for
+the joined fixture. `terrainNodeReports` preserves complete node differences;
+its separate update/owner/global fields describe only the implemented scope.
+Emission, allocation release and timers remain unconnected. This diagnostic
+must not be presented as complete terrain parity or playable-preview work.
+
+The isolated native oracle sources use the same pinned executable as `oracle.c`.
+Compile `terrain-patch-propagation-oracle.c` with `i686-w64-mingw32-gcc -O2`
+and `-Wl,--image-base,0x10000000`. Compile `terrain-node-update-oracle.c` with
+those options plus `-DREAL_PROPAGATION -DREAL_PATCH` for the full update chain.
+Each executable takes `original.exe input.bin output.bin`. The corresponding
+`generate-terrain-*.mjs` scripts create inputs, and `compare-terrain-*.mjs`
+compare original outputs. Full node-update comparison also takes the captured
+9,248-byte vertex metadata block and `--real-patch`. Native notification-service
+and complete-chain fixtures are separate, with hashes checked by regressions.
