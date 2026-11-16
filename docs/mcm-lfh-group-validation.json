@@ -1,0 +1,45 @@
+{
+  "fixtures": {
+    "tests/fixtures/mcm/lfh-group-wine11.json.br": "6a92f26f0733f604bee664149bca36d017600c301f7ed550729591d926630f21",
+    "tests/fixtures/mcm/heap-regions-wine11.json.br": "09d85b43e7a7c925e6d82aa801a133f2667ea4f3fd18af5b17b4daf69144f2f4"
+  },
+  "nativeGroupOracle": {
+    "cases": 32,
+    "steps": 1952,
+    "differences": 0,
+    "covers": [
+      "slot selection",
+      "header and tail-size updates",
+      "full-group retirement",
+      "partial frees of retired groups",
+      "last-used-slot release"
+    ],
+    "inputs": "Initial group state, allocation size and initial thread affinity only; later group snapshots are assertions."
+  },
+  "liveMetadata": {
+    "ordinaryRegions": 5,
+    "outerBlocks": 2547,
+    "lfhGroups": 543,
+    "lfhSlots": 16833,
+    "freeBlocks": 251,
+    "enabledBins": 19,
+    "reservedGroups": 18,
+    "unresolvedReservedGroups": 0,
+    "captureSucceeded": true,
+    "debuggerDetached": true
+  },
+  "regression": {
+    "targetedTests": 6,
+    "passed": 6,
+    "combinedTwoBikeComparison": "zero differences",
+    "captureToolCompiled": true
+  },
+  "remaining": [
+    "Connect thread/bin group selection and release routing",
+    "Ordinary free/coalescing across complete region state",
+    "CRT small-block heap and large arena services",
+    "Virtual-memory region growth",
+    "Autonomous normal-rate browser integration"
+  ],
+  "scope": "Metadata initialization and LFH group-local transitions. The live metadata fixture is a read-only standalone snapshot, not a replacement for an existing physics checkpoint."
+}
