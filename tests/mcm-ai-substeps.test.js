@@ -240,3 +240,14 @@ for(const [name,audited,frames,snapshotCount,substeps]of [['audit',true,4,34,241
  assert.equal(r.frames,frames);assert.equal(r.bodyBoundaries,frames*4);assert.equal(r.substepBoundaries,substeps);assert.equal(r.componentWords,substeps*12);
  assert.deepEqual(r.visualDifferences,[]);assert.deepEqual(r.particleDifferences,[]);
 });
+
+test('buffered per-record output retains original frame, substep and shared-world observations',()=>{
+ const f=fixture('ai-buffered-observation');
+ for(const [name,value]of Object.entries(f.files))assert.equal(createHash('sha256').update(value).digest('hex'),f.provenance.fileSha256[name]);
+ assert.match(f.files['cleanup.log'],/debugger=0 clean=1/);assert.equal((f.files['cleanup.log'].match(/restored=1/g)||[]).length,40);
+ assert.match(f.files['capture.log'],/capture-profile .*events=12488 snapshots=16 reads=30871 requestedBytes=36016892/);
+ assert.match(f.files['capture.log'],/capture-profile-hook address=004b6930 hits=4687/);
+ const i=input(f),r=analyzeAiSubsteps(i,i.rows,rider(f),trace(f));
+ assert.equal(r.frames,4);assert.equal(r.bodyBoundaries,16);assert.equal(r.substepBoundaries,237);assert.equal(r.componentWords,2844);
+ assert.deepEqual(r.visualDifferences,[]);assert.deepEqual(r.particleDifferences,[]);
+});

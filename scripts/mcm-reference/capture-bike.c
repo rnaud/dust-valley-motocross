@@ -82,9 +82,19 @@ static void configure_ai_particle_draw_hooks(void){configure_ai_spray_hooks();ho
 
 static void configure_ai_particle_quad_hooks(void){configure_ai_particle_draw_hooks();hook_count=40;}
 
+// Optional observer-side timing only; excludes target execution and does not
+// alter the captured delta. Included exporters with their own read helpers are
+// outside readTicks, but remain inside stoppedTicks / snapshotTicks.
+static int profile_capture;
+static LARGE_INTEGER profile_frequency;
+static LONGLONG profile_read_ticks,profile_stopped_ticks,profile_snapshot_ticks;
+static unsigned long long profile_reads,profile_bytes,profile_events,profile_snapshots,profile_hook_hits[40];
+static LONGLONG profile_now(void){LARGE_INTEGER t;QueryPerformanceCounter(&t);return t.QuadPart;}
 static int read_memory(DWORD address, void *buffer, SIZE_T size) {
-    SIZE_T count;
-    return ReadProcessMemory(process, (void *)(uintptr_t)address, buffer, size, &count) && count == size;
+    SIZE_T count;LONGLONG start=profile_capture?profile_now():0;
+    int ok=ReadProcessMemory(process, (void *)(uintptr_t)address, buffer, size, &count) && count == size;
+    if(profile_capture){profile_reads++;profile_bytes+=size;profile_read_ticks+=profile_now()-start;}
+    return ok;
 }
 
 typedef struct {DWORD address, size; BYTE bytes[0xcc8];} Block;
@@ -232,7 +242,7 @@ static int observe_rider_collision(FILE *out,DWORD rider) {
 #include "capture-animation-observations.c"
 #include "capture-ai-draw.c"
 
-static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CONTEXT *context) {
+static int snapshot_impl(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CONTEXT *context) {
     // At 0x4ad078 the rider delta has been pushed. Normalize only the observation.
     CONTEXT observed=*context;
     if(capture_ai_environment&&phase==5){observed.Esp+=4;context=&observed;}
@@ -340,11 +350,19 @@ static int snapshot(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CON
     return !ferror(out);
 }
 
+static int snapshot(FILE*out,unsigned phase,DWORD sequence,DWORD thread,CONTEXT*context){
+ LONGLONG start=profile_capture?profile_now():0;int ok=snapshot_impl(out,phase,sequence,thread,context);
+ if(fflush(out))ok=0; // Publish complete records and detect write errors before resuming.
+ if(profile_capture){profile_snapshots++;profile_snapshot_ticks+=profile_now()-start;}return ok;
+}
+
 int main(int argc, char **argv) {
     if (argc != 4) {
         fprintf(stderr, "Usage: capture-live.exe WINDOWS_PID output.jsonl record-count\n");
         return 2;
     }
+    profile_capture=getenv("MCM_PROFILE_CAPTURE")!=NULL;
+    if(profile_capture&&(!QueryPerformanceFrequency(&profile_frequency)||profile_frequency.QuadPart<=0))return 2;
     scripted = getenv("MCM_SCRIPTED") != NULL;
     const char *ai_arg=getenv("MCM_OBSERVE_AI");
     if(ai_arg){char *end;observe_ai=strtoul(ai_arg,&end,0);
@@ -437,7 +455,10 @@ int main(int argc, char **argv) {
     if (!pid || limit < 2 || limit > 10000 || (!capture_effects && (limit & 1))) return 2;
     FILE *out = fopen(argv[2], "wx");
     if (!out) return 2;
-    setbuf(out, NULL);
+    // Metadata and hex chunks share a buffered transport. A completed snapshot
+    // or RNG record is still flushed before the stopped target resumes.
+    static char frame_output_buffer[65536];
+    if(setvbuf(out,frame_output_buffer,_IOFBF,sizeof frame_output_buffer)){fclose(out);return 2;}
     process = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
     // This instruction guard prevents attaching to another executable version.
     // The caller must also verify mcm.exe's SHA-256 as documented in README.
@@ -461,6 +482,8 @@ int main(int argc, char **argv) {
     DebugSetProcessKillOnExit(FALSE);
     int installed = 0, pending = -1, done = 0;
     DWORD pending_thread = 0, count = 0, start = GetTickCount();
+    LONGLONG profile_start=profile_capture?profile_now():0;
+    profile_reads=profile_bytes=0;profile_read_ticks=0;
     while (!done) {
         DEBUG_EVENT event;
         DWORD status = DBG_CONTINUE;
@@ -475,6 +498,7 @@ int main(int argc, char **argv) {
             }
             done = 2;
         }
+        LONGLONG profile_event_start=profile_capture?profile_now():0;
         if (event.dwDebugEventCode == CREATE_PROCESS_DEBUG_EVENT && event.u.CreateProcessInfo.hFile)
             CloseHandle(event.u.CreateProcessInfo.hFile);
         if (event.dwDebugEventCode == LOAD_DLL_DEBUG_EVENT && event.u.LoadDll.hFile)
@@ -483,6 +507,7 @@ int main(int argc, char **argv) {
             fprintf(stderr, "Reference exited: code=%08lx thread=%lu records=%lu\n",
                     event.u.ExitProcess.dwExitCode, event.dwThreadId, count);
             done = 2;
+            if(profile_capture){profile_events++;profile_stopped_ticks+=profile_now()-profile_event_start;}
             ContinueDebugEvent(event.dwProcessId, event.dwThreadId, status);
             break;
         }
@@ -498,6 +523,7 @@ int main(int argc, char **argv) {
                 }
                 installed = 1;
             } else if (code == EXCEPTION_BREAKPOINT && matched >= 0) {
+                if(profile_capture)profile_hook_hits[matched]++;
                 HANDLE thread = OpenThread(THREAD_GET_CONTEXT | THREAD_SET_CONTEXT, FALSE, event.dwThreadId);
                 CONTEXT context = {.ContextFlags = CONTEXT_ALL};
                 if (!thread || !GetThreadContext(thread, &context)) {
@@ -610,7 +636,7 @@ int main(int argc, char **argv) {
                             rider_update_count++;
                         }
                     } else if(matched==3) {
-                        if(observe_ai){DWORD state;observed_random_address=context.Eax+0x14;observed_random_thread=event.dwThreadId;if(!read_memory(observed_random_address,&state,4))done=2;else fprintf(out,"{\"phase\":\"random\",\"thread\":%lu,\"state\":%lu,\"inAiFrame\":%d}\n",event.dwThreadId,state,player_active);}
+                        if(observe_ai){DWORD state;observed_random_address=context.Eax+0x14;observed_random_thread=event.dwThreadId;if(!read_memory(observed_random_address,&state,4))done=2;else {fprintf(out,"{\"phase\":\"random\",\"thread\":%lu,\"state\":%lu,\"inAiFrame\":%d}\n",event.dwThreadId,state,player_active);if(fflush(out))done=2;}}
 
                         if(scripted&&player_active){SIZE_T n;DWORD seed=random_state;if(!WriteProcessMemory(process,(void*)(uintptr_t)(context.Eax+0x14),&seed,4,&n)||n!=4)done=2;random_state=random_state*214013u+2531011u;}
                     } else {
@@ -718,10 +744,15 @@ int main(int argc, char **argv) {
                 if (thread) CloseHandle(thread);
             }
         }
+        if(profile_capture){profile_events++;profile_stopped_ticks+=profile_now()-profile_event_start;}
         ContinueDebugEvent(event.dwProcessId, event.dwThreadId, status);
     }
+    if(profile_capture){double ms=1000.0/(double)profile_frequency.QuadPart;
+     fprintf(stderr,"capture-profile wallMs=%.3f stoppedMs=%.3f snapshotMs=%.3f readMs=%.3f events=%llu snapshots=%llu reads=%llu requestedBytes=%llu\n",(profile_now()-profile_start)*ms,profile_stopped_ticks*ms,profile_snapshot_ticks*ms,profile_read_ticks*ms,profile_events,profile_snapshots,profile_reads,profile_bytes);
+     for(unsigned i=0;i<hook_count;i++)if(profile_hook_hits[i])fprintf(stderr,"capture-profile-hook address=%08lx hits=%llu\n",addresses[i],profile_hook_hits[i]);
+    }
     DebugActiveProcessStop(pid);
-    fclose(out);
+    if(fclose(out))done=2;
     if(ai_rider_out&&fclose(ai_rider_out))done=2;
     if(ai_substeps_out&&fclose(ai_substeps_out))done=2;
     if(ai_draws_out&&fclose(ai_draws_out))done=2;
