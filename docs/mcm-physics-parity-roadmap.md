@@ -10,11 +10,11 @@
 | Riders, collisions and recovery | The joined pursuit run matches 636 rider/collider boundaries, 56 contact callbacks and two player crash/recovery sequences. Separate retained-world particle recovery coverage extends to 163 updates. | Broader collision/impact paths and recovery conditions; three player-following crash sequences now match. |
 | Shared particles | Dust/spray/exhaust/rider emitters and the shared pool run from retained world/scene ordering. The 64-update joined run matches 567 particle boundaries; a separate 163-update recovery run matches 1,463. | Six active impact checks and 1,573 particle boundaries now match in the 166-update run. Dynamic heap-boundary behavior and remaining particle presentation inputs remain. |
 | Chase camera and drawing | Initialized active and crash chase state is retained. It reads 27 simulated bike/rider/transform words per entry; the player-camera run matches 165 updates / 24,750 base output words plus retained crash-height checks. Audio position and mesh projection are derived. | Initialization, fixed-target/rider-position camera paths, active tail controls and remaining world/device context. Viewport and draw invocation data remain external. |
-| Remaining scene execution | World, child actors, markers, HUD, shared pool and active chase camera are connected. Scene 481310 switching/timer sequence matches 4,096 isolated original executions. | Connect scene prefix/tail and outer 4997b0. Four custom scene methods remain: 43e660, 411000, 423b50 and 4253e0. |
+| Remaining scene execution | World, child actors, markers, HUD, shared pool and active chase camera are connected. Scene 481310 switching/timer sequence matches 4,096 isolated original executions. | Connect scene prefix/tail and outer 4997b0. Three custom scene methods remain in the latest recording: 43e660, 411000 and 423b50. Event-queue allocator integration remains open; its empty live path is now connected. |
 | Observation quality | Original byte guards, independent hook restoration, debugger detachment, input restoration and camera restoration are checked. No later bike state is imported into replay. | Debugger overhead still changes observed timing. Normal-rate parity remains unproved. |
 | Playable preview | Recent milestones improve reference simulation and validation on main. | These integrations have not yet changed the playable preview; separate integration and gameplay testing remain. |
 
-Current evidence: [player-camera crashes and impacts](mcm-world-player-camera-recovery-validation.json), [joined pursuit/recovery](mcm-world-chase-recovery-validation.json), [joined world/camera](mcm-world-chase-validation.json), [scene sequence](mcm-scene-tick-validation.json), and [retained scene pool](mcm-scene-pool-validation.json). The earlier approximately 70% planning estimate was not a coverage score and has not been replaced by a measured percentage. Passing tests prove the boundaries they compare, not complete gameplay equivalence.
+Current evidence: [joined scene queue](mcm-world-scene-queue-validation.json), [player-camera crashes and impacts](mcm-world-player-camera-recovery-validation.json), [joined pursuit/recovery](mcm-world-chase-recovery-validation.json), [joined world/camera](mcm-world-chase-validation.json), [scene sequence](mcm-scene-tick-validation.json), and [retained scene pool](mcm-scene-pool-validation.json). The earlier approximately 70% planning estimate was not a coverage score and has not been replaced by a measured percentage. Passing tests prove the boundaries they compare, not complete gameplay equivalence.
 
 ## Historical milestones
 
@@ -7658,3 +7658,43 @@ validation report and regression, isolated camera-point/crash-eye fixtures, and
 restored. Remaining scene methods, outer scheduling, dynamic boundary inputs,
 normal-rate comparisons and playable-preview integration still prevent a full
 parity claim.
+
+### Scene event queue recovered; live capture extended (2026-11-16)
+
+Recovered `4253e0` with its `425730` head removal. Children execute before the
+queue is read; strict less-than or unordered comparison removes at most one
+item; the head is read again after freeing, and that head receives the delta.
+The deletion adapter remains explicit so allocator effects cannot be skipped.
+An isolated original-executable oracle matches 4,096 cases / 24,576 words,
+including 1,728 removals, child-driven queue replacement, free-driven queue
+replacement, equality, signed zero, infinity and canonical NaN behavior.
+
+Existing world fixtures do not contain this actor's owned bytes or queue items.
+The recorder now captures its complete 0x58-byte state and bounded, cycle-checked
+0x8c-byte queue items at initialization and existing bike boundaries. The Windows
+recorder compiles. This is preparation for a fresh joined recording, not evidence
+that the scene queue is already integrated. The four-method external scene list
+remains accurate until live validation closes this method.
+
+
+### Scene queue connected in a fresh joined recording (2026-11-16)
+
+The extended observer captured 65 world updates with player-following camera,
+12 throttle-on updates followed by release. All 49 hook guards, debugger,
+controls and camera were restored. The initial scene queue owns 0x58 bytes and
+contains no items. Its complete state is now advanced from initialization and
+compared at 260 before/after bike boundaries; none of those outputs reseed it.
+
+The scene child walk invokes `4253e0` directly through the recovered queue tick,
+including generic child traversal. It matches 64 ticks, both bikes' 130 entries
+and tails, 256 rider/collider boundaries, 576 particle assertions and 64 camera
+updates, with zero differences. Only `43e660`, `411000` and `423b50` remain in this
+fixture's external custom-method list. Older fixtures lack queue initialization
+and continue to report it as external rather than inventing missing state.
+
+The queue adapter refuses an expired active item without an allocator service.
+Live deletion is therefore **not closed**; the isolated native cases establish
+queue ordering and arithmetic, not allocator integration. New tests verify that
+missing initialization and changed queue assertions fail, and that missing free
+integration cannot silently remove an event. See `world-scene-queue-wine11.json.br`
+and `mcm-world-scene-queue-validation.json`. Preview behavior remains unchanged.

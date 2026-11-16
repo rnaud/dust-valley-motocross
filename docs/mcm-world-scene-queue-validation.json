@@ -1,0 +1,163 @@
+{
+  "provenance": {
+    "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+    "sourceSha256": {
+      "actor-tree.json": "52e84d45650c0048fd1928aedd00e3da44bbdf0e634a91d664cbeb2346567dbe",
+      "ai-environment.json": "a5574dc1dc651226c29ec119665b6b107acb0ef7ab45aefd178821a8835ddaf3",
+      "animations.json": "652f89fa3a036958c4de235090f01e054e1e46fe96eddf7d2e2a48a98dcef012",
+      "camera-restoration.log": "aac9460e51407601a94b8f037fda51e3f32c4f68875bdc0ae010b894bd4e1a64",
+      "camera-selection.log": "aac9460e51407601a94b8f037fda51e3f32c4f68875bdc0ae010b894bd4e1a64",
+      "capture.log": "48992bb38558c4bdb7761ec733befe6d6a8ab23fd2a255d9ef7c2779adfcd135",
+      "checkpoint.json": "94474ac0f2f95d653b21bd66d6e93f53defa6f9761c7362926c1179fa609b5ae",
+      "cleanup.log": "d235e7c6e43c2af9b814c04fad08a8cdce90c7a144d5834a6ebd5024cb485135",
+      "collision.json": "04f8797fbd543cdbbbf1c6ef7934f761231a37db83ab5a3df4f81902c185ead1",
+      "draws.jsonl": "60e0a051aae14d0c002b04168130c544dd39bcaa84f706494e54bb3c3d519fea",
+      "environment.json": "39232635283b1d9729a3188a31f68475568a14a8422249916b167b6485314fb6",
+      "frames.jsonl": "fe0812da8f08072df73789a2177fbb7964a821f2bb362c42952923d23a4bf4ac",
+      "grid.jsonl": "5e3b204770946a0eb89befb666ba478caaf5dd26caeedfd3f4d44fe2bbdec76d",
+      "restart.log": "2e2b5c599e125502521a8b8e4592972d21e30a6ccf5d2e2e4cb3cecb62d18206",
+      "rider.jsonl": "f1ec1e3259f7065d24e39c0530cab74c7d7da9409fb201e01f0c713fa10c3382",
+      "substeps.jsonl": "72b5a2a19d13a48a0aa8d49b7b7c557abf16caeeb56a171530b0f28440d362db",
+      "world-actor-tree.json": "8aa49823104d596bd2d1a7acedb19bc95c1e3e77f94605fa8b53f0bda78692ee",
+      "world-ai-environment-1.json": "6e8efa9ee9fdd15f8301ef96a847138720515d9cfe05d0bca4cba6006efbcd81",
+      "world-animations-0.json": "5802b043085292d9b0caeaa49aa6ed94c399f8eca916d3d44ac0c47ca479fbbc",
+      "world-animations-1.json": "7d94164710d903acd703343fc7886c4f6cb4d62621f5307e0dd744d11fe64cbe",
+      "world-audio-0.json": "805fef3d470f9b11ff6f277232a8e89f22a953962d6cee583fe6e491cbe5b3f9",
+      "world-audio-1.json": "13f9926424568cd164d530e37c2c171ce2a4d1ac9c99da134b756ffc7732ca0f",
+      "world-bike-0.json": "0419ded043c203f58af5cfa88316fd768452c09b71d4055760c818da6201aa44",
+      "world-bike-1.json": "8cabc5cfd38019f515c00a5213704ef9dc5d2ad3f1201a753cedcffaec49421f",
+      "world-bike-prefix.jsonl": "d1a59413b6a9fefcd3f6d16690fc819fcd8b6a352e46be6e91c8a122342e3729",
+      "world-bikes.jsonl": "c6937aec837768eb0d460f5d96dde3914291f6a05527395ce9b9ffb8fdacf60d",
+      "world-camera-initial.json": "3b168e026b7f67cda9accc0ad2f11f4e3f22424ec3e2c8738b566b1367b9f2d3",
+      "world-camera-observations.jsonl": "a65888be5dcc9f6613b1f0732eb14a2416c9c7f8fe0f11e8cbf99a5f12101d15",
+      "world-child-0.json": "892b42cdb5f8895d8708d3c6b20ef9dd6e8875147ebf65751d6b250641a7ca74",
+      "world-child-1.json": "611f90bcb3dc723db1dbc2b3b31324c2fd54ad23bf23b038b0d41dc9a68ce2cd",
+      "world-collision-0.json": "0f95f4ff641f631c43b7165336ff962ee1c5292bce3e9d35d2d5b217126ab151",
+      "world-collision-1.json": "1ba7dce29a2f0317f11477be8e63fe94670744590e0f17ea1f9de23019efa3a3",
+      "world-draws.jsonl": "609cb108429ceb318a66b553d130a6617e5fa5805238b66830a383381b100589",
+      "world-effects-0.json": "59e4fe5d8fcc4c6654cae23064ca2bca4c927b6ad2b0e237d7e4cff5e4807285",
+      "world-effects-1.json": "d53dd44ff5105633df143c5921fd14442ed930e36258407c823385396846b27a",
+      "world-entry.json": "98c70bae7d3a7ef5c5bcdf217d8e991bfc9dc31d83a36500e7a9aee332a60a31",
+      "world-environment-0.json": "9e150976ff94c08a00ff5ea467daaa78dd03adc28b9b831acf1cb6d510b2b67b",
+      "world-environment-1.json": "6e7d9c844c87a51d441e246fcb37e4011c7075b3b1ae010e09b13fc46699b31c",
+      "world-inputs.jsonl": "1d979d7e8c97d47b152f279bf394d941ea290349b426ea1218556e3d484e5ec5",
+      "world-mesh-0.jsonl": "0dcdb87843adbb41fc6eb569f975cb1e9526a4b9b6941a4630de1b0e094214cf",
+      "world-mesh-1.jsonl": "faaa9aedc26eb073c533af6bf29b9b017eaf27634d0225c644960d8a479a2e42",
+      "world-riders.jsonl": "40a90b66a772d45b3c504877d3136a4c27780d27e9484613e43b42bb1f74d246"
+    },
+    "fileSha256": {
+      "camera-restoration.log": "aac9460e51407601a94b8f037fda51e3f32c4f68875bdc0ae010b894bd4e1a64",
+      "camera-selection.log": "aac9460e51407601a94b8f037fda51e3f32c4f68875bdc0ae010b894bd4e1a64",
+      "capture.log": "48992bb38558c4bdb7761ec733befe6d6a8ab23fd2a255d9ef7c2779adfcd135",
+      "cleanup.log": "d235e7c6e43c2af9b814c04fad08a8cdce90c7a144d5834a6ebd5024cb485135",
+      "frames.jsonl": "768faf5fce6838c3c4a363ff20d05528cd61982e2acdec34879c04e21c442bf3",
+      "world-contact-grid.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "restart.log": "2e2b5c599e125502521a8b8e4592972d21e30a6ccf5d2e2e4cb3cecb62d18206",
+      "rider.jsonl": "6045fb93bcfda197af99f33aaa32001027fb03a5b38f82da9f781ec62b3ba87e",
+      "particle-observations.jsonl": "3ba5a7623292d81dbb695c6796ba9b2e831d90bcaeee37df1b75ce309032f3fa",
+      "world-actor-tree.json": "8aa49823104d596bd2d1a7acedb19bc95c1e3e77f94605fa8b53f0bda78692ee",
+      "world-ai-environment-1.json": "6e8efa9ee9fdd15f8301ef96a847138720515d9cfe05d0bca4cba6006efbcd81",
+      "world-animations-0.json": "5802b043085292d9b0caeaa49aa6ed94c399f8eca916d3d44ac0c47ca479fbbc",
+      "world-animations-1.json": "7d94164710d903acd703343fc7886c4f6cb4d62621f5307e0dd744d11fe64cbe",
+      "world-audio-0.json": "805fef3d470f9b11ff6f277232a8e89f22a953962d6cee583fe6e491cbe5b3f9",
+      "world-audio-1.json": "13f9926424568cd164d530e37c2c171ce2a4d1ac9c99da134b756ffc7732ca0f",
+      "world-bike-0.json": "0419ded043c203f58af5cfa88316fd768452c09b71d4055760c818da6201aa44",
+      "world-bike-1.json": "8cabc5cfd38019f515c00a5213704ef9dc5d2ad3f1201a753cedcffaec49421f",
+      "world-bike-prefix.jsonl": "d1a59413b6a9fefcd3f6d16690fc819fcd8b6a352e46be6e91c8a122342e3729",
+      "world-bikes.jsonl": "c6937aec837768eb0d460f5d96dde3914291f6a05527395ce9b9ffb8fdacf60d",
+      "world-camera-initial.json": "3b168e026b7f67cda9accc0ad2f11f4e3f22424ec3e2c8738b566b1367b9f2d3",
+      "world-camera-observations.jsonl": "a65888be5dcc9f6613b1f0732eb14a2416c9c7f8fe0f11e8cbf99a5f12101d15",
+      "world-child-0.json": "892b42cdb5f8895d8708d3c6b20ef9dd6e8875147ebf65751d6b250641a7ca74",
+      "world-child-1.json": "611f90bcb3dc723db1dbc2b3b31324c2fd54ad23bf23b038b0d41dc9a68ce2cd",
+      "world-collision-0.json": "0f95f4ff641f631c43b7165336ff962ee1c5292bce3e9d35d2d5b217126ab151",
+      "world-collision-1.json": "1ba7dce29a2f0317f11477be8e63fe94670744590e0f17ea1f9de23019efa3a3",
+      "world-draws.jsonl": "609cb108429ceb318a66b553d130a6617e5fa5805238b66830a383381b100589",
+      "world-effects-0.json": "59e4fe5d8fcc4c6654cae23064ca2bca4c927b6ad2b0e237d7e4cff5e4807285",
+      "world-effects-1.json": "d53dd44ff5105633df143c5921fd14442ed930e36258407c823385396846b27a",
+      "world-entry.json": "98c70bae7d3a7ef5c5bcdf217d8e991bfc9dc31d83a36500e7a9aee332a60a31",
+      "world-environment-0.json": "9e150976ff94c08a00ff5ea467daaa78dd03adc28b9b831acf1cb6d510b2b67b",
+      "world-environment-1.json": "6e7d9c844c87a51d441e246fcb37e4011c7075b3b1ae010e09b13fc46699b31c",
+      "world-inputs.jsonl": "1d979d7e8c97d47b152f279bf394d941ea290349b426ea1218556e3d484e5ec5",
+      "world-mesh-0.jsonl": "0dcdb87843adbb41fc6eb569f975cb1e9526a4b9b6941a4630de1b0e094214cf",
+      "world-mesh-1.jsonl": "faaa9aedc26eb073c533af6bf29b9b017eaf27634d0225c644960d8a479a2e42",
+      "world-riders.jsonl": "40a90b66a772d45b3c504877d3136a4c27780d27e9484613e43b42bb1f74d246",
+      "world-animation-observations.json": "6ea61a9bc914b22353a58ec7747ce328e65fb3ae27edd0c4123686468feace7a"
+    },
+    "retainedRows": {
+      "frames.jsonl": {
+        "total": 292,
+        "selected": 65,
+        "physicsRows": 256
+      },
+      "grid.jsonl": {
+        "total": 3336,
+        "selected": 0
+      },
+      "rider.jsonl": {
+        "total": 1086,
+        "selected": 128,
+        "particleAssertions": 576
+      }
+    },
+    "note": "Combined-world boundary subset. Full original files are hashed before filtering. Frame output retains after-update only with losslessly deduplicated animation allocation assertions; rider output retains after-rider and scene-position only. Native grid pointer-transition evidence is retained separately; it is not fed into physics. Emitter, pool and particle presentation boundaries are retained separately in particle-observations.jsonl as assertion targets for shared-world integration. Optional world-camera-initial.json is atomic initialization; world-camera-observations.jsonl retains later camera assertions and external world/device context separately. Other stage observations are not used by this comparator. Inputs are captured separately from state assertion targets; no later physics state is imported."
+  },
+  "worldUpdates": 65,
+  "sceneQueueTicks": 64,
+  "queueItemsObserved": 0,
+  "chase": {
+    "frames": 64,
+    "words": 9600,
+    "intermediateEvolutionInputs": 0,
+    "tailControlAssertions": 64,
+    "comparedInputWords": 1755,
+    "target": 82612896
+  },
+  "boundaries": {
+    "entryReports": {
+      "count": 130,
+      "differences": 0
+    },
+    "reports": {
+      "count": 130,
+      "differences": 0
+    },
+    "riderReports": {
+      "count": 64,
+      "differences": 0
+    },
+    "collisionReports": {
+      "count": 129,
+      "differences": 0
+    },
+    "visualReports": {
+      "count": 129,
+      "differences": 0
+    },
+    "markerReports": {
+      "count": 260,
+      "differences": 0
+    },
+    "hudReports": {
+      "count": 260,
+      "differences": 0
+    },
+    "particleReports": {
+      "count": 576,
+      "differences": 0
+    },
+    "sceneQueueReports": {
+      "count": 260,
+      "differences": 0
+    },
+    "worldRiderReports": {
+      "count": 256,
+      "differences": 0
+    }
+  },
+  "remainingExternalSceneMethods": [
+    "43e660",
+    "411000",
+    "423b50"
+  ],
+  "limits": "Live queue remained empty. Event deletion still requires a connected allocator service. Scene prefix/tail, outer scheduler, world/device inputs, dynamic heap boundaries and normal-rate validation remain open."
+}
