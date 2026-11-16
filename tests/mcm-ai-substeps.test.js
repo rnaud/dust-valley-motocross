@@ -182,3 +182,22 @@ test('particle draw preparation and visibility retain all checked state across e
  const missing=rider(f);missing.splice(missing.findIndex(e=>e.phase==='after-particle-cull'),1);missing.forEach((e,n)=>e.eventSequence=n);
  assert.throws(()=>analyzeAiSubsteps(i,i.rows,missing,trace(f)),/Missing particle cull return/);
 });
+
+test('device matrices produce original particle projection without observed projected inputs',()=>{
+ const f=fixture('ai-particle-projection');
+ assert.equal(f.provenance.ddrawSha256,'be2964ddd67d148bcf87c4a1eedf8cf5e1ccc39eb7c87f3079df181d80fbea29');
+ for(const [name,value]of Object.entries(f.files))assert.equal(createHash('sha256').update(value).digest('hex'),f.provenance.fileSha256[name]);
+ assert.match(f.files['cleanup.log'],/debugger=0 clean=1/);assert.equal((f.files['cleanup.log'].match(/restored=1/g)||[]).length,38);
+ const i=input(f),events=rider(f),r=analyzeAiSubsteps(i,i.rows,events,trace(f));
+ assert.equal(r.frames,8);assert.equal(r.bodyBoundaries,32);assert.equal(r.substepBoundaries,501);assert.equal(r.componentWords,6012);
+ assert.deepEqual(r.visualDifferences,[]);assert.deepEqual(r.particleDifferences,[]);assert.equal(r.particleDrawReports.length,7);
+ assert.ok(r.particleDrawReports.every(d=>d.projectionMode==='computed-from-device-matrices'&&d.accepted===0));
+ assert.equal(events.filter(e=>e.phase==='before-particle-cull').reduce((n,e)=>n+e.projectedHex.length/64,0),1294);
+ // Corrupt both paired native projections: they cannot become model inputs.
+ for(const phase of ['before-particle-cull','after-particle-cull']){const e=events.find(e=>e.phase===phase),b=Buffer.from(e.projectedHex,'hex');b[0]^=1;e.projectedHex=b.toString('hex');}
+ assert.throws(()=>analyzeAiSubsteps(i,i.rows,events,trace(f)),/Computed particle projection/);
+ const missing=rider(f);delete missing.find(e=>e.phase==='before-particle-cull').projectionMatricesHex;
+ assert.throws(()=>analyzeAiSubsteps(i,i.rows,missing,trace(f)),/Missing particle device matrices/);
+ const changed=rider(f);changed.find(e=>e.phase==='before-particle-cull').projectionMatricesHex='00'.repeat(192);
+ assert.throws(()=>analyzeAiSubsteps(i,i.rows,changed,trace(f)),/Computed particle projection/);
+});

@@ -1,9 +1,10 @@
+import {projectWineParticleCenters} from '../../src/physics/mcm/particle-projection.js';
 import assert from 'node:assert/strict';
 import {CapturedBytes} from '../../src/physics/mcm/captured-bytes.js';
 import {updateMcmParticleVisibility} from '../../src/physics/mcm/particle-visibility.js';
 import {bitsFloat} from '../../src/physics/mcm/math.js';
-// Projection remains an explicit device-stage input. Particle and pool outputs
-// are computed from retained allocations, never imported from draw observations.
+// New captures supply device matrices, from which projection is computed.
+// Legacy captures explicitly retain their observed-projection input boundary.
 export function prepareLiveParticleDraw(external,event){
  const {pool,poolBytes}=external;
  assert.equal(event.yOffsetBits,0x3f000000,'Original particle Y offset');
@@ -17,8 +18,15 @@ export function prepareLiveParticleDraw(external,event){
  }
  poolBytes.writeUInt32LE(0,0x34);return input;
 }
-export function cullLiveParticleDraw(external,event){
- const {pool,poolBytes}=external,projected=CapturedBytes.from(event.projectedHex,'hex');
+export function cullLiveParticleDraw(external,event,input){
+ const {pool,poolBytes}=external;let projected;
+ if(event.projectionMatricesHex!==undefined){
+  assert.ok(input,'Missing computed particle positions');assert.ok(Number.isInteger(event.projectionViewport)&&event.projectionViewport>0,'Missing particle viewport identity');assert.equal(event.projectionViewport,event.currentViewport,'Temporary device viewport is not captured');
+  const bytes=CapturedBytes.from(event.projectionMatricesHex,'hex');assert.equal(bytes.length,192,'Particle device matrices');
+  const matrices=Array.from({length:3},(_,j)=>Array.from({length:16},(_,i)=>bytes.readFloatLE(j*64+i*4)));
+  projected=CapturedBytes.from(projectWineParticleCenters(input.view(0,input.length),matrices,event.viewport));
+  assert.equal(projected.toString('hex'),event.projectedHex,'Computed particle projection');
+ }else projected=CapturedBytes.from(event.projectedHex,'hex');
  assert.equal(projected.length,pool.count*32,'Particle projected count');
  assert.equal(event.projectedAddress,poolBytes.readUInt32LE(0x1f8c),'Particle projection buffer identity');
  const camera={scale:bitsFloat(event.scaleBits),width:event.width,height:event.height};

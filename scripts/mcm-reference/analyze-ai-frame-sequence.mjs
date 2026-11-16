@@ -22,6 +22,7 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents,{diagnosticBody=f
  const loaded=runtime?.loaded??loadLiveFrameBootstrap({...inputs,row:first}),c=loaded.context;
  const meshDraw=inputs.draws?connectLiveMeshDraw(runtime,first):null;let drawIndex=0;
  let riderTicks=0,riderBytes=0,eventIndex=1;
+ const computeParticleProjection=!!riderEvents?.some(e=>e.projectionMatricesHex!==undefined);
  const particleDifferences=[],worldQueries=[],poolReports=[],dustReports=[],sprayReports=[],particleDrawReports=[];
  const comparePool=(event,frame,stage)=>{
   const start=particleDifferences.length;let words=0;
@@ -97,12 +98,13 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents,{diagnosticBody=f
      assert.equal(projected?.phase,'before-particle-cull','Missing particle projection');assert.equal(after?.phase,'after-particle-cull','Missing particle cull return');
      for(const e of [before,projected,after]){assert.equal(e.completedBikeFrames,frame+1);assert.equal(e.bikeActive,0);assert.equal(e.riderActive,0);assert.equal(e.poolAddress,before.poolAddress);}
      for(const key of ['camera','scaleBits','width','height','inputAddress','projectedAddress','yOffsetBits']){assert.equal(projected[key],before[key],`Particle draw ${key}`);assert.equal(after[key],before[key],`Particle draw return ${key}`);}
+     if(computeParticleProjection)for(const e of [before,projected,after])assert.equal(typeof e.projectionMatricesHex,'string','Missing particle device matrices');
      const entry=comparePool(before,frame,'before-particle-draw');
      const input=prepareLiveParticleDraw(runtime.external,before);assert.equal(input.toString('hex'),projected.inputHex,'Retained particle draw positions');
      const prepared=comparePool(projected,frame,'before-particle-cull');
-     const accepted=cullLiveParticleDraw(runtime.external,projected);
+     const accepted=cullLiveParticleDraw(runtime.external,projected,input);
      assert.equal(after.projectedHex,projected.projectedHex,'Particle cull changed projection');assert.equal(after.inputHex,projected.inputHex,'Particle cull changed input');
-     const exit=comparePool(after,frame,'after-particle-cull');particleDrawReports.push({frame,accepted,entry,prepared,exit});continue;
+     const exit=comparePool(after,frame,'after-particle-cull');particleDrawReports.push({frame,accepted,projectionMode:projected.projectionMatricesHex===undefined?'observed':'computed-from-device-matrices',entry,prepared,exit});continue;
     }
     if(before.phase==='before-dust'){
      const after=riderEvents[eventIndex++];assert.equal(after?.phase,'after-dust','Missing dust return');

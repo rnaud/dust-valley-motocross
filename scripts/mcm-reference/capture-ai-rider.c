@@ -83,6 +83,12 @@ static int trace_ai_particle_draw(const char*phase){
  fprintf(ai_rider_out,"{\"phase\":\"%s\",\"captureId\":\"%s\",\"eventSequence\":%lu,\"completedBikeFrames\":%lu,\"bikeActive\":%d,\"riderActive\":%d,\"camera\":%lu,\"scaleBits\":%lu,\"width\":%ld,\"height\":%ld,\"inputAddress\":%lu,\"projectedAddress\":%lu,\"yOffsetBits\":%lu,\"inputHex\":\"",phase,frame_capture_id,ai_rider_sequence++,player_frame,player_active,ai_rider_active,camera,scale,(LONG)width,(LONG)height,input,projected,yOffset);
  for(unsigned i=0;i<count*32;i++)fprintf(ai_rider_out,"%02x",inputs[i]);fprintf(ai_rider_out,"\",\"projectedHex\":\"");
  for(unsigned i=0;i<count*32;i++)fprintf(ai_rider_out,"%02x",projections[i]);fprintf(ai_rider_out,"\"");
+ DWORD viewport,device,state,currentViewport,viewportWords[4];BYTE matrices[192];
+ if(!read_memory(camera+0x138,&viewport,4)||!read_memory(viewport+0xc,&device,4)||!read_memory(device+0x354,&state,4)||
+    !read_memory(device+0x68,&currentViewport,4)||!read_memory(viewport+0x20,viewportWords,sizeof viewportWords)||
+    !read_memory(state+0x2c94,matrices,64)||!read_memory(state+0x6c14,matrices+64,64)||!read_memory(state+0x2cd4,matrices+128,64))return 0;
+ fprintf(ai_rider_out,",\"projectionViewport\":%lu,\"currentViewport\":%lu,\"viewport\":[%lu,%lu,%lu,%lu],\"projectionMatricesHex\":\"",viewport,currentViewport,viewportWords[0],viewportWords[1],viewportWords[2],viewportWords[3]);
+ for(unsigned i=0;i<sizeof matrices;i++)fprintf(ai_rider_out,"%02x",matrices[i]);fprintf(ai_rider_out,"\"");
  if(!capture_retained_particle_pool(ai_rider_out,retained_pool_address))return 0;
  fprintf(ai_rider_out,"}\n");return !ferror(ai_rider_out)&&fflush(ai_rider_out)==0;
 }
