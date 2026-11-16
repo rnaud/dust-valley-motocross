@@ -288,3 +288,12 @@ test('retained rider collision projection exposes shared-grid divergence without
  const ownership=rider(f);ownership.find(e=>e.phase==='before-rider').riderCollision.entriesAddress+=24;
  assert.throws(()=>analyzeAiSubsteps(i,i.rows,ownership,trace(f)),/collision ownership differs/);
 });
+
+test('all-grid capture also validates live visible particle quads while retaining collision divergence',()=>{
+ const f=fixture('ai-all-grid'),i=input(f),r=analyzeAiSubsteps(i,i.rows,rider(f),trace(f));
+ assert.equal(r.frames,4);assert.equal(r.substepBoundaries,208);assert.equal(r.componentWords,2496);
+ assert.deepEqual(r.visualDifferences,[]);assert.deepEqual(r.particleDifferences,[]);
+ assert.deepEqual(r.particleDrawReports.map(p=>p.accepted),[14,0,1]);
+ assert.deepEqual(r.particleDrawReports.filter(p=>p.quads).map(p=>p.quads.vertexWords),[448,32]);
+ assert.equal(r.collisionStatus,'diverged');assert.equal(r.collisionDifferences.length,32);
+});

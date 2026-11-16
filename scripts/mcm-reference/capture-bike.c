@@ -22,12 +22,12 @@
 #include "capture-frame-environment.c"
 #include "capture-ai-frame-environment.c"
 
-static DWORD addresses[] = {0x4a54b6, 0x4ad0e1, 0x4ad5a2, 0x4bf195, 0x40e990, 0x42ce38, 0x4acfd8, 0x4acaad, 0x4b6930, 0x422f50, 0x422fad, 0x4a64dc, 0x4a8be0, 0x4ab7fd, 0x4ac5c5, 0x4ac6cd, 0x4ac952, 0x44faf0, 0x44ff95, 0x43b200, 0x43b334, 0x43b216, 0x438e10, 0x438e34, 0x438e6c, 0x438e89, 0x438ebd, 0x4390ff, 0x43910e, 0x4393d0, 0x4393f2, 0x439426, 0x43944a, 0x439786, 0x439795, 0x43b3a0, 0x43b4bc, 0x43b582, 0x43b599, 0x43b835};
+static DWORD addresses[] = {0x4a54b6, 0x4ad0e1, 0x4ad5a2, 0x4bf195, 0x40e990, 0x42ce38, 0x4acfd8, 0x4acaad, 0x4b6930, 0x422f50, 0x422fad, 0x4a64dc, 0x4a8be0, 0x4ab7fd, 0x4ac5c5, 0x4ac6cd, 0x4ac952, 0x44faf0, 0x44ff95, 0x43b200, 0x43b334, 0x43b216, 0x438e10, 0x438e34, 0x438e6c, 0x438e89, 0x438ebd, 0x4390ff, 0x43910e, 0x4393d0, 0x4393f2, 0x439426, 0x43944a, 0x439786, 0x439795, 0x43b3a0, 0x43b4bc, 0x43b582, 0x43b599, 0x43b835, 0x42a6e0, 0x42b673, 0x42a998, 0x42b005};
 static BYTE expected[][6] = {{0xd9, 0x86, 0xc8, 0x08, 0, 0},
-                                  {0x8b, 0x86, 0xf8, 0x04, 0, 0}, {0x85, 0xc0}, {0x8b, 0x48, 0x14}, {0x8b,0x44,0x24,0x04}, {0x8b,0x44,0xbe,0x08}, {0x8d,0x86,0x10,0x05,0,0}, {0x8b,0xf8}, {0x53}, {0x83,0xec,0x2c}, {0xd9,0x44,0x24,0x14}, {0x33,0xc0}, {0xd9,0x44,0x24,0x74}, {0x8b,0x86,0x44,0x08,0,0}, {0x8b,0x44,0x24,0x10}, {0x8d,0x86,0xf8,0x04,0,0}, {0x85,0xc9}, {0x81,0xec,0xd8,0,0,0}, {0x5d}, {0x83,0xec,0x1c}, {0xb8,1,0,0,0}, {0xb8,1,0,0,0}, {0x83,0xec,0x28}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0x83,0xec,0x44}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0x81,0xec,0x80,0,0,0}, {0x39,0x7e,0x30}, {0x8b,0x46,0x34}, {0x8d,0xbe,0xe4,0x0f,0,0}, {0x8b,0x8e,0x84,0x1f,0,0}};
-static unsigned lengths[] = {6, 6, 2, 3, 4, 4, 6, 2, 1, 3, 4, 2, 4, 6, 4, 6, 2, 6, 1, 3, 5, 5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 6, 3, 3, 6, 6};
-static BYTE saved[40];
-static int armed[40];
+                                  {0x8b, 0x86, 0xf8, 0x04, 0, 0}, {0x85, 0xc0}, {0x8b, 0x48, 0x14}, {0x8b,0x44,0x24,0x04}, {0x8b,0x44,0xbe,0x08}, {0x8d,0x86,0x10,0x05,0,0}, {0x8b,0xf8}, {0x53}, {0x83,0xec,0x2c}, {0xd9,0x44,0x24,0x14}, {0x33,0xc0}, {0xd9,0x44,0x24,0x74}, {0x8b,0x86,0x44,0x08,0,0}, {0x8b,0x44,0x24,0x10}, {0x8d,0x86,0xf8,0x04,0,0}, {0x85,0xc9}, {0x81,0xec,0xd8,0,0,0}, {0x5d}, {0x83,0xec,0x1c}, {0xb8,1,0,0,0}, {0xb8,1,0,0,0}, {0x83,0xec,0x28}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0x83,0xec,0x44}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0x81,0xec,0x80,0,0,0}, {0x39,0x7e,0x30}, {0x8b,0x46,0x34}, {0x8d,0xbe,0xe4,0x0f,0,0}, {0x8b,0x8e,0x84,0x1f,0,0}, {0x83,0xec,0x50}, {0x5d}, {0x5d}, {0x5d}};
+static unsigned lengths[] = {6, 6, 2, 3, 4, 4, 6, 2, 1, 3, 4, 2, 4, 6, 4, 6, 2, 6, 1, 3, 5, 5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 6, 3, 3, 6, 6, 3, 1, 1, 1};
+static BYTE saved[44];
+static int armed[44];
 static HANDLE process;
 static int capture_effects,capture_filter,capture_frame_rider,capture_return;
 static DWORD effect_query_count,effect_query_result;
@@ -62,6 +62,9 @@ static DWORD ai_spray_address,ai_spray_dt,ai_spray_thread;
 static int capture_ai_particle_draw,ai_particle_draw_active,capture_ai_particle_quads;
 static DWORD ai_particle_draw_thread;
 static FILE*ai_draws_out;
+static int capture_ai_grid,ai_grid_active;
+static FILE*ai_grid_out;
+static DWORD ai_grid_collider,ai_grid_manager,ai_grid_caller,ai_grid_thread,ai_grid_sequence;
 static DWORD ai_rider_dt,ai_rider_thread,ai_rider_sequence;
 static int trace_ai_rider(const char*,DWORD,DWORD);
 static void configure_ai_frame_hooks(void){hook_count=6;addresses[4]=0x4a56d9;lengths[4]=5;const BYTE a[]={0xe9,0xe2,0,0,0};memcpy(expected[4],a,5);addresses[5]=0x4a5991;lengths[5]=2;expected[5][0]=0x8b;expected[5][1]=0xce;}
@@ -84,6 +87,7 @@ static void configure_ai_spray_hooks(void){configure_ai_dust_hooks();hook_count=
 static void configure_ai_particle_draw_hooks(void){configure_ai_spray_hooks();hook_count=38;}
 
 static void configure_ai_particle_quad_hooks(void){configure_ai_particle_draw_hooks();hook_count=40;}
+static void configure_ai_grid_hooks(void){configure_ai_particle_quad_hooks();hook_count=44;}
 
 // Optional observer-side timing only; excludes target execution and does not
 // alter the captured delta. Included exporters with their own read helpers are
@@ -91,7 +95,7 @@ static void configure_ai_particle_quad_hooks(void){configure_ai_particle_draw_ho
 static int profile_capture;
 static LARGE_INTEGER profile_frequency;
 static LONGLONG profile_read_ticks,profile_stopped_ticks,profile_snapshot_ticks;
-static unsigned long long profile_reads,profile_bytes,profile_events,profile_snapshots,profile_hook_hits[40];
+static unsigned long long profile_reads,profile_bytes,profile_events,profile_snapshots,profile_hook_hits[44];
 static LONGLONG profile_now(void){LARGE_INTEGER t;QueryPerformanceCounter(&t);return t.QuadPart;}
 static int read_memory(DWORD address, void *buffer, SIZE_T size) {
     SIZE_T count;LONGLONG start=profile_capture?profile_now():0;
@@ -244,6 +248,7 @@ static int observe_rider_collision(FILE *out,DWORD rider) {
 #include "capture-ai-substeps.c"
 #include "capture-animation-observations.c"
 #include "capture-ai-draw.c"
+#include "capture-ai-grid.c"
 
 static int snapshot_impl(FILE *out, unsigned phase, DWORD sequence, DWORD thread, CONTEXT *context) {
     // At 0x4ad078 the rider delta has been pushed. Normalize only the observation.
@@ -401,6 +406,8 @@ int main(int argc, char **argv) {
     capture_ai_particle_draw=getenv("MCM_AI_PARTICLE_DRAW")!=NULL;
     if(capture_ai_particle_draw){if(!capture_ai_spray)return 2;configure_ai_particle_draw_hooks();}
     if(capture_ai_particle_quads){if(!capture_ai_particle_draw)return 2;configure_ai_particle_quad_hooks();}
+    capture_ai_grid=getenv("MCM_AI_GRID_TRACE")!=NULL;
+    if(capture_ai_grid){if(!capture_ai_particle_quads)return 2;configure_ai_grid_hooks();}
     capture_stack = getenv("MCM_STACK") != NULL;
     capture_collision = getenv("MCM_COLLISION") != NULL;
     checkpoint_collision_callbacks = getenv("MCM_COLLISION_CALLBACKS") != NULL;
@@ -537,7 +544,22 @@ int main(int argc, char **argv) {
                     TerminateProcess(process, 5);
                     done = 2;
                 } else {
-                    if(capture_ai_particle_draw&&matched>=35){
+                    if(capture_ai_grid&&matched>=40){
+                        if(player_frame){
+                            if(matched==40){DWORD selected,manager,owner;
+                                if(!read_memory(observe_ai+0xc88,&selected,4)||!read_memory(selected+0x98,&manager,4)||!read_memory(context.Ecx+0x98,&owner,4))done=2;
+                                else if(owner==manager){
+                                    if(ai_grid_active)done=2;
+                                    else {ai_grid_collider=context.Ecx;ai_grid_manager=manager;ai_grid_thread=event.dwThreadId;ai_grid_active=1;
+                                        if(!read_memory(context.Esp,&ai_grid_caller,4)||!trace_ai_grid("before-grid"))done=2;
+                                    }
+                                }
+                            }else if(ai_grid_active){DWORD caller;
+                                if(context.Esi!=ai_grid_collider||event.dwThreadId!=ai_grid_thread||!read_memory(context.Esp+0x60,&caller,4)||caller!=ai_grid_caller||!trace_ai_grid("after-grid"))done=2;
+                                ai_grid_active=0;
+                            }
+                        }
+                    }else if(capture_ai_particle_draw&&matched>=35){
                         if(player_frame){
                             if(matched==35&&context.Ecx==retained_pool_address){DWORD count;
                                 if(!read_memory(retained_pool_address+0x30,&count,4)||count>1000)done=2;
@@ -771,6 +793,7 @@ int main(int argc, char **argv) {
     if(ai_rider_out&&fclose(ai_rider_out))done=2;
     if(ai_substeps_out&&fclose(ai_substeps_out))done=2;
     if(ai_draws_out&&fclose(ai_draws_out))done=2;
+    if(ai_grid_out&&fclose(ai_grid_out))done=2;
     CloseHandle(process);
     fprintf(stderr, "captured=%lu status=%d\n", count, done);
     return done == 1 ? 0 : 4;
