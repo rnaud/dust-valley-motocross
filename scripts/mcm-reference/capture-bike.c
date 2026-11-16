@@ -175,6 +175,7 @@ end:
 
 // Export only blocks already read by the existing partial checkpoint. This does
 // not expand the set of objects restored between controlled passes.
+#include "capture-actor-tree.c"
 static int export_checkpoint(DWORD bike) {
     const char *path=getenv("MCM_CHECKPOINT");
     const char *animations=getenv("MCM_ANIMATIONS");
@@ -192,6 +193,7 @@ static int export_checkpoint(DWORD bike) {
         if(world&&*world&&!capture_mcm_collision_world(process,bike,world,capture_id,player_frame,export_boundary))return 0;
     }
     if(capture_ai_environment&&!capture_mcm_ai_environment(process,bike,getenv("MCM_AI_ENVIRONMENT"),capture_id))return 0;
+    if(getenv("MCM_ACTOR_TREE")&&!capture_actor_tree(bike,getenv("MCM_ACTOR_TREE"),capture_id))return 0;
     memcpy(frame_capture_id,capture_id,sizeof frame_capture_id);
     if(capture_ai_rider){DWORD rider;if(!read_memory(bike+0x874,&rider,4)||!trace_ai_rider("initial-rider",rider,0))return 0;}
     FILE *out=fopen(path,"wx");if(!out)return 0;

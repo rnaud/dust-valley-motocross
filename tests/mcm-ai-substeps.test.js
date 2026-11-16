@@ -297,3 +297,10 @@ test('all-grid capture also validates live visible particle quads while retainin
  assert.deepEqual(r.particleDrawReports.filter(p=>p.quads).map(p=>p.quads.vertexWords),[448,32]);
  assert.equal(r.collisionStatus,'diverged');assert.equal(r.collisionDifferences.length,32);
 });
+
+test('atomic actor-tree capture retains bike and visual trajectories with explicit collision differences',()=>{
+ const f=fixture('ai-actor-tree'),i=input(f),r=analyzeAiSubsteps(i,i.rows,rider(f),trace(f));
+ assert.equal(r.frames,4);assert.equal(r.substepBoundaries,251);assert.equal(r.componentWords,3012);
+ assert.deepEqual(r.visualDifferences,[]);assert.deepEqual(r.particleDifferences,[]);
+ assert.equal(r.collisionStatus,'diverged');assert.equal(r.collisionDifferences.length,32);
+});
