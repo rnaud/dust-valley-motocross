@@ -1,0 +1,99 @@
+{
+  "scope": "Retained 481310 child traversal schedules world and pool from native links. Scene prefix/tail, six custom scene actors and camera/presentation remain incomplete. Recorded particle rows are assertions, not pool invocation drivers in this mode.",
+  "runs": [
+    {
+      "fixture": "tests/fixtures/mcm/world-hud-wine11.json.br",
+      "sha256": "ba86fb391e2feea7c8a3503a33b4d99b10f65bc17ced6490ce0e392f97e5c1a3",
+      "scenePhases": 7,
+      "poolCalls": 7,
+      "pendingSceneMethods": [
+        "0x411000",
+        "0x423b50",
+        "0x4253e0",
+        "0x429d90",
+        "0x43e660",
+        "0x47b0c0"
+      ],
+      "particleReports": {
+        "observations": 63,
+        "differences": 0
+      },
+      "entryReports": {
+        "observations": 16,
+        "differences": 0
+      },
+      "reports": {
+        "observations": 16,
+        "differences": 0
+      },
+      "collisionReports": {
+        "observations": 15,
+        "differences": 0
+      },
+      "riderReports": {
+        "observations": 7,
+        "differences": 0
+      },
+      "visualReports": {
+        "observations": 15,
+        "differences": 0
+      },
+      "markerReports": {
+        "observations": 32,
+        "differences": 0
+      },
+      "hudReports": {
+        "observations": 32,
+        "differences": 0
+      },
+      "bothRiderObservations": 28
+    },
+    {
+      "fixture": "tests/fixtures/mcm/world-particle-recovery-wine11.json.br",
+      "sha256": "c4c52a58c800c333bb5d3c41e8921f7e40e4f34490ec61eeaec1469cb57baafd",
+      "scenePhases": 162,
+      "poolCalls": 162,
+      "pendingSceneMethods": [
+        "0x411000",
+        "0x423b50",
+        "0x4253e0",
+        "0x429d90",
+        "0x43e660",
+        "0x47b0c0"
+      ],
+      "particleReports": {
+        "observations": 1463,
+        "differences": 0
+      },
+      "entryReports": {
+        "observations": 326,
+        "differences": 0
+      },
+      "reports": {
+        "observations": 326,
+        "differences": 0
+      },
+      "collisionReports": {
+        "observations": 325,
+        "differences": 0
+      },
+      "riderReports": {
+        "observations": 162,
+        "differences": 0
+      },
+      "visualReports": {
+        "observations": 325,
+        "differences": 0
+      },
+      "markerReports": {
+        "observations": 0,
+        "differences": 0
+      },
+      "hudReports": {
+        "observations": 0,
+        "differences": 0
+      },
+      "bothRiderObservations": 648
+    }
+  ]
+}

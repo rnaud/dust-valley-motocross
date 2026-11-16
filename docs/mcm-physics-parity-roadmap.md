@@ -7390,3 +7390,36 @@ complete scheduling/dependencies still need integration; the current pool/draw
 invocations remain explicit recording inputs. Active impact-burst coverage,
 external heap-boundary recovery and normal-rate validation also remain open.
 HUD-v1 restored hooks, debugger, controls and camera; no recording is active.
+
+### Particle pool dispatched by retained scene child order (2026-11-16)
+
+`world-scene-children.mjs` now executes the actual 420760 child walk within scene
+481310. It locates world 4590b0 and shared pool 43b200 by retained object identity
+and parent links, invokes the recovered world update, and ticks the pool where
+its native link occurs. Generic nodes recurse; enabled/paused/removal and polling
+semantics use the previously recovered traversal. Unsupported custom scene
+methods remain explicit services, recorded as deferred work by the comparator.
+
+`--scene-child-integration` requires particle integration. Original before/after
+pool rows validate the dispatched call's delta/pause and complete retained state;
+they no longer trigger the pool update. Presentation/draw rows remain explicit
+invocation inputs. The recording's final fragment, which stops after AI physics
+before children, is replayed only to its observed boundary and does not fabricate
+a partial pool tick.
+
+The short HUD fixture passes seven scene phases, all 63 particle boundaries,
+marker/HUD states and both bikes. The 163-update recovery fixture passes 162
+complete scene phases / pool ticks, all 1,463 particle boundaries, 326 bike
+entries/tails with RNG, 648 both-rider observations, and collision/visual checks.
+See `mcm-scene-pool-validation.json`. Tests also change actual sibling order and
+pause flags to prove scheduling follows retained links; missing topology,
+services and active polling dependencies fail. Four targeted integration/ordering
+regressions, production build and whitespace checks pass. Publishing this
+validated pool-scheduling milestone to main.
+
+Remaining scene methods are 47b0c0, 43e660, 411000, 429d90, 423b50 and 4253e0.
+481310 itself also has camera-switch/environment work before traversal and a
+scene timer update after it; the outer 4997b0 actor is not yet connected. This
+milestone removes recorded pool invocation timing, not independent camera,
+presentation or full-scene execution. Active impact-burst coverage, dynamic
+heap-boundary behavior and normal-rate validation remain open.

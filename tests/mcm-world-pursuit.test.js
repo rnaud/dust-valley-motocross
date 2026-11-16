@@ -205,7 +205,9 @@ test('64-update shared emitter and pool integration matches both bikes and all p
 test('163-update recovery retains shared particles across original rider-bike contacts',()=>{
  const captured=JSON.parse(brotliDecompressSync(fs.readFileSync(new URL('./fixtures/mcm/world-particle-recovery-wine11.json.br',import.meta.url))));
  for(const [name,value]of Object.entries(captured.files))assert.equal(createHash('sha256').update(value).digest('hex'),captured.provenance.fileSha256[name]);
- const result=analyzeWorldBikes(captured.files,terrain(),{renderCameraInputs:true,particleIntegration:true});
+ const result=analyzeWorldBikes(captured.files,terrain(),{renderCameraInputs:true,particleIntegration:true,sceneChildIntegration:true});
+ assert.equal(result.sceneChildReports.length,162);
+ for(const report of result.sceneChildReports){assert.equal(report.poolCalls,1);assert.ok(report.trace.findIndex(a=>a.update===0x4590b0)<report.trace.findIndex(a=>a.update===0x43b200));}
  assert.equal(result.particleReports.length,1463);
  for(const report of result.particleReports)assert.equal(report.differences,0,`${report.phase} frame ${report.frame}`);
  assert.equal(result.entryReports.length,326);assert.equal(result.reports.length,326);assert.equal(result.worldRiderReports.length,648);
@@ -238,8 +240,9 @@ test('captured marker transforms and child updates preserve the two-bike world c
 test('captured display gates complete the observed world child traversal without deferred calls',()=>{
  const captured=JSON.parse(brotliDecompressSync(fs.readFileSync(new URL('./fixtures/mcm/world-hud-wine11.json.br',import.meta.url))));
  for(const [name,value]of Object.entries(captured.files))assert.equal(createHash('sha256').update(value).digest('hex'),captured.provenance.fileSha256[name]);
- const options={renderCameraInputs:true,particleIntegration:true,markerIntegration:true,hudIntegration:true};
+ const options={renderCameraInputs:true,particleIntegration:true,markerIntegration:true,hudIntegration:true,sceneChildIntegration:true};
  const result=analyzeWorldBikes(captured.files,terrain(),options);
+ assert.equal(result.sceneChildReports.length,7);assert.ok(result.sceneChildReports.every(r=>r.poolCalls===1));
  assert.equal(result.worldChildReports.length,7);assert.ok(result.worldChildReports.every(r=>r.externalActors.length===0));
  for(const report of result.worldChildReports)assert.equal(report.actorUpdates.filter(a=>a.update===0x403030).length,31);
  assert.equal(result.hudReports.length,32);
