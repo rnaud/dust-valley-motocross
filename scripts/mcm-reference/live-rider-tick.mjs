@@ -1,3 +1,4 @@
+import {tickMcmActorChildren} from '../../src/physics/mcm/actor-children-tick.js';
 import {CapturedBytes} from '../../src/physics/mcm/captured-bytes.js';
 import {loadLiveParticlePool} from './live-particle-pool.mjs';
 import {loadLiveOrderedDispatch} from './live-ordered-dispatch.mjs';
@@ -27,12 +28,21 @@ export function connectLiveRiderTick({ordered,bikeAddress,visuals,assets,animati
  const selected=m.u32(rider.address+0x160),selectedRecord=assets.records.find(a=>a.token===selected);
  if(selected&&!selectedRecord)throw Error('Missing selected rider animation');
  let damping;try{damping=m.f32(0x4e21bc);}catch(error){if(!/^Missing checkpoint memory at 0x4e21bc \(4 bytes\)$/.test(error.message))throw error;}
+ const childNode={next:null,previous:null,
+  get enabled(){return childBytes.readUInt32LE(0x20);},
+  get paused(){return childBytes.readUInt32LE(0x28);},
+  get removed(){return childBytes.readUInt32LE(0x2c);}};
+ const childParent={first:childNode,owner:{world:{gate:child.ownerGate}}};childNode.parent=childParent;
  const context={rider,animation,damping,response:ordered.riderResponse,
   animationRecord(token){const record=assets.records.find(r=>r.token===token);if(!record)throw Error('Missing selected contact animation');return record;},
   contactRecord(index){const token=m.u32(rider.address+0x1a8+(rider.eventKind*0x17+index)*4),record=assets.records.find(r=>r.token===token);if(!record)throw Error('Missing free-rider contact animation');return record;},
   contactEffects(point){if(!m.u32(rider.address+0x3c)||bike.riderEffect.disabled||bike.riderEffect.eventKind===3)return;const [x,y,z]=rider.velocity;if(mcmSqrtLookup(Math.fround((z*z+y*y)+x*x))>2){if(m.u32(rider.address+0x3a8)!==child.address)throw Error('Uncaptured rider contact emitter');childBytes.writeUInt32LE(1,0x64);point.forEach((v,j)=>childBytes.writeFloatLE(v,0x48+j*4));}},bodyNode:bike.riderTransform,collider:rider.collision,bikeCollider:bike.collision,manager:ordered.dispatch,grid:ordered.grid,gridEnabled:ordered.enabled,paused:child.paused,globalDelta:bitsFloat(child.globalDtBits),selectedRecord,
   points:[0xfc,0x100,0x104,0x10c,0x110,0x118,0x11c,0x120,0x128,0x12c,0x134].map(point),terrain,queryOutput:{point:[0,0,0],normal:[0,0,0],penetration:[0,0,0]},
   applyChild:record=>applyMcmAnimationChild(bike.riderTransform,visuals.rider.components,record),
-  updateChildren(dt){if(childBytes.readUInt32LE(0x20)&&!childBytes.readUInt32LE(0x28))tickMcmRiderParticles(new DataView(childBytes.buffer,childBytes.byteOffset,childBytes.length),{dt,paused:context.paused,pool});}};
+  updateChildren(dt){return tickMcmActorChildren(childParent,dt,{
+   update(node,delta){if(node!==childNode)throw Error('Uncaptured rider child');tickMcmRiderParticles(new DataView(childBytes.buffer,childBytes.byteOffset,childBytes.length),{dt:delta,paused:context.paused,pool});},
+   destroy(){throw Error('Uncaptured rider child destruction');},
+   poll(){throw Error('Uncaptured rider owner polling');},clock(){throw Error('Uncaptured rider clock');}
+  });}};
  return {context,ordered,assets,childBytes,...particles,proxy,dt:bitsFloat(child.dtBits)};
 }
