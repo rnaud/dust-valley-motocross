@@ -24,3 +24,20 @@ test('display assertions detect changed timer output and reject missing observat
  const r=analyzeWorldBikes(files,terrain(),options);assert.equal(r.sceneDisplayReports.filter(x=>x.differences.length).length,1);assert.equal(r.sceneDisplayReports[4].differences[0].offset,0x100);
  delete rows[0].sceneDisplayObservation;files['world-bikes.jsonl']=rows.map(JSON.stringify).join('\n')+'\n';assert.throws(()=>analyzeWorldBikes(files,terrain(),options),/Missing display assertion/);
 });
+test('full display-child diagnostic preserves missing draw-time writers instead of reseeding fade state',()=>{
+ const full=JSON.parse(brotliDecompressSync(fs.readFileSync(new URL('./fixtures/mcm/world-scene-display-fade-wine11.json.br',import.meta.url))));
+ for(const[name,value]of Object.entries(full.files))assert.equal(createHash('sha256').update(value).digest('hex'),full.provenance.fileSha256[name]);
+ const r=analyzeWorldBikes(full.files,terrain(),{...options,sceneDisplayFadeIntegration:true});
+ assert.equal(r.sceneDisplayFadeTicks,63);assert.equal(r.sceneDisplayReports.length,256);
+ assert.equal(r.sceneDisplayReports.filter(x=>x.differences.length).length,208);
+ assert.deepEqual([...new Set(r.sceneDisplayReports.flatMap(x=>x.differences.map(d=>d.offset)))].sort((a,b)=>a-b),[0xe4,0x100,0x104,0x108,0x10c,0x114,0x118]);
+ for(const row of [...r.entryReports,...r.reports])assert.deepEqual(row.differences,[]);
+ for(const row of r.sceneChildReports)assert.deepEqual(row.externalActors.map(a=>a.update),[0x411000]);
+ assert.equal((full.files['cleanup.log'].match(/restored=1/g)||[]).length,52);assert.match(full.files['cleanup.log'],/debugger=0 clean=1/);
+});
+test('computed camera-to-rider terrain queries resolve all full display-child differences',()=>{
+ const full=JSON.parse(brotliDecompressSync(fs.readFileSync(new URL('./fixtures/mcm/world-scene-display-fade-wine11.json.br',import.meta.url))));
+ const r=analyzeWorldBikes(full.files,terrain(),{...options,sceneDisplayFadeIntegration:true,sceneDisplayVisibilityIntegration:true});
+ assert.equal(r.sceneDisplayFadeTicks,63);assert.equal(r.sceneDisplayReports.length,256);assert.ok(r.sceneDisplayVisibilityDraws>0);assert.ok(r.sceneDisplayVisibilityQueries>0&&r.sceneDisplayVisibilityQueries<r.sceneDisplayVisibilityDraws);
+ const check=v=>{if(Array.isArray(v)){for(const x of v)check(x);}else if(v&&typeof v==='object'){for(const[k,x]of Object.entries(v)){if(k==='differences')assert.ok(Array.isArray(x)?x.length===0:x===0);else check(x);}}};check(r);
+});

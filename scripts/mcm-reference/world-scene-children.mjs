@@ -11,6 +11,7 @@ export function connectWorldSceneChildren(runtime,{queue=null,display=null}={}){
   const invoke=(name,...args)=>{if(typeof services[name]!=='function')throw Error(`Unconnected scene service: ${name}`);return services[name](...args);};
   const callbacks={update(node,dt){
    trace.push({address:node.address,update:node.update});
+   if(display?.fade&&node.update===0x422df0)return display.stepFade(node,dt);
    if(display&&node.address===display.address)return display.step(dt,()=>tickMcmActorChildren(node,dt,callbacks));
    if(queue&&node.address===queue.address)return queue.step(dt,()=>tickMcmActorChildren(node,dt,callbacks));
    if(node===world)return invoke('world',dt);

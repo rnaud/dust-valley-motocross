@@ -1,0 +1,26 @@
+{
+  "scope": "Diagnostic full display-child state. Not passing joined display parity.",
+  "worldUpdates": 64,
+  "bikeEntries": 128,
+  "bikeTails": 128,
+  "fadeTicks": 63,
+  "displayAssertions": 256,
+  "differingDisplayBoundaries": 208,
+  "differenceCountsByOffset": {
+    "0x100": 192,
+    "0x104": 52,
+    "0x108": 8,
+    "0x118": 52,
+    "0xe4": 48,
+    "0x114": 64,
+    "0x10c": 4
+  },
+  "writerDiagnosis": {
+    "0x100": "422ed0 visibility query cadence",
+    "0x104": "422ed0 cached visibility result",
+    "0x108/0x10c/0x118": "422f50 draw-time fade transitions",
+    "0x114/0xe4": "422df0 fade state downstream of missing transitions"
+  },
+  "restoredHooks": 52,
+  "debuggerDetached": true
+}

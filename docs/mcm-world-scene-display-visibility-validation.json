@@ -1,0 +1,31 @@
+{
+  "scope": "Joined display timer, full fade actors and computed draw-time terrain occlusion. Graphics refresh, pixel drawing and draw invocation scheduling remain external.",
+  "worldUpdates": 64,
+  "bikeEntries": 128,
+  "bikeTails": 128,
+  "fadeTicks": 63,
+  "visibilityDraws": 63,
+  "terrainQueries": 16,
+  "displayAssertions": 256,
+  "displayComparedWords": 79616,
+  "displayDifferences": 0,
+  "externalGraphicsRefreshCalls": 62,
+  "remainingExternalSceneMethods": [
+    "411000"
+  ],
+  "chase": {
+    "frames": 63,
+    "words": 9450,
+    "intermediateEvolutionInputs": 0,
+    "tailControlAssertions": 63,
+    "comparedInputWords": 1728,
+    "target": 82612896
+  },
+  "renderer": {
+    "frames": 63,
+    "words": 12663,
+    "deviceResultsExternal": true
+  },
+  "restoredHooks": 52,
+  "debuggerDetached": true
+}

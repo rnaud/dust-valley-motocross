@@ -1,8 +1,12 @@
+import {updateMcmSceneVisibility} from '../../src/physics/mcm/scene-visibility.js';
+import {queryMcmTerrainSegment} from '../../src/physics/mcm/terrain-segment.js';
+import {traverseMcmTerrainSegment} from '../../src/physics/mcm/terrain-segment-traversal.js';
+import {tickMcmSceneFade} from '../../src/physics/mcm/scene-fade-tick.js';
 import assert from 'node:assert/strict';
 import {tickMcmSceneDisplay} from '../../src/physics/mcm/scene-display-tick.js';
 // Retains timer and scene visibility. Graphics refresh is an explicit service
 // boundary, never a claim that GDI/pixel work has been reproduced.
-export function connectWorldSceneDisplay(runtime,chase,{refresh}={}) {
+export function connectWorldSceneDisplay(runtime,chase,{refresh,fade=false,visibility=false,terrain}={}) {
  const actors=[...runtime.world.tree.nodes.values()].filter(n=>n.update===0x423b50);
  assert.equal(actors.length,1,'Missing display actor');const actor=actors[0],initial=actor.displayInitial;
  assert.ok(initial,'Missing display initialization');assert.equal(actor.stateBytes?.length,0x290);
@@ -21,8 +25,10 @@ export function connectWorldSceneDisplay(runtime,chase,{refresh}={}) {
   assert.equal(bike.projection.projectBody().getUint32(0x434,true),row.root);
   const mesh=runtime.meshes.actors.get(row.bike);assert.equal(mesh?.node.address,row.root);
   assert.equal(mesh.mesh.hidden,row.rootFlag);roots.set(row.root,()=>mesh.mesh.hidden);
-  const node=runtime.world.tree.nodes.get(row.display.address),bytes=Buffer.from(row.display.hex,'hex');
-  assert.ok(node,'Missing display visibility actor');assert.equal(bytes.length,0x30);assert.equal(node.enabled,bytes.readUInt32LE(0x20));
+  const node=runtime.world.tree.nodes.get(row.display.address),captured=Buffer.from(row.display.hex,'hex');
+  const bytes=fade?node?.stateBytes:captured;
+  if(fade){assert.equal(node?.update,0x422df0);assert.equal(bytes?.length,0x11c,'Missing full fade initialization');assert.ok(bytes.equals(captured),'Fade checkpoint differs');}
+  assert.ok(node,'Missing display visibility actor');assert.ok(bytes.length===0x30||bytes.length===0x11c);assert.equal(node.enabled,bytes.readUInt32LE(0x20));
   assert.equal(node.parent,actor);assert.ok(!displays.has(node.address));
   displays.set(node.address,{node,bytes});
  }
@@ -38,8 +44,14 @@ export function connectWorldSceneDisplay(runtime,chase,{refresh}={}) {
  };
  const put32=(p,v)=>{if(p>=actor.address&&p+4<=actor.address+0x290)actor.stateBytes.writeUInt32LE(v>>>0,p-actor.address);else if(p>=0x4e2ee8&&p+4<=0x4e2efc)globals.writeUInt32LE(v>>>0,p-0x4e2ee8);else throw Error('Unknown display write');};
  const memory={u32,put32,f32:p=>new Float32Array(Uint32Array.of(u32(p)).buffer)[0],putFloat:(p,v)=>put32(p,new Uint32Array(Float32Array.of(v).buffer)[0])};
- let ticks=0,refreshCalls=0;
- return {address:actor.address,get ticks(){return ticks;},get refreshCalls(){return refreshCalls;},step(delta,children){
+ let ticks=0,refreshCalls=0,fadeTicks=0,visibilityDraws=0,visibilityQueries=0;
+ return {address:actor.address,fade,get visibilityDraws(){return visibilityDraws;},get visibilityQueries(){return visibilityQueries;},drawVisibility(bike,position){
+  assert.ok(fade&&visibility,'Unconnected draw visibility');visibilityDraws++;
+  const seed=initial.visibility.find(r=>r.bike===bike);assert.ok(seed,'Unknown display bike');
+  const bytes=displays.get(seed.display.address).bytes,view=new DataView(bytes.buffer,bytes.byteOffset,bytes.length);
+  const target=Array.from(position,Math.fround);target[1]=Math.fround(target[1]+Math.fround(1.62));
+  return updateMcmSceneVisibility(view,()=>{visibilityQueries++;return queryMcmTerrainSegment(terrain,chase.position,target,[0,0,0],0,traverseMcmTerrainSegment);});
+ },get fadeTicks(){return fadeTicks;},stepFade(node,delta){assert.ok(fade&&displays.has(node.address),'Unconnected fade actor');const bytes=displays.get(node.address).bytes;fadeTicks++;return tickMcmSceneFade(new DataView(bytes.buffer,bytes.byteOffset,bytes.length),delta);},get ticks(){return ticks;},get refreshCalls(){return refreshCalls;},step(delta,children){
   const result=tickMcmSceneDisplay(actor.address,delta,memory,{children,refresh(address){assert.equal(address,actor.address);assert.equal(typeof refresh,'function','Unconnected display graphics refresh');refreshCalls++;refresh(address);},
    visibility(address,method){const state=displays.get(address);assert.ok(state,'Uncaptured display visibility target');const value=method===0x10?0:method===0x14?1:null;assert.notEqual(value,null);state.node.enabled=value;state.bytes.writeUInt32LE(value,0x20);state.bytes.writeUInt32LE(value,0x24);if(state.node.stateBytes){state.node.stateBytes.writeUInt32LE(value,0x20);state.node.stateBytes.writeUInt32LE(value,0x24);}}
   });ticks++;return result;

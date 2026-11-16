@@ -17,7 +17,7 @@ static int capture_scene_display_state(FILE*out,DWORD address){
   DWORD bike,root,flag,display,table,show,hide;
   if(!read_memory(address+0x234+i*4,&bike,4)||!read_memory(bike+0x434,&root,4)||!read_memory(root+0x12c,&flag,4)||!read_memory(address+0x264+i*4,&display,4)||!read_memory(display,&table,4)||!read_memory(table+0x10,&show,4)||!read_memory(table+0x14,&hide,4))return 0;
   fprintf(out,"%s{\"bike\":%lu,\"root\":%lu,\"rootFlag\":%lu,\"showMethod\":%lu,\"hideMethod\":%lu,\"display\":",i?",":"",bike,root,flag,show,hide);
-  if(!capture_scene_display_block(out,display,0x30))return 0;fprintf(out,"}");
+  if(!capture_scene_display_block(out,display,0x11c))return 0;fprintf(out,"}");
  }
  fprintf(out,"]}");return !ferror(out);
 }

@@ -52,6 +52,7 @@ export function connectWorldChaseRuntime(runtime,files,terrain){
 
  return {address:raw.camera,target,reports,visibility,
   get cameraState(){return comparison.state;},
+  get position(){return comparison.state?.renderCamera.values.slice(0,3)??Array.from(new Float32Array(Uint32Array.from(initial.cameraPose.slice(0,3)).buffer));},
   get projection(){return comparison.state?.matrices.slice(32,48)??new Float32Array(Uint32Array.from(initial.matrices.slice(32,48)).buffer);},
   step(frame,delta){
    if(frame===0)return initial.cameraPose.slice(0,3);
