@@ -100,6 +100,12 @@ export function createCrtSmallHeap(initial,services={}) {
    for(const r of ordered())if(word(r,0x810)&&word(r,12)!==0xffffffff)return commit(r,units);
    return createRegion(units);
   },
+  owns(pointer){return ordered().some(r=>{const base=word(r,0x810);return base&&pointer>base&&pointer<base+0x400000;});},
+  size(pointer){
+   const address=Math.floor(pointer/4096)*4096;
+   for(const r of ordered()){const page=r.pages.get(address);if(page)return page.size(pointer);}
+   throw Error('Pointer outside committed CRT pages');
+  },
   free(pointer){
    const r=ordered().find(r=>{const base=word(r,0x810);return base&&pointer>base&&pointer<base+0x400000;});
    if(!r)throw Error('Pointer outside CRT regions');

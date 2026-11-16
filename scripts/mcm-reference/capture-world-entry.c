@@ -1,4 +1,5 @@
 #include "capture-rider-heap.c"
+#include "capture-heap-thread.c"
 static int capture_world_effects(DWORD bike,const char*path,const char*id){
  DWORD world,owner,event,settings,shape,enabled,occlusion,selected,state,disabled;BYTE target[12];
  if(!read_memory(0x4e4fb4,&world,4)||!read_memory(world+0x718,&enabled,4)||!read_memory(world+0x714,&occlusion,4)||
@@ -73,6 +74,10 @@ static int capture_world_entry(DWORD actor,DWORD esp){
   if(getenv("MCM_WORLD_RIDER_HEAP")){
    snprintf(path,sizeof path,"%s\\world-rider-heap-%u.json",dir,i);out=fopen(path,"wx");if(!out)return 0;
    int heapOk=capture_rider_heap(out,child);if(fclose(out))heapOk=0;if(!heapOk)return 0;
+   if(i==0){
+    snprintf(path,sizeof path,"%s\\world-heap-thread.json",dir);out=fopen(path,"wx");if(!out)return 0;
+    int threadOk=capture_heap_thread(out,observed_random_thread,id);if(fclose(out))threadOk=0;if(!threadOk)return 0;
+   }
   }
   snprintf(path,sizeof path,"%s\\world-child-%u.json",dir,i);out=fopen(path,"wx");if(!out)return 0;
   fprintf(out,"{\"captureId\":\"%s\",\"captureBoundary\":\"world-frame-entry\",\"bikeAddress\":%lu,\"rider\":%lu,\"address\":%lu,\"hex\":\"",id,bike,rider,child);ok=write_particle_hex(out,childBytes,0x610);

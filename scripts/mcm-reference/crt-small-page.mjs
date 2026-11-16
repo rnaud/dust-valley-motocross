@@ -47,11 +47,16 @@ export function createCrtSmallPage(initial) {
    }
    return null;
   },
-  free(pointer) {
+  size(pointer) {
    const offset=(pointer-address-128)/16;
+   if(!Number.isInteger(offset)||offset<8||offset>=248)throw Error('Invalid CRT pointer');
    let start=8;while(start<offset)start+=bytes[start]||1;
-   if(!Number.isInteger(offset)||offset<8||offset>=248||start!==offset||!bytes[offset])throw Error('Invalid CRT free');
-   freeUnits+=bytes[offset];bytes[offset]=0;
+   if(start!==offset||!bytes[offset])throw Error('Invalid CRT free or size');
+   return bytes[offset]*16;
+  },
+  free(pointer) {
+   const units=this.size(pointer)/16,offset=(pointer-address-128)/16;
+   freeUnits+=units;bytes[offset]=0;
   },
   snapshot(){return {address,freeUnits,hex:Buffer.from(bytes).toString('hex')};}
  };

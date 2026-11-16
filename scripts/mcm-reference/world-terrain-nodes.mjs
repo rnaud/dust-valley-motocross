@@ -16,7 +16,7 @@ import {projectMcmSphere} from '../../src/physics/mcm/projected-sphere.js';
 // Retained terrain diagnostic. Optional emission computes mesh data through an
 // explicit CRT allocator boundary shared with AI accounting. Scene clocks remain
 // unresolved; the terrain scene actor stays in the external list.
-export function connectWorldTerrainNodes(runtime,chase,{emission=false,eventText,heapObserver}={}){
+export function connectWorldTerrainNodes(runtime,chase,{emission=false,eventText,heapObserver,retainedHeap}={}){
  assert.ok(chase,'Terrain nodes require retained chase camera');
  const actors=[...runtime.world.tree.nodes.values()].filter(n=>n.update===0x411000);assert.equal(actors.length,1);
  const actor=actors[0],initial=actor.terrainInitial;assert.ok(initial?.nodeSnapshot,'Missing terrain node initialization');assert.equal(initial.camera,chase.address);
@@ -28,7 +28,7 @@ export function connectWorldTerrainNodes(runtime,chase,{emission=false,eventText
  const banks=new Map([...resources.banks].map(([a,b])=>[a,new DataView(b.buffer,b.byteOffset,b.length)]));
  const pointers=new Map();for(const[a,b]of tables)for(let i=0;i<256;i++)pointers.set(a+i*4,b.readUInt32LE(i*4));
  const meshes=emission?createTerrainMeshObservationDecoder(initial.meshSnapshot,observations.nodes):null;
- const allocator=meshes?connectTerrainAllocator(meshes.initial,meshes.buffers,nodes,eventText,runtime,heapObserver):null;
+ const allocator=meshes?connectTerrainAllocator(meshes.initial,meshes.buffers,nodes,eventText,runtime,heapObserver,retainedHeap):null;
  let ticks=0,projection;
  const env={...resources,childCount:resources.rowOffsets[16],boundsTests:initial.globals[0],sphereTests:initial.globals[1],
   node(address){assert.ok(views.has(address),'Uncaptured terrain node');return views.get(address);},

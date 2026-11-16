@@ -8,7 +8,7 @@ export function createWineOrdinaryHeap(initial){
  const locate=pointer=>{for(const region of state.regions){const index=region.blocks.findIndex(b=>b.header===pointer-8);if(index>=0)return {region,index,block:region.blocks[index]};}throw Error('Uncaptured ordinary heap pointer');};
  const freeWords=(region,header,bytes)=>[bytes/8,(0x01460000|(Math.floor(header/65536)-Math.floor(region.address/65536)))>>>0];
  const previousFlag=(block,enabled)=>{if(block)block.words[1]=((block.words[1]&~0x02000000)|(enabled?0x02000000:0))>>>0;};
- return {allocate(request,{raw=false}={}){
+ const api={allocate(request,{raw=false}={}){
   if(!Number.isInteger(request)||request<(raw?0:1024)||request>0x7efe0)throw Error('Unsupported ordinary CRT request');
   const needed=raw?Math.max(24,Math.ceil((Math.max(8,request)+8)/8)*8):Math.ceil(request/16)*16+8;
   const pointer=freeList.select(needed);if(pointer===null)return null;
@@ -26,5 +26,20 @@ export function createWineOrdinaryHeap(initial){
   const header=region.blocks[first].header,bytes=size(block)+(mergePrevious?size(previous):0)+(mergeNext?size(next):0),words=freeWords(region,header,bytes);
   if(mergePrevious)freeList.remove(previous.header+8);if(mergeNext)freeList.remove(next.header+8);
   freeList.insert(header,words,last);region.blocks.splice(first,count,{header,words});previousFlag(region.blocks[first+1],true);
- },words(pointer){return locate(pointer).block.words.slice();},snapshot(){return {freeList:freeList.snapshot(),regions:state.regions.map(r=>({address:r.address,blocks:r.blocks.map(b=>({header:b.header,words:b.words.slice()}))}))};}};
+ },allocateGroup(stride){
+  if(!Number.isInteger(stride)||stride<24||stride%8||stride>16384)throw Error('Unsupported LFH group stride');
+  const request=16+31*stride,needed=Math.ceil((request+8)/8)*8,pointer=freeList.select(needed);
+  if(pointer===null)return null;
+  // A new group does not overwrite its list-entry word until it is pushed.
+  // Before allocation that word is the selected free block's next link.
+  const next=freeList.snapshot().entries.find(e=>e.header+8===pointer).links[0];
+  if(api.allocate(request,{raw:true})!==pointer)throw Error('LFH group placement changed');
+  locate(pointer).block.words[1]=(locate(pointer).block.words[1]|0x80000000)>>>0;
+  return {address:pointer,next,freeBits:0x7fffffff,affinity:0,stride,slots:Array.from({length:31},(_,i)=>({header:pointer+16+i*stride,words:[stride/8,(0x81460000|i)>>>0]}))};
+ },freeGroup(pointer){
+  const block=locate(pointer).block,flags=block.words[1]>>>24;
+  if(flags!==0x80&&flags!==0x82)throw Error('Not an LFH outer block');
+  const saved=block.words[1];block.words[1]=(saved&~0x80000000)>>>0;
+  try{api.free(pointer);}catch(e){block.words[1]=saved;throw e;}
+ },words(pointer){return locate(pointer).block.words.slice();},snapshot(){return {freeList:freeList.snapshot(),regions:state.regions.map(r=>({address:r.address,blocks:r.blocks.map(b=>({header:b.header,words:b.words.slice()}))}))};}};return api;
 }

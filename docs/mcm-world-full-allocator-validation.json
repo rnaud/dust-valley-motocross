@@ -1,0 +1,63 @@
+{
+  "fixtures": {
+    "tests/fixtures/mcm/world-full-allocator-wine11.json.br": "3bb671b0d4d6fcfa4b2f2315049e59c509cd5a18cc20d296d57dfc025ecff56c",
+    "tests/fixtures/mcm/lfh-create-release-wine11.json.br": "44f2960973886b21da0ed9c4e037265e91a8ed8b8013d164b1d31c7a1ffb346a"
+  },
+  "nativeCapture": {
+    "directory": "/tmp/mcm-world-full-allocator-v2",
+    "sharedUpdates": 64,
+    "bikeBoundaries": 256,
+    "hooksRestored": 78,
+    "debuggerDetached": true,
+    "inputRestored": true,
+    "cameraRestored": true,
+    "heap": {
+      "regions": 5,
+      "blocks": 2604,
+      "groups": 543,
+      "freeBlocks": 256,
+      "crtRegions": 1,
+      "crtPages": 880,
+      "threadAffinity": 6
+    }
+  },
+  "allocator": {
+    "allocations": 5229,
+    "frees": 4801,
+    "sizeQueries": 9602,
+    "affinity": 6,
+    "virtualMemory": {
+      "commits": 1,
+      "decommits": 0,
+      "releases": 0,
+      "reservations": 1,
+      "committedPages": 896
+    }
+  },
+  "terrainBoundaryReads": {
+    "nodes": 12594,
+    "adjacentReads": 4
+  },
+  "comparison": {
+    "differences": 0,
+    "bikeEntries": 128,
+    "riderBoundaries": 252,
+    "displayReports": 256,
+    "unconsumedAllocatorEvents": 0
+  },
+  "lfhLifecycle": {
+    "allocations": 8928,
+    "frees": 8928,
+    "groupsCreated": 288,
+    "groupsReleased": 16,
+    "differences": 0
+  },
+  "regression": {
+    "targetedTests": 22,
+    "passed": 22,
+    "oldTwoBikeComparison": "zero differences",
+    "newTwoBikeComparison": "zero differences",
+    "captureToolCompiled": true
+  },
+  "scope": "Computed CRT/Wine allocation pointers, sizes and adjacent rider headers are connected to the complete instrumented shared-world comparison. Subsequent allocator outputs only assert computed values. Existing CRT reservations support retained commit/decommit page maps; choosing new virtual-address reservations, Wine region growth/release and large LFH groups remain explicit unsupported services. This is not sustained normal-rate or playable two-bike browser parity; native debugger overhead produces large observed frame deltas."
+}

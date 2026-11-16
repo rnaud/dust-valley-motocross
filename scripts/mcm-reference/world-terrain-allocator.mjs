@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import {allocateMcmOwned,freeMcmOwned} from '../../src/physics/mcm/owned-allocation.js';
 // Explicit CRT service boundary. Request order, owner counters and copied mesh
-// bytes are computed. Pointer/size-query results are external observations; this
-// adapter does not claim to reconstruct the original CRT heap.
-export function connectTerrainAllocator(initial,buffers,nodes,eventText,runtime,heapObserver){
+// bytes are computed. With retainedHeap, pointer and size observations only
+// assert the connected allocator outputs; otherwise the legacy service is external.
+export function connectTerrainAllocator(initial,buffers,nodes,eventText,runtime,heapObserver,retainedHeap){
  assert.equal(typeof eventText,'string','Missing terrain allocator events');
  const events=eventText.trim().split('\n').filter(Boolean).map(JSON.parse),allocations=new Map();
  for(const item of buffers.values())if(item.pointer){assert.ok(!allocations.has(item.pointer),'Shared terrain mesh allocation');allocations.set(item.pointer,Buffer.from(item.bytes));}
@@ -17,9 +17,9 @@ export function connectTerrainAllocator(initial,buffers,nodes,eventText,runtime,
  };
  let sizePhase=0;
  const heap={
-  malloc(size){const e=next('malloc-result');assert.equal(e.esi,size);if(e.eax){assert.ok(!allocations.has(e.eax),'Allocator reused live terrain pointer');allocations.set(e.eax,Buffer.alloc(size));heapObserver?.malloc(e.eax,size);}return e.eax;},
-  size(pointer){const e=next(sizePhase++?'size-owner':'size-global');assert.equal(e.esi,pointer);return e.eax;},
-  free(pointer){const e=next('free-call');assert.equal(e.esi,pointer);if(pointer){assert.ok(allocations.has(pointer),'Free of uncaptured terrain allocation');allocations.delete(pointer);heapObserver?.free(pointer);}},
+  malloc(size){const e=next('malloc-result');assert.equal(e.esi,size);const pointer=retainedHeap?retainedHeap.malloc(size):e.eax;assert.equal(pointer,e.eax,'Computed terrain allocation differs');if(pointer){assert.ok(!allocations.has(pointer),'Allocator reused live terrain pointer');allocations.set(pointer,Buffer.alloc(size));heapObserver?.malloc(pointer,size);}return pointer;},
+  size(pointer){const e=next(sizePhase++?'size-owner':'size-global');assert.equal(e.esi,pointer);const bytes=retainedHeap?retainedHeap.size(pointer):e.eax;assert.equal(bytes,e.eax,'Computed heap size differs');return bytes;},
+  free(pointer){const e=next('free-call');assert.equal(e.esi,pointer);if(pointer){assert.ok(allocations.has(pointer),'Free of uncaptured terrain allocation');allocations.delete(pointer);retainedHeap?.free(pointer);heapObserver?.free(pointer);}},
  };
  if(runtime&&events.some(e=>e.terrain===false)){
   for(const [address,bike]of runtime.bikes){
@@ -28,12 +28,12 @@ export function connectTerrainAllocator(initial,buffers,nodes,eventText,runtime,
    assert.equal(environment.accounting.bytes,accounting.bytes,'Shared accounting initialization differs');environment.accounting=accounting;
    environment.heap={
     calloc(count,size){ownerAddress=owner;const e=next('calloc-entry');assert.equal(e.argument,count);assert.equal(e.argument2,size);assert.ok([0x46e07a,0x46e1e2].includes(e.caller));
-     const r=next('calloc-result');assert.equal(r.esi,size);if(r.eax){assert.ok(!aiBlocks.has(r.eax));aiBlocks.set(r.eax,Math.max(16,Math.ceil(count*size/16)*16));}return r.eax;
+     const r=next('calloc-result');assert.equal(r.esi,size);const pointer=retainedHeap?retainedHeap.calloc(count,size):r.eax;assert.equal(pointer,r.eax,'Computed AI allocation differs');if(pointer){assert.ok(!aiBlocks.has(pointer));aiBlocks.set(pointer,Math.max(16,Math.ceil(count*size/16)*16));}return pointer;
     },
     size(pointer){ownerAddress=owner;if(events[cursor]?.phase==='free-entry'){const e=next('free-entry');assert.equal(e.argument,pointer);assert.ok([0x46e9d7,0x46e9eb].includes(e.caller));sizePhase=0;}
-     const e=next(sizePhase++?'size-owner':'size-global');assert.equal(e.esi,pointer);assert.equal(e.eax,aiBlocks.get(pointer),'AI heap size policy differs');return aiBlocks.get(pointer);
+     const e=next(sizePhase++?'size-owner':'size-global');assert.equal(e.esi,pointer);const bytes=retainedHeap?retainedHeap.size(pointer):aiBlocks.get(pointer);assert.equal(e.eax,bytes,'AI heap size policy differs');return bytes;
     },
-    free(pointer){ownerAddress=owner;if(!pointer){const e=next('free-entry');assert.equal(e.argument,0);}const e=next('free-call');assert.equal(e.esi,pointer);if(pointer)assert.ok(aiBlocks.delete(pointer));},
+    free(pointer){ownerAddress=owner;if(!pointer){const e=next('free-entry');assert.equal(e.argument,0);}const e=next('free-call');assert.equal(e.esi,pointer);if(pointer){assert.ok(aiBlocks.delete(pointer));retainedHeap?.free(pointer);}},
    };
   }
  }
