@@ -1,0 +1,25 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {brotliDecompressSync,gunzipSync} from 'node:zlib';
+import {runWorldTrajectory} from './run-world-trajectory.mjs';
+import {validateWorldInputProtocol} from './world-input-protocol.mjs';
+const fixture=JSON.parse(brotliDecompressSync(fs.readFileSync(new URL('../../tests/fixtures/mcm/world-compact-wine11.json.br',import.meta.url))));
+assert.equal(fixture.provenance.executableSha256,'e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b');
+for(const [name,value]of Object.entries(fixture.files))assert.equal(createHash('sha256').update(value).digest('hex'),fixture.provenance.fileSha256[name]);
+const protocol=validateWorldInputProtocol(fixture.files);
+const rows=fixture.files['world-bikes.jsonl'].trim().split('\n').map(JSON.parse),entries=rows.filter((_,i)=>i%4===0);
+const files=Object.fromEntries(Object.entries(fixture.files).filter(([n])=>n.startsWith('world-')&&n!=='world-animation-observations.json'&&(n.endsWith('.json')||/^world-mesh-[0-9]+\.jsonl$/.test(n))));
+const {terrain:t}=JSON.parse(gunzipSync(fs.readFileSync(new URL('../../src/assets/mcm-maps/quarries-dunes.bin',import.meta.url))));
+const deltas=entries.map(r=>Buffer.from(r.stackHex,'hex').readFloatLE(0xbfc)),float=n=>new Float32Array(Uint32Array.of(n).buffer)[0];
+const controls=entries.map((r,i)=>({throttle:protocol.frames[i].throttle,steer:float(r.frameInput.steerBits),lean:float(r.frameInput.longitudinalBits)}));
+const result=await runWorldTrajectory({files,t,deltas,controls,fullHeap:true},new URL('../../',import.meta.url).href);
+assert.equal(result.outputs.length,rows.length);let words=0,differences=0,randomDifferences=0;const first=[],offsets={};
+result.outputs.forEach((actual,i)=>{
+ const row=rows[i],expected=Buffer.from(row.bodyHex,'hex');assert.equal(actual.address,row.bike);assert.equal(actual.phase,row.phase);
+ if(actual.random!==row.randomState)randomDifferences++;
+ actual.body.forEach((value,j)=>{words++;const target=expected.readUInt32LE(j*4);if(value!==target){differences++;const offset='0x'+(j*4).toString(16);offsets[offset]=(offsets[offset]??0)+1;if(first.length<20)first.push({frame:actual.frame,bike:actual.address,phase:actual.phase,offset,actual:value,expected:target});}});
+});
+const sustained=deltas.slice(2).sort((a,b)=>a-b);
+console.log(JSON.stringify({frames:deltas.length,words,differences,randomDifferences,offsets,first,heap:result.heap,timing:{initial:deltas.slice(0,2),sustainedMin:sustained[0],sustainedMedian:sustained[Math.floor(sustained.length/2)],sustainedMax:sustained.at(-1),totalSeconds:deltas.reduce((a,b)=>a+b,0)},scope:'Native compact capture compared from atomic initialization. External controls and native elapsed time only; last update stops at the recorded partial boundary. Initial snapshot stall and debugger overhead remain.'},null,2));
+if(differences||randomDifferences)process.exitCode=1;

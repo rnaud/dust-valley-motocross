@@ -1,0 +1,80 @@
+{
+  "frames": 1500,
+  "words": 4908000,
+  "differences": 0,
+  "randomDifferences": 0,
+  "offsets": {},
+  "first": [],
+  "heap": {
+    "allocations": 7635,
+    "frees": 7635,
+    "sizeQueries": 15270,
+    "affinity": 6,
+    "virtualMemory": {
+      "commits": 0,
+      "decommits": 0,
+      "releases": 0,
+      "reservations": 1,
+      "committedPages": 896
+    }
+  },
+  "timing": {
+    "initial": [
+      0.029000001028180122,
+      3.6680002212524414
+    ],
+    "sustainedMin": 0.02800000086426735,
+    "sustainedMedian": 0.032999999821186066,
+    "sustainedMax": 0.12400000542402267,
+    "totalSeconds": 53.47600167989731
+  },
+  "scope": "Native compact capture compared from atomic initialization. External controls and native elapsed time only; last update stops at the recorded partial boundary. Initial snapshot stall and debugger overhead remain.",
+  "browser": {
+    "browser": "Chrome",
+    "fullHeap": true,
+    "heap": {
+      "allocations": 7635,
+      "frees": 7635,
+      "sizeQueries": 15270,
+      "affinity": 6,
+      "virtualMemory": {
+        "commits": 0,
+        "decommits": 0,
+        "releases": 0,
+        "reservations": 1,
+        "committedPages": 896
+      }
+    },
+    "terrainTicks": 1499,
+    "frames": 1500,
+    "bikeEntries": 3000,
+    "bikeTails": 3000,
+    "nodeWords": 4908000,
+    "browserWords": 4908000,
+    "differences": 0,
+    "errors": [],
+    "scope": "Sustained compact native trajectory: complete bike bodies and shared RNG match using only atomic initialization, external controls and native clock deltas. Initial snapshot pause and debugger overhead remain; last update ends at the recorded partial boundary. This does not prove full-game or uninstrumented performance parity."
+  },
+  "capture": {
+    "directory": "/tmp/mcm-world-compact-v2",
+    "wallMilliseconds": 53705.388,
+    "stoppedMilliseconds": 14191.798,
+    "restoration": "all 78 guarded instruction locations clean; debugger detached; input and camera restored",
+    "archiveBytes": 9999965
+  },
+  "resolvedDifference": {
+    "wordsBeforeFix": 36,
+    "offsets": [
+      "0x57c",
+      "0x588"
+    ],
+    "cause": "JSON discarded signed zero in immutable terrain bank normals; negative-scale terrain nodes then produced differently signed flat contact tangents.",
+    "fix": "Verify numeric agreement with the terrain asset and preserve original initial-bank normal words, including signed zero."
+  },
+  "verification": {
+    "testsPassed": 974,
+    "testsFailed": 0,
+    "productionBuild": "passed",
+    "desktopAndTouchProductionSmoke": "passed, no page errors"
+  }
+}

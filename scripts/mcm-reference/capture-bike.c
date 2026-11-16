@@ -47,7 +47,11 @@ static int player_active;
 // AI state remains observation-only. The separate world throttle pulse changes
 // only player input-query returns; it never forces timing, RNG or checkpoints.
 static DWORD observe_ai,observed_random_address,observed_random_thread;
-static int world_throttle_pulse,world_pursuit;
+static int world_throttle_pulse,world_pursuit,world_compact;
+static DWORD world_boundary_count;
+// Before initialization only discover RNG and stop at the atomic world entry.
+// Afterwards retain bike entry/tail and the explicit player input query.
+static int world_compact_hook(unsigned index,int initialized){return initialized?index<=2:(index==3||index==44);}
 static DWORD world_input_bike,world_input_frame,world_input_throttle;
 static int capture_ai_environment;
 static int capture_ai_rider,ai_rider_active,capture_ai_queries,capture_ai_query_gating;
@@ -386,6 +390,7 @@ int main(int argc, char **argv) {
         fprintf(stderr, "Usage: capture-live.exe WINDOWS_PID output.jsonl record-count\n");
         return 2;
     }
+    world_compact=getenv("MCM_WORLD_COMPACT")!=NULL;
     profile_capture=getenv("MCM_PROFILE_CAPTURE")!=NULL;
     if(profile_capture&&(!QueryPerformanceFrequency(&profile_frequency)||profile_frequency.QuadPart<=0))return 2;
     scripted = getenv("MCM_SCRIPTED") != NULL;
@@ -459,6 +464,8 @@ int main(int argc, char **argv) {
     if(capture_rider_timing)hook_count=5;
     capture_contact=getenv("MCM_CAPTURE_CONTACT")!=NULL;
     if(capture_contact){if(!scripted||!getenv("MCM_COLLISION_WORLD")||!getenv("MCM_CHECKPOINT")||getenv("MCM_ANIMATIONS")){fprintf(stderr,"Contact capture requires scripted world/checkpoint output and excludes animation export.\n");return 2;}hook_count=6;capture_rider_timing=1;}
+    if(world_compact&&(!capture_world_initial||scripted||!capture_world_camera||!getenv("MCM_WORLD_RIDER_HEAP"))){fprintf(stderr,"Compact capture requires atomic world, camera and heap without scripted restoration.\n");return 2;}
+    if(world_compact){capture_ai_query_gating=0;capture_ai_substep_gating=0;}
     DWORD pid = strtoul(argv[1], NULL, 0), limit = strtoul(argv[3], NULL, 0);
     if(capture_ai_environment&&(limit<4||limit%4))return 2;
     capture_tires=getenv("MCM_CAPTURE_TIRES")!=NULL;
@@ -568,6 +575,7 @@ int main(int argc, char **argv) {
             for (unsigned i = 0; i < hook_count; i++) if (armed[i] && address == addresses[i]) matched = i;
             if (code == EXCEPTION_BREAKPOINT && !installed && !done) {
                 for (unsigned i = 0; i < hook_count; i++) {
+                    if(world_compact&&!world_compact_hook(i,world_initial_done))continue;
                     write_byte(addresses[i], 0xcc);
                     armed[i] = 1;
                 }
@@ -584,9 +592,12 @@ int main(int argc, char **argv) {
                     if(world_throttle_pulse&&world_initial_done&&matched==2&&!apply_world_throttle(&context,event.dwThreadId))done=2;
                     if(capture_world_initial&&world_initial_done&&capture_ai_draws&&player_frame&&(matched==17||matched==18)&&!trace_world_draw((matched==17?context.Ecx:context.Ebx)-0x404,matched==18))done=2;
                     if(capture_world_initial&&world_initial_done&&capture_ai_rider&&(matched==6||matched==7)&&!trace_world_rider_boundary(matched==6,&context,event.dwThreadId))done=2;
-                    if(capture_world_initial&&world_initial_done&&(matched==45||matched==0)&&!trace_world_bike_prefix(matched==45,&context,event.dwThreadId))done=2;
+                    if(!world_compact&&capture_world_initial&&world_initial_done&&(matched==45||matched==0)&&!trace_world_bike_prefix(matched==45,&context,event.dwThreadId))done=2;
                     if(capture_world_marker_queries&&world_initial_done&&matched==8&&!trace_world_marker_query(&context,event.dwThreadId))done=2;
-                    if(capture_world_application&&matched>=70){
+                    if(world_compact&&world_initial_done&&matched<=2){
+                        if(matched==0&&context.Esi==observe_ai)player_frame++;
+                        count=world_boundary_count;start=GetTickCount();
+                    }else if(capture_world_application&&matched>=70){
                         if(world_initial_done&&!trace_application_frame(matched-70,&context))done=2;
                     }else if(capture_world_scene_tick&&matched>=61){
                         if(world_initial_done&&!trace_scene_tick(matched-61,&context))done=2;
@@ -797,7 +808,7 @@ int main(int argc, char **argv) {
                 }
                 if (thread) CloseHandle(thread);
                 if (!done && count >= limit&&(!capture_world_initial||world_pair_complete)){done=capture_contact&&!contact_exported?2:1;if(done==2)fprintf(stderr,"No requested contact boundary captured.\n");}
-                if (!done) {
+                if (!done && (!world_compact||world_compact_hook(pending,world_initial_done))) {
                     write_byte(addresses[pending], 0xcc);
                     armed[pending] = 1;
                 }
@@ -835,6 +846,11 @@ int main(int argc, char **argv) {
                 } else TerminateProcess(process, 5);
                 if (thread) CloseHandle(thread);
             }
+        }
+        if(world_compact&&installed&&!done)for(unsigned i=0;i<hook_count;i++){
+            if((int)i==pending)continue;
+            int wanted=world_compact_hook(i,world_initial_done);
+            if(armed[i]!=wanted){write_byte(addresses[i],wanted?0xcc:saved[i]);armed[i]=wanted;}
         }
         const int query_action=ai_query_hook_action(capture_ai_query_gating,installed,done,pending,armed[8],player_frame,player_active,ai_rider_active);
         if(query_action>=0){write_byte(addresses[8],query_action?0xcc:saved[8]);armed[8]=query_action;ai_query_gate_transitions++;}

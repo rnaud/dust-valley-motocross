@@ -51,7 +51,7 @@ static int trace_world_bike_boundary(int before,CONTEXT*c,DWORD thread){
  if(!read_memory(c->Esi,body,sizeof body)||!read_memory(c->Esp,stack,sizeof stack)||!read_memory(observed_random_address,&state,4))return 0;
  if(!world_bikes_out){char path[1024];snprintf(path,sizeof path,"%s\\world-bikes.jsonl",getenv("MCM_WORLD_ENTRY"));world_bikes_out=fopen(path,"wx");if(!world_bikes_out)return 0;}
  FILE*out=world_bikes_out;fprintf(out,"{\"phase\":\"%s\",\"sequence\":%lu,\"bike\":%lu,\"thread\":%lu,\"randomState\":%lu,\"stackAddress\":%lu,\"bodyHex\":\"",before?"before-bike":"after-bike",sequence++,c->Esi,thread,state,c->Esp);
- int ok=write_particle_hex(out,body,sizeof body);fprintf(out,"\",\"stackHex\":\"");ok=ok&&write_particle_hex(out,stack,sizeof stack);fprintf(out,"\"");ok=ok&&capture_marker_observation(out)&&capture_hud_observation(out)&&capture_scene_queue_observation(out)&&capture_scene_display_observation(out)&&capture_scene_terrain_observation(out,before&&!*(DWORD*)(body+0x614));if(world_pursuit&&c->Esi==world_steering_bike)fprintf(out,",\"steeringOverride\":{\"originalBits\":%lu,\"appliedBits\":%lu}",world_steering_original,world_steering_applied);if(before){
+ int ok=write_particle_hex(out,body,sizeof body);fprintf(out,"\",\"stackHex\":\"");ok=ok&&write_particle_hex(out,stack,sizeof stack);fprintf(out,"\"");if(!world_compact)ok=ok&&capture_marker_observation(out)&&capture_hud_observation(out)&&capture_scene_queue_observation(out)&&capture_scene_display_observation(out)&&capture_scene_terrain_observation(out,before&&!*(DWORD*)(body+0x614));if(world_pursuit&&c->Esi==world_steering_bike)fprintf(out,",\"steeringOverride\":{\"originalBits\":%lu,\"appliedBits\":%lu}",world_steering_original,world_steering_applied);if(before){
   DWORD app,steer,analog,longitudinal,device,kind=0;BYTE deviceByte=0;
   if(!read_memory(0x4e4fb4,&app,4)||!read_memory(app+0x12d4,&steer,4)||!read_memory(app+0x12fc,&analog,4)||!read_memory(app+0x12e8,&longitudinal,4)||!read_memory(app+0x12e4,&device,4))return 0;
   if(device&&(!read_memory(device+0x30,&kind,4)||!read_memory(device+0x5d,&deviceByte,1)))return 0;
@@ -60,7 +60,7 @@ static int trace_world_bike_boundary(int before,CONTEXT*c,DWORD thread){
   DWORD audioOwner,notification,cameraOwner,camera,position[3];
   if(!read_memory(c->Esi+0x41c,&audioOwner,4)||!read_memory(audioOwner+0x3c,&notification,4)||!read_memory(notification+0x1c,&cameraOwner,4)||!read_memory(cameraOwner+0x2c,&camera,4)||!read_memory(camera+0x144,position,sizeof position))return 0;
   fprintf(out,",\"audioCamera\":{\"address\":%lu,\"positionBits\":[%lu,%lu,%lu]}",camera,position[0],position[1],position[2]);
- }if(world_throttle_pulse)fprintf(out,",\"playerThrottle\":%lu",world_input_throttle);fprintf(out,"}\n");if(!before&&c->Esi==world_steering_bike&&!restore_world_steering())return 0;if(!before&&c->Esi==world_input_bike)world_input_bike=0;if(!before&&c->Esi==observe_ai)world_pair_complete=1;return ok&&!ferror(out)&&fflush(out)==0;
+ }if(world_throttle_pulse)fprintf(out,",\"playerThrottle\":%lu",world_input_throttle);fprintf(out,"}\n");if(!before&&c->Esi==world_steering_bike&&!restore_world_steering())return 0;if(!before&&c->Esi==world_input_bike)world_input_bike=0;if(!before&&c->Esi==observe_ai)world_pair_complete=1;world_boundary_count++;return ok&&!ferror(out)&&fflush(out)==0;
 }
 
 static FILE*world_riders_out;
