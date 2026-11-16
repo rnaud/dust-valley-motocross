@@ -52,3 +52,31 @@ test('CRT page rejects incomplete metadata and freeing inside an allocation',()=
  assert.throws(()=>createCrtSmallPage({...initial,freeUnits:239}),/free-unit count/);
  assert.throws(()=>createCrtSmallPage({...initial,hex:initial.hex.slice(2)}),/Invalid CRT page/);
 });
+
+test('CRT region selection, commit, decommit and release match 1730 original transitions',async()=>{
+ const {createCrtSmallHeap}=await import('../scripts/mcm-reference/crt-small-heap.mjs');
+ let steps=0,failedServices=0;const counts={};
+ for(const row of fixture('crt-small-regions')){
+  let expected=[];
+  const services=Object.fromEntries(['commit','decommit','release','freeRegion'].map(name=>[name,(address,size)=>{
+   const call=expected.shift();assert.ok(call,`unexpected ${name}`);
+   assert.equal(name,call.operation);assert.equal(address,call.address);assert.equal(size??0,call.size);
+   counts[name]=(counts[name]||0)+1;failedServices+=!call.ok;return call.ok;
+  }]));
+  const model=createCrtSmallHeap(row.initial,services);
+  assert.deepEqual(model.snapshot(),row.initial);
+  for(const [index,step] of row.steps.entries()){
+   expected=[...step.services];const context=`case ${row.case} step ${index}`;
+   if(step.operation==='allocate')assert.equal(model.allocate(step.units)??0,step.result,context);
+   else model.free(step.pointer);
+   assert.equal(expected.length,0,context);assert.deepEqual(model.snapshot(),step.after,context);steps++;
+  }
+ }
+ assert.equal(steps,1730);assert.deepEqual(counts,{decommit:400,commit:108,release:2,freeRegion:1});assert.ok(failedServices>0);
+});
+test('live CRT heap initializes only from complete captured metadata',async()=>{
+ const {createCrtSmallHeap}=await import('../scripts/mcm-reference/crt-small-heap.mjs'),initial=fixture('crt-small-heap');
+ assert.deepEqual(createCrtSmallHeap(initial).snapshot(),initial);
+ const missing=structuredClone(initial);missing.regions[0].pages.pop();assert.throws(()=>createCrtSmallHeap(missing),/Missing CRT page/);
+ const broken=structuredClone(initial),b=Buffer.from(broken.regions[0].hex,'hex');b.writeUInt32LE(0,0);broken.regions[0].hex=b.toString('hex');assert.throws(()=>createCrtSmallHeap(broken),/Invalid CRT region ring/);
+});

@@ -1,0 +1,30 @@
+{
+  "fixture": "tests/fixtures/mcm/crt-small-regions-wine11.json.br",
+  "fixtureSha256": "0b4a988e6437b191fcf1e6813e4874fdccbff91cc6dca2a97ac37a6d90760358",
+  "native": {
+    "cases": 11,
+    "steps": 1730,
+    "differences": 0,
+    "services": {
+      "commit": 108,
+      "decommit": 400,
+      "release": 2,
+      "freeRegion": 1
+    },
+    "failedServices": 21,
+    "nullAllocations": 14
+  },
+  "checks": [
+    "returned allocation pointer",
+    "current region and historical free-page counter",
+    "complete region ring and search-cache bytes",
+    "every committed page metadata byte",
+    "OS service operation order, addresses and lengths"
+  ],
+  "regression": {
+    "targetedTests": 15,
+    "passed": 15,
+    "twoBikeComparison": "zero differences"
+  },
+  "scope": "Existing CRT regions: page selection, commit/decommit, free, secondary-region removal and sentinel-region release. OS success/failure is an explicit service input; expected allocation pointers and subsequent metadata are assertions only. New-region creation, Wine group/VM service completion and autonomous world integration remain pending."
+}
