@@ -10,6 +10,29 @@ function input(f=fixture()){
 import {analyzeAiSubsteps} from '../scripts/mcm-reference/analyze-ai-substeps.mjs';
 const trace=f=>f.files['substeps.jsonl'].trim().split('\n').map(JSON.parse);
 const rider=f=>f.files['rider.jsonl'].trim().split('\n').map(JSON.parse);
+test('retained spray ticks preserve the complete native tables across eight inactive frames',()=>{
+ const f=fixture('ai-spray-inactive');
+ for(const [name,value]of Object.entries(f.files))assert.equal(createHash('sha256').update(value).digest('hex'),f.provenance.fileSha256[name]);
+ assert.match(f.files['cleanup.log'],/debugger=0 clean=1/);assert.equal((f.files['cleanup.log'].match(/restored=1/g)||[]).length,35);
+ const i=input(f),events=rider(f),r=analyzeAiSubsteps(i,i.rows,events,trace(f));
+ assert.equal(r.frames,8);assert.equal(r.bodyBoundaries,32);assert.equal(r.substepBoundaries,489);assert.equal(r.componentWords,5868);assert.deepEqual(r.visualDifferences,[]);
+ assert.deepEqual(r.sprayReports.map(s=>s.emitted),Array(7).fill(0));
+ assert.deepEqual(r.sprayReports[0].exit,{words:20049,differences:0});
+ assert.equal(r.particleDifferences.length,22688);
+ assert.ok(r.particleDifferences.every(d=>d.name==='particles'&&[0x24,0x2c,0x30,0x44].includes(d.offset%0x48)));
+ const after=events.find(e=>e.phase==='after-spray'),bytes=Buffer.from(after.emitterHex,'hex');bytes[0x484]^=1;after.emitterHex=bytes.toString('hex');
+ assert.throws(()=>analyzeAiSubsteps(i,i.rows,events,trace(f)),/Retained spray return/);
+ const missing=rider(f);missing.splice(missing.findIndex(e=>e.phase==='after-spray'),1);missing.forEach((e,n)=>e.eventSequence=n);
+ assert.throws(()=>analyzeAiSubsteps(i,i.rows,missing,trace(f)),/Missing spray return/);
+});
+test('longer spray observation preserves the unresolved rider-child tail mismatch',()=>{
+ const f=fixture('ai-spray-child-tail');
+ for(const [name,value]of Object.entries(f.files))assert.equal(createHash('sha256').update(value).digest('hex'),f.provenance.fileSha256[name]);
+ assert.match(f.files['cleanup.log'],/debugger=0 clean=1/);assert.equal((f.files['cleanup.log'].match(/restored=1/g)||[]).length,35);
+ const i=input(f);
+ assert.equal(i.rows.filter(r=>r.phase==='before-update').length,16);
+ assert.throws(()=>analyzeAiSubsteps(i,i.rows,rider(f),trace(f)),/AI before-rider child 614/);
+});
 test('render transform-cache writes remain an explicit retained-world parity failure',()=>{
  const f=fixture('ai-substeps-render-cache');
  for(const [name,value] of Object.entries(f.files))assert.equal(createHash('sha256').update(value).digest('hex'),f.provenance.fileSha256[name]);

@@ -5,6 +5,8 @@ import {advanceMcmRetainedFrame} from '../../src/physics/mcm/retained-frame.js';
 import {advanceMcmRiderTick} from '../../src/physics/mcm/rider-tick.js';
 import {tickMcmParticlePool} from '../../src/physics/mcm/particle-pool-tick.js';
 import {tickMcmDust} from '../../src/physics/mcm/dust-tick.js';
+import {tickMcmSpray} from '../../src/physics/mcm/spray-tick.js';
+import {CapturedBytes} from '../../src/physics/mcm/captured-bytes.js';
 import {bitsFloat} from '../../src/physics/mcm/math.js';
 
 // One initialization, shared identities, and explicit world update ordering.
@@ -16,7 +18,17 @@ export function createCapturedFrameRuntime(inputs,row,child){
  for(const [key,field]of [['extentScale','fieldf8'],['field138','field138'],['field144','field144'],['contactClass','field154'],['selected','selected'],['eventKind','kind']])Object.defineProperty(r,key,{get:()=>c.rider[field],set:value=>{c.rider[field]=value;}});
  Object.defineProperty(external.context,'selectedRecord',{get:()=>{const token=c.rider.selected[0],record=loaded.animation.assets.records.find(a=>a.token===token);if(token&&!record)throw Error('Missing retained selected animation');return record;}});
  const scenePosition=connectLiveSceneRiderPosition(loaded,inputs);
+ const sprayBytes=child.sprayHex?CapturedBytes.from(child.sprayHex,'hex'):null;
+ if(sprayBytes){
+  const emitter=c.frameEffects.emitters[1];
+  if(sprayBytes.length!==0x614||child.sprayAddress!==emitter.address||!sprayBytes.subarray(0,0x84).equals(emitter.bytes))throw Error('Initial spray state differs');
+ }
  return {loaded,external,scenePosition,
+  sprayState(){
+   if(!sprayBytes)throw Error('Missing initial spray tables');
+   // Frame effects owns the shared prefix; the table/index tail stays retained.
+   sprayBytes.set(c.frameEffects.emitters[1].bytes,0);return sprayBytes;
+  },
   // 0x4b7a00 copies local +0x84 verbatim; it does not resolve world +0xc4.
   // 0x44f870 copies animated actor +0x218/+0x224, not physics-rider bounds.
   renderSources(){
@@ -47,6 +59,10 @@ export function createCapturedFrameRuntime(inputs,row,child){
   stepDust({delta,paused}){
    const emitter=c.frameEffects.emitters[0];
    return tickMcmDust(emitter.bytes.view(0,0x84),{dt:delta,paused,pool:external.pool});
+  },
+  stepSpray({delta,paused}){
+   const bytes=this.sprayState(),result=tickMcmSpray(bytes.view(0,bytes.length),{dt:delta,paused,pool:external.pool});
+   c.frameEffects.emitters[1].bytes.set(bytes.subarray(0,0x84));return result;
   }
  };
 }

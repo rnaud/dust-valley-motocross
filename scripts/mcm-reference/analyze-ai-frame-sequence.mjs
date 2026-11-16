@@ -21,7 +21,7 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents,{diagnosticBody=f
  const loaded=runtime?.loaded??loadLiveFrameBootstrap({...inputs,row:first}),c=loaded.context;
  const meshDraw=inputs.draws?connectLiveMeshDraw(runtime,first):null;let drawIndex=0;
  let riderTicks=0,riderBytes=0,eventIndex=1;
- const particleDifferences=[],worldQueries=[],poolReports=[],dustReports=[];
+ const particleDifferences=[],worldQueries=[],poolReports=[],dustReports=[],sprayReports=[];
  const comparePool=(event,frame,stage)=>{
   const start=particleDifferences.length;let words=0;
   assert.equal(event.poolAddress,riderEvents[0].poolAddress,'Shared pool identity');
@@ -103,6 +103,18 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents,{diagnosticBody=f
      const exit=comparePool(after,frame,'after-dust');
      dustReports.push({frame,dtBits:before.dtBits,emitted:runtime.external.pool.count-count,entry,exit});continue;
     }
+    if(before.phase==='before-spray'){
+     const after=riderEvents[eventIndex++];assert.equal(after?.phase,'after-spray','Missing spray return');
+     const emitter=c.frameEffects.emitters[1];
+     for(const e of [before,after]){assert.equal(e.completedBikeFrames,frame+1);assert.equal(e.bikeActive,0);assert.equal(e.riderActive,0);assert.equal(e.emitter,emitter.address);}
+     assert.equal(after.dtBits,before.dtBits);assert.equal(after.paused,before.paused);
+     assert.equal(runtime.sprayState().toString('hex'),before.emitterHex,'Retained spray entry');
+     const entry=comparePool(before,frame,'before-spray'),count=runtime.external.pool.count;
+     runtime.stepSpray({delta:bitsFloat(before.dtBits),paused:before.paused});
+     assert.equal(runtime.sprayState().toString('hex'),after.emitterHex,'Retained spray return');
+     const exit=comparePool(after,frame,'after-spray');
+     sprayReports.push({frame,dtBits:before.dtBits,emitted:runtime.external.pool.count-count,entry,exit});continue;
+    }
     if(before.phase==='before-pool'){
      const after=riderEvents[eventIndex++];assert.equal(after?.phase,'after-pool','Missing pool return');
      for(const e of [before,after]){assert.equal(e.completedBikeFrames,frame+1);assert.equal(e.bikeActive,0);assert.equal(e.riderActive,0);}
@@ -152,5 +164,5 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents,{diagnosticBody=f
  if(riderEvents)assert.equal(eventIndex,riderEvents.length,'Unconsumed rider events');
  assert.equal(pendingScene,null,'Incomplete scene query');
  if(meshDraw){meshDraw.complete();assert.equal(drawIndex,inputs.draws.length,'Unconsumed draws');}
- return {frames:intervals.length,intervals,substeps,bodyBoundaries,bodyBytes,randomDraws:loaded.random.calls,visualDifferences,...(meshDraw?{drawReports:meshDraw.reports,drawNodeWords:meshDraw.nodeWords}:{}),...(poolReports.length?{poolReports}:{}),...(dustReports.length?{dustReports}:{}),...(diagnosticBody?{diagnosticBody:true,bodyDifferences}:{}),...(riderEvents?{riderTicks,riderBytes,particleDifferences,worldQueries,...(runtime.scenePosition?{sceneReports}:{})}:{})};
+ return {frames:intervals.length,intervals,substeps,bodyBoundaries,bodyBytes,randomDraws:loaded.random.calls,visualDifferences,...(meshDraw?{drawReports:meshDraw.reports,drawNodeWords:meshDraw.nodeWords}:{}),...(poolReports.length?{poolReports}:{}),...(dustReports.length?{dustReports}:{}),...(sprayReports.length?{sprayReports}:{}),...(diagnosticBody?{diagnosticBody:true,bodyDifferences}:{}),...(riderEvents?{riderTicks,riderBytes,particleDifferences,worldQueries,...(runtime.scenePosition?{sceneReports}:{})}:{})};
 }

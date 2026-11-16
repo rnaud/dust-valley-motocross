@@ -26,6 +26,12 @@ static int trace_ai_rider(const char*phase,DWORD rider,DWORD dt){
  for(unsigned i=0;i<sizeof bytes;i++)fprintf(out,"%02x",bytes[i]);
  fprintf(out,"\",\"riderHex\":\"");for(unsigned i=0;i<sizeof state;i++)fprintf(out,"%02x",state[i]);fprintf(out,"\"");
  if(!capture_retained_particle_pool(out,pool)||!observe_rider_collision(out,rider))return 0;
+ if(capture_ai_spray&&!strcmp(phase,"initial-rider")){
+  DWORD spray;BYTE full[0x614];
+  if(!read_memory(bike+0xc98,&spray,4)||!read_memory(spray,full,sizeof full))return 0;
+  fprintf(out,",\"sprayAddress\":%lu,\"sprayHex\":\"",spray);
+  for(unsigned i=0;i<sizeof full;i++)fprintf(out,"%02x",full[i]);fprintf(out,"\"");
+ }
  fprintf(out,",\"visualState\":[");unsigned count=0;
  for(unsigned i=0;i<block_count;i++){
   const Block*b=&blocks[i];if(b->size!=0x114&&b->address!=proxy)continue;
@@ -51,6 +57,16 @@ static int trace_ai_dust(const char*phase){
  if(!ai_rider_out||!read_memory(0x4e4fb4,&world,4)||!read_memory(world+0x132c,&paused,4)||!read_memory(ai_dust_address,emitter,sizeof emitter))return 0;
  memcpy(&pool,emitter+0x34,4);if(pool!=retained_pool_address)return 0;
  fprintf(ai_rider_out,"{\"phase\":\"%s\",\"captureId\":\"%s\",\"eventSequence\":%lu,\"completedBikeFrames\":%lu,\"bikeActive\":%d,\"riderActive\":%d,\"emitter\":%lu,\"paused\":%lu,\"dtBits\":%lu,\"emitterHex\":\"",phase,frame_capture_id,ai_rider_sequence++,player_frame,player_active,ai_rider_active,ai_dust_address,paused,ai_dust_dt);
+ for(unsigned i=0;i<sizeof emitter;i++)fprintf(ai_rider_out,"%02x",emitter[i]);fprintf(ai_rider_out,"\"");
+ if(!capture_retained_particle_pool(ai_rider_out,pool))return 0;
+ fprintf(ai_rider_out,"}\n");return !ferror(ai_rider_out)&&fflush(ai_rider_out)==0;
+}
+
+static int trace_ai_spray(const char*phase){
+ DWORD world,paused,pool;BYTE emitter[0x614];
+ if(!ai_rider_out||!read_memory(0x4e4fb4,&world,4)||!read_memory(world+0x132c,&paused,4)||!read_memory(ai_spray_address,emitter,sizeof emitter))return 0;
+ memcpy(&pool,emitter+0x34,4);if(pool!=retained_pool_address)return 0;
+ fprintf(ai_rider_out,"{\"phase\":\"%s\",\"captureId\":\"%s\",\"eventSequence\":%lu,\"completedBikeFrames\":%lu,\"bikeActive\":%d,\"riderActive\":%d,\"emitter\":%lu,\"paused\":%lu,\"dtBits\":%lu,\"emitterHex\":\"",phase,frame_capture_id,ai_rider_sequence++,player_frame,player_active,ai_rider_active,ai_spray_address,paused,ai_spray_dt);
  for(unsigned i=0;i<sizeof emitter;i++)fprintf(ai_rider_out,"%02x",emitter[i]);fprintf(ai_rider_out,"\"");
  if(!capture_retained_particle_pool(ai_rider_out,pool))return 0;
  fprintf(ai_rider_out,"}\n");return !ferror(ai_rider_out)&&fflush(ai_rider_out)==0;
