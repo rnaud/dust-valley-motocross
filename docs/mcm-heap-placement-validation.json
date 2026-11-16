@@ -1,0 +1,29 @@
+{
+  "fixture": "tests/fixtures/mcm/heap-placement-wine11.json.br",
+  "fixtureSha256": "01e9e0e7aac2c74991f36015d0af363048c8b6631ad9103580ce7205fd7e03b3",
+  "cases": 512,
+  "existingBlockCases": 394,
+  "existingBlockDifferences": 0,
+  "regionGrowthCases": 118,
+  "regionGrowthBehavior": "Returns null without modifying the list; native allocation succeeds in a new region, which remains an external service.",
+  "checks": [
+    "original allocation pointer",
+    "allocated header words",
+    "complete resulting free-list entries and links",
+    "unchanged list when growth is required"
+  ],
+  "liveCapture": {
+    "entries": 312,
+    "freeBlocks": 251,
+    "sentinels": 61,
+    "regionsWithFreeBlocks": 5,
+    "snapshotSucceeded": true,
+    "debuggerDetached": true
+  },
+  "regression": {
+    "targetedTests": 4,
+    "passed": 4,
+    "nativeCaptureToolsCompiled": true
+  },
+  "scope": "Ordinary allocation selection, block split and free-list mutation only. Not yet connected to the autonomous world. LFH allocation, full-heap frees, new region placement and normal-rate parity remain pending."
+}
