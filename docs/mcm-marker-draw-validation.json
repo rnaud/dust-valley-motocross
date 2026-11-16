@@ -1,0 +1,19 @@
+{
+  "provenance": {
+    "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+    "oracleSha256": "43426c0e814e32f21011c69b8a0edba8cc18d0c93681005ec33f383a81f964c3",
+    "loaderSha256": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe",
+    "inputSha256": "9369d7ce234731ede926f900ef78793ed1a8523cf4b21526125f95719fd648ec",
+    "outputSha256": "b388cd4c47f3edc71da805979c1423b683651420a2772180dc0496f2cd69e98d",
+    "scope": "Original 475560/4206c0/446220/47e8a0 with cached bounds. Only mesh submission, resource loader and alternate virtual dispatch replaced by recorded services; no graphics device exercised."
+  },
+  "cases": 2048,
+  "comparedWords": 18432,
+  "outcomes": {
+    "0:0:0": 2016,
+    "0:0:1": 16,
+    "1:1:0": 8,
+    "1:0:0": 8
+  },
+  "differences": []
+}

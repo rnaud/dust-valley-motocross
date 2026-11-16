@@ -43,7 +43,22 @@ static int capture_hud_observation(FILE*out){
  }
  fprintf(out,"]}");return !ferror(out);
 }
-static DWORD observed_world_marker;
+static DWORD observed_world_marker,observed_world_marker_shape;
+static int capture_world_marker_queries;
+static FILE*world_marker_queries_out;
+// Observe the actual resolver invocation, independently of bike/rider query
+// filtering. Stack words are evidence, not an inferred call stack or replay input.
+static int trace_world_marker_query(CONTEXT*c,DWORD thread){
+ if(c->Ecx!=observed_world_marker_shape)return 1;
+ DWORD stack[64];BYTE shape[0x114];
+ if(!read_memory(c->Esp,stack,sizeof stack)||!read_memory(c->Ecx,shape,sizeof shape))return 0;
+ if(!world_marker_queries_out){char path[1024];snprintf(path,sizeof path,"%s\\world-marker-queries.jsonl",getenv("MCM_WORLD_ENTRY"));world_marker_queries_out=fopen(path,"wx");if(!world_marker_queries_out)return 0;}
+ FILE*out=world_marker_queries_out;
+ fprintf(out,"{\"phase\":\"before-world-query\",\"completedBikeFrames\":%lu,\"thread\":%lu,\"bikeActive\":%d,\"riderActive\":%d,\"node\":%lu,\"caller\":%lu,\"stackAddress\":%lu,\"stackWords\":[",player_frame,thread,player_active,ai_rider_active,c->Ecx,stack[0],c->Esp);
+ for(unsigned i=0;i<64;i++)fprintf(out,"%s%lu",i?",":"",stack[i]);
+ fprintf(out,"],\"shapeHex\":\"");for(unsigned i=0;i<sizeof shape;i++)fprintf(out,"%02x",shape[i]);
+ fprintf(out,"\"}\n");return !ferror(out)&&!fflush(out);
+}
 // Assertion-only snapshots at existing bike boundaries. Never restore these.
 static int capture_marker_observation(FILE*out){
  if(!observed_world_marker)return 0;
@@ -116,7 +131,7 @@ static int capture_actor_tree(DWORD bike,const char*path,const char*id){
   if(n->update==0x423b50&&getenv("MCM_WORLD_DISPLAY")){observed_world_display=n->address;fprintf(out,",\"displayInitial\":");if(!capture_scene_display_state(out,n->address)){fclose(out);TREE_FAIL();}}
   if(n->update==0x4253e0){observed_world_queue=n->address;if(!capture_scene_queue_items(out,n->address)){fclose(out);TREE_FAIL();}}
   if(n->update==0x439a30){DWORD boundary[2];if(!read_memory(n->address+0x610,boundary,sizeof boundary)){fclose(out);TREE_FAIL();}fprintf(out,",\"boundaryWords\":[%lu,%lu]",boundary[0],boundary[1]);}
-  if(n->update==0x475450){observed_world_marker=n->address;DWORD shape;if(!read_memory(n->address+0x30,&shape,4)||!capture_marker_transforms(out,shape)){fclose(out);TREE_FAIL();}}
+  if(n->update==0x475450){observed_world_marker=n->address;DWORD shape;if(!read_memory(n->address+0x30,&shape,4)||!capture_marker_transforms(out,shape)){fclose(out);TREE_FAIL();}observed_world_marker_shape=shape;}
   if(n->update==0x426490){observed_world_hud=n->address;if(!capture_hud_environment(out)){fclose(out);TREE_FAIL();}}
   if(n->update==0x403030){if(observed_hud_child_count==64){fclose(out);TREE_FAIL();}observed_hud_children[observed_hud_child_count++]=n->address;}
   fprintf(out,"}");

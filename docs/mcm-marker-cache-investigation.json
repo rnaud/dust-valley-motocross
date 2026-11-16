@@ -1,0 +1,332 @@
+{
+  "scope": "Observation-only marker cache investigation. Native resolver-entry inputs explain subsequent boundary values; draw eligibility and invocation scheduling are not recovered or replayed by this diagnostic.",
+  "boundaries": 64,
+  "transitions": [
+    {
+      "boundary": 0,
+      "frame": 0,
+      "phase": "before-bike",
+      "bike": 82612896,
+      "valid": 1,
+      "worldEqualsLocal": true,
+      "latestEarlierLocalBoundary": -1,
+      "localChangedSincePrevious": false
+    },
+    {
+      "boundary": 4,
+      "frame": 1,
+      "phase": "before-bike",
+      "bike": 82612896,
+      "valid": 1,
+      "worldEqualsLocal": true,
+      "latestEarlierLocalBoundary": -1,
+      "localChangedSincePrevious": true,
+      "priorValid": 1
+    },
+    {
+      "boundary": 8,
+      "frame": 2,
+      "phase": "before-bike",
+      "bike": 82612896,
+      "valid": 1,
+      "worldEqualsLocal": true,
+      "latestEarlierLocalBoundary": -1,
+      "localChangedSincePrevious": true,
+      "priorValid": 1
+    },
+    {
+      "boundary": 12,
+      "frame": 3,
+      "phase": "before-bike",
+      "bike": 82612896,
+      "valid": 1,
+      "worldEqualsLocal": true,
+      "latestEarlierLocalBoundary": -1,
+      "localChangedSincePrevious": true,
+      "priorValid": 1
+    },
+    {
+      "boundary": 16,
+      "frame": 4,
+      "phase": "before-bike",
+      "bike": 82612896,
+      "valid": 1,
+      "worldEqualsLocal": true,
+      "latestEarlierLocalBoundary": -1,
+      "localChangedSincePrevious": true,
+      "priorValid": 1
+    },
+    {
+      "boundary": 20,
+      "frame": 5,
+      "phase": "before-bike",
+      "bike": 82612896,
+      "valid": 1,
+      "worldEqualsLocal": true,
+      "latestEarlierLocalBoundary": -1,
+      "localChangedSincePrevious": true,
+      "priorValid": 1
+    },
+    {
+      "boundary": 24,
+      "frame": 6,
+      "phase": "before-bike",
+      "bike": 82612896,
+      "valid": 1,
+      "worldEqualsLocal": true,
+      "latestEarlierLocalBoundary": -1,
+      "localChangedSincePrevious": true,
+      "priorValid": 1
+    },
+    {
+      "boundary": 28,
+      "frame": 7,
+      "phase": "before-bike",
+      "bike": 82612896,
+      "valid": 1,
+      "worldEqualsLocal": true,
+      "latestEarlierLocalBoundary": -1,
+      "localChangedSincePrevious": true,
+      "priorValid": 1
+    },
+    {
+      "boundary": 32,
+      "frame": 8,
+      "phase": "before-bike",
+      "bike": 82612896,
+      "valid": 1,
+      "worldEqualsLocal": true,
+      "latestEarlierLocalBoundary": -1,
+      "localChangedSincePrevious": true,
+      "priorValid": 1
+    },
+    {
+      "boundary": 36,
+      "frame": 9,
+      "phase": "before-bike",
+      "bike": 82612896,
+      "valid": 1,
+      "worldEqualsLocal": true,
+      "latestEarlierLocalBoundary": -1,
+      "localChangedSincePrevious": true,
+      "priorValid": 1
+    },
+    {
+      "boundary": 40,
+      "frame": 10,
+      "phase": "before-bike",
+      "bike": 82612896,
+      "valid": 1,
+      "worldEqualsLocal": true,
+      "latestEarlierLocalBoundary": -1,
+      "localChangedSincePrevious": true,
+      "priorValid": 1
+    },
+    {
+      "boundary": 44,
+      "frame": 11,
+      "phase": "before-bike",
+      "bike": 82612896,
+      "valid": 1,
+      "worldEqualsLocal": true,
+      "latestEarlierLocalBoundary": -1,
+      "localChangedSincePrevious": true,
+      "priorValid": 1
+    },
+    {
+      "boundary": 48,
+      "frame": 12,
+      "phase": "before-bike",
+      "bike": 82612896,
+      "valid": 1,
+      "worldEqualsLocal": true,
+      "latestEarlierLocalBoundary": -1,
+      "localChangedSincePrevious": true,
+      "priorValid": 1
+    },
+    {
+      "boundary": 52,
+      "frame": 13,
+      "phase": "before-bike",
+      "bike": 82612896,
+      "valid": 1,
+      "worldEqualsLocal": true,
+      "latestEarlierLocalBoundary": -1,
+      "localChangedSincePrevious": true,
+      "priorValid": 1
+    },
+    {
+      "boundary": 56,
+      "frame": 14,
+      "phase": "before-bike",
+      "bike": 82612896,
+      "valid": 1,
+      "worldEqualsLocal": true,
+      "latestEarlierLocalBoundary": -1,
+      "localChangedSincePrevious": true,
+      "priorValid": 1
+    },
+    {
+      "boundary": 60,
+      "frame": 15,
+      "phase": "before-bike",
+      "bike": 82612896,
+      "valid": 1,
+      "worldEqualsLocal": true,
+      "latestEarlierLocalBoundary": -1,
+      "localChangedSincePrevious": true,
+      "priorValid": 1
+    }
+  ],
+  "queryComparisons": [
+    {
+      "frame": 1,
+      "caller": "0x445711",
+      "bikeActive": 0,
+      "riderActive": 0,
+      "inputCacheValid": 0,
+      "comparedWords": 17,
+      "differences": []
+    },
+    {
+      "frame": 2,
+      "caller": "0x445711",
+      "bikeActive": 0,
+      "riderActive": 0,
+      "inputCacheValid": 0,
+      "comparedWords": 17,
+      "differences": []
+    },
+    {
+      "frame": 3,
+      "caller": "0x445711",
+      "bikeActive": 0,
+      "riderActive": 0,
+      "inputCacheValid": 0,
+      "comparedWords": 17,
+      "differences": []
+    },
+    {
+      "frame": 4,
+      "caller": "0x445711",
+      "bikeActive": 0,
+      "riderActive": 0,
+      "inputCacheValid": 0,
+      "comparedWords": 17,
+      "differences": []
+    },
+    {
+      "frame": 5,
+      "caller": "0x445711",
+      "bikeActive": 0,
+      "riderActive": 0,
+      "inputCacheValid": 0,
+      "comparedWords": 17,
+      "differences": []
+    },
+    {
+      "frame": 6,
+      "caller": "0x445711",
+      "bikeActive": 0,
+      "riderActive": 0,
+      "inputCacheValid": 0,
+      "comparedWords": 17,
+      "differences": []
+    },
+    {
+      "frame": 7,
+      "caller": "0x445711",
+      "bikeActive": 0,
+      "riderActive": 0,
+      "inputCacheValid": 0,
+      "comparedWords": 17,
+      "differences": []
+    },
+    {
+      "frame": 8,
+      "caller": "0x445711",
+      "bikeActive": 0,
+      "riderActive": 0,
+      "inputCacheValid": 0,
+      "comparedWords": 17,
+      "differences": []
+    },
+    {
+      "frame": 9,
+      "caller": "0x445711",
+      "bikeActive": 0,
+      "riderActive": 0,
+      "inputCacheValid": 0,
+      "comparedWords": 17,
+      "differences": []
+    },
+    {
+      "frame": 10,
+      "caller": "0x445711",
+      "bikeActive": 0,
+      "riderActive": 0,
+      "inputCacheValid": 0,
+      "comparedWords": 17,
+      "differences": []
+    },
+    {
+      "frame": 11,
+      "caller": "0x445711",
+      "bikeActive": 0,
+      "riderActive": 0,
+      "inputCacheValid": 0,
+      "comparedWords": 17,
+      "differences": []
+    },
+    {
+      "frame": 12,
+      "caller": "0x445711",
+      "bikeActive": 0,
+      "riderActive": 0,
+      "inputCacheValid": 0,
+      "comparedWords": 17,
+      "differences": []
+    },
+    {
+      "frame": 13,
+      "caller": "0x445711",
+      "bikeActive": 0,
+      "riderActive": 0,
+      "inputCacheValid": 0,
+      "comparedWords": 17,
+      "differences": []
+    },
+    {
+      "frame": 14,
+      "caller": "0x445711",
+      "bikeActive": 0,
+      "riderActive": 0,
+      "inputCacheValid": 0,
+      "comparedWords": 17,
+      "differences": []
+    },
+    {
+      "frame": 15,
+      "caller": "0x445711",
+      "bikeActive": 0,
+      "riderActive": 0,
+      "inputCacheValid": 0,
+      "comparedWords": 17,
+      "differences": []
+    }
+  ],
+  "evidence": {
+    "captureDirectory": "/tmp/mcm-world-marker-queries-v1",
+    "archive": "/tmp/mcm-world-marker-queries-v1.json.br",
+    "sourceSha256": {
+      "world-marker-queries.jsonl": "b4f5ad5e4124b1c0d63ef8e7dd8325216fdb48ba58d08ac163c5b1fac8b02026",
+      "world-bikes.jsonl": "946f947a8ea5d31c65fb3e0048c9f601f71b781173a1f963ee444e383593b6e6",
+      "capture.log": "16c09050b92e46834d7c832ef191db04ce13b3ab61ae4955a25a669715ce512f",
+      "cleanup.log": "7246afe2b83def65fc42217b3d8c8dd53d65641ca3143d8a1ef5221dca712349"
+    },
+    "captureExit": 0,
+    "cleanupExit": 0,
+    "restoredHooks": 60,
+    "debuggerAttachedAfter": false
+  }
+}

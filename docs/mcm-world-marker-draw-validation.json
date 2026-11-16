@@ -1,0 +1,402 @@
+{
+  "scope": "Computed marker gates, shape projection and component queries on retained marker state. Draw invocation, viewport and renderer mode remain external boundary inputs; no later marker outputs seed simulation.",
+  "fixture": "tests/fixtures/mcm/world-marker-draw-wine11.json.br",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "frames": 64,
+  "markerBoundaries": 256,
+  "markerComparedWords": 18944,
+  "markerDrawReport": {
+    "draws": 63,
+    "queries": 63,
+    "comparedWords": 7749,
+    "reports": [
+      {
+        "frame": 0,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 1,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 2,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 3,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 4,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 5,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 6,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 7,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 8,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 9,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 10,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 11,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 12,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 13,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 14,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 15,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 16,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 17,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 18,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 19,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 20,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 21,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 22,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 23,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 24,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 25,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 26,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 27,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 28,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 29,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 30,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 31,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 32,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 33,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 34,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 35,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 36,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 37,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 38,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 39,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 40,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 41,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 42,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 43,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 44,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 45,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 46,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 47,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 48,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 49,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 50,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 51,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 52,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 53,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 54,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 55,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 56,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 57,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 58,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 59,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 60,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 61,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 62,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      }
+    ],
+    "scope": "Computed marker gates, shape projection and component queries on retained marker state. Draw invocation, viewport and renderer mode remain external boundary inputs; no later marker outputs seed simulation."
+  },
+  "terrainNodeWords": 106394112,
+  "terrainAllocatorReport": {
+    "remainingAllocatorEvents": 0,
+    "allocatorGlobalDifferences": []
+  },
+  "differences": [],
+  "restoredHooks": 61,
+  "debuggerAttachedAfter": false
+}

@@ -7845,3 +7845,79 @@ Evidence: `world-scene-renderer-wine11.json.br` and
 `mcm-world-scene-renderer-validation.json`. Regression tests also corrupt a
 submission argument, an output matrix, and the device result to verify rejection.
 The production preview is unchanged by this reference-runtime milestone.
+
+
+### Marker cache writer identified; draw integration remains open (2026-11-16)
+
+The terrain-emission milestone `44fc2ca` is on main; deployment 43944294626
+completed successfully, including tests, build and Pages publication.
+
+A fresh 16-update original-game run (`/tmp/mcm-world-marker-queries-v1`)
+observes the existing world-matrix resolver breakpoint without bike/rider query
+gating. The optional `MCM_WORLD_MARKER_QUERIES` recorder writes only calls for
+the initialized marker transform, including caller, stack words and input
+transform. It adds no hook sites and changes no simulation values. All 60 hooks
+were independently verified restored; the debugger detached and input/camera
+cleanup succeeded.
+
+All 15 observed queries came from return address `0x445711`, the call to
+`0x4b6930` in mesh component preparation `0x445690`. Every input cache was
+invalid; each resolved unparented local matrix exactly matches the next bike
+boundary world matrix and valid flag: 255 compared words, zero differences.
+The marker actor uses draw callback `0x475560`; its child at shape+0x14c uses
+`0x446220`. That callback reaches mesh dispatch `0x445870`, whose dirty branch
+calls `0x445690`. This identifies a concrete writer, rather than treating cache
+changes as physics divergence or clearing them from the report.
+
+`analyze-marker-cache-boundaries.mjs` and
+`mcm-marker-cache-investigation.json` are observation-only diagnostics. They do
+not feed observed transforms, cache flags or query timings into retained world
+execution. The current integrated replay still reports marker cache differences.
+Next: capture the marker mesh tables, bounds, LOD and draw gates at atomic world
+initialization; recover its draw eligibility and connect component queries to
+the retained marker graph. Validate both executed and culled draws, then rerun
+the joint bike comparison before shipping this as a completed milestone.
+
+
+### Marker draw caches connected to the joint replay (2026-11-16)
+
+The marker cache investigation above is now connected to retained world state.
+`marker-draw.js` recovers the two `475560` gates and `446220` shape projection,
+including its distinct x87 matrix addition order, hidden/cull paths, resource
+loader and alternate dispatch boundaries. `445690` component cache queries are
+shared with the existing bike/rider mesh path. Marker mesh tables and cached
+bounds initialize once, alongside the world. Later marker matrices, gates,
+rectangles and query snapshots are comparisons only.
+
+The original-executable oracle covers 2,048 gate/visibility/service combinations:
+18,432 words, zero differences. Ordinary mesh submission, loader and alternate
+virtual calls are explicit recorded services in this isolated oracle. It does
+not validate device pixels or reconstruct uncached geometry bounds.
+
+A fresh 64-update original-game capture holds throttle for the first 12 updates,
+then releases it. The joined run checks 256 marker boundaries (18,944 words),
+63 computed draw attempts and 63 component queries (7,749 additional words),
+with zero marker actor, local matrix, world matrix or cache-valid differences.
+Both bike paths and the connected rider, camera, particle, display and terrain
+comparisons remain at zero reported differences. Terrain checks still cover
+106,394,112 node words; all shared allocation events are consumed with matching
+accounting. All 61 observation hooks were independently verified restored,
+with debugger detached and input/camera cleanup successful.
+
+The accepted evidence is `world-marker-draw-wine11.json.br` and
+`mcm-world-marker-draw-validation.json`. Negative regressions alter a later
+cache assertion, alter a query input, and remove a query. The lone altered cache
+word stays an isolated comparison failure; the altered/missing queries are
+rejected. None becomes an input to subsequent simulation.
+
+Remaining scope is unchanged: draw invocation scheduling, viewport and renderer
+mode remain external boundaries; cached geometry bounds are initialized assets.
+Scene clocks/full orchestration, optional terrain branches, active queue paths,
+CRT heap reconstruction, normal-rate trajectories and preview integration are
+not completed by this milestone. This is validation infrastructure and recovered
+execution, not a change to the playable preview. The full-parity goal remains
+active.
+
+Validation: all 934 tests pass (132.95 seconds), production build passes, and
+whitespace checks pass. Shipping this marker draw milestone to main under the
+requested milestone cadence.
