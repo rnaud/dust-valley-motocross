@@ -10,7 +10,10 @@ try{
   page.on('pageerror',e=>errors.push(e.message));
   await page.addInitScript(()=>{localStorage.setItem('dust-valley-tutorial','1');localStorage.setItem('dust-valley-quality','low');});
   await page.goto(url);await page.waitForFunction(()=>window.__game);
-  await page.selectOption('#physics-mode','mcm-preview');await page.click('[data-mode=free]');
+  assert.equal(await page.locator('#physics-mode').inputValue(),'mcm-preview');
+  assert.equal(await page.locator('[data-mode=free]').getAttribute('aria-pressed'),'true');
+  assert.equal(await page.locator('#mcm-assets').isVisible(),true);
+  assert.ok(!(await page.locator('#menu-extra-control').innerText()).includes('Boost'));
   if(!touch)await page.uncheck('#sand-mode');
   await page.click('#start');await page.waitForFunction(()=>__game.snapshot().phase==='playing',null,{timeout:90000});
   assert.equal((await snapshot(page)).backend,'recovered-core');assert.equal(await page.locator('#lights').isVisible(),false);

@@ -24,8 +24,8 @@ import {track,terrain as raceTerrain,freeTerrain,trackDistance,nearestTrack,crea
 let activeSand=null,corePreview=null,coreScene=null;
 let previewHeight=null;
 let starting=false;
-let mode='race';
-let physicsMode='classic';
+let mode='free';
+let physicsMode='mcm-preview';
 const simulationStep=()=>physicsMode==='mcm-preview'?.02:1/120;
 const terrain=(x,z)=>activeSand?activeSand.height(x,z):(previewHeight?previewHeight(x,z):(mode==='free'?freeTerrain(x,z):raceTerrain(x,z)));
 const $=id=>document.getElementById(id);
@@ -36,8 +36,9 @@ $('mcm-map').addEventListener('change',updateMcmScenes);updateMcmScenes();
 const mapCache=new Map();
 async function loadSelectedMcmMap(base){const id=$('mcm-map').value;let asset=mapCache.get(id);if(!asset){const response=await fetch(mcmMaps.find(m=>m.id===id).url);if(!response.ok)throw Error('Original terrain download failed');asset=await new Response(response.body.pipeThrough(new DecompressionStream('gzip'))).json();mapCache.set(id,asset);}const settings=mcmSceneVariants[id]?.find(scene=>scene.source===$('mcm-scene').value)??mcmSceneSettings[id];const shadow=settings?.lights.find(light=>light.type==='ObjectPoint'&&light.castsShadows)?.position??asset.shadowTarget;return {...base,mapId:id,terrainMode:asset.terrainMode,shadowTarget:shadow,sceneSettings:settings,rendering:asset.rendering,terrain:asset.terrain};}
 
-$('physics-mode').onchange=()=>{$('mcm-assets').hidden=$('physics-mode').value!=='mcm-preview';physicsMode=$('physics-mode').value;syncSandOption();$('physics-note').textContent=physicsMode==='mcm-preview'?'Connected recovered bike and rider physics on the selected original terrain. Full matching is still in progress; steering can diverge. Boost disabled.':'Original Dust Valley handling.';};
+$('physics-mode').onchange=()=>{$('mcm-assets').hidden=$('physics-mode').value!=='mcm-preview';physicsMode=$('physics-mode').value;syncSandOption();$('physics-note').textContent=physicsMode==='mcm-preview'?'Recovered bike and rider physics on original terrain. Full matching is still in progress.':'Original Dust Valley handling.';$('menu-extra-control').innerHTML=physicsMode==='mcm-preview'?'I / K <b>Rider lean</b>':'SPACE <b>Boost</b>';$('tutorial-throttle').textContent=physicsMode==='mcm-preview'?'Hold W or GAS. Release to coast; S or BRAKE slows down.':'Hold W or GAS. Tap SPACE for boost.';};
 function syncSandOption(){$('sand-option').hidden=false;$('sand-mode').disabled=false;$('sand-note').textContent='Tires carve soft sand in every mode. Switch off for hardpack.';}
+$('physics-mode').onchange();
 const speedCanvas=$('speedlines'),speedCtx=speedCanvas?speedCanvas.getContext('2d'):null;
 const mobile=matchMedia('(pointer: coarse)').matches||navigator.maxTouchPoints>0;
 const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -511,7 +512,7 @@ async function start(){
  try{
  if(physicsMode==='mcm-preview'){startButton.textContent='LOADING ORIGINAL PHYSICS…';corePreview??=await import('./mcm-core-preview.js');coreScene=await loadSelectedMcmMap(await corePreview.loadMcmCoreScene());if(!originalModels){originalModels=createMcmOriginalModels(await loadMcmOriginalModels());scene.add(originalModels.root);}}
  }
- catch(error){console.error(error);toast('Preview could not load. Please try again.',5);return;}
+ catch(error){console.error(error);toast('Original physics could not load. Please try again.',5);return;}
  finally{starting=false;startButton.disabled=false;startButton.innerHTML=startLabel;}
 
  tireTracks.clear();
@@ -522,7 +523,7 @@ async function start(){
  previewHeight=state.physicsBackend==='recovered-core'?state.physics.baseHeight:null;
  activeSand=state.physics?.renderSurface||state.physics?.sand||null;sandSurface.update(activeSand);updateEnvironment();
  $('preview-badge').hidden=physicsMode!=='mcm-preview';
- $('preview-badge').textContent='MCM PREVIEW · RECOVERED PHYSICS';
+ $('preview-badge').textContent='MOTOCROSS MADNESS · RECOVERED';
  document.body.classList.toggle('mcm-preview',physicsMode==='mcm-preview');
  document.querySelector('.ride-hint').textContent=physicsMode==='mcm-preview'?'WASD ride · I / K rider lean · R recover':'WASD ride · SPACE boost · I / K rider lean · R recover';
  ridePose.reset(state);if(state.physicsBackend==='recovered-core')originalModels?.reset(state);riderCrouch=0;riderBank=0;elapsed=0;lap=1;nextGate=1;score=0;lapStart=0;combo=0;comboTimer=0;wrongTime=0;shake=0;
