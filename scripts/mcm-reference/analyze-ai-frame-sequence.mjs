@@ -1,3 +1,4 @@
+import {prepareLiveParticleDraw,cullLiveParticleDraw} from './live-particle-draw.mjs';
 import assert from 'node:assert/strict';
 import {loadLiveFrameBootstrap} from './live-frame-bootstrap.mjs';
 import {compareFrameRiderVisuals,compareFrameVisuals} from './compare-live-frame-rider-visuals.mjs';
@@ -21,7 +22,7 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents,{diagnosticBody=f
  const loaded=runtime?.loaded??loadLiveFrameBootstrap({...inputs,row:first}),c=loaded.context;
  const meshDraw=inputs.draws?connectLiveMeshDraw(runtime,first):null;let drawIndex=0;
  let riderTicks=0,riderBytes=0,eventIndex=1;
- const particleDifferences=[],worldQueries=[],poolReports=[],dustReports=[],sprayReports=[];
+ const particleDifferences=[],worldQueries=[],poolReports=[],dustReports=[],sprayReports=[],particleDrawReports=[];
  const comparePool=(event,frame,stage)=>{
   const start=particleDifferences.length;let words=0;
   assert.equal(event.poolAddress,riderEvents[0].poolAddress,'Shared pool identity');
@@ -91,6 +92,18 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents,{diagnosticBody=f
    while(riderEvents[eventIndex]?.completedBikeFrames===frame+1){
     drainDraws();
     const before=riderEvents[eventIndex++];
+    if(before.phase==='before-particle-draw'){
+     const projected=riderEvents[eventIndex++],after=riderEvents[eventIndex++];
+     assert.equal(projected?.phase,'before-particle-cull','Missing particle projection');assert.equal(after?.phase,'after-particle-cull','Missing particle cull return');
+     for(const e of [before,projected,after]){assert.equal(e.completedBikeFrames,frame+1);assert.equal(e.bikeActive,0);assert.equal(e.riderActive,0);assert.equal(e.poolAddress,before.poolAddress);}
+     for(const key of ['camera','scaleBits','width','height','inputAddress','projectedAddress','yOffsetBits']){assert.equal(projected[key],before[key],`Particle draw ${key}`);assert.equal(after[key],before[key],`Particle draw return ${key}`);}
+     const entry=comparePool(before,frame,'before-particle-draw');
+     const input=prepareLiveParticleDraw(runtime.external,before);assert.equal(input.toString('hex'),projected.inputHex,'Retained particle draw positions');
+     const prepared=comparePool(projected,frame,'before-particle-cull');
+     const accepted=cullLiveParticleDraw(runtime.external,projected);
+     assert.equal(after.projectedHex,projected.projectedHex,'Particle cull changed projection');assert.equal(after.inputHex,projected.inputHex,'Particle cull changed input');
+     const exit=comparePool(after,frame,'after-particle-cull');particleDrawReports.push({frame,accepted,entry,prepared,exit});continue;
+    }
     if(before.phase==='before-dust'){
      const after=riderEvents[eventIndex++];assert.equal(after?.phase,'after-dust','Missing dust return');
      const emitter=c.frameEffects.emitters[0];
@@ -164,5 +177,5 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents,{diagnosticBody=f
  if(riderEvents)assert.equal(eventIndex,riderEvents.length,'Unconsumed rider events');
  assert.equal(pendingScene,null,'Incomplete scene query');
  if(meshDraw){meshDraw.complete();assert.equal(drawIndex,inputs.draws.length,'Unconsumed draws');}
- return {frames:intervals.length,intervals,substeps,bodyBoundaries,bodyBytes,randomDraws:loaded.random.calls,visualDifferences,...(meshDraw?{drawReports:meshDraw.reports,drawNodeWords:meshDraw.nodeWords}:{}),...(poolReports.length?{poolReports}:{}),...(dustReports.length?{dustReports}:{}),...(sprayReports.length?{sprayReports}:{}),...(diagnosticBody?{diagnosticBody:true,bodyDifferences}:{}),...(riderEvents?{riderTicks,riderBytes,particleDifferences,worldQueries,...(runtime.scenePosition?{sceneReports}:{})}:{})};
+ return {frames:intervals.length,intervals,substeps,bodyBoundaries,bodyBytes,randomDraws:loaded.random.calls,visualDifferences,...(meshDraw?{drawReports:meshDraw.reports,drawNodeWords:meshDraw.nodeWords}:{}),...(poolReports.length?{poolReports}:{}),...(dustReports.length?{dustReports}:{}),...(sprayReports.length?{sprayReports}:{}),...(particleDrawReports.length?{particleDrawReports}:{}),...(diagnosticBody?{diagnosticBody:true,bodyDifferences}:{}),...(riderEvents?{riderTicks,riderBytes,particleDifferences,worldQueries,...(runtime.scenePosition?{sceneReports}:{})}:{})};
 }

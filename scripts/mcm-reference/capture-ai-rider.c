@@ -71,3 +71,18 @@ static int trace_ai_spray(const char*phase){
  if(!capture_retained_particle_pool(ai_rider_out,pool))return 0;
  fprintf(ai_rider_out,"}\n");return !ferror(ai_rider_out)&&fflush(ai_rider_out)==0;
 }
+
+static int trace_ai_particle_draw(const char*phase){
+ DWORD link,camera,scale,width,height,input,projected,count,yOffset;
+ static BYTE inputs[32000],projections[32000];
+ if(!ai_rider_out||!read_memory(retained_pool_address+0x30,&count,4)||count>1000||
+    !read_memory(retained_pool_address+0x1c,&link,4)||!read_memory(link+0x2c,&camera,4)||
+    !read_memory(camera+0x16c,&scale,4)||!read_memory(camera+0x1b4,&width,4)||!read_memory(camera+0x1b8,&height,4)||
+    !read_memory(retained_pool_address+0x1f90,&input,4)||!read_memory(retained_pool_address+0x1f8c,&projected,4)||
+    !read_memory(0x4d7124,&yOffset,4)||!read_memory(input,inputs,count*32)||!read_memory(projected,projections,count*32))return 0;
+ fprintf(ai_rider_out,"{\"phase\":\"%s\",\"captureId\":\"%s\",\"eventSequence\":%lu,\"completedBikeFrames\":%lu,\"bikeActive\":%d,\"riderActive\":%d,\"camera\":%lu,\"scaleBits\":%lu,\"width\":%ld,\"height\":%ld,\"inputAddress\":%lu,\"projectedAddress\":%lu,\"yOffsetBits\":%lu,\"inputHex\":\"",phase,frame_capture_id,ai_rider_sequence++,player_frame,player_active,ai_rider_active,camera,scale,(LONG)width,(LONG)height,input,projected,yOffset);
+ for(unsigned i=0;i<count*32;i++)fprintf(ai_rider_out,"%02x",inputs[i]);fprintf(ai_rider_out,"\",\"projectedHex\":\"");
+ for(unsigned i=0;i<count*32;i++)fprintf(ai_rider_out,"%02x",projections[i]);fprintf(ai_rider_out,"\"");
+ if(!capture_retained_particle_pool(ai_rider_out,retained_pool_address))return 0;
+ fprintf(ai_rider_out,"}\n");return !ferror(ai_rider_out)&&fflush(ai_rider_out)==0;
+}

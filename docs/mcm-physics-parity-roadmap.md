@@ -6,7 +6,7 @@
 
 | Area | Current evidence | Still required |
 | --- | --- | --- |
-| Retained AI bike physics | Seven passing substep captures cover 52 frames and 3,086 observed substep boundaries, complete bike bodies and twelve component words per boundary. The latest eight-frame run also validates rider orientation resets and visible bike/rider draw rectangles, LOD selection and mesh-cache writes. The previously failing scene trajectory also passes. | Longer, normal-rate trajectories; uncovered controller modes and interactions. |
+| Retained AI bike physics | Eight passing substep captures cover 60 frames and 3,614 observed substep boundaries, complete bike bodies and twelve component words per boundary. The latest eight-frame run also validates rider orientation resets and visible bike/rider draw rectangles, LOD selection and mesh-cache writes. The previously failing scene trajectory also passes. | Longer, normal-rate trajectories; uncovered controller modes and interactions. |
 | Recovery orientation | Retained wrapper matches 327 pinned-original synthetic cases over four calls each, including graphs, animation and orientation scratch. | Live complete crash/recovery sequences in the surrounding world. |
 | Player acceleration and throttle release | One 400-frame crash/throttle-release capture matches the modeled physics words; shared visual/particle differences remain. | A separate negative-steering run still diverges at frame 38 (41 physics differences) without observed caller scratch; finish the world inputs and prove sustained repeatability without reseeding. |
 | Shared world and scheduling | Separate rider, dust-emitter, spray-emitter and shared-pool ticks, scene-position-query prefix, and draw rectangle/LOD/cache updates are connected in native replay. Camera matrices and draw scheduling remain captured stage inputs. | Remaining scene update/scheduler logic, camera producers, shared-particle writers, other actors, and full collision-state assertions. Particle-pool mismatches remain explicit. |
@@ -6256,3 +6256,16 @@ The isolated oracle runs the original `43b4b5..43b582` region, replacing only it
 This stage is not yet connected to retained world replay or the browser renderer. Next is live particle-draw observation, shared render-pointer assignment and camera/device projection, then original invocation ordering and draw submission. The eight-frame spray fixture's remaining +24/+2c/+30/+44 differences remain explicit; this isolated milestone does not relabel them as resolved. Player negative steering, external boundary-memory writes and normal-rate whole-world validation remain open.
 
 Validation: all 757 tests pass (91 seconds), and the production build passes.
+
+
+## Particle draw writes connected in retained native replay (2026-11-15)
+
+Added optional `MCM_AI_PARTICLE_DRAW` observation at guarded `43b3a0`, `43b4bc` and `43b582` boundaries. The observer captures shared pool/particle allocations, input and projected buffers, viewport/scale values and buffer identities before preparation, before visibility tests and after visibility tests. Empty draws make no writes and are skipped. All 38 sites passed independent preflight and post-capture restoration checks; debugger detachment and camera restoration passed. The original process was not restarted.
+
+Retained replay now computes each particle's render pointer, prepares XYZ with the original +0.5 Y offset, resets the visible count, applies the recovered conditional bounds writes and builds the accepted list. Native prepared positions are assertions. Projected centers and camera/viewport remain explicit external device-stage inputs; the projection producer, accepted-particle sorting and draw submission are not yet implemented here.
+
+The new eight-frame fixture matches 32 complete bike boundaries, 528 substep bodies, 6,336 component words, 35,000 rider/child bytes and 24,150 mesh-draw node words. All checked visual and particle/pool differences are zero. Seven particle draws contain 52, 116, 154, 184, 207, 219 and 220 active particles, all culled; their entry/prepared/exit comparisons each cover 20,049 words (421,029 total). This resolves the particle writes for this capture, not earlier captures with different emitter activity. Active spray, visible particle submission, the external rider-child boundary-memory writer and the existing player negative-steering divergence remain open.
+
+Regression checks corrupt a native particle output and verify that only that comparison changes, with later computed state still matching. Altered prepared positions and missing visibility returns are rejected. No observed particle output is imported into retained state. This improves replay validation, not the browser particle renderer.
+
+Validation: all 758 tests pass (94 seconds), production build passes, and the new retained draw regression also passes on x64 Node 22.

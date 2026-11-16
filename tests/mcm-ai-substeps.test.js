@@ -164,3 +164,21 @@ test('dust updates retain emitter state and connect the original shared particle
  const missing=rider(f);missing.splice(missing.findIndex(e=>e.phase==='after-dust'),1);missing.forEach((e,n)=>e.eventSequence=n);
  assert.throws(()=>analyzeAiSubsteps(i,i.rows,missing,trace(f)),/Missing dust return/);
 });
+
+test('particle draw preparation and visibility retain all checked state across eight original frames',()=>{
+ const f=fixture('ai-particle-draw');
+ for(const [name,value]of Object.entries(f.files))assert.equal(createHash('sha256').update(value).digest('hex'),f.provenance.fileSha256[name]);
+ assert.match(f.files['cleanup.log'],/debugger=0 clean=1/);assert.equal((f.files['cleanup.log'].match(/restored=1/g)||[]).length,38);
+ const i=input(f),events=rider(f),r=analyzeAiSubsteps(i,i.rows,events,trace(f));
+ assert.equal(r.frames,8);assert.equal(r.bodyBoundaries,32);assert.equal(r.substepBoundaries,528);assert.equal(r.componentWords,6336);assert.equal(r.drawNodeWords,24150);
+ assert.deepEqual(r.visualDifferences,[]);assert.deepEqual(r.particleDifferences,[]);
+ assert.equal(r.particleDrawReports.length,7);
+ assert.ok(r.particleDrawReports.every(d=>d.accepted===0&&['entry','prepared','exit'].every(k=>d[k].words===20049&&d[k].differences===0)));
+ // Native output corruption changes only its comparison, never subsequent state.
+ const after=events.find(e=>e.phase==='after-particle-cull'),bytes=Buffer.from(after.particlesHex,'hex');bytes[0x44]^=1;after.particlesHex=bytes.toString('hex');
+ const changed=analyzeAiSubsteps(i,i.rows,events,trace(f));assert.equal(changed.particleDifferences.length,1);assert.equal(changed.particleDifferences[0].stage,'after-particle-cull');assert.deepEqual(changed.visualDifferences,[]);
+ const positions=rider(f),projected=positions.find(e=>e.phase==='before-particle-cull'),p=Buffer.from(projected.inputHex,'hex');p[0]^=1;projected.inputHex=p.toString('hex');
+ assert.throws(()=>analyzeAiSubsteps(i,i.rows,positions,trace(f)),/Retained particle draw positions/);
+ const missing=rider(f);missing.splice(missing.findIndex(e=>e.phase==='after-particle-cull'),1);missing.forEach((e,n)=>e.eventSequence=n);
+ assert.throws(()=>analyzeAiSubsteps(i,i.rows,missing,trace(f)),/Missing particle cull return/);
+});
