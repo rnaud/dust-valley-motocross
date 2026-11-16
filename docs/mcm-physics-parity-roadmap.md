@@ -6290,3 +6290,13 @@ A new eight-frame native capture matches 1,294 complete projected records (10,35
 Remaining boundary: device matrices, viewport and invocation order are still external stage inputs. Camera producers, visible-particle sorting/submission, other actor/emitter activity, the rider-child boundary-memory writer and sustained player negative steering remain unfinished. The new live projection evidence covers finite observed inputs, not an exhaustive exceptional-value corpus or full-world parity. Original audio playback rules and preview integration remain outstanding alongside physics work.
 
 Validation: all 759 tests pass (108 seconds), production build passes, and the new projection regression passes on x64 Node 22.
+
+## Original audio control paths traced; attenuation recovered (2026-11-15)
+
+Decompiled `426be0` identifies the player's engine playback state machine: idle/deceleration switching uses buffer playing status and deceleration playback position (threshold 0x2b750), acceleration starts `bike.wav` at one of seven original byte offsets, and throttle release stops the engine buffer and starts deceleration. Offsets at original `4e30f8` are 0x50e00, 0x78200, 0xa2600, 0xe6200, 0x14d200, 0x192e00 and 0x1afe00. These are playback cursors, not a fabricated RPM-to-pitch curve. Crash/landing state and buffer status affect subsequent commands; those command sequences still need an original-execution oracle and browser integration.
+
+`sound-distance.js` recovers complete original `4276f0` / `427760` distance and attenuation behavior. It ignores Y, clips by signed float-bit tests on absolute X/Z separation, uses the original square-root lookup, and computes DirectSound volume with original constants and integer truncation. The diagonal-out-of-range branch preserves the caller's pan word; the ordinary branch writes zero pan. This models the game's software attenuation helper, not the separate DirectSound 3D mode.
+
+The isolated pinned-original oracle matches all three output words over 664 cases (1,992 DWORDs), including distance boundaries, large vertical offsets, diagonal rejection, signed zero, infinities, NaNs and denormals. It executes both original functions completely, with no replacement audio or math calls. A changed pan output is detected. Browser audio still uses synthesis until the recovered playback controls are connected; this milestone does not claim audible parity.
+
+Validation: all 760 tests pass (112 seconds), production build passes, and the attenuation corpus also passes on x64 Node 22.

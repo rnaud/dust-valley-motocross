@@ -1,0 +1,6 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';import {brotliCompressSync} from 'node:zlib';import {compareSoundDistance} from './compare-sound-distance.mjs';
+const [exe,source,result,target]=process.argv.slice(2);if(!target)throw Error('Usage: build-sound-distance-fixture.mjs ORIGINAL INPUT OUTPUT FIXTURE');
+const hash=b=>createHash('sha256').update(b).digest('hex'),input=fs.readFileSync(source),output=fs.readFileSync(result),executableSha256=hash(fs.readFileSync(exe));assert.equal(executableSha256,'e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b');
+const report=compareSoundDistance(input,output);assert.deepEqual(report.differences,[]);
+const provenance={executableSha256,inputSha256:hash(input),outputSha256:hash(output),oracleSha256:hash(fs.readFileSync(new URL('./sound-distance-oracle.c',import.meta.url))),generatorSha256:hash(fs.readFileSync(new URL('./generate-sound-distance.mjs',import.meta.url))),scope:'Complete original 4276f0 and 427760; isolated distance/attenuation, not playback or spatial API behavior.'};
+fs.writeFileSync(target,brotliCompressSync(Buffer.from(JSON.stringify({provenance,report,input:input.toString('base64'),output:output.toString('base64')}))));console.log(report);
