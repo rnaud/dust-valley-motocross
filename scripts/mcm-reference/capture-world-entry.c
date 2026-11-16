@@ -31,7 +31,10 @@ static int capture_world_entry(DWORD actor,DWORD esp){
  DWORD remoteTable;int remoteCount;memcpy(&remoteTable,body+0x34,4);memcpy(&remoteCount,app+0x314,4);
  if(remoteCount<0||remoteCount>64)ok=0;
  for(int i=0;ok&&i<remoteCount;i++){DWORD bike=0;if(remoteTable&&!read_memory(remoteTable+i*4,&bike,4)){ok=0;break;}fprintf(out,"%s%lu",i?",":"",bike);if(bike)ok=0; /* Explicitly reject uncaptured remote bike state. */}
- fprintf(out,"]");memcpy(&view,body+0x44,4);DWORD target=0,excluded=0;
+ fprintf(out,"]");BYTE initialStack[0xc40];DWORD stackAddress=esp-0xc20;
+ if(!read_memory(stackAddress,initialStack,sizeof initialStack))ok=0;
+ fprintf(out,",\"stackAddress\":%lu,\"stackHex\":\"",stackAddress);ok=ok&&write_particle_hex(out,initialStack,sizeof initialStack);fprintf(out,"\"");
+ memcpy(&view,body+0x44,4);DWORD target=0,excluded=0;
  if(!read_memory(view+0x1ec,&target,4)||!read_memory(target+0xc30,&excluded,4))ok=0;
  fprintf(out,",\"view\":%lu,\"target\":%lu,\"targetExcluded\":%lu",view,target,excluded);
  DWORD marker;memcpy(&marker,body+0x6c,4);BYTE markerBytes[0x24];

@@ -318,3 +318,10 @@ test('expanded world dependencies preserve separate retained AI trajectory evide
  assert.deepEqual(r.visualDifferences,[]);assert.deepEqual(r.particleDifferences,[]);
  assert.equal(r.collisionStatus,'diverged');assert.equal(r.collisionDifferences.length,32);
 });
+
+test('fresh-session prefix observation preserves retained AI body and visual checks',()=>{
+ const f=fixture('ai-world-prefix'),i=input(f),r=analyzeAiSubsteps(i,i.rows,rider(f),trace(f));
+ assert.equal(r.frames,4);assert.equal(r.substepBoundaries,264);assert.equal(r.componentWords,3168);
+ assert.deepEqual(r.visualDifferences,[]);assert.deepEqual(r.particleDifferences,[]);
+ assert.equal(r.collisionStatus,'diverged');assert.equal(r.collisionDifferences.length,32);
+});

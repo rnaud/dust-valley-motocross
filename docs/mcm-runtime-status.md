@@ -1,4 +1,10 @@
-# Original runtime status — November 13, 2026
+# Original runtime status — November 16, 2026
+
+The previous Wine session was absent when work resumed; no observer attached to its stale PID. Two direct launches hit the documented `7bf2123d` / read `4dc9` startup fault. The established diagnostic launcher, now guarded against both full original startup instructions, reached the menu and detached. Original menu callbacks entered dunes practice. Independent verification checked 49 startup/menu/capture instruction locations with no debugger attached.
+
+The fresh session uses Windows **PID 288 / main thread 292**. Player PDM is `051c92a0`, AI SAGE `051f7af8`, shared game actor `049000c0`, camera `02ea0618`, and AI scene object `01b28100`. These addresses were discovered from the live allocations, not reused from the prior session. A new capture completed four retained AI frames and ten player/AI entry-prefix pairs; all 46 capture sites were independently restored and camera targeting returned to the player. Evidence is retained in `tests/fixtures/mcm/ai-world-prefix-wine11.json.br`. Original visual rendering and physical input were not revalidated in this recovery.
+
+## Historical November 13 status
 
 ## November 14 session recovery
 
