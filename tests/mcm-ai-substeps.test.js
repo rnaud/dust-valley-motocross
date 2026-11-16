@@ -229,3 +229,14 @@ test('active-trick initialization keeps normal-only and unsupported-state guards
  const i=input(fixture('ai-active-trick-entry'));delete i.animations.retainedFrames;
  assert.throws(()=>loadLiveNormalRider(i.checkpoint,i.animations,{allowRetainedTrick:true}),/Unsupported normal rider state/);
 });
+
+for(const [name,audited,frames,snapshotCount,substeps]of [['audit',true,4,34,241],['fast',false,8,78,498]])test(`particle batch ${name} capture retains original physics and pool bytes`,()=>{
+ const f=fixture('ai-particle-batch-'+name);
+ for(const [name,value]of Object.entries(f.files))assert.equal(createHash('sha256').update(value).digest('hex'),f.provenance.fileSha256[name]);
+ assert.match(f.files['cleanup.log'],/debugger=0 clean=1/);assert.equal((f.files['cleanup.log'].match(/restored=1/g)||[]).length,40);
+ const events=rider(f),snapshots=events.filter(e=>e.particlesHex!==undefined);
+ assert.equal(snapshots.length,snapshotCount);assert.ok(snapshots.every(e=>e.particleBatchAudited===audited));
+ const i=input(f),r=analyzeAiSubsteps(i,i.rows,events,trace(f));
+ assert.equal(r.frames,frames);assert.equal(r.bodyBoundaries,frames*4);assert.equal(r.substepBoundaries,substeps);assert.equal(r.componentWords,substeps*12);
+ assert.deepEqual(r.visualDifferences,[]);assert.deepEqual(r.particleDifferences,[]);
+});
