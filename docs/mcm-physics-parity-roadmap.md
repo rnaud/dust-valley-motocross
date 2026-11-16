@@ -7355,3 +7355,38 @@ Publishing this marker integration milestone to main per the requested cadence.
 Still open: actor 426490 and its children, autonomous outer pool/presentation and
 camera scheduling, dynamic external heap-boundary inputs, active impact-burst
 world coverage and sustained normal-rate validation. Full parity is not claimed.
+
+### Observed world-child traversal completed through captured display gates (2026-11-16)
+
+HUD-v1 captures initial 426490 environment and all 403030 display allocations,
+plus assertion snapshots at every bike boundary. The view's +444 gate is zero;
+HUD enable is one, menu is zero, refresh +fc is zero, and all 31 children under
+this actor have inactive +1a4. Three other display nodes belong outside this
+world subtree; snapshots retain them but the comparator reports them separately
+and does not claim their outer-root updates are executed.
+
+`world-hud-runtime.mjs` executes actual child traversal, then the captured
+426490 early-return gates and inactive/paused 403030 paths. Active refresh,
+content update or child animation throws explicitly. Later native gates/state
+are assertions only. Missing snapshots are rejected. Actual actor-update traces
+prove all 31 children were invoked, rather than merely dropping the pending
+actor entry. For all seven complete child phases there are now zero deferred
+custom calls in this captured world subtree.
+
+All 32 HUD observations match (121,568 words, including 31 owned children and
+environment gates), alongside all 32 marker observations, 63 particle boundaries,
+both bike bodies, both riders and shared RNG. The fixture/report are
+`world-hud-wine11.json.br` and `mcm-world-hud-validation.json`. Tests also prove an
+active display gate is rejected rather than treated as a no-op, and missing
+assertions fail. Seven targeted display/marker/tree/traversal regressions and the
+production build pass. Publishing this tested milestone to main.
+
+This is observed-gate world-child completion, not full-game parity. The outer
+root is 420760 at 0x01951910, with active 4997b0 and 481310 children; menu and
+another generic branch are disabled. Active 481310 contains camera 47b0c0,
+43e660, terrain 411000, world 4590b0, pool 43b200, 429d90, 423b50 and 4253e0
+among generic nodes. Camera precedes the world, and pool follows it. Their
+complete scheduling/dependencies still need integration; the current pool/draw
+invocations remain explicit recording inputs. Active impact-burst coverage,
+external heap-boundary recovery and normal-rate validation also remain open.
+HUD-v1 restored hooks, debugger, controls and camera; no recording is active.

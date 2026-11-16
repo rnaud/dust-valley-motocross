@@ -234,3 +234,24 @@ test('captured marker transforms and child updates preserve the two-bike world c
  for(const report of result.worldRiderReports){assert.deepEqual(report.rider.differences,[]);assert.deepEqual(report.collision.differences,[]);}
  for(const report of [...result.entryReports,...result.reports])assert.equal(report.random.actual,report.random.expected);
 });
+
+test('captured display gates complete the observed world child traversal without deferred calls',()=>{
+ const captured=JSON.parse(brotliDecompressSync(fs.readFileSync(new URL('./fixtures/mcm/world-hud-wine11.json.br',import.meta.url))));
+ for(const [name,value]of Object.entries(captured.files))assert.equal(createHash('sha256').update(value).digest('hex'),captured.provenance.fileSha256[name]);
+ const options={renderCameraInputs:true,particleIntegration:true,markerIntegration:true,hudIntegration:true};
+ const result=analyzeWorldBikes(captured.files,terrain(),options);
+ assert.equal(result.worldChildReports.length,7);assert.ok(result.worldChildReports.every(r=>r.externalActors.length===0));
+ for(const report of result.worldChildReports)assert.equal(report.actorUpdates.filter(a=>a.update===0x403030).length,31);
+ assert.equal(result.hudReports.length,32);
+ for(const report of result.hudReports){assert.equal(report.children,31);assert.equal(report.outsideWorldChildren,3);assert.deepEqual(report.differences,[]);}
+ assert.equal(result.markerReports.length,32);
+ for(const report of result.markerReports){assert.deepEqual(report.differences,[]);assert.deepEqual(report.cacheDifferences,[]);}
+ assert.equal(result.particleReports.length,63);for(const report of result.particleReports)assert.equal(report.differences,0);
+ for(const group of ['entryReports','reports','collisionReports','riderReports','visualReports'])for(const report of result[group])assert.deepEqual(report.differences,[]);
+ for(const report of result.worldRiderReports){assert.deepEqual(report.rider.differences,[]);assert.deepEqual(report.collision.differences,[]);}
+ for(const report of [...result.entryReports,...result.reports])assert.equal(report.random.actual,report.random.expected);
+ const tree=JSON.parse(captured.files['world-actor-tree.json']);tree.nodes.find(n=>n.update===0x426490).hudEnvironment.viewEnabled=1;
+ assert.throws(()=>analyzeWorldBikes({...captured.files,'world-actor-tree.json':JSON.stringify(tree)},terrain(),options),/Active HUD content update is not recovered/);
+ const missing={...captured.files,'world-bikes.jsonl':captured.files['world-bikes.jsonl'].replaceAll('"hudObservation":','"omittedHudObservation":')};
+ assert.throws(()=>analyzeWorldBikes(missing,terrain(),options),/Missing HUD assertion boundary/);
+});
