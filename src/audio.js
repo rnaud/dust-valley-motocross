@@ -1,3 +1,4 @@
+import {McmRideAudio} from './mcm-ride-audio.js';
 // Small synthesized sound rig: engine load, wind, roost and landing impacts.
 // Everything is generated in the browser; the first user gesture owns the context.
 function noiseBuffer(ctx,seconds=2){
@@ -11,9 +12,10 @@ export class RideAudio {
   this.ctx=null;this.master=null;this.enabled=false;this.ready=false;this.lastGear=-1;this.noise=null;
  }
  init(){
-  if(this.ctx)return;
+  if(this.ctx){if(this.original?.error){this.original.error=null;this.loadOriginal();}return;}
   const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
   this.ctx=new AC();this.master=this.ctx.createGain();this.master.gain.value=0;this.master.connect(this.ctx.destination);
+  this.original=new McmRideAudio(this.ctx,this.master);this.loadOriginal();
   this.noise=noiseBuffer(this.ctx);
   this.engineFilter=this.ctx.createBiquadFilter();this.engineFilter.type='lowpass';this.engineFilter.frequency.value=600;this.engineFilter.Q.value=.8;
   this.engineGain=this.ctx.createGain();this.engineGain.gain.value=0;
@@ -29,8 +31,13 @@ export class RideAudio {
  }
  resume(){if(this.ctx&&this.ctx.state==='suspended')this.ctx.resume();}
  setEnabled(on){this.enabled=on;if(this.master)this.master.gain.setTargetAtTime(on?.85:0,this.ctx.currentTime,.04);}
+ loadOriginal(){this.original.load().catch(error=>{this.original.error=error.message;this.onError?.(error);});}
+ step(state,input,dt,listener){if(state.physicsBackend==='recovered-core'&&this.original)try{this.original.step(state,input,dt,listener);}catch(error){this.original.error=error.message;this.original.ready=false;this.original.bank.setPaused(true);this.onError?.(error);}}
  update(state,input,active=true){
   if(!this.ready)return;
+  const originalMode=state.physicsBackend==='recovered-core';
+  if(this.original)this.original.bank.setPaused(!originalMode||!active);
+  if(originalMode){this.engineGain.gain.setValueAtTime(0,this.ctx.currentTime);this.windGain.gain.setValueAtTime(0,this.ctx.currentTime);return;}
   const now=this.ctx.currentTime,speed=state.speed||0,throttle=active?(state.engine?.load??(input.gas?1:0)):0;
   const rpm=Math.max(900,state.rpm||1200),gear=state.gear||1;
   const frequency=38+(rpm/10000)*118+(state.air?14:0)+throttle*7;
