@@ -311,3 +311,10 @@ test('world-entry observation preserves subsequent retained AI evidence without 
  assert.deepEqual(r.visualDifferences,[]);assert.deepEqual(r.particleDifferences,[]);
  assert.equal(r.collisionStatus,'diverged');assert.equal(r.collisionDifferences.length,32);
 });
+
+test('expanded world dependencies preserve separate retained AI trajectory evidence',()=>{
+ const f=fixture('ai-world-dependencies'),i=input(f),r=analyzeAiSubsteps(i,i.rows,rider(f),trace(f));
+ assert.equal(r.frames,4);assert.equal(r.substepBoundaries,195);assert.equal(r.componentWords,2340);
+ assert.deepEqual(r.visualDifferences,[]);assert.deepEqual(r.particleDifferences,[]);
+ assert.equal(r.collisionStatus,'diverged');assert.equal(r.collisionDifferences.length,32);
+});

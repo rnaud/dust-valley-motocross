@@ -1,3 +1,19 @@
+static int capture_world_effects(DWORD bike,const char*path,const char*id){
+ DWORD world,owner,event,settings,shape,enabled,occlusion,selected,state,disabled;BYTE target[12];
+ if(!read_memory(0x4e4fb4,&world,4)||!read_memory(world+0x718,&enabled,4)||!read_memory(world+0x714,&occlusion,4)||
+    !read_memory(bike+0xc84,&owner,4)||!read_memory(owner+0x44,&event,4)||!read_memory(owner+0x48,&settings,4)||
+    !read_memory(event+0x1ec,&selected,4)||!read_memory(event+0x1f4,&state,4)||!read_memory(settings+0x20,&disabled,4)||
+    !read_memory(bike+0xca8,&shape,4)||!shape||!read_memory(shape+0x34,target,12))return 0;
+ FILE*out=fopen(path,"wx");if(!out)return 0;int ok=1;
+ fprintf(out,"{\"captureId\":\"%s\",\"captureBoundary\":\"world-frame-entry\",\"bikeAddress\":%lu,\"visualEffects\":[",id,bike);
+ for(unsigned k=0;k<3;k++){
+  DWORD address,offsets[]={0xc94,0xc98,0xca0},sizes[]={0x84,0x84,0x480};BYTE bytes[0x480];
+  if(!read_memory(bike+offsets[k],&address,4)||!read_memory(address,bytes,sizes[k])){ok=0;break;}
+  fprintf(out,"%s{\"address\":%lu,\"size\":%lu,\"hex\":\"",k?",":"",address,sizes[k]);ok=ok&&write_particle_hex(out,bytes,sizes[k]);fprintf(out,"\"}");
+ }
+ fprintf(out,"],\"effectsEnvironment\":{\"world\":%lu,\"enabled\":%lu,\"occlusion\":%lu,\"selectedBike\":%lu,\"eventState\":%lu,\"disabled\":%lu,\"shape\":%lu,\"targetHex\":\"",world,enabled,occlusion,selected,state,disabled,shape);
+ ok=ok&&write_particle_hex(out,target,sizeof target);fprintf(out,"\"}}\n");if(ferror(out))ok=0;if(fclose(out))ok=0;return ok;
+}
 // One atomic pre-physics world snapshot, separate from the later AI checkpoint.
 // Never restores memory or replaces an already initialized replay checkpoint.
 static int capture_world_entry(DWORD actor,DWORD esp){
@@ -9,7 +25,7 @@ static int capture_world_entry(DWORD actor,DWORD esp){
  if(aiCount<0||aiCount>64||!bikes[0])return 0;
  if(aiCount&&!read_memory(table,bikes+1,aiCount*4))return 0;n+=aiCount;
  snprintf(path,sizeof path,"%s\\world-entry.json",dir);FILE*out=fopen(path,"wx");if(!out)return 0;
- fprintf(out,"{\"schemaVersion\":1,\"kind\":\"mcm-world-entry\",\"captureId\":\"%s\",\"captureBoundary\":\"world-frame-entry\",\"actor\":%lu,\"world\":%lu,\"dtBits\":%lu,\"localIdentityScratch\":%lu,\"actorHex\":\"",id,actor,world,dt,scratch);
+ fprintf(out,"{\"schemaVersion\":1,\"kind\":\"mcm-world-entry\",\"controllerEnvironmentsCaptured\":true,\"effectsCaptured\":true,\"captureId\":\"%s\",\"captureBoundary\":\"world-frame-entry\",\"actor\":%lu,\"world\":%lu,\"dtBits\":%lu,\"localIdentityScratch\":%lu,\"actorHex\":\"",id,actor,world,dt,scratch);
  int ok=write_particle_hex(out,body,sizeof body);fprintf(out,"\",\"worldHex\":\"");ok=ok&&write_particle_hex(out,app,sizeof app);fprintf(out,"\",\"bikes\":[");
  for(unsigned i=0;i<n;i++)fprintf(out,"%s%lu",i?",":"",bikes[i]);fprintf(out,"],\"remoteTable\":[");
  DWORD remoteTable;int remoteCount;memcpy(&remoteTable,body+0x34,4);memcpy(&remoteCount,app+0x314,4);
@@ -33,13 +49,22 @@ static int capture_world_entry(DWORD actor,DWORD esp){
   snprintf(path,sizeof path,"%s\\world-environment-%u.json",dir,i);if(!capture_mcm_frame_environment(process,bike,path,id,0,"world-frame-entry"))return 0;
   snprintf(path,sizeof path,"%s\\world-animations-%u.json",dir,i);if(!capture_mcm_animation_assets_at(process,bike,path,id,"world-frame-entry"))return 0;
   snprintf(path,sizeof path,"%s\\world-collision-%u.json",dir,i);if(!capture_mcm_collision_world(process,bike,path,id,0,"world-frame-entry"))return 0;
+  DWORD ai;if(!read_memory(bike+0x614,&ai,4))return 0;
+  if(ai){snprintf(path,sizeof path,"%s\\world-ai-environment-%u.json",dir,i);if(!capture_mcm_ai_environment_at(process,bike,path,id,"world-frame-entry",bike==observe_ai?ai_scene_object:0))return 0;}
   DWORD rider,child,pool;BYTE riderBytes[0x3ac],childBytes[0x618],poolBytes[0x2004],particle[0x48];
   if(!read_memory(bike+0x874,&rider,4)||!read_memory(rider,riderBytes,sizeof riderBytes)||!read_memory(rider+0x14,&child,4)||!read_memory(child,childBytes,sizeof childBytes)||!read_memory(child+0x34,&pool,4)||!read_memory(pool,poolBytes,sizeof poolBytes))return 0;
   snprintf(path,sizeof path,"%s\\world-child-%u.json",dir,i);out=fopen(path,"wx");if(!out)return 0;
   fprintf(out,"{\"captureId\":\"%s\",\"captureBoundary\":\"world-frame-entry\",\"bikeAddress\":%lu,\"rider\":%lu,\"address\":%lu,\"hex\":\"",id,bike,rider,child);ok=write_particle_hex(out,childBytes,sizeof childBytes);
   fprintf(out,"\",\"riderHex\":\"");ok=ok&&write_particle_hex(out,riderBytes,sizeof riderBytes);fprintf(out,"\",\"poolAddress\":%lu,\"poolHex\":\"",pool);ok=ok&&write_particle_hex(out,poolBytes,sizeof poolBytes);fprintf(out,"\",\"particlesHex\":\"");
   for(unsigned j=0;ok&&j<1000;j++){DWORD a;memcpy(&a,poolBytes+0x44+j*4,4);ok=read_memory(a,particle,sizeof particle)&&write_particle_hex(out,particle,sizeof particle);}
-  fprintf(out,"\",\"particleOrder\":\"initial-allocation-order\",\"particleStride\":72}\n");if(ferror(out))ok=0;if(fclose(out))ok=0;if(!ok)return 0;
+  fprintf(out,"\",\"particleOrder\":\"initial-allocation-order\",\"particleStride\":72");
+  DWORD link=0,owner=0,gate=0,update=0,globalDt=0,vtable;memcpy(&vtable,childBytes,4);
+  if(!read_memory(rider+0x1c,&link,4)||!read_memory(vtable+0x2c,&update,4)||!read_memory(0x4edec4,&globalDt,4))ok=0;
+  if(link&&(!read_memory(link,&owner,4)||!read_memory(owner+0x35c,&gate,4)))ok=0;
+  fprintf(out,",\"dtBits\":%lu,\"globalDtBits\":%lu,\"paused\":%lu,\"ownerGate\":%lu,\"updateAddress\":%lu",dt,globalDt,collision_word(app,0x132c),gate,update);
+  DWORD spray=0;BYTE sprayBytes[0x614];if(!read_memory(bike+0xc98,&spray,4)||!read_memory(spray,sprayBytes,sizeof sprayBytes))ok=0;
+  fprintf(out,",\"sprayAddress\":%lu,\"sprayHex\":\"",spray);ok=ok&&write_particle_hex(out,sprayBytes,sizeof sprayBytes);fprintf(out,"\"}");if(ferror(out))ok=0;if(fclose(out))ok=0;if(!ok)return 0;
+  snprintf(path,sizeof path,"%s\\world-effects-%u.json",dir,i);if(!capture_world_effects(bike,path,id))return 0;
  }
  return 1;
 }

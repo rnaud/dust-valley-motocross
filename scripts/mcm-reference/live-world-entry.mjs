@@ -1,3 +1,4 @@
+import {loadFrameEmitter} from './live-frame-effects.mjs';
 import assert from 'node:assert/strict';
 import {loadLiveCollisionWorld} from './live-collision-world.mjs';
 import {loadLiveFrameEnvironment} from './live-frame-environment.mjs';
@@ -16,8 +17,10 @@ export function loadLiveWorldEntry(files){
  const append=block=>{const bytes=Buffer.from(block.hex,'hex');assert.equal(bytes.length,block.size);for(const previous of blocks){const start=Math.max(block.address,previous.address),end=Math.min(block.address+block.size,previous.address+previous.size);if(start<end)assert.ok(bytes.subarray(start-block.address,end-block.address).equals(Buffer.from(previous.hex,'hex').subarray(start-previous.address,end-previous.address)),'Atomic world bytes differ');}blocks.push(block);};
  for(let i=0;i<entry.bikes.length;i++){
   const artifacts=Object.fromEntries(['bike','environment','animations','collision','child'].map(kind=>[kind,read(`world-${kind}-${i}.json`)]));
+  if(entry.controllerEnvironmentsCaptured&&Buffer.from(artifacts.bike.blocks.find(b=>b.address===entry.bikes[i]).hex,'hex').readUInt32LE(0x614))artifacts.aiEnvironment=read(`world-ai-environment-${i}.json`);
+  if(entry.effectsCaptured)artifacts.effects=read(`world-effects-${i}.json`);
   for(const source of Object.values(artifacts)){assert.equal(source.captureId,entry.captureId);assert.equal(source.captureBoundary,entry.captureBoundary);assert.equal(source.bikeAddress,entry.bikes[i]);}
-  for(const kind of ['bike','environment','collision'])for(const block of artifacts[kind].blocks)append(block);
+  for(const kind of ['bike','environment','collision',...(artifacts.aiEnvironment?['aiEnvironment']:[])])for(const block of artifacts[kind].blocks)append(block);
   const checkpoint=artifacts.bike,collision=loadLiveCollisionWorld(checkpoint,artifacts.collision),environment=loadLiveFrameEnvironment(checkpoint,artifacts.environment),animations=loadLiveAnimationAssets(artifacts.animations);
   const memory=collision.memory,child=artifacts.child,rider=memory.u32(entry.bikes[i]+0x874);
   assert.equal(child.rider,rider);assert.equal(child.address,memory.u32(rider+0x14));assert.equal(Buffer.from(child.hex,'hex').length,0x618);
@@ -25,7 +28,23 @@ export function loadLiveWorldEntry(files){
   assert.equal(child.particleStride,72);assert.equal(child.particleOrder,'initial-allocation-order');assert.equal(child.particlesHex.length,1000*72*2);
   const pool=Buffer.from(child.poolHex,'hex'),particles=Buffer.from(child.particlesHex,'hex');
   for(let j=0;j<1000;j++)append({address:pool.readUInt32LE(0x44+j*4),size:72,hex:particles.subarray(j*72,(j+1)*72).toString('hex')});
-  bikes.push({address:entry.bikes[i],artifacts,collision,environment,animations,position504:[0x504,0x508,0x50c].map(o=>memory.f32(entry.bikes[i]+o))});
+  let emitters;
+  if(artifacts.effects){
+   const records=artifacts.effects.visualEffects;assert.equal(records.length,3);
+   emitters=records.map((record,j)=>{assert.equal(record.address,memory.u32(entry.bikes[i]+[0xc94,0xc98,0xca0][j]));append(record);return loadFrameEmitter(record,j===2);});
+   assert.equal(child.sprayAddress,records[1].address);append({address:child.sprayAddress,size:0x614,hex:child.sprayHex});
+   const environment=artifacts.effects.effectsEnvironment;assert.equal(environment.world,entry.world);assert.equal(environment.enabled,app.readUInt32LE(0x718));assert.equal(environment.occlusion,app.readUInt32LE(0x714));
+   assert.equal(environment.shape,memory.u32(entry.bikes[i]+0xca8));assert.equal(Buffer.from(environment.targetHex,'hex').length,12);
+   assert.equal(child.paused,app.readUInt32LE(0x132c));assert.equal(child.dtBits,entry.dtBits);assert.equal(child.updateAddress,0x43a0c0);
+  }
+  if(artifacts.aiEnvironment){
+   const routeMemory=new Map(artifacts.aiEnvironment.blocks.map(b=>[b.address,Buffer.from(b.hex,'hex')]));
+   for(const bike of entry.bikes){const count=memory.u32(bike+0xb00),address=memory.u32(bike+0xaf4);if(!count)continue;
+    const table=routeMemory.get(address);assert.ok(table&&table.length===count*4,'Missing initial AI route table');
+    for(let j=0;j<count;j++)assert.equal(routeMemory.get(table.readUInt32LE(j*4))?.length,44,'Missing initial AI route node');
+   }
+  }
+  bikes.push({emitters,address:entry.bikes[i],artifacts,collision,environment,animations,position504:[0x504,0x508,0x50c].map(o=>memory.f32(entry.bikes[i]+o))});
  }
  const tree=loadLiveActorTree(bikes[0].artifacts.bike,bikes[0].artifacts.collision,read('world-actor-tree.json'));
  assert.equal(tree.nodes.get(entry.actor)?.update,0x4590b0);
