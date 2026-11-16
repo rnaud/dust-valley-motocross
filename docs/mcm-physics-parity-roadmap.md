@@ -6310,3 +6310,13 @@ The isolated oracle executes original `426be0` with explicit audio-status/cursor
 Scope remains explicit: the actual crash branch is rejected until recovered; the callback devices model supplied state and do not validate DirectSound timing, wrapper enable gates, audible output or shared world/RNG scheduling. Browser audio still uses synthesis. The next audio step is crash/event policy and the playback adapter, followed by live command captures and audible preview checks. No original-game debugger was attached for this isolated corpus; an initial harness calling-convention fault was corrected before collecting the passing output.
 
 Validation: all 762 tests pass (128 seconds), production build passes, and the two new audio policy regressions pass on x64 Node 22. The preceding attenuation deployment also passes public desktop/touch asset/startup checks.
+
+## Original wreck sample selection recovered (2026-11-15)
+
+`wreck-sound.js` ports complete original `427230`: nearest-even random selection among six recordings, seven status probes before forcibly stopping/resetting sample zero, impact-dependent byte cursor clamped to the first half of the recording, optional volume update and nonlooping playback. The constant at `4d6f08` is exactly float bits `3c23d70a`; comparisons preserve the original unordered-to-zero behavior. Sample lengths are unsigned and the half-length spills to float32 before the impact calculation.
+
+The isolated original-code oracle executes the complete routine with explicit RNG and sound-device callbacks. All 880 cases / 233,200 output words match, including 7,898 ordered boundary calls. The corpus covers free/busy sample combinations, random index boundaries, alternating retry choices, missing volume override, zero/odd/large unsigned sample lengths, impact thresholds, infinities and NaN. Regression checks also detect tampered selected-index and command outputs. The fixture stores pinned executable, harness, generator and corpus hashes. No original-game debugger was attached.
+
+This recovers the helper, not its crash-state caller, actual playback clock, sound wrapper gates, shared-world RNG scheduling or browser audio integration. The browser still synthesizes sound. Full physics parity remains open, especially sustained player steering without substituted caller scratch and complete world update dependencies.
+
+Validation: all 763 tests pass (107 seconds), the production build passes, and the new original-code regression passes on x64 Node 22.
