@@ -1,0 +1,496 @@
+{
+  "scope": "Original terrain node observation inventory, not recovered traversal parity",
+  "nodes": 12594,
+  "childTables": 50,
+  "snapshots": 65,
+  "changedWordsByOffset": {
+    "0x8": 1447,
+    "0x60": 62,
+    "0x64": 260,
+    "0x68": 588,
+    "0x6c": 267,
+    "0x70": 39,
+    "0x74": 55,
+    "0x78": 71,
+    "0x7c": 53,
+    "0x80": 90,
+    "0x84": 153,
+    "0x88": 152,
+    "0x8c": 177,
+    "0x90": 142,
+    "0x94": 41,
+    "0x98": 51,
+    "0x9c": 58,
+    "0xa0": 36,
+    "0xa4": 243,
+    "0xa8": 420,
+    "0xac": 271,
+    "0xb0": 394,
+    "0xb4": 226,
+    "0xb8": 35,
+    "0xbc": 58,
+    "0xc0": 42,
+    "0xc4": 80,
+    "0xc8": 102,
+    "0xcc": 153,
+    "0xd0": 143,
+    "0xd4": 152,
+    "0xd8": 46,
+    "0xdc": 42,
+    "0xe0": 41,
+    "0xe4": 42,
+    "0xe8": 581,
+    "0xec": 244,
+    "0xf0": 710,
+    "0xf4": 251,
+    "0xf8": 549,
+    "0xfc": 47,
+    "0x100": 49,
+    "0x104": 35,
+    "0x108": 77,
+    "0x10c": 141,
+    "0x110": 121,
+    "0x114": 142,
+    "0x118": 117,
+    "0x11c": 39,
+    "0x120": 48,
+    "0x124": 46,
+    "0x128": 56,
+    "0x12c": 216,
+    "0x130": 334,
+    "0x134": 211,
+    "0x138": 408,
+    "0x13c": 202,
+    "0x140": 41,
+    "0x144": 35,
+    "0x148": 50,
+    "0x14c": 93,
+    "0x150": 97,
+    "0x154": 124,
+    "0x158": 108,
+    "0x15c": 137,
+    "0x160": 41,
+    "0x164": 35,
+    "0x168": 38,
+    "0x16c": 39,
+    "0x170": 58,
+    "0x174": 251,
+    "0x178": 580,
+    "0x17c": 260,
+    "0x180": 187,
+    "0x184": 1268,
+    "0x188": 18557,
+    "0x18c": 18335,
+    "0x190": 18606,
+    "0x194": 18395,
+    "0x1a0": 1596,
+    "0x1a4": 1139,
+    "0x1a8": 1167,
+    "0x1ac": 376,
+    "0x1b0": 19089,
+    "0x1b8": 1380,
+    "0x1bc": 1464,
+    "0x1c0": 1594,
+    "0x1c4": 1596,
+    "0x1c8": 1594,
+    "0x1cc": 1596
+  },
+  "frames": [
+    {
+      "sequence": 1,
+      "changedNodes": 0,
+      "changedWords": 0,
+      "selectedNodes": 307
+    },
+    {
+      "sequence": 2,
+      "changedNodes": 326,
+      "changedWords": 2057,
+      "selectedNodes": 303
+    },
+    {
+      "sequence": 3,
+      "changedNodes": 308,
+      "changedWords": 1895,
+      "selectedNodes": 298
+    },
+    {
+      "sequence": 4,
+      "changedNodes": 303,
+      "changedWords": 1785,
+      "selectedNodes": 299
+    },
+    {
+      "sequence": 5,
+      "changedNodes": 306,
+      "changedWords": 1838,
+      "selectedNodes": 299
+    },
+    {
+      "sequence": 6,
+      "changedNodes": 311,
+      "changedWords": 2036,
+      "selectedNodes": 301
+    },
+    {
+      "sequence": 7,
+      "changedNodes": 313,
+      "changedWords": 1830,
+      "selectedNodes": 300
+    },
+    {
+      "sequence": 8,
+      "changedNodes": 310,
+      "changedWords": 1742,
+      "selectedNodes": 297
+    },
+    {
+      "sequence": 9,
+      "changedNodes": 306,
+      "changedWords": 1906,
+      "selectedNodes": 297
+    },
+    {
+      "sequence": 10,
+      "changedNodes": 308,
+      "changedWords": 1964,
+      "selectedNodes": 297
+    },
+    {
+      "sequence": 11,
+      "changedNodes": 310,
+      "changedWords": 1896,
+      "selectedNodes": 298
+    },
+    {
+      "sequence": 12,
+      "changedNodes": 306,
+      "changedWords": 1873,
+      "selectedNodes": 295
+    },
+    {
+      "sequence": 13,
+      "changedNodes": 310,
+      "changedWords": 1892,
+      "selectedNodes": 297
+    },
+    {
+      "sequence": 14,
+      "changedNodes": 308,
+      "changedWords": 2001,
+      "selectedNodes": 295
+    },
+    {
+      "sequence": 15,
+      "changedNodes": 307,
+      "changedWords": 1996,
+      "selectedNodes": 294
+    },
+    {
+      "sequence": 16,
+      "changedNodes": 308,
+      "changedWords": 1925,
+      "selectedNodes": 296
+    },
+    {
+      "sequence": 17,
+      "changedNodes": 310,
+      "changedWords": 1971,
+      "selectedNodes": 295
+    },
+    {
+      "sequence": 18,
+      "changedNodes": 304,
+      "changedWords": 1822,
+      "selectedNodes": 295
+    },
+    {
+      "sequence": 19,
+      "changedNodes": 308,
+      "changedWords": 1937,
+      "selectedNodes": 295
+    },
+    {
+      "sequence": 20,
+      "changedNodes": 307,
+      "changedWords": 2054,
+      "selectedNodes": 296
+    },
+    {
+      "sequence": 21,
+      "changedNodes": 305,
+      "changedWords": 1930,
+      "selectedNodes": 293
+    },
+    {
+      "sequence": 22,
+      "changedNodes": 304,
+      "changedWords": 2044,
+      "selectedNodes": 294
+    },
+    {
+      "sequence": 23,
+      "changedNodes": 304,
+      "changedWords": 1950,
+      "selectedNodes": 294
+    },
+    {
+      "sequence": 24,
+      "changedNodes": 306,
+      "changedWords": 1985,
+      "selectedNodes": 298
+    },
+    {
+      "sequence": 25,
+      "changedNodes": 307,
+      "changedWords": 1856,
+      "selectedNodes": 295
+    },
+    {
+      "sequence": 26,
+      "changedNodes": 306,
+      "changedWords": 2062,
+      "selectedNodes": 295
+    },
+    {
+      "sequence": 27,
+      "changedNodes": 303,
+      "changedWords": 1935,
+      "selectedNodes": 294
+    },
+    {
+      "sequence": 28,
+      "changedNodes": 307,
+      "changedWords": 1929,
+      "selectedNodes": 295
+    },
+    {
+      "sequence": 29,
+      "changedNodes": 305,
+      "changedWords": 1720,
+      "selectedNodes": 293
+    },
+    {
+      "sequence": 30,
+      "changedNodes": 307,
+      "changedWords": 1914,
+      "selectedNodes": 295
+    },
+    {
+      "sequence": 31,
+      "changedNodes": 310,
+      "changedWords": 1939,
+      "selectedNodes": 296
+    },
+    {
+      "sequence": 32,
+      "changedNodes": 308,
+      "changedWords": 1897,
+      "selectedNodes": 297
+    },
+    {
+      "sequence": 33,
+      "changedNodes": 311,
+      "changedWords": 1948,
+      "selectedNodes": 297
+    },
+    {
+      "sequence": 34,
+      "changedNodes": 309,
+      "changedWords": 1863,
+      "selectedNodes": 298
+    },
+    {
+      "sequence": 35,
+      "changedNodes": 308,
+      "changedWords": 2030,
+      "selectedNodes": 296
+    },
+    {
+      "sequence": 36,
+      "changedNodes": 312,
+      "changedWords": 1827,
+      "selectedNodes": 298
+    },
+    {
+      "sequence": 37,
+      "changedNodes": 309,
+      "changedWords": 1972,
+      "selectedNodes": 297
+    },
+    {
+      "sequence": 38,
+      "changedNodes": 311,
+      "changedWords": 1941,
+      "selectedNodes": 299
+    },
+    {
+      "sequence": 39,
+      "changedNodes": 314,
+      "changedWords": 1841,
+      "selectedNodes": 302
+    },
+    {
+      "sequence": 40,
+      "changedNodes": 314,
+      "changedWords": 2027,
+      "selectedNodes": 298
+    },
+    {
+      "sequence": 41,
+      "changedNodes": 309,
+      "changedWords": 1926,
+      "selectedNodes": 298
+    },
+    {
+      "sequence": 42,
+      "changedNodes": 309,
+      "changedWords": 1893,
+      "selectedNodes": 296
+    },
+    {
+      "sequence": 43,
+      "changedNodes": 304,
+      "changedWords": 1874,
+      "selectedNodes": 298
+    },
+    {
+      "sequence": 44,
+      "changedNodes": 306,
+      "changedWords": 1900,
+      "selectedNodes": 297
+    },
+    {
+      "sequence": 45,
+      "changedNodes": 309,
+      "changedWords": 1968,
+      "selectedNodes": 300
+    },
+    {
+      "sequence": 46,
+      "changedNodes": 306,
+      "changedWords": 1972,
+      "selectedNodes": 300
+    },
+    {
+      "sequence": 47,
+      "changedNodes": 309,
+      "changedWords": 1819,
+      "selectedNodes": 300
+    },
+    {
+      "sequence": 48,
+      "changedNodes": 311,
+      "changedWords": 1944,
+      "selectedNodes": 302
+    },
+    {
+      "sequence": 49,
+      "changedNodes": 310,
+      "changedWords": 2022,
+      "selectedNodes": 299
+    },
+    {
+      "sequence": 50,
+      "changedNodes": 308,
+      "changedWords": 1898,
+      "selectedNodes": 298
+    },
+    {
+      "sequence": 51,
+      "changedNodes": 307,
+      "changedWords": 1771,
+      "selectedNodes": 298
+    },
+    {
+      "sequence": 52,
+      "changedNodes": 310,
+      "changedWords": 1955,
+      "selectedNodes": 301
+    },
+    {
+      "sequence": 53,
+      "changedNodes": 311,
+      "changedWords": 1937,
+      "selectedNodes": 302
+    },
+    {
+      "sequence": 54,
+      "changedNodes": 306,
+      "changedWords": 1823,
+      "selectedNodes": 297
+    },
+    {
+      "sequence": 55,
+      "changedNodes": 306,
+      "changedWords": 1835,
+      "selectedNodes": 300
+    },
+    {
+      "sequence": 56,
+      "changedNodes": 307,
+      "changedWords": 1867,
+      "selectedNodes": 300
+    },
+    {
+      "sequence": 57,
+      "changedNodes": 309,
+      "changedWords": 1791,
+      "selectedNodes": 301
+    },
+    {
+      "sequence": 58,
+      "changedNodes": 308,
+      "changedWords": 1750,
+      "selectedNodes": 300
+    },
+    {
+      "sequence": 59,
+      "changedNodes": 306,
+      "changedWords": 1724,
+      "selectedNodes": 300
+    },
+    {
+      "sequence": 60,
+      "changedNodes": 313,
+      "changedWords": 1679,
+      "selectedNodes": 301
+    },
+    {
+      "sequence": 61,
+      "changedNodes": 311,
+      "changedWords": 1717,
+      "selectedNodes": 302
+    },
+    {
+      "sequence": 62,
+      "changedNodes": 318,
+      "changedWords": 1628,
+      "selectedNodes": 306
+    },
+    {
+      "sequence": 63,
+      "changedNodes": 326,
+      "changedWords": 1671,
+      "selectedNodes": 306
+    },
+    {
+      "sequence": 64,
+      "changedNodes": 328,
+      "changedWords": 1727,
+      "selectedNodes": 306
+    },
+    {
+      "sequence": 65,
+      "changedNodes": 329,
+      "changedWords": 1661,
+      "selectedNodes": 310
+    }
+  ],
+  "restoredHooks": 52,
+  "debuggerDetached": true,
+  "existingReplayBikeEntries": 130,
+  "existingReplayBikeTails": 130,
+  "existingReplayNonemptyDifferenceReports": 0,
+  "terrainTraversalIntegrated": false
+}

@@ -1,0 +1,19 @@
+{
+  "scope": "Nine camera/detail terrain words derived from retained chase camera; traversal, working arrays, counters and platform timing remain external.",
+  "ticks": 63,
+  "boundaries": 256,
+  "words": 2304,
+  "differences": 0,
+  "comparedOffsets": [
+    "48",
+    "4c",
+    "50",
+    "54",
+    "58",
+    "5c",
+    "60",
+    "64",
+    "68"
+  ],
+  "remainingTerrainSceneExternal": true
+}

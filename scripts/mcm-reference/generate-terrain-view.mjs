@@ -1,0 +1,2 @@
+import fs from'node:fs';const b=x=>new Uint32Array(Float32Array.of(x).buffer)[0],out=Buffer.alloc(4096*32);let seed=0x4125b0;const next=()=>seed=(Math.imul(seed,1664525)+1013904223)>>>0;
+for(let n=0;n<4096;n++)[b([.01171875,1,0,-1][n%4]),b((next()%100000-50000)/16),b((next()%100000-50000)/16),b((next()%100000-50000)/16),b([0,10,30,45,60,90,120,150][n%8]),[0,1,639,640,1920,0xffffffff][n%6],[0,1,2,46341,0xffffffff][n%5],next()].forEach((v,i)=>out.writeUInt32LE(v,n*32+i*4));fs.writeFileSync(process.argv[2],out,{flag:'wx'});

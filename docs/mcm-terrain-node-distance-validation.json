@@ -1,0 +1,15 @@
+{
+  "scope": "Isolated original 48ca70; terrain traversal remains unconnected",
+  "synthetic": {
+    "cases": 8192,
+    "words": 49152,
+    "differences": 0,
+    "examples": []
+  },
+  "live": {
+    "cases": 31990,
+    "words": 191940,
+    "differences": 0,
+    "examples": []
+  }
+}

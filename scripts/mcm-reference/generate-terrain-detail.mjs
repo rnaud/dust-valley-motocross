@@ -1,0 +1,2 @@
+import fs from'node:fs';const edge=[0,1,2,3,349,46340,46341,65535,65536,0x7fffffff,0x80000000,0xffffffff],rows=[];for(const a of edge)for(const b of edge)rows.push(a,b);
+let seed=0x4112f0;const next=()=>seed=(Math.imul(seed,1664525)+1013904223)>>>0;for(let i=0;i<4096;i++)rows.push(next(),next());const out=Buffer.alloc(rows.length*4);rows.forEach((v,i)=>out.writeUInt32LE(v,i*4));fs.writeFileSync(process.argv[2],out,{flag:'wx'});

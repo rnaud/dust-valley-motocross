@@ -23,7 +23,7 @@ export function loadLiveActorTree(checkpoint,collision,observation){
    const value={world:raw.owner,gate:raw.gate,device:raw.device,deviceEnabled:raw.deviceEnabled};
    if(owners.has(ownerAddress))assert.deepEqual(value,owners.get(ownerAddress));else owners.set(ownerAddress,value);
   }else for(const key of ['owner','gate','device','deviceEnabled'])assert.equal(raw[key],0);
-  nodes.set(raw.address,{address:raw.address,stateBytes,boundaryWords,queueItems:raw.queueItems,displayInitial:raw.displayInitial,hudEnvironment:raw.hudEnvironment,shapeTransformRoot:raw.shapeTransformRoot,shapeTransforms:raw.shapeTransforms,vtable:u(0),update:raw.update,destroy:raw.destroy,previousAddress:u(0xc),nextAddress:u(0x10),firstAddress:u(0x14),parentAddress:u(0x18),ownerAddress,enabled:u(0x20),paused:u(0x28),removed:u(0x2c)});
+  nodes.set(raw.address,{address:raw.address,stateBytes,boundaryWords,queueItems:raw.queueItems,displayInitial:raw.displayInitial,terrainInitial:raw.terrainInitial,hudEnvironment:raw.hudEnvironment,shapeTransformRoot:raw.shapeTransformRoot,shapeTransforms:raw.shapeTransforms,vtable:u(0),update:raw.update,destroy:raw.destroy,previousAddress:u(0xc),nextAddress:u(0x10),firstAddress:u(0x14),parentAddress:u(0x18),ownerAddress,enabled:u(0x20),paused:u(0x28),removed:u(0x2c)});
  }
  const resolve=address=>{if(!address)return null;assert.ok(nodes.has(address),'Missing actor link');return nodes.get(address);};
  for(const node of nodes.values())for(const key of ['previous','next','first','parent'])node[key]=resolve(node[key+'Address']);

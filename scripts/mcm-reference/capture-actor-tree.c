@@ -1,3 +1,4 @@
+#include "capture-scene-terrain.c"
 #include "capture-scene-display.c"
 static DWORD observed_world_queue,observed_world_renderer;
 static int capture_scene_queue_items(FILE*out,DWORD address){
@@ -81,7 +82,7 @@ static int capture_marker_transforms(FILE*out,DWORD root){
 static int capture_actor_tree(DWORD bike,const char*path,const char*id){
  #define TREE_FAIL() do {fprintf(stderr,"actor-tree validation failed at line %d\n",__LINE__);return 0;}while(0)
  typedef struct {DWORD address,words[12],update,destroy,owner,gate,device,deviceEnabled;} Actor;
- static Actor nodes[8192];observed_hud_child_count=0;observed_world_hud=0;observed_world_queue=0;observed_world_renderer=0;observed_world_display=0;unsigned count=0;DWORD root,parent,ancestors[128];unsigned depth=0;
+ static Actor nodes[8192];observed_hud_child_count=0;observed_world_hud=0;observed_world_queue=0;observed_world_renderer=0;observed_world_display=0;observed_world_terrain=0;unsigned count=0;DWORD root,parent,ancestors[128];unsigned depth=0;
  if(!read_memory(bike+0x874,&root,4)||!root)TREE_FAIL();
  for(;;){
   if(depth==128)TREE_FAIL();for(unsigned i=0;i<depth;i++)if(ancestors[i]==root)TREE_FAIL();ancestors[depth++]=root;
@@ -108,9 +109,10 @@ static int capture_actor_tree(DWORD bike,const char*path,const char*id){
   Actor*n=&nodes[i];fprintf(out,"%s{\"address\":%lu,\"hex\":\"",i?",":"",n->address);
   for(unsigned j=0;j<sizeof n->words;j++)fprintf(out,"%02x",((BYTE*)n->words)[j]);
   fprintf(out,"\",\"update\":%lu,\"destroy\":%lu,\"owner\":%lu,\"gate\":%lu,\"device\":%lu,\"deviceEnabled\":%lu",n->update,n->destroy,n->owner,n->gate,n->device,n->deviceEnabled);
-  DWORD size=0;switch(n->update){case 0x422df0:if(getenv("MCM_WORLD_DISPLAY"))size=0x11c;break;case 0x423b50:if(getenv("MCM_WORLD_DISPLAY"))size=0x290;break;case 0x43e660:size=0x9c;break;case 0x4253e0:size=0x58;break;case 0x403030:size=0x1e0;break;case 0x446200:size=0x278;break;case 0x43d850:size=0x198;break;case 0x475450:size=0xa4;break;case 0x426490:size=0x128;break;case 0x438e10:size=0x84;break;case 0x4393d0:size=0x60c;break;case 0x439a30:size=0x610;break;case 0x43a6d0:size=0x480;break;}
-  if(size){BYTE bytes[0x610];if(n->words[2]!=size||!read_memory(n->address,bytes,size)){fclose(out);TREE_FAIL();}fprintf(out,",\"ownedStateHex\":\"");for(unsigned j=0;j<size;j++)fprintf(out,"%02x",bytes[j]);fprintf(out,"\"");}
+  DWORD size=0;switch(n->update){case 0x411000:if(getenv("MCM_WORLD_TERRAIN"))size=0x17d0;break;case 0x422df0:if(getenv("MCM_WORLD_DISPLAY"))size=0x11c;break;case 0x423b50:if(getenv("MCM_WORLD_DISPLAY"))size=0x290;break;case 0x43e660:size=0x9c;break;case 0x4253e0:size=0x58;break;case 0x403030:size=0x1e0;break;case 0x446200:size=0x278;break;case 0x43d850:size=0x198;break;case 0x475450:size=0xa4;break;case 0x426490:size=0x128;break;case 0x438e10:size=0x84;break;case 0x4393d0:size=0x60c;break;case 0x439a30:size=0x610;break;case 0x43a6d0:size=0x480;break;}
+  if(size){BYTE bytes[0x17d0];if(n->words[2]!=size||!read_memory(n->address,bytes,size)){fclose(out);TREE_FAIL();}fprintf(out,",\"ownedStateHex\":\"");for(unsigned j=0;j<size;j++)fprintf(out,"%02x",bytes[j]);fprintf(out,"\"");}
   if(n->update==0x43e660)observed_world_renderer=n->address;
+  if(n->update==0x411000&&getenv("MCM_WORLD_TERRAIN")){observed_world_terrain=n->address;fprintf(out,",\"terrainInitial\":");if(!capture_scene_terrain_state(out,n->address,!strcmp(export_boundary,"world-frame-entry"),1)){fclose(out);TREE_FAIL();}}
   if(n->update==0x423b50&&getenv("MCM_WORLD_DISPLAY")){observed_world_display=n->address;fprintf(out,",\"displayInitial\":");if(!capture_scene_display_state(out,n->address)){fclose(out);TREE_FAIL();}}
   if(n->update==0x4253e0){observed_world_queue=n->address;if(!capture_scene_queue_items(out,n->address)){fclose(out);TREE_FAIL();}}
   if(n->update==0x439a30){DWORD boundary[2];if(!read_memory(n->address+0x610,boundary,sizeof boundary)){fclose(out);TREE_FAIL();}fprintf(out,",\"boundaryWords\":[%lu,%lu]",boundary[0],boundary[1]);}
