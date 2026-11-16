@@ -1,4 +1,6 @@
 import {Vector3,Quaternion,Matrix4} from 'three';
+import {createWorldBikeRuntime} from '../scripts/mcm-reference/world-bike-runtime.mjs';
+import {connectMcmWorldSimulation} from './physics/mcm/world-simulation.js';
 import {createCapturedFrameRuntime} from '../scripts/mcm-reference/captured-frame-runtime.mjs';
 import {queryMcmTerrainHeight} from './physics/mcm/terrain-height.js';
 import {composeMcmWorldMatrix} from './physics/mcm/world-transform.js';
@@ -20,6 +22,15 @@ export function loadMcmCoreScene(){
   const scene=await new Response(stream).json();if(scene.version!==1)throw Error('Unsupported recovered scene');return scene;
  }).catch(error=>{scenePromise=null;throw error;});
 }
+let worldPromise;
+export function loadMcmWorldScene(){
+ return worldPromise??=fetch(new URL('./assets/mcm-world-scene.bin',import.meta.url).href).then(async response=>{
+  if(!response.ok)throw Error('Original shared world download failed');
+  const asset=await new Response(response.body.pipeThrough(new DecompressionStream('gzip'))).json();
+  if(asset.version!==1||asset.mapId!=='quarries-dunes')throw Error('Unsupported original shared world');
+  return asset.files;
+ }).catch(error=>{worldPromise=null;throw error;});
+}
 export function createMcmCoreState(scene,{spawn={x:0,z:0,yaw:0},sand:trueSand=true}={}){
  const cache=new Map(),node=id=>{
   if(id===null)return null;if(cache.has(id))return cache.get(id);
@@ -28,7 +39,10 @@ export function createMcmCoreState(scene,{spawn={x:0,z:0,yaw:0},sand:trueSand=tr
   if(raw.children)n.children=raw.children.map(node);return n;
  };
  const terrain={root:node(scene.terrain.root),heightScale:scene.terrain.heightScale,worldToGrid:scene.terrain.worldToGrid};
- const runtime=createCapturedFrameRuntime({...scene.input,terrain},scene.row,scene.child),c=runtime.loaded.context;
+ const shared=scene.worldFiles?createWorldBikeRuntime(scene.worldFiles,terrain,{throttle:0,brake:0}):null;
+ if(shared&&scene.mapId!=='quarries-dunes')throw Error('Shared world requires its original terrain');
+ const simulation=shared?connectMcmWorldSimulation(shared,JSON.parse(scene.worldFiles['world-camera-initial.json']),terrain,{initialFiles:scene.worldFiles}):null;
+ const runtime=shared?shared.bikes.get(shared.world.entry.bikes[0]):createCapturedFrameRuntime({...scene.input,terrain},scene.row,scene.child),c=runtime.loaded.context;
  if(scene.mapId&&scene.mapId!=='quarries-dunes'){const center=(16**(terrain.root.level+1)/2)/terrain.worldToGrid;c.pose={position:[...(scene.sceneSettings?.defaultStartPosition??[center,100,center])],forward:[...(scene.sceneSettings?.defaultStartDirection??[0,0,1])],up:[0,1,0]};resetMcmBikePose(c);c.contactPhase.normalEventDecision.terrainMode=scene.terrainMode;runtime.loaded.environment.terrainMode=scene.terrainMode;c.frameEffects.occlusion=!!scene.shadowTarget;if(scene.shadowTarget)c.frameEffects.resolveTarget=()=>scene.shadowTarget.map(Math.fround);}
  const initial=[...c.bike.position],ground=queryMcmTerrainHeight({...terrain,point:initial})[1];
  const angle=(spawn.yaw??0)-Math.atan2(c.bike.forward[0],c.bike.forward[2]),rotation=new Quaternion().setFromAxisAngle(new Vector3(0,1,0),angle),inverse=rotation.clone().invert();
@@ -43,7 +57,13 @@ export function createMcmCoreState(scene,{spawn={x:0,z:0,yaw:0},sand:trueSand=tr
  const tileWorld={addBody(){},removeBody(){}};
  const state={physicsMode:'mcm-preview',physicsBackend:'recovered-core',x:0,y:0,z:0,yaw:0,pitch:0,roll:0,speed:0,vy:0,yawRate:0,gear:1,rpm:0,boost:100,steer:0,throttle:0,contacts:0,crashed:false,crashTime:0,air:false,airtime:0,slip:0,slipRatio:[0,0],wheelOmega:[0,0],tireLoads:[0,0],compression:[0,0],wheelContacts:[],wheelTransforms:[],quaternion:{x:0,y:0,z:0,w:1},landingRecovery:0,requestedLean:0,frame:0,
   engine:{gear:1,rpm:0,force:0,recovered:{released:1,randomState:12345}},visualWheelRadii:[c.contactPhase.rearRadius*METRES,c.contactPhase.radius*METRES]};
- Object.defineProperty(state,'physics',{value:{runtime,terrain,height:sand?(x,z)=>sand.height(x,z):baseHeight,baseHeight,sand,renderSurface,nativePoint,position,vector,rotation,tileWorld,scene,spawn},enumerable:false});
+ Object.defineProperty(state,'physics',{value:{runtime,simulation,shared,terrain,height:sand?(x,z)=>sand.height(x,z):baseHeight,baseHeight,sand,renderSurface,nativePoint,position,vector,rotation,tileWorld,scene,spawn},enumerable:false});
+ state.opponents=[];
+ if(shared)for(const address of shared.world.entry.bikes.slice(1)){
+  const opponent={...state,opponents:[],engine:{gear:1,rpm:0,force:0,recovered:{}}};
+  Object.defineProperty(opponent,'physics',{value:{...state.physics,runtime:shared.bikes.get(address)},enumerable:false});
+  sync(opponent);state.opponents.push(opponent);
+ }
  sync(state);renderSurface.follow(state.x,state.z,tileWorld);return state;
 }
 function sync(s){
@@ -83,6 +103,11 @@ export function stepMcmCoreState(s,input,dt,{worldEvents,observe}={}){
  const {runtime,sand,renderSurface,tileWorld}=s.physics,previousAir=s.airtime;
  const steer=input.steer??((input.right?1:0)-(input.left?1:0));
  const lean=input.lean??((input.leanBack?1:0)-(input.leanForward?1:0));
+ if(s.physics.simulation){
+  if(worldEvents||observe)throw Error('Single-bike replay services cannot drive the shared world');
+  s.physics.simulation.step(dt,{throttle:input.gas?1:0,brake:input.brake?1:0,steer:steer===0?0:-steer,lean},{tailControls:()=>{}});
+  for(const opponent of s.opponents){sync(opponent);opponent.frame++;}
+ }else{
  runtime.loaded.ordered.trace.length=0;
  runtime.loaded.input.longitudinalBits=floatBits(lean);
  const result=runtime.stepBike({delta:dt,throttle:input.gas?1:0,brake:input.brake?1:0,steerBits:floatBits(-steer)},observe);
@@ -92,8 +117,9 @@ export function stepMcmCoreState(s,input,dt,{worldEvents,observe}={}){
   else if(event.kind==='pool')runtime.stepPool(event);
   else throw Error('Unknown recovered world update');
  }
+ }
  sync(s);s.frame++;s.crashTime=s.crashed?s.crashTime+dt:0;s.airtime=s.air?previousAir+dt:0;
  renderSurface.follow(s.x,s.z,tileWorld);
- if(sand){sand.deform(s.wheelContacts.map((hit,i)=>hit?{...hit,load:s.tireLoads[i],demand:i===0?s.throttle:0}:null),dt);}
+ if(sand)for(const rider of [s,...s.opponents])sand.deform(rider.wheelContacts.map((hit,i)=>hit?{...hit,load:rider.tireLoads[i],demand:i===0?rider.throttle:0}:null),dt);
  return {landed:!s.air?previousAir:0,crashed:s.crashed,boosting:false};
 }

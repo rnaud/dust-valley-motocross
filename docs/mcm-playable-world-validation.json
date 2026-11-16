@@ -1,0 +1,198 @@
+{
+  "date": "2026-11-16",
+  "tests": {
+    "total": 971,
+    "passed": 971,
+    "failed": 0
+  },
+  "productionBuild": "passed",
+  "adapterComparison": {
+    "updates": 1500,
+    "sampledBodyWords": 26176,
+    "differences": 0,
+    "reference": "continuous runtime, already separately compared with native recordings"
+  },
+  "browserChecks": [
+    {
+      "check": "preview-acceleration",
+      "touch": false,
+      "gas": {
+        "frame": 51,
+        "phase": "playing",
+        "backend": "recovered-core",
+        "speed": 10.085242713944359,
+        "yaw": 4.163734240635763e-09,
+        "steer": 0,
+        "crashed": false,
+        "engine": {
+          "gear": 2,
+          "rpm": 4305,
+          "force": 0.4200000464916229,
+          "recovered": {
+            "released": 0,
+            "randomState": 3032843404,
+            "state": 0.4200000464916229,
+            "gear": 1
+          }
+        },
+        "opponents": [
+          {
+            "frame": 51,
+            "x": -13.497638469667619,
+            "z": -5.692098588094997,
+            "speed": 9.745625964882928
+          }
+        ]
+      }
+    },
+    {
+      "check": "distinct-physics-backends",
+      "preview": {
+        "frame": 51,
+        "phase": "playing",
+        "backend": "recovered-core",
+        "speed": 10.085242713944359,
+        "yaw": 4.163734240635763e-09,
+        "steer": 0,
+        "crashed": false,
+        "engine": {
+          "gear": 2,
+          "rpm": 4305,
+          "force": 0.4200000464916229,
+          "recovered": {
+            "released": 0,
+            "randomState": 3032843404,
+            "state": 0.4200000464916229,
+            "gear": 1
+          }
+        },
+        "opponents": [
+          {
+            "frame": 51,
+            "x": -13.497638469667619,
+            "z": -5.692098588094997,
+            "speed": 9.745625964882928
+          }
+        ]
+      },
+      "classic": {
+        "phase": "playing",
+        "speed": 3.530552506737959,
+        "yaw": -0.00030661823497146236,
+        "steer": 0.0002646757037999127,
+        "crashed": false,
+        "engine": {
+          "gear": 1,
+          "rpm": 5739.171960991009,
+          "shiftRemaining": 0,
+          "shiftCooldown": 0,
+          "load": 0.9998456089970129,
+          "force": 1845.4805509260477,
+          "engineBrake": 0.006397157872793621
+        }
+      }
+    },
+    {
+      "touch": false,
+      "gas": {
+        "frame": 51,
+        "phase": "playing",
+        "backend": "recovered-core",
+        "speed": 10.085242713944359,
+        "yaw": 4.163734240635763e-09,
+        "steer": 0,
+        "crashed": false,
+        "engine": {
+          "gear": 2,
+          "rpm": 4305,
+          "force": 0.4200000464916229,
+          "recovered": {
+            "released": 0,
+            "randomState": 3032843404,
+            "state": 0.4200000464916229,
+            "gear": 1
+          }
+        },
+        "opponents": [
+          {
+            "frame": 51,
+            "x": -13.497638469667619,
+            "z": -5.692098588094997,
+            "speed": 9.745625964882928
+          }
+        ]
+      },
+      "errors": []
+    },
+    {
+      "check": "preview-acceleration",
+      "touch": true,
+      "gas": {
+        "frame": 53,
+        "phase": "playing",
+        "backend": "recovered-core",
+        "speed": 10.177007286978254,
+        "yaw": 7.500564304101601e-08,
+        "steer": 0,
+        "crashed": false,
+        "engine": {
+          "gear": 2,
+          "rpm": 4510,
+          "force": 0.440000057220459,
+          "recovered": {
+            "released": 0,
+            "randomState": 3032843404,
+            "state": 0.440000057220459,
+            "gear": 1
+          }
+        },
+        "opponents": [
+          {
+            "frame": 53,
+            "x": -13.645780146334147,
+            "z": -5.8183289235111015,
+            "speed": 9.469341621339208
+          }
+        ]
+      }
+    },
+    {
+      "touch": true,
+      "gas": {
+        "frame": 53,
+        "phase": "playing",
+        "backend": "recovered-core",
+        "speed": 10.177007286978254,
+        "yaw": 7.500564304101601e-08,
+        "steer": 0,
+        "crashed": false,
+        "engine": {
+          "gear": 2,
+          "rpm": 4510,
+          "force": 0.440000057220459,
+          "recovered": {
+            "released": 0,
+            "randomState": 3032843404,
+            "state": 0.440000057220459,
+            "gear": 1
+          }
+        },
+        "opponents": [
+          {
+            "frame": 53,
+            "x": -13.645780146334147,
+            "z": -5.8183289235111015,
+            "speed": 9.469341621339208
+          }
+        ]
+      },
+      "errors": []
+    }
+  ],
+  "screenshot": "/tmp/mcm-core-preview-bike.png",
+  "limits": [
+    "Native sustained normal-speed parity is not proved.",
+    "Two-bike playable initialization is limited to the original dunes map.",
+    "Checkpoint is a rolling start at about 36 km/h."
+  ]
+}
