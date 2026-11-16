@@ -1,0 +1,41 @@
+{
+  "fixtures": {
+    "tests/fixtures/mcm/ordinary-heap-wine11.json.br": "d7c450e5c834289e90d5b1f82ecf2bc5fff2859b3b770d6cbe08d5557d6b6a61",
+    "tests/fixtures/mcm/lfh-routing-wine11.json.br": "5ad85eb3ce9cb6897629ed03bf2ab7d441d5b0c1b88f6d6b9783bc855ae4e713"
+  },
+  "ordinary": {
+    "cases": 32,
+    "steps": 1056,
+    "differences": 0,
+    "checks": [
+      "chosen pointers",
+      "all ordinary block headers",
+      "free-list headers and links",
+      "forward and backward coalescing"
+    ]
+  },
+  "lfhRouting": {
+    "cases": 8,
+    "steps": 504,
+    "differences": 0,
+    "checks": [
+      "chosen pointers",
+      "reserved group table",
+      "shared group heads/depths",
+      "group bitmaps and all slot headers"
+    ]
+  },
+  "liveCrtThreshold": {
+    "address": "0x4ec2bc",
+    "value": 480,
+    "heap": "0x01930000",
+    "method": "Read-only original process inspection; new atomic heap captures also include this field."
+  },
+  "regression": {
+    "targetedTests": 10,
+    "passed": 10,
+    "twoBikeComparison": "zero differences",
+    "captureToolCompiled": true
+  },
+  "scope": "Retained existing-region ordinary allocation/free and existing-group LFH routing. No later expected allocator state is imported. Group creation/release, bin activation counters, CRT small-block heap, virtual-memory growth and autonomous world integration remain pending."
+}

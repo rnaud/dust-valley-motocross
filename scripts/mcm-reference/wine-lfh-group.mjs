@@ -20,5 +20,5 @@ export function createWineLfhGroup(initial){
   slot.words=[stride/8,(0x81460000|index)>>>0];state.freeBits=(state.freeBits|bit)>>>0;
   const released=state.freeBits===0xffffffff;if(released)state.freeBits=0x7fffffff;
   return {released};
- },snapshot(){return structuredClone(state);}};
+ },setNext(pointer){state.next=pointer>>>0;},snapshot(){return structuredClone(state);}};
 }

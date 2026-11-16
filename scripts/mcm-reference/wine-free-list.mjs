@@ -22,7 +22,18 @@ export function createWineFreeList(snapshot){
   while(p!==head){const e=byLink.get(p);if((e.words[1]>>>24)!==3&&e.words[0]*8>=bytes)return e.header+8;p=e.links[0];}
   return null;
  };
- return {select,allocate(request){
+ const remove=pointer=>{
+  const block=byLink.get(pointer);if(!block||(block.words[1]>>>24)!==1)throw Error('Unknown ordinary free block');
+  byLink.get(block.links[0]).links[1]=block.links[1];byLink.get(block.links[1]).links[0]=block.links[0];byLink.delete(pointer);
+ };
+ const insert=(header,words,last)=>{
+  if(!Number.isInteger(header)||header%8||!Array.isArray(words)||words.length!==2||words[1]>>>24!==1||typeof last!=='boolean')throw Error('Invalid ordinary free block');
+  const link=header+8;if(byLink.has(link))throw Error('Duplicate ordinary free block');
+  let index=wineFreeListIndex(words[0]*8);if(last)index=(index+1)%61;
+  const sentinel=head+index*16,before=last?sentinel:byLink.get(sentinel).links[0],after=byLink.get(before).links[1];
+  byLink.set(link,{header,words:words.slice(),links:[before,after],last});byLink.get(before).links[1]=link;byLink.get(after).links[0]=link;
+ };
+ return {select,remove,insert,allocate(request){
   if(!Number.isInteger(request)||request<1024||request>0x7efe0)throw Error('Unsupported ordinary CRT request');
   const payload=Math.ceil(request/16)*16,needed=payload+8,pointer=select(needed);
   if(pointer===null)return null; // The caller must supply the region-growth service.

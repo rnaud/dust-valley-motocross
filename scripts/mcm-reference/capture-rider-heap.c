@@ -23,8 +23,8 @@ static int capture_rider_free_list(FILE*out,DWORD heap,const char*name){
 // Wine 11 x86 subheap headers and free-list links, never payloads. LFH
 // group headers are retained as opaque blocks, not decoded as ordinary blocks.
 static int capture_rider_heap(FILE*out,DWORD child){
- DWORD anchor=child+0x610,words[2],heap;
- if(!read_memory(anchor,words,8)||!read_memory(0x52572c,&heap,4))return 0;
+ DWORD anchor=child+0x610,words[2],heap,crtThreshold;
+ if(!read_memory(anchor,words,8)||!read_memory(0x52572c,&heap,4)||!read_memory(0x4ec2bc,&crtThreshold,4))return 0;
  unsigned type=(words[1]>>16)&255,flags=words[1]>>24;
  if((type!=0x75&&type!=0x46)||(flags&~3u))return 0;
  DWORD base=(anchor&0xffff0000u)-(words[1]&65535)*65536u;
@@ -35,7 +35,7 @@ static int capture_rider_heap(FILE*out,DWORD child){
  DWORD end=base+32+sub[2],cursor=base+24;int found=0;
  fprintf(out,"{\"format\":\"wine11-x86-subheap-headers\",\"child\":%lu,\"anchor\":%lu,\"heap\":%lu,\"base\":%lu,\"committedEnd\":%lu,\"heapHex\":\"",child,anchor,heap,base,end);
  if(!write_particle_hex(out,heapBytes,sizeof heapBytes))return 0;
- fprintf(out,"\",\"subheapHex\":\"");if(!write_particle_hex(out,(BYTE*)sub,sizeof sub))return 0;
+ fprintf(out,"\",\"crtSmallBlockThreshold\":%lu,\"subheapHex\":\"",crtThreshold);if(!write_particle_hex(out,(BYTE*)sub,sizeof sub))return 0;
  fprintf(out,"\",\"blocks\":[");
  for(unsigned i=0;cursor<end&&i<262144;i++){
   if(!read_memory(cursor,words,8))return 0;
