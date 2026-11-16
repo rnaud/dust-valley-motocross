@@ -1,0 +1,243 @@
+{
+  "scope": "Observed heap-header transitions; not an autonomous allocator implementation",
+  "captures": [
+    {
+      "path": "tests/fixtures/mcm/world-application-frame-wine11.json.br",
+      "riders": [
+        {
+          "bike": 82612896,
+          "child": 82698896,
+          "adjacentHeader": 82700448,
+          "adjacentPayload": 82700456,
+          "samples": 126,
+          "transitions": [
+            {
+              "sequence": 0,
+              "phase": "before-rider",
+              "words": [
+                229,
+                7667718
+              ],
+              "blockBytes": 1832,
+              "tailBytes": 0,
+              "regionOffset": 6,
+              "type": 117,
+              "flags": 0
+            }
+          ]
+        },
+        {
+          "bike": 82803448,
+          "child": 83086264,
+          "adjacentHeader": 83087816,
+          "adjacentPayload": 83087824,
+          "samples": 126,
+          "transitions": [
+            {
+              "sequence": 2,
+              "phase": "before-rider",
+              "words": [
+                861,
+                7667724
+              ],
+              "blockBytes": 6888,
+              "tailBytes": 0,
+              "regionOffset": 12,
+              "type": 117,
+              "flags": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/fixtures/mcm/world-chase-recovery-wine11.json.br",
+      "riders": [
+        {
+          "bike": 82612896,
+          "child": 82698896,
+          "adjacentHeader": 82700448,
+          "adjacentPayload": 82700456,
+          "samples": 318,
+          "transitions": [
+            {
+              "sequence": 0,
+              "phase": "before-rider",
+              "words": [
+                229,
+                7667718
+              ],
+              "blockBytes": 1832,
+              "tailBytes": 0,
+              "regionOffset": 6,
+              "type": 117,
+              "flags": 0
+            }
+          ]
+        },
+        {
+          "bike": 82803448,
+          "child": 83086264,
+          "adjacentHeader": 83087816,
+          "adjacentPayload": 83087824,
+          "samples": 318,
+          "transitions": [
+            {
+              "sequence": 2,
+              "phase": "before-rider",
+              "words": [
+                361,
+                7667724
+              ],
+              "blockBytes": 2888,
+              "tailBytes": 0,
+              "regionOffset": 12,
+              "type": 117,
+              "flags": 0
+            },
+            {
+              "sequence": 130,
+              "phase": "before-rider",
+              "words": [
+                409,
+                21364748
+              ],
+              "blockBytes": 3272,
+              "tailBytes": 0,
+              "regionOffset": 12,
+              "type": 70,
+              "flags": 1
+            },
+            {
+              "sequence": 138,
+              "phase": "before-rider",
+              "words": [
+                393,
+                7667724
+              ],
+              "blockBytes": 3144,
+              "tailBytes": 0,
+              "regionOffset": 12,
+              "type": 117,
+              "flags": 0
+            },
+            {
+              "sequence": 142,
+              "phase": "before-rider",
+              "words": [
+                409,
+                21364748
+              ],
+              "blockBytes": 3272,
+              "tailBytes": 0,
+              "regionOffset": 12,
+              "type": 70,
+              "flags": 1
+            },
+            {
+              "sequence": 270,
+              "phase": "before-rider",
+              "words": [
+                875,
+                21364748
+              ],
+              "blockBytes": 7000,
+              "tailBytes": 0,
+              "regionOffset": 12,
+              "type": 70,
+              "flags": 1
+            },
+            {
+              "sequence": 298,
+              "phase": "before-rider",
+              "words": [
+                769,
+                7667724
+              ],
+              "blockBytes": 6152,
+              "tailBytes": 0,
+              "regionOffset": 12,
+              "type": 117,
+              "flags": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "tests/fixtures/mcm/world-player-camera-recovery-wine11.json.br",
+      "riders": [
+        {
+          "bike": 82612896,
+          "child": 82698896,
+          "adjacentHeader": 82700448,
+          "adjacentPayload": 82700456,
+          "samples": 330,
+          "transitions": [
+            {
+              "sequence": 0,
+              "phase": "before-rider",
+              "words": [
+                229,
+                7667718
+              ],
+              "blockBytes": 1832,
+              "tailBytes": 0,
+              "regionOffset": 6,
+              "type": 117,
+              "flags": 0
+            }
+          ]
+        },
+        {
+          "bike": 82803448,
+          "child": 83086264,
+          "adjacentHeader": 83087816,
+          "adjacentPayload": 83087824,
+          "samples": 330,
+          "transitions": [
+            {
+              "sequence": 2,
+              "phase": "before-rider",
+              "words": [
+                769,
+                7667724
+              ],
+              "blockBytes": 6152,
+              "tailBytes": 0,
+              "regionOffset": 12,
+              "type": 117,
+              "flags": 0
+            },
+            {
+              "sequence": 14,
+              "phase": "before-rider",
+              "words": [
+                875,
+                21364748
+              ],
+              "blockBytes": 7000,
+              "tailBytes": 0,
+              "regionOffset": 12,
+              "type": 70,
+              "flags": 1
+            },
+            {
+              "sequence": 338,
+              "phase": "before-rider",
+              "words": [
+                861,
+                7667724
+              ],
+              "blockBytes": 6888,
+              "tailBytes": 0,
+              "regionOffset": 12,
+              "type": 117,
+              "flags": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
