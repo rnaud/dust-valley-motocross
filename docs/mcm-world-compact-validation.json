@@ -76,5 +76,14 @@
     "testsFailed": 0,
     "productionBuild": "passed",
     "desktopAndTouchProductionSmoke": "passed, no page errors"
+  },
+  "deployment": {
+    "commit": "de386b6bc604193a4edd7d5d24358e6f4dd46068",
+    "run": "https://github.com/rnaud/dust-valley-motocross/actions/runs/43980165800",
+    "conclusion": "success",
+    "url": "https://rnaud.github.io/dust-valley-motocross/",
+    "verifiedEntry": "./assets/index-CNMKFJTp.js",
+    "matchesLocalProductionBundle": true,
+    "liveDesktopAndTouch": "passed, both bikes advance together, no page errors"
   }
 }
