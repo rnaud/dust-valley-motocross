@@ -61,10 +61,14 @@ for(const name of fs.readdirSync(directory).sort()){
 }
 if(animationBlocks.length)files['world-animation-observations.json']=JSON.stringify(animationBlocks);
 const cleanup=files['cleanup.log'];assert.match(cleanup,/debugger=0 clean=1/);assert.ok(!cleanup.includes('restored=0'));
-const restored=[...cleanup.matchAll(/([0-9a-f]{8}) restored=1/g)].map(m=>m[1]);assert.equal(new Set(restored).size,files['world-camera-initial.json']?49:46);
+const restored=[...cleanup.matchAll(/([0-9a-f]{8}) restored=1/g)].map(m=>m[1]);assert.equal(new Set(restored).size,files['world-renderer-initial.json']?52:files['world-camera-initial.json']?49:46);
 if(files['world-camera-initial.json']){
  assert.ok(files['world-camera-observations.jsonl'],'Missing joint camera observations');
  for(const address of ['0047b107','0047db8f','0047dbdc'])assert.ok(restored.includes(address));
+}
+if(files['world-renderer-initial.json']){
+ assert.ok(files['world-renderer-observations.jsonl'],'Missing renderer observations');
+ for(const address of ['0043e660','0043e69c','0043e69f'])assert.ok(restored.includes(address));
 }
 for(const address of ['004590b0','004a52c0','004a54b6','004ad0e1','004ad5a2','004bf195'])assert.ok(restored.includes(address));
 const count=Number(files['capture.log'].match(/captured=(\d+) status=1/)?.[1]);assert.ok(count>=4);assert.equal(retainedRows['frames.jsonl'].physicsRows,count);const completeFrames=retainedRows['frames.jsonl'].selected;

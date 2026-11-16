@@ -1,0 +1,14 @@
+{
+  "tick": {
+    "cases": 512,
+    "words": 17920,
+    "differences": 0,
+    "examples": []
+  },
+  "clip": {
+    "cases": 256,
+    "words": 512,
+    "differences": 0,
+    "examples": []
+  }
+}

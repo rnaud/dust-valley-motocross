@@ -1,0 +1,3 @@
+import fs from'node:fs';const words=[0,0x80000000,0x3f800000,0x3f7fffff,0x3f800001,0xbf800000,0x47c35000,0x47c34fff,0x47c35001,0x7f800000,0xff800000,0x7fc00000,0xffc00000,1,0x80000001,0x7f7fffff];
+const clip=Buffer.alloc(256*8);for(let n=0;n<256;n++){clip.writeUInt32LE(words[n%16],n*8);clip.writeUInt32LE(words[n>>4],n*8+4);}fs.writeFileSync(process.argv[2],clip,{flag:'wx'});
+const tick=Buffer.alloc(512*32);for(let n=0;n<512;n++)[n%2,words[(n>>1)%16],(n>>5)%2,(n>>6)%2,[0,1,0x80004005,0xffffffff][(n>>7)%4],0x3c83126f,0,0].forEach((v,i)=>tick.writeUInt32LE(v,n*32+i*4));fs.writeFileSync(process.argv[3],tick,{flag:'wx'});

@@ -10,11 +10,11 @@
 | Riders, collisions and recovery | The joined pursuit run matches 636 rider/collider boundaries, 56 contact callbacks and two player crash/recovery sequences. Separate retained-world particle recovery coverage extends to 163 updates. | Broader collision/impact paths and recovery conditions; three player-following crash sequences now match. |
 | Shared particles | Dust/spray/exhaust/rider emitters and the shared pool run from retained world/scene ordering. The 64-update joined run matches 567 particle boundaries; a separate 163-update recovery run matches 1,463. | Six active impact checks and 1,573 particle boundaries now match in the 166-update run. Dynamic heap-boundary behavior and remaining particle presentation inputs remain. |
 | Chase camera and drawing | Initialized active and crash chase state is retained. It reads 27 simulated bike/rider/transform words per entry; the player-camera run matches 165 updates / 24,750 base output words plus retained crash-height checks. Audio position and mesh projection are derived. | Initialization, fixed-target/rider-position camera paths, active tail controls and remaining world/device context. Viewport and draw invocation data remain external. |
-| Remaining scene execution | World, child actors, markers, HUD, shared pool and active chase camera are connected. Scene 481310 switching/timer sequence matches 4,096 isolated original executions. | Connect scene prefix/tail and outer 4997b0. Three custom scene methods remain in the latest recording: 43e660, 411000 and 423b50. Event-queue allocator integration remains open; its empty live path is now connected. |
+| Remaining scene execution | World, child actors, markers, HUD, shared pool and active chase camera are connected. Scene 481310 switching/timer sequence matches 4,096 isolated original executions. | Connect scene prefix/tail and outer 4997b0. Two custom scene methods remain in the latest recording: 411000 and 423b50. Scene renderer 43e660 now uses the retained camera; device return codes remain external. Event-queue allocator integration remains open; its empty live path is now connected. |
 | Observation quality | Original byte guards, independent hook restoration, debugger detachment, input restoration and camera restoration are checked. No later bike state is imported into replay. | Debugger overhead still changes observed timing. Normal-rate parity remains unproved. |
 | Playable preview | Recent milestones improve reference simulation and validation on main. | These integrations have not yet changed the playable preview; separate integration and gameplay testing remain. |
 
-Current evidence: [joined scene queue](mcm-world-scene-queue-validation.json), [player-camera crashes and impacts](mcm-world-player-camera-recovery-validation.json), [joined pursuit/recovery](mcm-world-chase-recovery-validation.json), [joined world/camera](mcm-world-chase-validation.json), [scene sequence](mcm-scene-tick-validation.json), and [retained scene pool](mcm-scene-pool-validation.json). The earlier approximately 70% planning estimate was not a coverage score and has not been replaced by a measured percentage. Passing tests prove the boundaries they compare, not complete gameplay equivalence.
+Current evidence: [joined scene renderer](mcm-world-scene-renderer-validation.json), [joined scene queue](mcm-world-scene-queue-validation.json), [player-camera crashes and impacts](mcm-world-player-camera-recovery-validation.json), [joined pursuit/recovery](mcm-world-chase-recovery-validation.json), [joined world/camera](mcm-world-chase-validation.json), [scene sequence](mcm-scene-tick-validation.json), and [retained scene pool](mcm-scene-pool-validation.json). The earlier approximately 70% planning estimate was not a coverage score and has not been replaced by a measured percentage. Passing tests prove the boundaries they compare, not complete gameplay equivalence.
 
 ## Historical milestones
 
@@ -7698,3 +7698,58 @@ queue ordering and arithmetic, not allocator integration. New tests verify that
 missing initialization and changed queue assertions fail, and that missing free
 integration cannot silently remove an event. See `world-scene-queue-wine11.json.br`
 and `mcm-world-scene-queue-validation.json`. Preview behavior remains unchanged.
+
+### Scene renderer sequence and clipping recovered (2026-11-16)
+
+Recovered `43e660` as `tickMcmSceneRenderer`: enabled gate, clip distances using
+actor+38 as the far-distance float, rebuild camera matrices, submit projection
+matrix as transform kind 3, and report any nonzero renderer result. Owner/camera
+pointers are re-read after each service. The actor does not traverse children.
+An isolated oracle executing the original routine matches 512 cases / 17,920
+words, including disabled actors, camera replacement between calls, and renderer
+errors. Services remain explicit; missing renderer results fail.
+
+Recovered `47a190` clipping arithmetic separately. The original clamps near to
+at least 1 and far to at most 100000. Unordered near selects 1, while unordered
+far preserves the input NaN. All 256 native immediate-mode cases / 512 words
+match, including signed zero, adjacent float values, infinities and canonical
+NaNs. Retained-mode forwarding follows disassembly with explicit device/error
+services and first-error exit; those device calls are not part of this native
+immediate-mode coverage.
+
+Evidence: `scene-renderer-wine11.json.br`, `mcm-scene-renderer-validation.json`
+and focused regressions. Existing matrix composition already recovers `47a670`.
+The live scene renderer remains external until a new observation captures its
+initial actor state and renderer submission inputs/results, and the routines
+are connected to the retained camera with those boundaries checked. This work
+does not reduce the current three-method external list or change the preview.
+
+
+### Scene renderer connected and observed at submission boundaries (2026-11-16)
+
+Added guarded observations at `43e660` entry, `43e69c` before the renderer call,
+and `43e69f` on return. Initial actor/owner/camera state is captured at the atomic
+world checkpoint; later snapshots and actual submission arguments/results are
+assertion boundaries. All 52 original byte guards and cleanup checks pass.
+
+The new 64-update recording matches both bikes, shared RNG, 252 rider/collider
+boundaries, 567 particle assertions, HUD, markers and queue. The scene renderer
+now sets clipping distances and rebuilds matrices from the retained chase camera
+before later physics and drawing use them. Its 63 invocations match all 12,663
+matrix/clipping words at entry, submission and return. Submission device, kind
+and matrix address match independently observed arguments. No native camera
+output is copied into simulation state. The first call is already before the
+atomic world checkpoint; the final partial frame still includes its observed
+renderer call before physics.
+
+Renderer return codes remain explicit device inputs. Nonzero results fail the
+live integration rather than being silently accepted; isolated sequencing tests
+cover the original error-reporting branch. Older fixtures without renderer
+state remain explicitly external. The new fixture's external custom scene list
+is now `411000`, `423b50`; broader scene scheduling, active event deletion,
+dynamic heap boundaries and normal-rate validation remain open.
+
+Evidence: `world-scene-renderer-wine11.json.br` and
+`mcm-world-scene-renderer-validation.json`. Regression tests also corrupt a
+submission argument, an output matrix, and the device result to verify rejection.
+The production preview is unchanged by this reference-runtime milestone.
