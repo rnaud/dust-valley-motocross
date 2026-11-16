@@ -1,4 +1,5 @@
 #include "capture-heap-regions.c"
+#include "capture-crt-small-heap.c"
 // Wine 11 x86 ordinary free-list chain, including all 61 bucket sentinels.
 // LFH allocation groups have a separate service and are not in this chain.
 static int capture_rider_free_list(FILE*out,DWORD heap,const char*name){
@@ -48,5 +49,5 @@ static int capture_rider_heap(FILE*out,DWORD child){
   if(cursor==anchor)found=1;
   cursor+=(DWORD)bytes;
  }
- fprintf(out,"]");if(!capture_rider_free_list(out,heap,"freeList")||!capture_heap_regions(out,heap))return 0;fprintf(out,"}");return found&&cursor>=end&&!ferror(out);
+ fprintf(out,"]");if(!capture_rider_free_list(out,heap,"freeList")||!capture_heap_regions(out,heap)||!capture_crt_small_heap(out))return 0;fprintf(out,"}");return found&&cursor>=end&&!ferror(out);
 }

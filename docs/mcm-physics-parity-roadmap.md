@@ -26,6 +26,14 @@ Current evidence: [joined outer frame scheduler](mcm-world-application-frame-val
 
 A separate normal-rate stability probe uses 0.02-second steps, repeated acceleration/release/braking and left/right steering. It completes 595 updates before the player crash emitter reaches table index 32 and requests two adjacent heap words beyond its 0x610-byte allocation. The initial snapshot contains these words, but the AI words change later in pursuit/crash captures (254 and 324 rider boundaries respectively), so freezing the initial values is not a valid general fix. The probe intentionally fails rather than inventing the missing memory. This is the next concrete blocker before replacing the playable single-bike runtime. Logs: `/tmp/mcm-normal-rate-world-stability-v2.log`; no normal-rate original comparison is claimed. The currently deployed default game remains the working recovered single-bike mode. Previous shared-world milestone `2d88f64` deployed successfully (run `43957260687`).
 
+## CRT small-block pages and live metadata (2026-11-16)
+
+The original CRT's small-block page allocation search (4c5850), including its cached free run, forward scan, wraparound and fragmented-page failure behavior, is recovered. Across 64 isolated original-executable cases, all 16,384 allocation/free transitions match the selected pointer, complete page metadata and free-unit count; 3,787 failed allocation attempts are included. Page free is checked against original 4c5580 with its separate decommit service isolated. [Validation](mcm-crt-small-heap-validation.json).
+
+The optional atomic heap capture now includes the CRT region ring, page search caches, committed page metadata, threshold and historical free-page counter. A read-only live capture successfully recorded one region with 880 committed pages and detached/resumed the game. Its threshold is 480 bytes; its historical free-page counter is 30 even though none of the captured pages are currently completely empty. Reconstructing that counter from current occupancy would be incorrect.
+
+All 13 targeted tests pass, including the complete existing two-bike comparison, and both capture tools compile. Region selection, commit/decommit and region lifecycle still need recovery and integration. This does not yet resolve the autonomous normal-rate frame-595 blocker. The standalone heap snapshot is diagnostic evidence, not a replacement for a fresh atomic physics/heap checkpoint.
+
 ## Retained allocator operations and LFH routing (2026-11-16)
 
 Ordinary placement now shares retained region state with free/coalescing operations. Across 32 native private-heap trajectories / 1,056 operations, allocation pointers, all block headers and complete free-list state match exactly. The cases include forward and backward merges and repeated reuse. Whole-secondary-region release fails explicitly before mutation until its virtual-memory service is connected.

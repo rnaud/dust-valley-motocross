@@ -1,0 +1,32 @@
+{
+  "fixtures": {
+    "tests/fixtures/mcm/crt-small-page-wine11.json.br": "43b2f0c5a96c7e5e4b1f43f2120201ac60a031c934366fc290a5afdeb4ab6ee6",
+    "tests/fixtures/mcm/crt-small-heap-wine11.json.br": "ceb9e6638b67f56a9d15a33f0efaf0fac887bdc851944664582cf19aa513a62d"
+  },
+  "page": {
+    "cases": 64,
+    "steps": 16384,
+    "allocationFailures": 3787,
+    "differences": 0,
+    "checks": [
+      "chosen pointer or allocation failure",
+      "all 256 page metadata bytes",
+      "remaining free units after each operation"
+    ]
+  },
+  "liveCapture": {
+    "regions": 1,
+    "committedPages": 880,
+    "threshold": 480,
+    "freePageCounter": 30,
+    "debuggerDetached": true,
+    "atomicWithPhysics": false
+  },
+  "regression": {
+    "targetedTests": 13,
+    "passed": 13,
+    "twoBikeComparison": "zero differences",
+    "captureToolCompiled": true
+  },
+  "scope": "Original CRT page allocation/free recovered. Region selection, commit/decommit, region creation/release and connection to the autonomous world remain pending. The free-page counter is historical, not the current count of empty pages. A fresh atomic world capture is still required; the standalone heap fixture must not be combined with an older physics checkpoint."
+}
