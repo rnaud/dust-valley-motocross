@@ -1,0 +1,280 @@
+{
+  "scope": "Retained traversal, node updates and emission with explicit observed CRT pointer/size-return service boundaries; shared global accounting remains mismatched and full scene timing is unconnected",
+  "capture": "/tmp/mcm-world-terrain-meshes-v1",
+  "ticks": 63,
+  "snapshots": 64,
+  "nodeWordsCompared": 106394112,
+  "nodeDifferences": 0,
+  "meshBytesCompared": 127872812,
+  "meshDifferences": 0,
+  "ownerDifferences": 0,
+  "projectionCounterDifferences": 0,
+  "lastMeshReport": {
+    "bytes": 2071368,
+    "differences": 0,
+    "examples": [],
+    "textureScaleMatches": true,
+    "accountingActual": 5592414,
+    "accountingExpected": 5592030,
+    "allocatorGlobalDifferences": 18042,
+    "remainingAllocatorEvents": 0
+  },
+  "sharedAccountingDeltas": [
+    {
+      "frame": 0,
+      "delta": 0
+    },
+    {
+      "frame": 1,
+      "delta": 8
+    },
+    {
+      "frame": 2,
+      "delta": 16
+    },
+    {
+      "frame": 3,
+      "delta": 24
+    },
+    {
+      "frame": 4,
+      "delta": 32
+    },
+    {
+      "frame": 5,
+      "delta": 40
+    },
+    {
+      "frame": 6,
+      "delta": 48
+    },
+    {
+      "frame": 7,
+      "delta": 56
+    },
+    {
+      "frame": 8,
+      "delta": 64
+    },
+    {
+      "frame": 9,
+      "delta": 72
+    },
+    {
+      "frame": 10,
+      "delta": 80
+    },
+    {
+      "frame": 11,
+      "delta": 88
+    },
+    {
+      "frame": 12,
+      "delta": 96
+    },
+    {
+      "frame": 13,
+      "delta": 104
+    },
+    {
+      "frame": 14,
+      "delta": 112
+    },
+    {
+      "frame": 15,
+      "delta": 120
+    },
+    {
+      "frame": 16,
+      "delta": 128
+    },
+    {
+      "frame": 17,
+      "delta": 136
+    },
+    {
+      "frame": 18,
+      "delta": 144
+    },
+    {
+      "frame": 19,
+      "delta": 152
+    },
+    {
+      "frame": 20,
+      "delta": 160
+    },
+    {
+      "frame": 21,
+      "delta": 168
+    },
+    {
+      "frame": 22,
+      "delta": 176
+    },
+    {
+      "frame": 23,
+      "delta": 184
+    },
+    {
+      "frame": 24,
+      "delta": 192
+    },
+    {
+      "frame": 25,
+      "delta": 200
+    },
+    {
+      "frame": 26,
+      "delta": 208
+    },
+    {
+      "frame": 27,
+      "delta": 216
+    },
+    {
+      "frame": 28,
+      "delta": 224
+    },
+    {
+      "frame": 29,
+      "delta": 232
+    },
+    {
+      "frame": 30,
+      "delta": 240
+    },
+    {
+      "frame": 31,
+      "delta": 248
+    },
+    {
+      "frame": 32,
+      "delta": 256
+    },
+    {
+      "frame": 33,
+      "delta": 264
+    },
+    {
+      "frame": 34,
+      "delta": 272
+    },
+    {
+      "frame": 35,
+      "delta": 280
+    },
+    {
+      "frame": 36,
+      "delta": 288
+    },
+    {
+      "frame": 37,
+      "delta": 296
+    },
+    {
+      "frame": 38,
+      "delta": 304
+    },
+    {
+      "frame": 39,
+      "delta": 312
+    },
+    {
+      "frame": 40,
+      "delta": 320
+    },
+    {
+      "frame": 41,
+      "delta": 328
+    },
+    {
+      "frame": 42,
+      "delta": 336
+    },
+    {
+      "frame": 43,
+      "delta": 344
+    },
+    {
+      "frame": 44,
+      "delta": 352
+    },
+    {
+      "frame": 45,
+      "delta": 360
+    },
+    {
+      "frame": 46,
+      "delta": 368
+    },
+    {
+      "frame": 47,
+      "delta": 376
+    },
+    {
+      "frame": 48,
+      "delta": 376
+    },
+    {
+      "frame": 49,
+      "delta": 376
+    },
+    {
+      "frame": 50,
+      "delta": 376
+    },
+    {
+      "frame": 51,
+      "delta": 376
+    },
+    {
+      "frame": 52,
+      "delta": 384
+    },
+    {
+      "frame": 53,
+      "delta": 384
+    },
+    {
+      "frame": 54,
+      "delta": 384
+    },
+    {
+      "frame": 55,
+      "delta": 384
+    },
+    {
+      "frame": 56,
+      "delta": 384
+    },
+    {
+      "frame": 57,
+      "delta": 384
+    },
+    {
+      "frame": 58,
+      "delta": 384
+    },
+    {
+      "frame": 59,
+      "delta": 384
+    },
+    {
+      "frame": 60,
+      "delta": 384
+    },
+    {
+      "frame": 61,
+      "delta": 384
+    },
+    {
+      "frame": 62,
+      "delta": 384
+    },
+    {
+      "frame": 63,
+      "delta": 384
+    }
+  ]
+}

@@ -15,3 +15,12 @@ export function freeMcmOwned(owner, accounting, heap, pointer) {
  }
  heap.free(pointer);
 }
+// Original 45c7f0 adds the requested byte count only after malloc succeeds.
+export function allocateMcmOwned(owner, accounting, heap, size) {
+ const pointer=heap.malloc(size>>>0);
+ if(pointer){
+  accounting.bytes=(accounting.bytes+(size>>>0))>>>0;
+  owner.bytes=(owner.bytes+(size>>>0))>>>0;
+ }
+ return pointer;
+}

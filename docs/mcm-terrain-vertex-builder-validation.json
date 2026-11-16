@@ -1,0 +1,7 @@
+{
+  "scope": "Original 489f50 generation reset and 48b350 vertex construction/cache; two consecutive requests per case",
+  "cases": 2048,
+  "words": 5928960,
+  "differences": 0,
+  "examples": []
+}

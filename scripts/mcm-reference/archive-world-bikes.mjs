@@ -57,11 +57,13 @@ for(const name of fs.readdirSync(directory).sort()){
    files['particle-observations.jsonl']=particleRows.join('\n')+'\n';
    retainedRows[name].particleAssertions=particleRows.length;
   }
- }else if(name.startsWith('world-')||['capture.log','cleanup.log','restart.log','camera-selection.log','camera-restoration.log'].includes(name))files[name]=fs.readFileSync(path.join(directory,name),'utf8');
+ }else if(name.startsWith('world-')||['terrain-allocation-events.jsonl','capture.log','cleanup.log','restart.log','camera-selection.log','camera-restoration.log'].includes(name))files[name]=fs.readFileSync(path.join(directory,name),'utf8');
 }
 if(animationBlocks.length)files['world-animation-observations.json']=JSON.stringify(animationBlocks);
 const cleanup=files['cleanup.log'];assert.match(cleanup,/debugger=0 clean=1/);assert.ok(!cleanup.includes('restored=0'));
-const restored=[...cleanup.matchAll(/([0-9a-f]{8}) restored=1/g)].map(m=>m[1]);assert.equal(new Set(restored).size,files['world-renderer-initial.json']?52:files['world-camera-initial.json']?49:46);
+const restored=[...cleanup.matchAll(/([0-9a-f]{8}) restored=1/g)].map(m=>m[1]);assert.equal(new Set(restored).size,'terrain-allocation-events.jsonl' in files?(files['terrain-allocation-events.jsonl'].includes('\"terrain\":')?60:58):files['world-renderer-initial.json']?52:files['world-camera-initial.json']?49:46);
+if(files['terrain-allocation-events.jsonl']?.includes('\"terrain\":'))for(const address of ['0045c8d0','0045c8e6'])assert.ok(restored.includes(address));
+if('terrain-allocation-events.jsonl' in files){for(const address of ['0045c7f0','0045c801','0045c820','0045c832','0045c849','0045c854'])assert.ok(restored.includes(address));}
 if(files['world-camera-initial.json']){
  assert.ok(files['world-camera-observations.jsonl'],'Missing joint camera observations');
  for(const address of ['0047b107','0047db8f','0047dbdc'])assert.ok(restored.includes(address));

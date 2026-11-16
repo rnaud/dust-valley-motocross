@@ -1,0 +1,37 @@
+{
+  "scope": "Retained terrain traversal, vertex updates and mesh emission with shared AI/terrain owned-allocation accounting; CRT pointer/size returns remain explicit services. Scene timing, marker drawing caches and full gameplay parity remain open.",
+  "fixture": "world-terrain-emission-wine11.json.br",
+  "ticks": 63,
+  "snapshots": 64,
+  "nodeWordsCompared": 106394112,
+  "meshBytesCompared": 128099548,
+  "nodeDifferences": 0,
+  "meshDifferences": 0,
+  "ownerDifferences": 0,
+  "globalAccountingBoundaryDifferences": 0,
+  "allocator": {
+    "remainingAllocatorEvents": 0,
+    "allocatorGlobalDifferences": []
+  },
+  "events": {
+    "ai:calloc-entry": 102,
+    "ai:calloc-result": 102,
+    "ai:free-entry": 102,
+    "ai:size-global": 102,
+    "ai:size-owner": 102,
+    "ai:free-call": 102,
+    "terrain:free-entry": 3032,
+    "terrain:size-global": 3032,
+    "terrain:size-owner": 3032,
+    "terrain:free-call": 3032,
+    "terrain:malloc-entry": 3032,
+    "terrain:malloc-result": 3032
+  },
+  "markerDrawingCacheDifferences": 1984,
+  "cleanup": {
+    "hooksRestored": 60,
+    "debuggerDetached": true,
+    "inputReleased": true,
+    "cameraRestored": true
+  }
+}

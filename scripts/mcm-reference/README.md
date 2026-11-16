@@ -722,3 +722,29 @@ Each executable takes `original.exe input.bin output.bin`. The corresponding
 compare original outputs. Full node-update comparison also takes the captured
 9,248-byte vertex metadata block and `--real-patch`. Native notification-service
 and complete-chain fixtures are separate, with hashes checked by regressions.
+
+### Terrain mesh emission and shared allocation accounting
+
+Set `MCM_WORLD_TERRAIN_MESHES=1` with the existing terrain/resource/world-renderer
+capture flags to record mesh-buffer deltas, the shared builder/index arrays,
+and owned malloc/calloc/free calls. This mode uses 60 guarded hooks. Compile
+`verify-world-capture.c` and run it with `PID terrain-meshes` before capture and
+after detach; preserve cleanup, input-release and camera-restoration evidence.
+`archive-world-bikes.mjs` retains `terrain-allocation-events.jsonl` and checks
+all required restored hooks (including compatibility with the earlier 58-hook
+terrain-only recording).
+
+Add `--terrain-emission-integration` to the existing complete joined replay
+options, including `--terrain-node-integration`. This computes mesh contents
+and shares accounting with the retained AI controller. Allocator request order,
+owner counters, AI request sizes and its rounded allocation sizes are checked;
+CRT pointer identities and terrain size-query returns remain explicit service
+inputs. Later observed node/buffer bytes never update simulated state.
+`terrainAllocatorReport` exposes unconsumed events and intermediate accounting
+differences. Marker drawing-cache differences and scene clocks remain open.
+
+Native `terrain-vertex-builder-oracle.c`, `terrain-triangles-oracle.c` and
+`terrain-emission-oracle.c` compile with `i686-w64-mingw32-gcc -O2` and
+`-Wl,--image-base,0x10000000`; add `-DFALLBACK` to the triangle oracle for
+`48bfd0`. Each takes `ORIGINAL_EXE INPUT OUTPUT`. Matching generate/compare
+scripts and hashed regression fixtures preserve the exact tested scope.

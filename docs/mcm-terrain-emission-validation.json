@@ -1,0 +1,14 @@
+{
+  "scope": "Original 48ac20 emission with real recursive triangle/vertex builders and owned malloc/free accounting; CRT heap services are controlled callbacks. Second calls change vertex activity to exercise allocation growth and release.",
+  "cases": 512,
+  "words": 2657205,
+  "differences": 0,
+  "examples": [],
+  "coverage": {
+    "malloc": 157,
+    "failedMalloc": 36,
+    "free": 157,
+    "nonNullFree": 8,
+    "sizeQueries": 16
+  }
+}

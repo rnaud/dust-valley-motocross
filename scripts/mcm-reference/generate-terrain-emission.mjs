@@ -1,0 +1,1 @@
+import fs from 'node:fs';const b=Buffer.alloc(512*32);let seed=17;for(let n=0;n<512;n++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;[seed,[0,1,0x1fffff,0x155555,0xaaaaa][n%5],(n>>1)&1,(n>>2)&3,(n>>4)&15,n%18,n%8,(n>>3)%8].forEach((v,i)=>b.writeUInt32LE(v,n*32+i*4));}fs.writeFileSync(process.argv[2],b);
