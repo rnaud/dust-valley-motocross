@@ -13,7 +13,7 @@ test('joined two-bike camera comparison survives pursuit contacts and two player
  const {terrain:t}=JSON.parse(gunzipSync(fs.readFileSync(new URL('../src/assets/mcm-maps/quarries-dunes.bin',import.meta.url)))),cache=new Map();
  const node=id=>{if(cache.has(id))return cache.get(id);const raw=t.nodes[id],n={...raw,...t.banks[raw.bankIndex]};cache.set(id,n);if(raw.children)n.children=raw.children.map(id=>id===null?null:node(id));return n;};
  const result=analyzeWorldBikes(files,{root:node(t.root),heightScale:t.heightScale,worldToGrid:t.worldToGrid},{renderCameraInputs:true,particleIntegration:true,markerIntegration:true,hudIntegration:true,sceneChildIntegration:true,chaseIntegration:true});
- assert.deepEqual(result.chaseReport,{frames:159,words:23850,intermediateEvolutionInputs:0,tailControlAssertions:159,comparedInputWords:3840,target:JSON.parse(files['world-entry.json']).bikes[1]});
+ assert.deepEqual(result.chaseReport,{frames:159,words:23850,intermediateEvolutionInputs:0,tailControlAssertions:159,comparedInputWords:4320,target:JSON.parse(files['world-entry.json']).bikes[1]});
  for(const [name,count]of [['entryReports',320],['reports',320],['riderReports',159],['collisionReports',319],['visualReports',319],['markerReports',640],['hudReports',640]]){
   assert.equal(result[name].length,count);for(const r of result[name]){assert.deepEqual(r.differences,[]);if(r.random)assert.equal(r.random.actual,r.random.expected);}
  }

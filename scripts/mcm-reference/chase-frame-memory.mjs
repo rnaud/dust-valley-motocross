@@ -15,7 +15,9 @@ export function readChaseFrameMemory(memory,camera){
  if(joystick){put(66,joystick+0x594);put(67,joystick+0x584);put(68,joystick+0x2a0+2*20);put(69,joystick+0x2a0+3*20);}
  put(70,keyboard+0x4cc);put(71,keyboard+0xecc);inputs[76]=u32(app+0x1072)&0xffff;put(77,app+0x724);put(79,app+0x117f,4);put(83,terrain+0x44);put(84,terrain+0x40);put(85,terrain+0xa04);put(89,owner+0x38);inputs[92]=u32(camera+0x1b0)&255;put(94,inputs[93],4);
  const pointers=words(camera+0x210,6);
- return {camera,inputs,pointers,filters:pointers.flatMap(a=>words(a,4)),result:[...words(camera+0x22c,3),...words(camera+0x144,3)],cameraPose:[...words(camera+0x144,10),...words(camera+0x1c4,2),u32(camera+0x1bc)],nodeVisibility:[root,renderRoot].flatMap(a=>[u32(a+0x12c),...words(a+0x240,8)]),matrices:[...words(camera+0x30,64),u32(camera+0x16c)]};
+ const float=a=>new Float32Array(Uint32Array.of(u32(a)).buffer)[0];
+ const alternate={height:float(camera+0x248),width:u32(camera+0x180),screenHeight:u32(camera+0x184),boundWidth:u32(camera+0x1b4),boundHeight:u32(camera+0x1b8),bike890:float(bike+0x890),bike8a4:u32(bike+0x8a4),rider13c:u32(rider+0x13c)};
+ return {camera,alternate,inputs,pointers,filters:pointers.flatMap(a=>words(a,4)),result:[...words(camera+0x22c,3),...words(camera+0x144,3)],cameraPose:[...words(camera+0x144,10),...words(camera+0x1c4,2),u32(camera+0x1bc)],nodeVisibility:[root,renderRoot].flatMap(a=>[u32(a+0x12c),...words(a+0x240,8)]),matrices:[...words(camera+0x30,64),u32(camera+0x16c)]};
 }
 export function decodeChaseFrameMemory(row){
  const blocks=row.blocks.map(b=>({...b,bytes:Buffer.from(b.hex,'hex')}));

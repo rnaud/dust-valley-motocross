@@ -2,19 +2,19 @@
 
 ## Current status — November 16, 2026
 
-**Full physics parity is not achieved.** The current retained two-bike world passes a 64-update acceleration/release recording and a 160-update pursuit/contact/recovery recording, including both complete bike bodies, shared RNG, rider/collider state, particles, markers, HUD and the connected chase camera. The camera now reads simulated bike/rider/transform state and supplies computed audio position and bike/rider drawing matrices. Earlier mismatch reports below describe historical diagnostics; they are not the current blocker list.
+**Full physics parity is not achieved.** The current retained two-bike world passes a 64-update acceleration/release recording and a 160-update AI-camera pursuit/contact/recovery recording and a 166-update player-camera crash/impact recording, including both complete bike bodies, shared RNG, rider/collider state, particles, markers, HUD and the connected chase camera. The camera now reads simulated bike/rider/transform state and supplies computed audio position and bike/rider drawing matrices. Earlier mismatch reports below describe historical diagnostics; they are not the current blocker list.
 
 | Area | Current evidence | Still required |
 | --- | --- | --- |
 | Player and AI physics together | Both bikes initialize from one atomic world checkpoint. The latest joined camera fixture matches 128 bike entries and 128 tails over 64 world updates: 12 throttle-on, then 52 released. | Broader interactions, uncovered controller branches and sustained normal-rate trajectories. |
-| Riders, collisions and recovery | The joined pursuit run matches 636 rider/collider boundaries, 56 contact callbacks and two player crash/recovery sequences. Separate retained-world particle recovery coverage extends to 163 updates. | Player-following camera during crashes, remaining collision/impact paths and broader recovery conditions. |
-| Shared particles | Dust/spray/exhaust/rider emitters and the shared pool run from retained world/scene ordering. The 64-update joined run matches 567 particle boundaries; a separate 163-update recovery run matches 1,463. | Active impact-burst coverage, dynamic heap-boundary behavior and remaining particle presentation inputs. |
-| Chase camera and drawing | Initialized active chase state is retained. It reads 24 simulated bike/rider/transform words per entry; 63 updates / 9,450 camera output words match in the joined run. Audio position and mesh projection are derived. | Initialization, alternate/crash camera paths, active tail controls and remaining world/device context. Viewport and draw invocation data remain external. |
+| Riders, collisions and recovery | The joined pursuit run matches 636 rider/collider boundaries, 56 contact callbacks and two player crash/recovery sequences. Separate retained-world particle recovery coverage extends to 163 updates. | Broader collision/impact paths and recovery conditions; three player-following crash sequences now match. |
+| Shared particles | Dust/spray/exhaust/rider emitters and the shared pool run from retained world/scene ordering. The 64-update joined run matches 567 particle boundaries; a separate 163-update recovery run matches 1,463. | Six active impact checks and 1,573 particle boundaries now match in the 166-update run. Dynamic heap-boundary behavior and remaining particle presentation inputs remain. |
+| Chase camera and drawing | Initialized active and crash chase state is retained. It reads 27 simulated bike/rider/transform words per entry; the player-camera run matches 165 updates / 24,750 base output words plus retained crash-height checks. Audio position and mesh projection are derived. | Initialization, fixed-target/rider-position camera paths, active tail controls and remaining world/device context. Viewport and draw invocation data remain external. |
 | Remaining scene execution | World, child actors, markers, HUD, shared pool and active chase camera are connected. Scene 481310 switching/timer sequence matches 4,096 isolated original executions. | Connect scene prefix/tail and outer 4997b0. Four custom scene methods remain: 43e660, 411000, 423b50 and 4253e0. |
 | Observation quality | Original byte guards, independent hook restoration, debugger detachment, input restoration and camera restoration are checked. No later bike state is imported into replay. | Debugger overhead still changes observed timing. Normal-rate parity remains unproved. |
 | Playable preview | Recent milestones improve reference simulation and validation on main. | These integrations have not yet changed the playable preview; separate integration and gameplay testing remain. |
 
-Current evidence: [joined pursuit/recovery](mcm-world-chase-recovery-validation.json), [joined world/camera](mcm-world-chase-validation.json), [scene sequence](mcm-scene-tick-validation.json), and [retained scene pool](mcm-scene-pool-validation.json). The earlier approximately 70% planning estimate was not a coverage score and has not been replaced by a measured percentage. Passing tests prove the boundaries they compare, not complete gameplay equivalence.
+Current evidence: [player-camera crashes and impacts](mcm-world-player-camera-recovery-validation.json), [joined pursuit/recovery](mcm-world-chase-recovery-validation.json), [joined world/camera](mcm-world-chase-validation.json), [scene sequence](mcm-scene-tick-validation.json), and [retained scene pool](mcm-scene-pool-validation.json). The earlier approximately 70% planning estimate was not a coverage score and has not been replaced by a measured percentage. Passing tests prove the boundaries they compare, not complete gameplay equivalence.
 
 ## Historical milestones
 
@@ -7593,3 +7593,68 @@ camera-input gaps no longer masquerade as the current blockers. Player-following
 crash-camera coverage, remaining scene execution, active impacts, dynamic heap
 boundaries and normal-rate validation remain open. No preview change or full
 parity claim is made.
+
+### Player-following crash recording exposes alternate-eye gap (2026-11-16)
+
+The next HOLD96/PURSUIT2 recording keeps the chase camera on the player instead
+of the AI. It contains 166 world updates (641 physics boundary records), with
+all 49 hooks restored, debugger detached, throttle released, steering verified
+and camera restored. The lossless archive is
+`/tmp/mcm-world-player-camera-recovery-v1.json.br`; original capture directory is
+`/tmp/mcm-world-player-camera-recovery-v1`.
+
+The joined comparison **fails**, explicitly, at the unrecovered `alternate-eye`
+branch. Raw source-entry observations select that branch at frames 75–77,
+97–99 and 120–122; the other 156 observed camera updates select active chase.
+This is not a passing parity fixture and must not be counted as completed
+player-following crash coverage. The AI-following recovery milestone remains
+valid within its stated coverage.
+
+Recovered the crash branch's projection/visibility helper, original `0x47e650`,
+in `camera-point.js`. An isolated process executing the original instructions
+matches all 4,096 generated cases / 20,480 result words, with zero differences.
+Coverage includes all 27 reachable combinations of three-axis clip flags,
+points on either side of clipping planes, zero homogeneous denominator,
+unsigned viewport dimensions, and absent screen-output pointers. Native output
+is preserved with input/output hashes in `camera-point-wine11.json.br`; the
+regression also checks that changed output and truncation are detected.
+See `mcm-camera-point-validation.json`. Focused regression and production build
+pass. This helper is not yet connected to chase evolution.
+
+Next: recover `0x47cac0..0x47d166` orbit/height/radius adjustments and obtain the
+rider node world position from retained transforms; connect the helper and run
+the complete joined recording again. Do not feed native later camera positions
+back into the recovered simulation to bypass this failure. This work does not
+change the playable preview and does not close the full-world or normal-rate gaps.
+
+
+### Player crash camera, active impacts and shared notification state connected (2026-11-16)
+
+Closed the failure recorded in the preceding entry without importing later
+camera outputs. The original crash branch `47caf1..47d166` now matches 4,096
+isolated executions / 69,632 words. The integrated camera resolves the player's
+rider point from the shared retained transform graph, projects against its own
+computed matrices, and retains orbit, height, radius and filters through three
+crash/recovery sequences. Projection context is checked against initialization.
+
+The complete **166-update player-camera recording now matches**: 332 bike
+entries and tails, 660 rider/collider boundaries, 664 marker boundaries, 664 HUD
+boundaries, 1,573 particle assertions and 165 camera updates. Six before-impact
+checks are active, closing the previous absence of observed active impact bursts
+within this recording. No general collision-path completeness is claimed.
+
+The recording also exposed two integration gaps. Particle atlas initialization
+continues through slot 60, while the observer captured only slots 0–44. The
+original `43af75..43b003` initializer was executed independently and all 128
+words for slots 45–60 match the recovered initializer. These computed constants
+supply sprite 48 without using recorded vertex outputs. Separately, the HUD and
+collision-audio notifier share a native allocation; the recovered selected-sound
+index now aliases that allocation instead of retaining a detached copy. This
+eliminates the HUD +98 divergence after impacts while preserving shared RNG.
+
+Evidence: `world-player-camera-recovery-wine11.json.br`, the corresponding
+validation report and regression, isolated camera-point/crash-eye fixtures, and
+`particle-uv-tail-wine11.bin`. All 49 observer hooks and original controls were
+restored. Remaining scene methods, outer scheduling, dynamic boundary inputs,
+normal-rate comparisons and playable-preview integration still prevent a full
+parity claim.

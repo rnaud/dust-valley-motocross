@@ -21,7 +21,15 @@ export function connectWorldCollisionAudio(files,world,ordered,random){
    const calls=[],camera=Buffer.from(record.cameraPositionHex,'hex');assert.equal(camera.length,12);
    const device={isPlaying(index){assert.ok(record.samples[index]);calls.push(['isPlaying',index]);return 0;},stop(index,reset){calls.push(['stop',index,reset]);},setPosition(index,value){calls.push(['position',index,value]);},setVolume(index,value){calls.push(['volume',index,value]);},play(index,a,b,c){calls.push(['play',index,a,b,c]);}};
    shared={initial:identity,calls,state:{selectedBike:record.selectedBike,cameraPosition:[0,4,8].map(o=>camera.readFloatLE(o)),currentIndex:bytes.readUInt32LE(0x98),riderIndex:6,samples:record.samples.slice(0,6).map(s=>({length:Buffer.from(s.hex,'hex').readUInt32LE(0x174)})),device,random}};
-   assert.ok(shared.state.currentIndex<6);notifications.set(record.notificationAddress,shared);
+   assert.ok(shared.state.currentIndex<6);
+   // The HUD actor and collision notifier are the same native allocation.
+   // Keep the selected sample in that shared state, not a detached copy.
+   const retained=world.tree.nodes.get(record.notificationAddress)?.stateBytes;
+   if(retained){
+    assert.equal(retained.subarray(0,bytes.length).toString('hex'),bytes.toString('hex'),'Audio/HUD initialization differs');
+    Object.defineProperty(shared.state,'currentIndex',{get:()=>retained.readUInt32LE(0x98),set:value=>retained.writeUInt32LE(value>>>0,0x98)});
+   }
+   notifications.set(record.notificationAddress,shared);
   }
   actor.notification.handler=(bike,impulse,type)=>{
    if(shared.state.selectedBike!==bike.address||bike.state844)return;

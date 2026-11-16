@@ -18,7 +18,7 @@ test('retained bikes drive chase camera, audio position and drawing projection i
  const frames=fixture.provenance.retainedRows['frames.jsonl'].selected,result=analyzeWorldBikes(fixture.files,terrain(),options);
  assert.equal(frames,64);
  assert.deepEqual(validateWorldInputProtocol(fixture.files).frames.map(r=>r.throttle),[...Array(12).fill(1),...Array(52).fill(0)]);
- assert.deepEqual(result.chaseReport,{frames:frames-1,words:(frames-1)*150,intermediateEvolutionInputs:0,tailControlAssertions:frames-1,comparedInputWords:frames*24,target:JSON.parse(fixture.files['world-entry.json']).bikes[1]});
+ assert.deepEqual(result.chaseReport,{frames:frames-1,words:(frames-1)*150,intermediateEvolutionInputs:0,tailControlAssertions:frames-1,comparedInputWords:frames*27,target:JSON.parse(fixture.files['world-entry.json']).bikes[1]});
  for(const list of ['reports','entryReports','collisionReports','riderReports','visualReports','markerReports','hudReports']){
   assert.ok(result[list].length);for(const report of result[list]){assert.deepEqual(report.differences,[]);if(report.random)assert.equal(report.random.actual,report.random.expected);}
  }

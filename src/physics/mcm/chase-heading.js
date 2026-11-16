@@ -1,4 +1,5 @@
 import {stepMcmFactorChase} from './chase-factor.js';
+import {stepMcmAlternateEye} from './chase-alternate-eye.js';
 const f=Math.fround;
 // Original 0x47c30c..0x47c3e6. Numeric field names retain unresolved meaning.
 export function deriveMcmChaseHeading(camera,input){
@@ -17,6 +18,7 @@ export function selectMcmChasePath(mode,enabled){
 // Preserve actual dispatch: alternate paths must not silently use this chain.
 export function stepMcmHeadingChase(state,input,delta){
  const heading=deriveMcmChaseHeading(state.camera,input),path=selectMcmChasePath(input.mode,heading.enabled);
+ if(path==='alternate-eye')return {...stepMcmAlternateEye(state,{...input,...heading},delta),headingState:heading};
  if(path!=='active')throw Error('Unrecovered chase path: '+path);
  if(input.mode===4)state.settings=Float32Array.of(state.camera.radius,state.camera.pitch,state.camera.yaw,state.camera.zoom);
  return {...stepMcmFactorChase(state,{...input,...heading},delta),headingState:heading};

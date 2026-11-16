@@ -23,8 +23,8 @@ export function createChaseFrameComparison(terrain,{initial=null,projectEntry=nu
    if(!state){
     const r=initial??observed,v=floats(r.inputs);
     cameraAddress=r.camera;
-    identity={pointers:r.pointers.slice(),fixed:fixedFields.map(i=>r.inputs[i])};
-    state={controller:{settings:v.slice(50,54),eyeResetFlag:r.inputs[28],restoreFlag:r.inputs[73],previousMode:r.inputs[75],target:floats(r.result.slice(0,3)),camera:{zoom:v[49],pitch:v[23],radius:v[24],yaw:v[26],orbitAngle:v[27],backup:v.slice(33,36)},axis:v.slice(20,23),filters:Array.from({length:6},(_,i)=>floats(r.filters.slice(i*4,i*4+4)))},renderCamera:{values:Array.from(floats(r.cameraPose.slice(0,10))),upValid:r.cameraPose[10],forwardValid:r.cameraPose[11],refreshCounter:r.cameraPose[12],retainedMode:r.inputs[88],fov:v[90],refreshByte:r.inputs[92],skipUpdate:r.inputs[91],near:v[98],far:v[99],aspect:v[100],width:r.inputs[101]},nodes:[0,1].map(i=>({flag12c:r.nodeVisibility[i*9],fields240:floats(r.nodeVisibility.slice(i*9+1,i*9+9))})),fovFilter:v.slice(94,98),matrices:floats(r.matrices)};
+    identity={pointers:r.pointers.slice(),fixed:fixedFields.map(i=>r.inputs[i]),alternate:r.alternate&&['width','screenHeight','boundWidth','boundHeight'].map(k=>r.alternate[k])};
+    state={controller:{settings:v.slice(50,54),eyeResetFlag:r.inputs[28],restoreFlag:r.inputs[73],previousMode:r.inputs[75],target:floats(r.result.slice(0,3)),camera:{height:r.alternate?.height,zoom:v[49],pitch:v[23],radius:v[24],yaw:v[26],orbitAngle:v[27],backup:v.slice(33,36)},axis:v.slice(20,23),filters:Array.from({length:6},(_,i)=>floats(r.filters.slice(i*4,i*4+4)))},renderCamera:{values:Array.from(floats(r.cameraPose.slice(0,10))),upValid:r.cameraPose[10],forwardValid:r.cameraPose[11],refreshCounter:r.cameraPose[12],retainedMode:r.inputs[88],fov:v[90],refreshByte:r.inputs[92],skipUpdate:r.inputs[91],near:v[98],far:v[99],aspect:v[100],width:r.inputs[101]},nodes:[0,1].map(i=>({flag12c:r.nodeVisibility[i*9],fields240:floats(r.nodeVisibility.slice(i*9+1,i*9+9))})),fovFilter:v.slice(94,98),matrices:floats(r.matrices)};
    }
    assert.equal(r.camera,cameraAddress,'Camera identity changed');
    assert.deepEqual(r.pointers,identity.pointers,'Camera filter identity changed');
@@ -49,6 +49,11 @@ export function createChaseFrameComparison(terrain,{initial=null,projectEntry=nu
     clearance:{terrain,worldMode:r.inputs[76],worldEnabled:r.inputs[77],worldScale:v[78],sceneName:name.toString('ascii').split('\0')[0]},
     finalize:{active:r.inputs[62],bike4e8:v[86],bike4d8:v[87],ownerCounter:r.inputs[89]}};
    assert.deepEqual(r.inputs.slice(84,86),bits([terrain.heightScale,terrain.worldToGrid]));
+   if(r.alternate){
+    assert.deepEqual(['width','screenHeight','boundWidth','boundHeight'].map(k=>r.alternate[k]),identity.alternate,'Crash-camera projection context changed');
+    assert.equal(bits([state.controller.camera.height])[0],bits([r.alternate.height])[0],'Entry crash-camera height differs');
+    input.heading.alternate={...r.alternate,height:r.alternate.screenHeight,matrix:state.matrices.slice(32,48),reference:[0,0,1]};
+   }
    entry=r;
    pending=stepMcmChaseFrame(state,input,floats([r.deltaBits])[0],{tailControls:controller=>{tail=cameraFields(controller);}});
    expectedPhase='fov-entry';
@@ -72,6 +77,7 @@ export function createChaseFrameComparison(terrain,{initial=null,projectEntry=nu
    assert.deepEqual(r.inputs.slice(94,98),bits(state.fovFilter),'Frame FOV filter differs');
    assert.equal(r.inputs[90],bits([state.renderCamera.fov])[0]);assert.equal(r.inputs[92],state.renderCamera.refreshByte);
    assert.deepEqual(r.matrices,bits(state.matrices),'Frame matrices differ');
+   if(r.alternate)assert.equal(bits([state.controller.camera.height])[0],bits([r.alternate.height])[0],'Frame crash-camera height differs');
    words+=150;frames++;pending=null;tail=null;expectedPhase='source-entry';
   }
  };

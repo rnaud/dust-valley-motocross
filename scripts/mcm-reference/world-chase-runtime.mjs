@@ -1,3 +1,4 @@
+import {resolveMcmWorldMatrix} from '../../src/physics/mcm/world-transform.js';
 import assert from 'node:assert/strict';
 import {decodeChaseFrameMemory} from './chase-frame-memory.mjs';
 import {createChaseFrameComparison} from './analyze-chase-frame.mjs';
@@ -12,6 +13,9 @@ export function connectWorldChaseRuntime(runtime,files,terrain){
  assert.equal(raw.blocks.find(b=>b.address===runtime.world.entry.world)?.hex,runtime.world.entry.worldHex,'Camera/world checkpoint bytes differ');
  const cameraBytes=Buffer.from(raw.blocks.find(b=>b.address===raw.camera).hex,'hex'),target=cameraBytes.readUInt32LE(0x1ec),bike=runtime.bikes.get(target);
  if(!bike)throw Error('Camera target is outside retained bikes');
+ const bikeBytes=Buffer.from(raw.blocks.find(b=>b.address===target).hex,'hex'),riderAddress=bikeBytes.readUInt32LE(0x874);
+ const riderPointAddress=Buffer.from(raw.blocks.find(b=>b.address===riderAddress).hex,'hex').readUInt32LE(0xfc),riderPoint=bike.loaded.visuals.nodes.get(riderPointAddress);
+ assert.ok(riderPoint,'Missing retained crash-camera rider point');
  assert.equal(raw.blocks.find(b=>b.address===target)?.hex,runtime.world.bikes.find(b=>b.address===target).artifacts.bike.blocks.find(b=>b.address===target).hex,'Camera/bike checkpoint bytes differ');
  const rows=files['world-camera-observations.jsonl'].trim().split('\n').filter(Boolean).map(JSON.parse).map(row=>{
   assert.equal(row.camera,raw.camera,'Joined camera identity changed');
@@ -27,8 +31,15 @@ export function connectWorldChaseRuntime(runtime,files,terrain){
   for(const [i,v]of [[46,rider.field144],[47,bike.loaded.context.rider.kind],[48,rider.field140]]){inputs[i]=v>>>0;indices.push(i);}
   for(let j=0;j<3;j++){inputs[58+j]=bits(bike.loaded.visuals.bike.bodyNode.local[12+j]);indices.push(58+j);}
   const differences=indices.filter(i=>inputs[i]!==row.inputs[i]).map(i=>({index:i,actual:inputs[i],expected:row.inputs[i]}));
-  assert.deepEqual(differences,[],'Retained bike camera inputs differ at frame '+row.frame);comparedInputWords+=indices.length;
-  return {...row,inputs};
+  assert.deepEqual(differences,[],'Retained bike camera inputs differ at frame '+row.frame);comparedInputWords+=indices.length+3;
+  const alternate={...row.alternate};
+  assert.equal(bits(alternate.bike890),view.getUint32(0x890,true),'Crash camera bike heading differs');
+  assert.equal(alternate.bike8a4,view.getUint32(0x8a4,true),'Crash camera bike flag differs');
+  assert.equal(alternate.rider13c,rider.flag13c>>>0,'Crash camera rider flag differs');
+  alternate.bike890=view.getFloat32(0x890,true);alternate.bike8a4=view.getUint32(0x8a4,true);alternate.rider13c=rider.flag13c;
+  const mode=inputs[11],enabled=mode===5||mode===2||!inputs[32]||(inputs[45]===6&&!inputs[46])||(inputs[47]===2&&inputs[48]!==0);
+  if(!enabled)alternate.riderPoint=resolveMcmWorldMatrix(riderPoint).slice(12,15);
+  return {...row,inputs,alternate};
  };
  projectEntry(initial);
  const comparison=createChaseFrameComparison(terrain,{initial,projectEntry});
@@ -38,7 +49,7 @@ export function connectWorldChaseRuntime(runtime,files,terrain){
    if(frame===0)return initial.cameraPose.slice(0,3);
    const selected=rows.filter(r=>r.frame===frame);assert.equal(selected.length,3,'Missing joined camera phase');
    for(const row of selected){assert.equal(row.deltaBits,bits(delta),'Camera/world delta differs');comparison.observe(row);consumed++;}
-   reports.push({frame,target,inputWords:24,outputWords:150});
+   reports.push({frame,target,inputWords:27,outputWords:150});
    return comparison.state.renderCamera.values.slice(0,3).map(bits);
   },
   finish(){assert.equal(consumed,rows.length,'Unconsumed camera observations');return {...comparison.finish(),comparedInputWords,target};}

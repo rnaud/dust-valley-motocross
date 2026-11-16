@@ -1,3 +1,4 @@
+import {createMcmParticleUvTail} from '../../src/physics/mcm/particle-uv-tail.js';
 import {buildMcmParticleQuads} from '../../src/physics/mcm/particle-quads.js';
 import {projectWineParticleCenters} from '../../src/physics/mcm/particle-projection.js';
 import assert from 'node:assert/strict';
@@ -44,10 +45,12 @@ export function generateLiveParticleQuads(external,before,after){
  assert.ok(projected,'Missing computed particle projection');
  const count=poolBytes.readUInt32LE(0x34);assert.ok(count>0,'Empty particle draw tail');
  for(const key of ['diffuseSeed','renderFlags','textureFormat','viewDepthHex','fogHex','uvHex'])assert.equal(after[key],before[key],`Particle quad input changed: ${key}`);
- const depth=CapturedBytes.from(before.viewDepthHex,'hex'),fog=CapturedBytes.from(before.fogHex,'hex'),uv=CapturedBytes.from(before.uvHex,'hex');assert.equal(depth.length,16);assert.equal(fog.length,8);assert.equal(uv.length,0x5a0);
+ const depth=CapturedBytes.from(before.viewDepthHex,'hex'),fog=CapturedBytes.from(before.fogHex,'hex'),capturedUv=CapturedBytes.from(before.uvHex,'hex');assert.equal(depth.length,16);assert.equal(fog.length,8);assert.equal(capturedUv.length,0x5a0);
+ const uv=CapturedBytes.from(Buffer.concat([Buffer.from(before.uvHex,'hex'),Buffer.from(createMcmParticleUvTail().buffer)]));
  const byAddress=new Map(Array.from({length:pool.count},(_,i)=>[poolBytes.readUInt32LE(0x44+i*4),i]));
  const addresses=Array.from({length:count},(_,i)=>poolBytes.readUInt32LE(0xfe4+i*4));
  const indices=addresses.map(a=>{assert.ok(byAddress.has(a),'Unknown visible particle');return byAddress.get(a);});
+ for(const i of indices){const sprite=pool.particle(i).getUint32(0x10,true);assert.ok(sprite*32+32<=uv.length,`Uncaptured particle UV entry: sprite=${sprite}, entries=${uv.length/32}, completedBikeFrames=${before.completedBikeFrames}`);}
  const output=new CapturedBytes(count*128);
  const order=buildMcmParticleQuads(indices.map(i=>pool.particle(i)),indices.map(i=>projected.view(i*32,32)),{flags:before.renderFlags,seed:before.diffuseSeed,near:fog.readFloatLE(0),far:fog.readFloatLE(4),viewDepth:[0,1,2,3].map(i=>depth.readFloatLE(i*4)),uv:uv.view(0,uv.length)},output.view(0,output.length));
  order.forEach((i,j)=>poolBytes.writeUInt32LE(addresses[i],0xfe4+j*4));
