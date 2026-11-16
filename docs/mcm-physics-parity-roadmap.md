@@ -6356,3 +6356,13 @@ Scope: this is playable original-recording integration, not full audible or phys
 Validation: all 769 tests pass (110 seconds), sample transport tests pass on x64 Node 22, production build passes, and the final Chrome audio flow passes idle/throttle/release/pause/resume with no page errors. A separate failed-download run confirms physics continues and audio reports the failure. These checks verify emitted browser signal and routing, not a waveform comparison with the original game.
 
 The same browser flow also passes in a mobile viewport using trusted touch-start/touch-end events on the on-screen gas pedal, with original idle/engine/release signals, stable paused cursor, resumed output and no page errors.
+
+## Original visible-particle sorting recovered (2026-11-15)
+
+`particle-sort.js` recovers comparator `43b350` and the pinned CRT sort `4bec70`/`4bede0`. It orders by projected depth and preserves the original partition/short-sort tie permutations. The comparator treats unordered float comparisons as -1; replacing it with subtraction or a stable JavaScript sort would change the original list order. This is the next stage after the currently connected particle projection/culling path.
+
+The isolated oracle calls both intact original routines with actual particle/projection allocations and compares the entire normalized pointer array, including untouched entries. All 228 cases / 233,472 output words match, with 41,028 active particles across counts 0–1,024. Coverage includes the eight-element short-sort boundary, ascending/descending/repeated depths, signed zero, infinities, NaNs, large finite values and subnormals. Mutations to an active result and an untouched slot are rejected. ARM/x64 regression tests and production build pass.
+
+This does not yet validate a live visible-particle submission. The latest live projection fixtures still cull all particles; visible-quad generation, sorted draw-tail observations, scene scheduling and camera producers remain required. No original-game debugger was attached for this oracle. Full physics parity and the older negative-steering failure remain open.
+
+Hosted audio verification: Pages run `43790553629` deployed `8a45cb4` successfully. The public GitHub Pages preview passes the original-audio browser flow on desktop and mobile with trusted touch pedal events: decoded idle/engine/release signals are nonzero, pause freezes cursors and controller ticks, resume restores output, and page/physics errors are absent. This confirms the user-visible change is deployed, not only present locally.
