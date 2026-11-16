@@ -17,7 +17,8 @@ export function connectWorldSceneChildren(runtime){
     tickMcmParticlePool(runtime.particles.pool,{dt,paused:runtime.world.context.world.paused});
     invoke('afterPool',dt);return 1;
    }
-   if(node.update===0x420760)return tickMcmActorChildren(node,dt,callbacks);
+   // 429d90 forwards its delta unchanged to 420760 and returns that result.
+   if(node.update===0x420760||node.update===0x429d90)return tickMcmActorChildren(node,dt,callbacks);
    return invoke('actor',node,dt);
   },destroy:node=>invoke('destroy',node),poll:()=>{throw Error('Uncaptured scene polling state');},clock:()=>{throw Error('Uncaptured scene clock');}};
   tickMcmActorChildren(scene,delta,callbacks);return trace;

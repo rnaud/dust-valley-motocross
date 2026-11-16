@@ -25,3 +25,11 @@ test('scene scheduling rejects missing topology, services and active polling dep
  c.world.ownerAddress=0;c.scene.owner={world:{gate:1}};
  assert.throws(()=>run(.1,{world:()=>{}}),/polling/);
 });
+test('429d90 scene actor executes its child walk instead of deferring the subtree',()=>{
+ const c=setup(),wrapper={address:5,update:0x429d90,enabled:1,parent:c.scene},child={address:6,update:0x123456,enabled:1};
+ c.poolActor.next=wrapper;wrapper.first=child;child.parent=wrapper;
+ c.runtime.world.tree.nodes.set(5,wrapper);c.runtime.world.tree.nodes.set(6,child);
+ const deferred=[],run=connectWorldSceneChildren(c.runtime);
+ const trace=run(.25,{world:()=>1,beforePool:()=>{},afterPool:()=>{},actor:(node,dt)=>deferred.push([node.address,dt])});
+ assert.deepEqual(trace.map(n=>n.address),[2,3,4,5,6]);assert.deepEqual(deferred,[[2,.25],[6,.25]]);
+});

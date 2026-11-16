@@ -7423,3 +7423,42 @@ scene timer update after it; the outer 4997b0 actor is not yet connected. This
 milestone removes recorded pool invocation timing, not independent camera,
 presentation or full-scene execution. Active impact-burst coverage, dynamic
 heap-boundary behavior and normal-rate validation remain open.
+
+### Scene camera-switch sequence and clock recovered (2026-11-16)
+
+`scene-tick.js` recovers original 481310's complete control flow around its child
+walk: input 10 camera switching with target gates, virtual enable/disable order,
+active-camera selection/copy, environment positioning from the selected camera,
+child traversal, and the scene clock. Menu state is read again after children;
+clock suppression is likewise read at the tail. Seconds round after each
+subtraction while accumulated minutes round only at the final store, matching
+native x87 behavior at the large-minute boundary.
+
+The isolated native oracle executes original 481310 from the pinned executable.
+Input query, camera operations, environment placement and child traversal are
+instrumented dependencies, not claimed recovered callees. All 4,096 cases /
+286,720 result and call-trace words match, covering 640 camera switches, 1,024
+environment placements and 640 clock rollovers, plus menu transitions during
+children, target gates, both active cameras and negative/zero deltas. The fixture
+retains input/output hashes and executable identity; see
+`mcm-scene-tick-validation.json`. Reproduce inputs with `buildSceneTickCases()` in
+`compare-scene-tick.mjs`, compile `scene-tick-oracle.c` as 32-bit Windows, and run
+it with executable/input/output paths. `compareSceneTick()` compares native
+outputs without using them as recovered state.
+
+Disassembly also establishes that 429d90 forwards directly to 420760. The retained
+scene scheduler now executes that child walk, including actual descendants,
+instead of deferring the subtree. The short two-bike fixture asserts the five
+remaining deferred methods: 47b0c0, 43e660, 411000, 423b50 and 4253e0. Both it and
+the 163-update particle/recovery recording still pass. Seven targeted tests,
+production build and whitespace validation pass for this milestone.
+
+**Still incomplete:** 481310's newly recovered sequence is independently tested,
+but not connected to live retained scene/camera state. Existing world fixtures
+begin inside the scene's child phase, after the camera has already updated;
+they do not provide an atomic pre-scene checkpoint. Next integration requires
+that checkpoint and scene boundary assertions, camera 47b0c0 dependencies and
+its retained update. The five deferred scene methods and outer 4997b0 remain.
+Active impact-burst coverage, dynamic heap-boundary inputs and sustained normal-
+rate validation are still open. This changes reference validation, not the
+playable site's physics or presentation.

@@ -1,0 +1,17 @@
+{
+  "provenance": {
+    "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+    "inputSha256": "fdf5a6c2e7bd0c73a7e9b4d7a1204142e15dc0cc0e2ff18f8ef980955e42d719",
+    "outputSha256": "6579812cd4083a1c25180d610e24a38ba26b0bf5e7c5fa68f1ab7d5ced9669b0",
+    "harnessSha256": "a35e17e439a63e58888fd6d6e63e31511648cf1218d2ed44b3447b238705c6ec",
+    "routine": "0x481310",
+    "controlWord": "0x027f",
+    "scope": "Original scene routine; child traversal, camera operations, input query and environment positioning instrumented as explicit dependency calls. Not a live retained-scene comparison."
+  },
+  "cases": 4096,
+  "comparedWords": 286720,
+  "switched": 640,
+  "positioned": 1024,
+  "rolled": 640,
+  "differences": []
+}

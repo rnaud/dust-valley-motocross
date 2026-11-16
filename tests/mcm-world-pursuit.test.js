@@ -243,6 +243,10 @@ test('captured display gates complete the observed world child traversal without
  const options={renderCameraInputs:true,particleIntegration:true,markerIntegration:true,hudIntegration:true,sceneChildIntegration:true};
  const result=analyzeWorldBikes(captured.files,terrain(),options);
  assert.equal(result.sceneChildReports.length,7);assert.ok(result.sceneChildReports.every(r=>r.poolCalls===1));
+ for(const report of result.sceneChildReports){
+  assert.ok(report.trace.some(a=>a.update===0x429d90));
+  assert.deepEqual(report.externalActors.map(a=>a.update),[0x47b0c0,0x43e660,0x411000,0x423b50,0x4253e0]);
+ }
  assert.equal(result.worldChildReports.length,7);assert.ok(result.worldChildReports.every(r=>r.externalActors.length===0));
  for(const report of result.worldChildReports)assert.equal(report.actorUpdates.filter(a=>a.update===0x403030).length,31);
  assert.equal(result.hudReports.length,32);
