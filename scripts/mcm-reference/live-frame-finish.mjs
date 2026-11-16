@@ -1,19 +1,21 @@
+import {applyMcmRetainedCollisionEvent} from '../../src/physics/mcm/retained-collision-event.js';
 import {loadLiveOrderedDispatch} from './live-ordered-dispatch.mjs';
 import {dispatchMcmCollisionState} from '../../src/physics/mcm/collision-substep.js';
 
 // Actor views share player state; callbacks must never consume a detached copy.
-export function connectLiveFrameFinish(c,{checkpoint,memory:m,collision,world,environment:env}){
+export function connectLiveFrameFinish(c,{checkpoint,memory:m,collision,world,environment:env,sharedOrdered}){
  if(env.terrainMode===null)return;
  const a=checkpoint.bikeAddress,b=c.bike,p=c.contactPhase;
- const ordered=loadLiveOrderedDispatch(checkpoint,collision,{world});
+ const ordered=sharedOrdered??loadLiveOrderedDispatch(checkpoint,collision,{world});
  const actor=ordered.actors.get(a),rider=ordered.actors.get(m.u32(a+0x874));
  if(!actor||!rider||actor.transform!==c.bodyNode||actor.riderTransform!==c.proxy)throw Error('Finish actor graph differs');
  const alias=(target,key,owner,field)=>Object.defineProperty(target,key,{enumerable:true,configurable:true,get:()=>owner[field],set:value=>{owner[field]=value;}});
  for(const field of ['position','velocity','angularVelocity','worldAngularVelocity','inverseMass'])alias(actor,field,b,field);
- for(const [key,field] of Object.entries({state844:'field844',speed:'field6a4',heading:'field4e0',restitution:'field5e0',scratch540:'offset',field654:'localLever',carry:'field8c8',field8a8:'field8a8',field618:'field618',field8ac:'field8ac',field888:'field888'}))alias(actor,key,b,field);
+ for(const [key,field] of Object.entries({state844:'field844',speed:'field6a4',heading:'field4e0',restitution:'field5e0',scratch540:'offset',field654:'localLever',carry:'field8c8',field8a8:'field8a8',field618:'field618',field8ac:'field8ac',field888:'field888',field8b0:'field8b0',field564:'field564',field8d0:'field8d0'}))alias(actor,key,b,field);
  c.rider.baseAngularVelocity=[0,4,8].map(o=>m.f32(rider.address+0x64+o));
  for(const [key,field] of Object.entries({angular:'baseAngularVelocity',velocity:'previousVelocity',alternateVelocity:'velocity',alternateAngular:'angularVelocity',flag13c:'flag13c',flag140:'field140'}))alias(rider,key,c.rider,field);
  b.field8a8=m.u32(a+0x8a8);b.fieldc7c=m.f32(a+0xc7c);b.field818=m.f32(a+0x818);
+ actor.onCollisionEvent=contact=>applyMcmRetainedCollisionEvent(c,contact);
  c.mode=env.resetDecision.mode;c.collision=actor.collision;c.grid=ordered.grid;c.gridEnabled=ordered.enabled;
  // Original 0x40fbb0 delegates only pair/callback restoration here; the
  // scalar rider flags are reset by clearMcmCrashRider.

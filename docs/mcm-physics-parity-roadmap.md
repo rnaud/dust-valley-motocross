@@ -6514,3 +6514,739 @@ The first world frame precedes discovery of the CRT RNG address, so prefix evide
 The prior original process had exited before work resumed. A stale-PID preflight failed without installing hooks. Two direct launches encountered the documented Wine startup fault; a guarded diagnostic launch reached the menu, then original menu callbacks returned to dunes practice. Fresh addresses were discovered and independently checked before observation. All 46 capture instructions were restored, the debugger detached and the player camera restored. The new live process is Windows PID 288/thread 292; old allocation addresses are invalid. This is session recovery, not a fix for intermittent Wine startup.
 
 Validation: both prefix regressions pass on ARM and x64 Node 22; the fresh-session retained AI regression passes. Observer/verifier compile successfully. The previous four milestone deployments all completed successfully through `1bd644e`.
+
+### Combined player/AI replay — first retained trajectory (2026-11-16, in progress)
+
+`world-bikes-wine11.json.br` preserves one atomic world initialization, the
+initial CRT random state, and 16 before/after boundaries for both bikes across
+four updates. All 46 observer sites were independently verified restored and
+the debugger detached; camera restoration is included in the archive. The
+archive pins both the original executable and Wine's built-in DDRAW, with
+hashes for every captured file.
+
+`createWorldBikeRuntime` now initializes both contexts against one collision
+world and one random stream, with shared rider particle storage. It does not
+accept later body outputs as initialization. The reusable body projection
+retains each original allocation and overlays computed semantic state. The
+first pair of physics calls matches all 1,636 bike DWORDs and both random
+states. The native after-bike hook is at 0x4ad0e1, before the final saved-position
+stores, so comparison occurs at the recovered frame-tail boundary.
+
+`analyze-world-bikes.mjs` extends this to four consecutive updates, including
+both rider ticks between pairs. The player matches all four complete body
+observations. The AI matches its first complete body; the remaining three
+have 4, 5, and 5 differing DWORDs at screen rectangle 488..494 and detail
+selection 4a4. Both bikes' random states match every update. The exact report
+is `mcm-world-bikes-validation.json`; differences are retained, not masked.
+These writes already have a recovered mesh-draw implementation, but it is not
+yet connected to this combined runtime. This does not prove collision-grid,
+visual, particle, or full world-loop equivalence. Capture intervals include
+0.083, 2.957, 0.727 and 0.722 seconds and are not normal-rate validation.
+
+Next: initialize and run the intervening world/render work without importing
+later observed outputs, compare all shared collider/rider/visual state, then
+expand repeatable motion coverage. Cross-call scratch inheritance also needs
+explicit verification beyond this trajectory. No preview change or completed
+both-bike milestone is claimed; this work remains unshipped pending that gate.
+
+The combined replay now additionally compares the AI rider collider, linked
+grid entries and pair row/column at seven boundaries: all 1,491 DWORD checks
+match. Three complete rider/child returns match all 1,875 DWORDs, projected
+from the atomic initial world bytes. Advancing both riders resolves the
+previous single-bike replay's rider-grid divergence for this capture.
+
+Visual/animation comparison now also uses only atomic initial allocation
+bytes. The first bike-tail and rider-return observations match. Subsequent
+observations retain 180 differing transform-cache words each; these are
+reported explicitly alongside the screen rectangle/detail differences.
+Player rider observations and the full collision manager/all-actor allocation
+set are still not covered by this capture. The expanded three-test combined
+replay suite passes, without treating these visual gaps as parity success.
+
+The native observer now also exports `world-mesh-N.jsonl` at the atomic world
+entry: both bike and rider mesh tables, initial detail state, thresholds,
+projection and viewport. This extension compiles but has not yet been used in
+a fresh capture. It is needed to initialize rendering before the first bike
+update rather than borrowing mesh state from a later draw observation.
+
+### Combined replay with both riders and rendering (2026-11-16, in progress)
+
+Three fresh, independently cleaned-up captures now retain atomic initial mesh
+resources, then both-rider and both-bike draw observations. The final fixture
+is `world-draws-wine11.json.br`; the intermediate `world-mesh` and
+`world-riders` fixtures preserve the evidence that exposed omitted player draws
+and the scene-position query. Each capture verified all 46 hooks restored,
+debugger detached, and camera target restored.
+
+`world-mesh-runtime.mjs` initializes mesh tables, thresholds and mutable detail
+state from `world-mesh-N.jsonl` at the world-entry boundary. Rendering uses
+computed retained transforms and animation bounds, writing computed screen
+rectangles/detail into the owned bike bodies. It never seeds resource or detail
+state from later draw observations. The scene rider-position helper now accepts
+the same initial world boundary and resolves its retained transform chain.
+
+`mcm-world-draws-validation.json` records zero differences across all checked
+states: 16 complete bike entry/tail bodies, all RNG boundaries, 12 player/AI
+rider boundaries (full rider/child bytes and rider collider/grid/pair state),
+seven AI visual/animation boundaries, 12 draw calls, and three scene-position
+queries. The first native bike boundary precedes scheduling; bike bodies are
+therefore compared before advancing the recovered scheduler. Both-rider
+observations verify the player directly, not by inference from the AI grid.
+
+Validation: 18 combined world-bike, world-mesh and existing AI-dispatch tests
+pass, including rejection of a corrupted native draw result. The observer
+compiles and every native capture exited successfully with independent cleanup.
+
+Limits remain material: draw invocation and camera projection/viewport are
+external recorded inputs, not a recovered autonomous camera/render dispatcher.
+The report does not yet compare all collision-manager allocations or the
+player's complete visual graph. The player is idle in these runs; controlled
+acceleration/release and bike-to-bike contact remain required integration
+coverage. Intervals in the final run are 0.077, 2.899, 0.690 and 0.695 seconds,
+so normal-rate behavior is unproven. The combined milestone is not marked done
+or shipped; next connect actual world scheduling and exercise player motion
+while retaining both bikes, riders and shared state.
+
+### Combined player throttle/release capture (2026-11-16, in progress)
+
+`world-pulse-wine11.json.br` exercises a declared input protocol: frame 0 idle,
+frames 1–2 throttle, frame 3 release. The dedicated world pulse changes only
+the player's throttle-query return at 4ad5a2. It does not enable the older
+`MCM_SCRIPTED` mode: no checkpoint, RNG, or timestep restoration occurs. The
+input log records the actual owning bike, active player, original return,
+applied return and frame. There are 5, 11, 11 and 11 applied player queries;
+AI query returns are observed without alteration. Cleanup again verified all
+46 hooks restored, debugger detached and camera restored.
+
+The original player's speed field progresses approximately 0, 8.9934,
+18.2722, 17.2724, with position advancing during acceleration and release.
+The retained combined replay matches every checked body, random, rider,
+collider and visual boundary through this motion. The input protocol is
+validated separately from output comparisons; the replay derives controls from
+the declared plan, not the observed bike state. Missing applied input evidence
+or an applied input targeting AI is rejected. An earlier diagnostic pulse
+attempt produced no input log and is deliberately excluded from validation.
+
+Evidence: `mcm-world-pulse-validation.json`, three new pulse tests plus the six
+existing combined bike/mesh tests (9/9 pass). Rendering camera inputs and
+invocation remain external. Contact between the two bikes and normal-rate
+world scheduling remain unverified; this is meaningful acceleration/release
+coverage, not completion of the overall milestone.
+
+Disassembly inspection also narrows pending world callbacks: 4b6750 is the
+force-feedback update (device kind 3, non-crashed bike); 4b2240 first gates on
+the network pointer and returns without body updates when it is null. These
+must be represented by their actual gates when composing world dispatch,
+rather than treated as unexplained presentation work.
+
+### Other-bike event dependencies (2026-11-16, in progress)
+
+Inspection of the contact path found a live integration gap: the normal event
+adapter threw for bike+8b0, while controller handoff and event preparation
+substituted a zero vector for the other bike's velocity. Original
+4a5114..4a514a resolves bike+8b0 and reads that bike's speed at +6a4 and velocity
+at +510. `connectMcmOtherBikeState` now resolves both against the shared actor
+map at the time of use. Other-bike velocity is copied for the consumer; the
+underlying actor remains shared, so prior impulses and pointer changes are
+observed. Unknown/non-bike pointers fail explicitly. Synthetic isolated oracle
+contexts retain their existing zero-backed input convention when no live
+resolver is installed.
+
+Validation: two dependency/event tests cover changed velocities/speed, pointer
+clearing, unknown pointers, copy isolation, and the same-direction/opposing
+native event branches. These plus the controlled both-bike pulse and existing
+AI sequence tests pass 17/17. This fixes a concrete prerequisite for contact
+replay but is not itself an original-game contact recording.
+
+Next contact blockers are explicit in `loadLiveOrderedDispatch`: active
+collision notifications still throw, and its dynamic/static callbacks do not
+yet supply the event-transition adapter required by an upright bike collision.
+Connect the recovered event wrapper to the same live rider/bike state and
+validate it against original contact boundaries before claiming bike-contact
+parity. Do not bypass these callbacks or suppress the errors to manufacture a
+passing whole-bike run.
+
+### Retained collision event transition (2026-11-16, in progress)
+
+`applyMcmRetainedCollisionEvent` connects the original collision callback's
+49e47a event call to the owned bike, rider, bounds graph and random stream.
+Inputs are read after impulse and grid updates; the adapter commits event
+flags, transforms, bounds, rider selection/velocities and the shared random
+call accounting. Live ordered dispatch now resolves each actor's event adapter
+at callback time. Previous speed and stored event delta are live actor aliases.
+Initial target-roll/event-delta fields and event counters are populated before
+either bike runs, so a callback affecting the second bike before its first
+physics turn can execute safely.
+
+The retained adapter matches all 104 event output words in each of the 398
+stored original collision cases after the real recovered impulse/grid response.
+A separate integration test triggers an event on the initialized AI before its
+first turn and verifies rider commits and shared RNG advancement. Combined
+acceleration/release replay and the existing AI frame regressions remain green.
+This is event-adapter validation, not a live two-bike contact trajectory.
+
+The next blocker is substantive: collision notification 427110 calls sound
+selection 427230, which invokes the same CRT rand at 4bf190 (including retry
+selection when a sound is already playing). Ignoring collision audio would
+therefore alter subsequent physics randomness. The strict notification error
+remains. Recover and capture its playback gates/selection state and random
+consumption before enabling active contact replay; do not replace it with a
+no-op notification.
+
+### Collision sound selection and RNG (2026-11-16, in progress)
+
+Recovered `playMcmCollisionSound` implements original 427230, including
+nearest-even slot selection from six samples, six retries after the first
+random draw, stopping/reusing slot zero when all seven attempts are busy,
+clamped playback position from impulse/sample length, optional volume setting,
+and playback call order. It receives the same application random stream;
+playback status and device operations remain explicit boundaries.
+
+An isolated native oracle executes the original code with supplied device
+callbacks and a real CRT-equivalent random stream. All 512 cases match selected
+slot, final RNG state, draw count and every device-call argument/order. Cases
+cover all 64 busy masks, negative/zero/large impulse, omitted volume and unsigned
+sample lengths including 0xffffffff. Provenance and exact results are retained
+in `collision-sound-wine11.json` and `mcm-collision-sound-validation.json`.
+The original running game was not attached or altered by this oracle.
+
+Seven collision-sound, retained-event and combined acceleration/release tests
+pass. Live notification routing remains strict and unconnected until its
+initial sound resources, spatial volume and playback gates are captured. The
+original 402c20 returns not-playing without a device query when sample+30's
+owner+444 is zero, or when the sound-buffer pointer at sample+40 is null.
+Capture those gates rather than assuming playback is disabled in Wine.
+
+### Live collision notification and current camera inputs (2026-11-16, in progress)
+
+Recovered notification routing and spatial attenuation match 1,536 original-code
+cases, including selected-bike/crash gates, the distance cutoff, rider impacts,
+call order and shared random consumption. The selection helper separately
+matches 512 cases. Live atomic initialization now captures the shared notification,
+seven sample resources, selected bike and audio-device gates. Both bikes use the
+same notification and random stream. All seven devices in this reference session
+are disabled with null buffers; enabled devices still fail explicitly pending
+playback-status integration. Disabled audio does not skip random sample selection.
+
+A fresh original-game recording, `world-camera-wine11.json.br`, captures camera
+position at each bike's entry. Replay supplies the current frame's camera before
+player physics and rejects disagreement between the two bike entries. This is
+an explicit external input, not recovered autonomous camera behavior. Old captures
+without these inputs retain the stale-camera guard for active notifications.
+
+Four combined updates match all 16 complete bike entry/tail observations, shared
+RNG boundaries, 12 rider observations, and the checked collision/visual state.
+The native capture restored all 46 hooks, detached, and restored the camera target.
+Nine audio, notification and acceleration/release tests pass, including rejection
+of inconsistent camera evidence. This recording contains no actual bike-to-bike
+impact: the bikes were far apart. Actual contact/recovery, autonomous world/camera
+scheduling, broader allocation coverage and normal-rate sustained runs remain
+unproved. No milestone completion or main deployment is claimed.
+
+### Encounter setup investigation (2026-11-16, incomplete)
+
+The original pause dialog (menu 0x191) exposes Restart Race, Quit Event and
+Cancel. Read-only label discovery is now retained in `inspect-native-menu.c`;
+it reports native button bounds, which must not be assumed to be desktop mouse
+coordinates. It compiles cleanly with MinGW `-Wall`.
+
+A first Restart Race callback returned successfully and reset the stationary
+player from x=1650 to x=1573. A second callback attempt faulted in Wine and the
+original exited. No encounter capture resulted. Recovery launch v3 reached the
+menu, and initial practice setup passed the independent 49-site cleanup check.
+Subsequent normal mouse input exited the event instead of selecting restart;
+re-entry through the old menu callback helper faulted and timed out. The helper
+detached and the independent 49-site check again passed, but the original window
+is no longer present. Its parent process handle remained live at last poll; do
+not restart it solely because the observation timed out. Inspect process/thread
+state before recovery. Do not use the injected restart helper again as a trusted
+scenario setup path.
+
+Diagnostic logs are `/tmp/mcm-world-start-v1/restart.log`,
+`/tmp/mcm-contact-recovery-v3.log`, and `/tmp/mcm-practice-contact-v4.log`.
+Neither start-v1 nor start-v2 produced an accepted physics recording. The last
+passing two-bike fixture remains `world-camera-wine11.json.br`. The contact
+milestone is still unproved and has not been shipped to main.
+
+### Normal restart input and longer combined run (2026-11-16, in progress)
+
+Recovery inspection found the old PID 288 had lost main thread 292, leaving only
+background thread 296. A process query and macOS stack sample confirmed this;
+only that orphan was closed. The replacement original is Windows PID 844,
+window 0x30068, with player 0x04ec92a0 and AI 0x04ef7af8. The guarded launch
+reached the menu and detached. Subsequent event setup and three successful race
+restarts used normal mouse input, not injected callbacks.
+
+`click-native-menu.c` resolves an explicitly named control in an expected live
+menu, checks button type/enabled state, verifies window ownership, dimensions,
+foreground and cursor position, then sends normal button input. The original
+windowed menu uses screen coordinates directly in the observed (0,30) window
+placement: ClientToScreen incorrectly added 30 pixels, explaining both the
+missed Next button and the earlier Quit Event selection. The helper rejects
+other window placements/sizes rather than guessing. Both menu tools compile
+with MinGW `-Wall` without warnings. Restart input logs are now archived.
+
+A 16-update restart recording initially exposed differences at rider child
++610/+614. These are outside its allocation: original 40d541 passes 0x610 to
+allocator 45c900, followed by constructor 439e80 at 40d567. The constructor's
+last field is +60c (439f3d). The observer had read 0x618 bytes. Corrected all
+rider-child exporters to 0x610. Historical overread bytes remain visible in a
+separate `captureOverread` diagnostic; they are not modeled as object fields.
+A regression test corrupts both +60c and +614 to prove the final owned word still
+fails comparison while the out-of-allocation change stays explicitly reported.
+
+Fresh `world-start-wine11.json.br` uses the corrected observer and a normal
+restart plus the declared player acceleration/release protocol. All 64 complete
+bike entry/tail boundaries and RNG states match, as do 60 both-rider observations,
+31 checked collision records and 31 visual records. No initial state is imported
+after initialization. All 46 native hooks were restored, the debugger detached
+and the camera target restored. See `mcm-world-start-validation.json`.
+
+This is still not actual bike-to-bike contact. The 0.079–2.988 second frame
+intervals include observation overhead; they do not prove normal-rate behavior.
+Camera/draw invocation remain recorded external inputs. The broader two-bike
+milestone and shipment to main are still pending.
+
+Validation: the combined 15-test run passed 14 and found one obsolete expected
+word count (625). Corrected that assertion to the owned allocation total, 623;
+the affected three-test suite then passed. All other combined checks, including
+the fresh 16-update fixture and owned-word corruption regression, passed.
+
+### Turning together and shared animation ownership (2026-11-16, in progress)
+
+The native observer now records current steering, longitudinal and analog input
+bits plus the active input-device kind/byte at every bike entry. These are
+external control inputs, not imported bike outputs. The combined runtime accepts
+validated finite frame inputs per bike; malformed values/device states fail.
+A normal held Right key with the existing acceleration/release pulse produced a
+16-update turning recording. The key was released, all 46 hooks restored,
+debugger detached and camera restored afterward.
+
+Initial replay matched all bodies, riders and RNG but reported 33 animation-word
+differences (one ULP each). Both bikes' atomic asset captures reference child
+0x0198da60. Original normal animation application (44f8b0) normalizes those shared
+axes in place, while the combined runtime had separately loaded mutable copies.
+The animation loader now optionally shares children by native address, validates
+identical initial bytes, and connects both bikes' frames to the same objects.
+Standalone loaders keep independent ownership. This fixes the shared-write
+ordering rather than adding float tolerance or importing subsequent assets.
+
+`world-turn-wine11.json.br` now matches all 64 bike entry/tail boundaries, shared
+RNG states, 60 both-rider observations, 31 checked collision records and 31 visual
+records, with zero checked differences. `mcm-world-turn-validation.json` retains
+the results. The selected steering inputs vary over the sequence and are nonzero.
+Tests exercise shared object identity, conflicting initial bytes, invalid inputs
+and the full captured run; the 24-test combined turning/pulse/audio/AI regression
+run passes. The bikes did not contact in this run; collision approach/impact/
+recovery and autonomous world/camera dispatch remain unproved. No main shipment
+or milestone completion is claimed.
+
+### Sustained throttle protocol and approach attempt (2026-11-16, in progress)
+
+Added an explicit second control protocol: player throttle is on for updates
+0–11 and off afterward. `MCM_WORLD_THROTTLE_HOLD` is mutually exclusive with
+the existing short pulse. Original-query logs still prove player-only application;
+replay uses the declared protocol, and validation rejects captures that omit
+release. Timing, physics state and RNG are not forced. The shared protocol
+function rejects invalid frame numbers and unknown protocols.
+
+The 16-update native attempt used sustained acceleration and attempted a normal
+Right-key release after two observed bike pairs. The key-up helper returned
+success, but the actual per-frame steering remained near 0.99 after update 1.
+Therefore this is a sustained turning run, not a successful steering-release or
+intercept experiment. The closest end-of-pair separation was 32.91 original
+units, increasing to 237.46; no bike-to-bike impact is claimed. Future approach
+work must verify applied steering rather than trust OS input-call success.
+
+`world-hold-wine11.json.br` preserves that run. All checked bodies, riders,
+collision/visual state and RNG match; the 10-test hold/pulse/turn suite passes.
+Native cleanup restored all 46 hooks, detached the debugger, released the key
+again and restored the player camera. The evidence is retained in
+`mcm-world-hold-validation.json`. Contact/recovery remains an explicit gap;
+this is not milestone completion and has not been shipped to main.
+
+### Longer pursuit and crash-path evidence (2026-11-16, in progress)
+
+A 64-update pursuit recording (`world-pursuit-wine11.json.br`) now matches
+128 bike entries and 128 bike tails, 252 both-rider observations, 127 collision
+records and 127 visual records, with matching shared RNG. Player throttle is
+applied for updates 0–47 and released afterward. The steering intervention
+changes only the external player input, is recorded explicitly, and is restored
+before the AI update; validation requires restoration evidence. This run did not
+produce bike-to-bike contact. Closest end-of-pair separation was 11.82 native
+units, so it must not be presented as impact validation.
+
+Later original recordings did produce terrain crashes. They exposed missing
+free-rider damping initialization, reset projection fields +b3c/+838, and particle
+boundary inputs. The runtime now accepts the explicitly captured damping and
+projects the reset fields. Native particle validation checks the separate
+boundary-input representation against all 160 original cases.
+
+Correction to the earlier child-allocation note: +610/+614 are outside the
+0x610-byte owned allocation, but the original particle routine does read them
+when its table index reaches 32. They are therefore captured separately as
+`boundaryWords`, supplied as explicit external heap inputs before the rider tick,
+and cleared afterward. They are not compared as owned rider state. Omitting,
+wrapping, or guessing these inputs would change original behavior. Modeling the
+surrounding allocator independently remains a limitation.
+
+The streaming world archiver hashes full source observations before retaining
+only the boundary records used by this comparator. This avoids the string-size
+limit hit by long recordings. It rejects incomplete bike pairs. Pursuit v4 and
+v5 stopped inside a pair when AI crash behavior skipped a normally observed
+controller phase; neither is accepted as a passing fixture. The recorder now
+waits for the AI bike tail after reaching its record budget, and the archive
+counts completed updates rather than assuming four controller records per update.
+A fresh v6 recording is underway to validate that correction and the crash path.
+
+Crash/recovery parity, actual two-bike contact, independent world/camera dispatch,
+and normal-rate continuous execution remain unproved. These changes are local;
+no main shipment or completion of the combined-bike milestone is claimed.
+
+### Combined AI crash and recovery matches (2026-11-16, in progress)
+
+Pursuit v6 completed cleanly with the corrected stop condition: 385 native
+controller records represent 98 complete two-bike updates, not 96. All 46 hooks
+were restored, debugger detached, held throttle released, and camera restored.
+The archive accepted the complete 392 bike boundary observations.
+
+`world-crash-recovery-wine11.json.br` retains this run. AI crash state +844 is 1
+at update tails 66–72, returning to 0 at update 73 and remaining 0 through 97.
+Player and AI advance from one atomic initialization. The full replay matches
+196 bike entries, 196 bike tails, shared RNG at every boundary, 388 both-rider
+observations, 195 collision records, 195 visual records and 97 AI rider records.
+Computed draw selections/bounds and 97 scene queries also agree under the
+explicitly recorded presentation inputs. Results are in
+`mcm-world-crash-recovery-validation.json`.
+
+This closes the unexplained differences for this recorded AI terrain crash and
+recovery, not all crashes. Player crash/recovery, actual bike-to-bike contact,
+independent scheduling/allocator boundary inputs, and normal-rate operation
+remain open. The milestone is still active and unshipped.
+
+### Native bike-to-bike contact captured and matched (2026-11-16, in progress)
+
+The first pursuit limited steering to ±0.25; recorded approach data showed the
+player turning too gradually. The explicitly named `player-pursuit-ai-v2`
+experiment increases external steering gain to 1 and its limit to ±0.75. It
+preserves the throttle/release protocol, changes no bike state or time, and
+restores the input before AI execution. Validation rejects this steering range
+under v1 and still requires correct restoration for v2.
+
+Pursuit v7 completed 98 two-bike updates with clean hook, debugger, key and camera
+cleanup. End-of-update distances alone missed the impact: the bikes crossed
+between boundaries. At update 5 the recovered collision dispatcher executes four
+AI-primary/player-secondary callback pairs. Independently, the original grid
+observations show the player's collider +88 changing to the AI collider; both
+objects' owner fields +94 identify the captured player and AI. The archiver keeps
+the consecutive observations around that first pointer transition in
+`world-contact-grid.jsonl` and hashes the entire original 5,560-row grid source.
+Those two observations prove the native contact relationship, not the exact
+native callback count; the eight callback records describe the recovered run.
+
+`world-contact-wine11.json.br` and `mcm-world-contact-validation.json` preserve
+this run. Both bikes match all 196 entry and 196 tail states and RNG boundaries;
+388 both-rider observations, 195 collision records, 195 visual records and 97
+AI rider observations match too. Recorded presentation inputs produce matching
+draw bounds/detail and scene positions. The AI subsequently enters terrain crash
+state at updates 63–70 and returns to normal before the run ends. The regression
+requires both independent native contact evidence and the complete state replay.
+
+This closes the missing contact scenario for this run. Player crash/recovery,
+independent world/camera scheduling and particle boundary memory, normal-rate
+continuous operation, and final main integration remain open. No full milestone
+completion or shipment is claimed.
+
+### Player recovery capture and independence audit (2026-11-16, in progress)
+
+The next experiment explicitly holds throttle for updates 0–95, then releases it,
+with the same v2 steering and restoration checks. Its declared protocol requires
+at least 97 updates, so an acceleration-only recording cannot pass validation.
+Pursuit v8 observed player crash states 1, 2, 2 at tails 125–127 and a subsequent
+return to 0, but disk exhaustion stopped capture with status=2 after 545 records.
+It is not an accepted passing fixture. Throttle was released. After freeing
+space, a separate check verified all 46 hooks restored and debugger=0 clean=1;
+the camera was then restored with verified=1. Earlier temporary observations are
+being compressed before another capture, which requires at least 8 GiB free.
+Only the grid from rejected incomplete v4 was removed to permit compression
+(size 634696297; SHA-256 e16e2d41d587b839f31ecdcd35ab3026d8c1de28a95d69996824b5368b5aa938).
+
+Auditing the external particle words found that they cannot simply be frozen at
+initialization: in contact v7, the AI child +610 read changes from 0x9d to 0x8d,
+while +614 stays 0x75000c. The player words remain 0xe5/0x750006. V6 had constant
+words for both. Current replay supplies these as explicit external reads; no
+claim of independent allocator behavior is warranted.
+
+The recovered world tick helper already exists, but the combined comparator
+still invokes bike/rider phases itself. Disassembly confirms player presentation
+4b2240 returns immediately for the captured network=0 gate, while refresh 4b6750
+is device force feedback gated by device kind 3. Connecting the world helper must
+preserve these actual gates, child traversal and marker updates rather than
+silently replacing every service with a no-op. These are remaining integration
+requirements, not unexplained discrepancies in the passing recorded scenarios.
+
+### Player crash and recovery matches (2026-11-16, in progress)
+
+After compressing older temporary recordings and adding an 8 GiB capture-space
+preflight, pursuit v9 completed all 160 updates. All hooks, debugger, throttle
+and camera cleanup completed successfully. Player crash state is 1 at tails
+131–133, returns to 0 at 134 and stays normal through 159. This is a fresh clean
+capture, not a repaired success claim for v8.
+
+The initial archive attempt exceeded JavaScript's string limit because every
+frame repeats roughly 4 MB of animation allocation assertions. The archive now
+losslessly deduplicates those blocks, and the comparator expands references
+only for assertions. The dictionary is explicitly excluded from runtime
+initialization. Full source hashes and derived-file hashes remain recorded;
+no observations are dropped to make the run pass.
+
+`world-player-recovery-wine11.json.br` and
+`mcm-world-player-recovery-validation.json` retain the result: 320 bike entries,
+320 bike tails and all RNG boundaries match; 636 both-rider observations, 319
+collision records, 319 visual records, and 159 AI rider observations match.
+Recorded presentation inputs also yield matching draw bounds/detail and scene
+queries. The permanent regression requires the original player crash transition,
+recovery, full run lengths and zero differences throughout.
+
+The full pre-codec test suite passed all 836 tests and the production build
+passed. Targeted tests additionally cover the longer input protocol and lossless
+assertion encoding. The recorded scenario gaps for acceleration/release,
+turning, bike contact, AI recovery and player recovery are now covered. Independent
+world/camera scheduling, allocator-boundary reads, normal-rate continuous
+operation and final integration/shipment remain open. The overall goal is active.
+
+### Native world ordering connected; restored rider contacts recovered (2026-11-16, in progress)
+
+The recorder now captures the player controller's force-feedback device pointer
+(+0c) and kind at the atomic world boundary. Existing captures did not contain
+that pointer; it must not be inferred from the steering device. The fresh
+`world-scheduler-wine11.json.br` observes address=0, matching the no-device return
+in 4b6750. `world-actor-runtime.mjs` now connects 4590b0 world tick ordering to the
+retained physics and rider phases. Network presentation preserves the original
+network=0 return gate. Active unconnected services throw. Player marker position
+reads live referencePosition rather than the initial snapshot. Marker calls are
+reported as pending presentation requests; their rendering side effects are not
+yet executed. Complete child traversal is still an explicit integration gap.
+
+The fresh 64-update run exposed restored normal-rider callbacks 40ba00/40b9e0,
+which older passing runs did not invoke. Recovered the secondary callback's
+class, same-bike, cooldown, tag and height gates. Tag reset occurs before the
+holder assignment here, unlike the bike primary callback. Native image constant
+4d63bc is 3.0. `rider-normal-secondary-wine11.json` compares all 70,656 output
+words across 3,072 isolated original executions with zero differences.
+The primary callback's inactive-animation path and class-1 return are connected;
+its active-animation transition still explicitly throws instead of guessing.
+The secondary's +8b0 write aliases live bike state, not a detached actor copy.
+
+With those branches connected, all 64 scheduler-driven updates match: 128 bike
+entries, 128 tails and RNG boundaries, 252 both-rider observations, 127 collision
+and 127 visual records, plus 63 AI rider records. Forty recovered collision
+callbacks include normal-rider primary and secondary calls. Original grid
+pointer-transition observations are retained independently. See
+`mcm-world-scheduler-validation.json`.
+
+This advances the scheduler integration but is not autonomous whole-world
+execution. Outstanding: full child/presentation and camera scheduling,
+active-animation rider primary collision, allocator-boundary inputs, normal-rate
+continuous validation and final main integration. No shipment or completion is
+claimed.
+
+Validation for this connection: all 17 targeted scheduler, native callback,
+pursuit, contact and recovery tests pass. The comparison covers the new scheduler
+fixture as well as the previous 64-, 98- and 160-update runs; it does not treat
+queued marker requests as completed rendering.
+
+### Active-animation rider collision transition recovered (2026-11-16, in progress)
+
+Connected the previously explicit missing branch in 40b9e0 -> 40e020. The
+transition sets rider/bike pair flags to 2, clears the animated-motion flag,
+starts free-rider motion, resolves the proxy transform, derives the rider center
+from the collider matrix, restores alternate linear/angular velocity, applies
+contact impulse, and updates proxy/bounds/grid state. The original adds contact
+correction once before calling 40bf70 and again inside that helper; both stores
+are retained. Matrix sums preserve the original instruction ordering rather
+than substituting the crash callback's superficially similar formulas.
+
+`rider-normal-primary-wine11.json` exercises 256 original callback cases covering
+object classes, active/inactive animation, contact-class retention, crash gates,
+varied transforms and impulses. All 22,016 compared output words match: rider
+flags/matrix/velocities, proxy local/world/cache state, collision bounds/matrix,
+pair state, and calls to grid/static-response boundaries. The isolated oracle
+executes the original impulse, transform, bounds and pair routines; grid refresh
+and static-bike response are instrumented boundaries, not claimed as independently
+validated by this corpus. Runtime uses the actual recovered grid/response code.
+The relocated oracle required the existing timeGetTime import connection; its
+initial failed isolated process and debugger were closed without touching the
+running original game.
+
+`live-ordered-dispatch.mjs` now supplies the active branch with the live manager,
+response coefficients and zero vector. The old active-animation throw is gone;
+missing required dependencies still fail explicitly. This removes one known
+physics branch gap. Whole-world presentation/child/camera scheduling,
+allocator-boundary inputs, normal-rate continuous validation and final main
+integration remain outstanding.
+
+### Linked child traversal connected (2026-11-16, in progress)
+
+The comparator now dispatches rider updates through the captured actor hierarchy
+and recovered 420760 traversal instead of looping over the bike-address list.
+Generic nodes recurse only when their actual virtual update is 420760; rider
+40e990 owns its existing particle-child update. Enabled/paused/removed gates and
+next-link mutation semantics come from the recovered traversal. Active polling
+without captured polling dependencies fails explicitly. Unknown custom methods
+require a caller service; the comparator records them as pending actor updates,
+not executed work.
+
+All existing pursuit/contact/recovery regressions pass with linked traversal.
+The scheduler fixture has 63 complete child phases, each visiting both riders in
+native order, with unchanged bike, rider and RNG comparisons. The retained tree
+identifies 11 pending custom actors per child phase: two world display/marker
+actors, dust/spray/another particle emitter/exhaust for each bike, and an
+additional world actor. Their methods are not assumed to be generic recursion.
+
+The recorder is being extended to retain initial owned bytes for these known
+actor classes, checking each class size against its native header. This supplies
+missing gate state for the next integration step without substituting later
+outputs. Full child execution, presentation/camera scheduling, allocator-boundary
+reads, normal-rate validation and main shipment remain incomplete.
+
+The owned-state capture completed as children-v4 after restoring the original
+window layout. Earlier attempts were rejected before restart because a minimized
+window restored to 1024x768. Throttle was released after each failure. The menu
+helper now restores before validating dimensions and reports which guard failed;
+normal window placement restored the previously verified 640x480 at (0,30).
+No physics state or clock was rewritten.
+
+`world-child-state-wine11.json.br` retains eight complete updates with clean hook,
+debugger, key and camera cleanup, and initial owned bytes for all 11 pending actor
+classes. Header/size and overlapping checkpoint bytes are validated on load.
+The run matches 16 bike entries, 16 tails, RNG boundaries and 28 both-rider
+observations. Seven complete child traversals derive the rider order from links
+and report the 11 custom calls explicitly. Both bikes' dust, spray and exhaust
+emitters refer to the same captured particle pool as rider particles; the
+additional 439a30 emitters start inactive (+64=0). These facts enable subsequent
+integration but do not prove those deferred updates have executed.
+
+### Shared-particle assertion boundaries retained (2026-11-16, in progress)
+
+The world archiver now retains original dust, spray, shared-pool and particle
+presentation before/after boundaries in `particle-observations.jsonl`. These
+records are assertion targets outside the `world-*` initialization namespace;
+no later native particle state is imported into the combined-world simulation.
+The children-v4 fixture was rebuilt from its original capture with 63 such
+boundaries across seven complete child phases. Retained lines were checked
+against the raw recording, normalizing only CRLF line endings.
+
+Seven original pool calls pass independent pre-call replay with zero differing
+words, and the existing two-bike child traversal regression still passes.
+See `mcm-world-child-pool-validation.json`. This checks the pool routine on the
+fresh recording, not retained emitter/pool scheduling: the eleven custom actors
+and shared-pool presentation ordering still require connection. Both targeted
+tests pass. This work remains unshipped; the shared-world milestone is incomplete.
+
+### Six retained emitters and pool presentation connected (2026-11-16, in progress)
+
+`world-emitter-runtime.mjs` connects both bikes' dust, spray and exhaust to the
+same retained particle pool used by riders. Live frame-effects headers feed
+emitter updates; spray tables initialize once. Updates write their headers back
+to live frame-effects state. Later original emitter/pool bytes are assertion
+only. Linked traversal now executes six of the eleven custom actors when the
+comparator's explicit `particleIntegration` diagnostic is enabled.
+
+The diagnostic also runs the recovered pool tick, projection/culling and quad
+helpers at recorded outer presentation boundaries. Delta/pause must agree with
+the world. Camera/device matrices and invocation scheduling are still recorded
+inputs; this is not autonomous outer-world scheduling. All particle boundaries
+must be consumed. Five custom actor methods remain explicitly deferred.
+
+Children-v4 passes all 63 retained particle boundaries (1,268,995 compared words,
+zero differences) across seven child phases, plus unchanged bike/rider/RNG
+checks. See `mcm-world-emitter-validation.json`. Both targeted tests pass.
+
+The longer scheduler-v1 capture was re-archived with 571 particle assertions in
+`/tmp/mcm-world-scheduler-particles.json.br`. Integration matches until frame 16
+(zero based), then before AI dust the native pool has 1000 particles versus 281
+recovered. Newly native particles include sprite 48 and flags 20. The deferred
+439a30 emitter uses sprite range 45..60 and directly copies its vector table
+(including index-32 boundary words), consistent with this difference. This is a
+lead, not proof of the entire cause. Drawing fails explicitly when the retained
+count differs instead of replacing pool state. Next work: recover/connect that
+emitter and its activation writes, capture adequate initial/boundary state, then
+repeat the longer comparison. No main shipment or milestone completion claimed.
+
+### Collision impact emitter recovered (2026-11-16, in progress)
+
+Disassembly identifies 439a30 as the effect activated through bike+c9c by the
+49d900 type-0/type-2 collision response. Activation calls 439e40 to move the
+emitter, writes velocity (0,12,0), and sets +64 when bike+c90 and app+718 enable
+it. Existing response helpers already exposed emitEffect, but ordered world
+callbacks had not connected it.
+
+`impact-particle-tick.js` now recovers the complete tick: pause/reset/inactive
+branches, position history reset, elapsed-rate emission, raw velocity table
+copies, index-32 reads beyond the owned 0x610 allocation, sprite 45..60 wrapping,
+and reset after pool exhaustion. An isolated original executable oracle passes
+256 cases and 4,708,096 output words with zero differences. Fixtures retain full
+particle allocations and executable/input/output hashes. See
+`mcm-impact-particle-validation.json`.
+
+World integration binds impact emitters when owned initial state is available,
+connects their collision activation through the native gates, and executes both
+through linked traversal. The children-v4 regression still matches all 63
+particle boundaries; only three custom actor updates remain deferred. Its
+impact emitters remain inactive, so this does not establish active-world impact
+parity. New captures retain the two external initial boundary words separately
+from owned bytes; missing boundary words fail if index 32 is reached. The new
+recorder compiles as `/tmp/mcm-capture-world-impact.exe`. A fresh longer capture
+with these allocations and boundary inputs is still needed; old scheduler-v1
+lacks owned impact initialization. Dynamic heap-boundary changes remain an
+explicit external-input gap. No shipment or completion claimed.
+
+Targeted actor-tree/dispatch validation exposed a stale test that expected the
+now-recovered normal rider callback to throw. Its unsupported-callback assertion
+now installs an actually unknown callback address, retaining the guard test.
+
+### Fresh retained particle-world run passes (2026-11-16, in progress)
+
+Impact-v2 recorded 64 complete world updates / 256 physics records with initial
+owned impact emitter bytes and separate trailing boundary words. The first
+attempt stopped before capture because menu state 191 had no dialog; opening
+Escape through normal input restored the verified Restart Race control. V2
+restored all 46 hooks, debugger, throttle and camera target successfully.
+
+`world-particles-wine11.json.br` / `mcm-world-particles-validation.json` compare
+569 retained particle boundaries with zero differences, 128 bike entries and 128
+tails with shared RNG, 252 both-rider observations, 127 collision/visual records,
+and 63 AI rider records. Eight emitters now run through linked traversal; three
+other custom actors remain deferred. Recorded outer pool/draw invocation and
+camera/device inputs remain explicit. The initial impact-owned view now aliases
+its expanded buffer instead of leaving a detached actor-state copy.
+
+This run produced no collision callbacks, so it proves longer retained shared
+particles but NOT active impact integration. Do not substitute it for the old
+scheduler-v1 frame-16 failure. Next: sustained pursuit with the full new impact
+initialization, then require actual callback/impact evidence before claiming that
+gap closed. The original recorder is idle and clean. Full pre-new-fixture suite:
+850/850 pass; the new 64-update particle integration test also passes separately.
+Production build passes. All changes remain unshipped, milestone incomplete.
+
+To free space for the next recording, lossless compression of the already
+archived scheduler-v1 raw frames/grid was started; their original hashes remain
+in archive provenance. New impact-v2 raw recording remains available.
+
+### Main milestone: retained two-bike and shared-particle validation (2026-11-16)
+
+Publishing the accumulated tested recovery work as a milestone rather than
+waiting for full parity. This includes retained player/AI bodies and shared RNG,
+contact/crash/recovery comparison recordings, rider callback recovery, linked
+world traversal, collision notification/audio selection, and the 64-update
+shared-particle integration fixture. Validation: full suite 850/850 before the
+new fixture, the additional 64-update test passed, both short/long particle tests
+repassed after adding impact-activation reporting, production build passed, and
+whitespace checks passed. Main had no intervening commits at preparation time.
+
+This milestone does not change preview UI or claim independent whole-game
+parity. Three custom actors, autonomous outer presentation/camera scheduling,
+external heap-boundary values, active impact-world verification and sustained
+normal-rate validation remain open. Sustained impact-v3 recording is in progress
+separately and is not included as passing evidence in this milestone.

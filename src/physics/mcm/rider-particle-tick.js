@@ -1,7 +1,8 @@
 import {floatBits} from './math.js';
 const f=Math.fround;
 // Original rider child callback 0x43a0c0, including particle creation.
-export function tickMcmRiderParticles(view,{dt,paused,pool}){
+export function tickMcmRiderParticles(view,{dt,paused,pool,boundaryWords}){
+ if(boundaryWords!==undefined&&(!Array.isArray(boundaryWords)||boundaryWords.length!==2||!boundaryWords.every(v=>Number.isInteger(v)&&v>=0&&v<=0xffffffff)))throw Error('Invalid rider particle boundary inputs');
  if(paused)return 1;
  if(view.getUint32(0x30,true)){
   for(let i=0;i<12;i+=4)view.setUint32(0x54+i,view.getUint32(0x48+i,true),true);
@@ -26,8 +27,8 @@ export function tickMcmRiderParticles(view,{dt,paused,pool}){
   p.setFloat32(0x1c,1,true);p.setFloat32(0x20,2,true);
   // Native index 32 reads its own index word and two following words. Require
   // those trailing captured bytes instead of inventing a wrapped table entry.
-  const index=u(0x60c);if(index===32&&view.byteLength<0x618)throw Error('Rider particle table boundary bytes are not captured');
-  for(let j=0;j<3;j++)p.setUint32(0x38+j*4,u(0x48c+index*12+j*4),true);
+  const index=u(0x60c);if(index===32&&!boundaryWords&&view.byteLength<0x618)throw Error('Rider particle table boundary bytes are not captured');
+  for(let j=0;j<3;j++)p.setUint32(0x38+j*4,index===32&&j>0&&boundaryWords?boundaryWords[j-1]:u(0x48c+index*12+j*4),true);
   pool.count++;
   for(const [offset,limit]of [[0x74,12],[0x60c,32],[0x488,256]]){const next=(u(offset)+1)|0;put(offset,next>limit?0:next);}
  }

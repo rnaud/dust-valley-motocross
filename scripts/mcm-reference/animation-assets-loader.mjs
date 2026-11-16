@@ -2,7 +2,7 @@ import {checkpointMemory} from './live-checkpoint.mjs';
 
 // Observation only: these linked objects must be captured at a frame boundary
 // before combining them with a replay checkpoint. Preserve shared child identity.
-export function loadLiveAnimationAssets(observation){
+export function loadLiveAnimationAssets(observation,{sharedChildren}={}){
  if(observation?.kind!=='mcm-animation-observation'||observation.records?.length!==21)throw Error('Invalid animation observation');
  const extra=observation.additionalRecords??[];
  if(!Array.isArray(extra)||extra.some(p=>!Number.isInteger(p)||p<=0||p>0xffffffff)||new Set(extra).size!==extra.length||extra.some(p=>observation.records.includes(p)))throw Error('Invalid additional animation records');
@@ -16,7 +16,12 @@ export function loadLiveAnimationAssets(observation){
    if(seen.has(address)||seen.size>=256)throw Error('Cyclic or oversized child chain');seen.add(address);
    const b=read(address,0x30);
    let child=children.get(address);
-   if(!child){child={token:address,componentIndex:b.readUInt8(0),local:b.readUInt32LE(4),forward:vec(b,8),up:vec(b,0x14),position:vec(b,0x20)};children.set(address,child);}
+   if(!child){
+    const shared=sharedChildren?.get(address);
+    if(shared){if(shared.hex!==b.toString('hex'))throw Error('Shared animation child initial bytes differ');child=shared.child;}
+    else{child={token:address,componentIndex:b.readUInt8(0),local:b.readUInt32LE(4),forward:vec(b,8),up:vec(b,0x14),position:vec(b,0x20)};sharedChildren?.set(address,{hex:b.toString('hex'),child});}
+    children.set(address,child);
+   }
    if(previous)previous.next=child;else first=child;
    previous=child;address=b.readUInt32LE(0x2c);
   }

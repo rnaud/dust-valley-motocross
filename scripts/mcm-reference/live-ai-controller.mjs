@@ -4,7 +4,7 @@ import {queryMcmTerrainHeight} from '../../src/physics/mcm/terrain-height.js';
 import {queryMcmTerrainNormal} from '../../src/physics/mcm/terrain-normal.js';
 const view=b=>new DataView(b.buffer,b.byteOffset,b.byteLength);
 export function connectLiveAiController(loaded,{checkpoint,aiEnvironment,terrain}){
- if(aiEnvironment?.kind!=='mcm-ai-environment-observation'||aiEnvironment.captureBoundary!=='ai-frame-entry'||checkpoint.captureBoundary!==aiEnvironment.captureBoundary||aiEnvironment.captureId!==checkpoint.captureId||aiEnvironment.bikeAddress!==checkpoint.bikeAddress)throw Error('AI environment boundary differs');
+ if(aiEnvironment?.kind!=='mcm-ai-environment-observation'||!['ai-frame-entry','world-frame-entry'].includes(aiEnvironment.captureBoundary)||checkpoint.captureBoundary!==aiEnvironment.captureBoundary||aiEnvironment.captureId!==checkpoint.captureId||aiEnvironment.bikeAddress!==checkpoint.bikeAddress)throw Error('AI environment boundary differs');
  const m=checkpointMemory(checkpoint),world=checkpointMemory({...aiEnvironment,kind:'mcm-partial-local-checkpoint'}),address=checkpoint.bikeAddress,c=loaded.context;
  for(const a of checkpoint.blocks)for(const b of aiEnvironment.blocks){const start=Math.max(a.address,b.address),end=Math.min(a.address+a.size,b.address+b.size);if(start<end&&!m.read(start,end-start).equals(world.read(start,end-start)))throw Error('AI environment checkpoint bytes differ');}
  const body=view(Buffer.from(m.read(address,0xcc8))),nodes=new Map(),tableAddress=m.u32(address+0xaf4),count=m.u32(address+0xb00),table=Array.from({length:count},(_,i)=>world.u32(tableAddress+i*4));

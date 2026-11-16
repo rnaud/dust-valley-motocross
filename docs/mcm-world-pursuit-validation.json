@@ -1,0 +1,10244 @@
+{
+  "inputProtocol": {
+    "protocol": "player-throttle-frames-0-through-47",
+    "frames": [
+      {
+        "frame": 0,
+        "throttle": 1,
+        "queries": 5
+      },
+      {
+        "frame": 1,
+        "throttle": 1,
+        "queries": 10
+      },
+      {
+        "frame": 2,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 3,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 4,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 5,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 6,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 7,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 8,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 9,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 10,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 11,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 12,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 13,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 14,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 15,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 16,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 17,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 18,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 19,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 20,
+        "throttle": 1,
+        "queries": 10
+      },
+      {
+        "frame": 21,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 22,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 23,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 24,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 25,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 26,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 27,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 28,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 29,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 30,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 31,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 32,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 33,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 34,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 35,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 36,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 37,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 38,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 39,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 40,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 41,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 42,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 43,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 44,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 45,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 46,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 47,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 48,
+        "throttle": 0,
+        "queries": 11
+      },
+      {
+        "frame": 49,
+        "throttle": 0,
+        "queries": 11
+      },
+      {
+        "frame": 50,
+        "throttle": 0,
+        "queries": 11
+      },
+      {
+        "frame": 51,
+        "throttle": 0,
+        "queries": 11
+      },
+      {
+        "frame": 52,
+        "throttle": 0,
+        "queries": 11
+      },
+      {
+        "frame": 53,
+        "throttle": 0,
+        "queries": 10
+      },
+      {
+        "frame": 54,
+        "throttle": 0,
+        "queries": 11
+      },
+      {
+        "frame": 55,
+        "throttle": 0,
+        "queries": 11
+      },
+      {
+        "frame": 56,
+        "throttle": 0,
+        "queries": 11
+      },
+      {
+        "frame": 57,
+        "throttle": 0,
+        "queries": 11
+      },
+      {
+        "frame": 58,
+        "throttle": 0,
+        "queries": 11
+      },
+      {
+        "frame": 59,
+        "throttle": 0,
+        "queries": 11
+      },
+      {
+        "frame": 60,
+        "throttle": 0,
+        "queries": 11
+      },
+      {
+        "frame": 61,
+        "throttle": 0,
+        "queries": 11
+      },
+      {
+        "frame": 62,
+        "throttle": 0,
+        "queries": 11
+      },
+      {
+        "frame": 63,
+        "throttle": 0,
+        "queries": 11
+      }
+    ]
+  },
+  "sceneReports": [
+    {
+      "frame": 0,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 1,
+      "bike": 82803448,
+      "nodes": [
+        82672968,
+        82668264,
+        82667592,
+        82666920
+      ]
+    },
+    {
+      "frame": 2,
+      "bike": 82803448,
+      "nodes": [
+        82672968,
+        82668264,
+        82667592,
+        82666920
+      ]
+    },
+    {
+      "frame": 3,
+      "bike": 82803448,
+      "nodes": [
+        82672968,
+        82668264,
+        82667592,
+        82666920
+      ]
+    },
+    {
+      "frame": 4,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 5,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 6,
+      "bike": 82803448,
+      "nodes": [
+        82672968,
+        82668264,
+        82667592,
+        82666920
+      ]
+    },
+    {
+      "frame": 7,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 8,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 9,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 10,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 11,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 12,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 13,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 14,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 15,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 16,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 17,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 18,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 19,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 20,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 21,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 22,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 23,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 24,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 25,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 26,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 27,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 28,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 29,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 30,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 31,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 32,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 33,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 34,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 35,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 36,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 37,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 38,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 39,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 40,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 41,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 42,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 43,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 44,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 45,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 46,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 47,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 48,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 49,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 50,
+      "bike": 82803448,
+      "nodes": [
+        82672968,
+        82668264,
+        82667592,
+        82666920
+      ]
+    },
+    {
+      "frame": 51,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 52,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 53,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 54,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 55,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 56,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 57,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 58,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 59,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 60,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 61,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 62,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    }
+  ],
+  "worldRiderReports": [
+    {
+      "frame": 0,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 0,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 0,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 0,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 1,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 1,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 1,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 1,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 2,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 2,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 2,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 2,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 3,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 3,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 3,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 3,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 4,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 4,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 4,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 4,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 5,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 5,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 5,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 5,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 6,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 6,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 6,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 6,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 7,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 7,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 7,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 7,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 8,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 8,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 8,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 8,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 9,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 9,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 9,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 9,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 10,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 10,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 10,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 10,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 11,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 11,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 11,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 11,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 12,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 12,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 12,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 12,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 13,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 13,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 13,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 13,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 14,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 14,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 14,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 14,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 15,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 15,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 15,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 15,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 16,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 16,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 16,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 16,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 17,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 17,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 17,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 17,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 18,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 18,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 18,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 18,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 19,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 19,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 19,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 19,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 20,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 20,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 20,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 20,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 21,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 21,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 21,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 21,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 22,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 22,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 22,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 22,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 23,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 23,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 23,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 23,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 24,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 24,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 24,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 24,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 25,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 25,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 25,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 25,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 26,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 26,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 26,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 26,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 27,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 27,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 27,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 27,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 28,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 28,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 28,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 28,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 29,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 29,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 29,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 29,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 30,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 30,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 30,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 30,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 31,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 31,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 31,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 31,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 32,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 32,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 32,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 32,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 33,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 33,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 33,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 33,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 34,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 34,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 34,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 34,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 35,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 35,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 35,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 35,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 36,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 36,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 36,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 36,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 37,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 37,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 37,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 37,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 38,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 38,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 38,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 38,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 39,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 39,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 39,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 39,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 40,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 40,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 40,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 40,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 41,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 41,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 41,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 41,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 42,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 42,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 42,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 42,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 43,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 43,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 43,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 43,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 44,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 44,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 44,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 44,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 45,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 45,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 45,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 45,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 46,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 46,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 46,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 46,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 47,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 47,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 47,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 47,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 48,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 48,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 48,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 48,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 49,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 49,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 49,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 49,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 50,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 50,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 50,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 50,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 51,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 51,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 51,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 51,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 52,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 52,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 52,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 52,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 53,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 53,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 53,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 53,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 54,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 54,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 54,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 54,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 55,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 55,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 55,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 55,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 56,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 56,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 56,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 56,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 57,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 57,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 57,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 57,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 58,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 58,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 58,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 58,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 59,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 59,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 59,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 59,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 60,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 60,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 60,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 60,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 61,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 61,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 61,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 61,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 62,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 62,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 62,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 62,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    }
+  ],
+  "entryReports": [
+    {
+      "frame": 0,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 4287906471,
+        "expected": 4287906471
+      }
+    },
+    {
+      "frame": 0,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 4287906471,
+        "expected": 4287906471
+      }
+    },
+    {
+      "frame": 1,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 4287906471,
+        "expected": 4287906471
+      }
+    },
+    {
+      "frame": 1,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 4287906471,
+        "expected": 4287906471
+      }
+    },
+    {
+      "frame": 2,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 722678478,
+        "expected": 722678478
+      }
+    },
+    {
+      "frame": 2,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 722678478,
+        "expected": 722678478
+      }
+    },
+    {
+      "frame": 3,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 722678478,
+        "expected": 722678478
+      }
+    },
+    {
+      "frame": 3,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 819314265,
+        "expected": 819314265
+      }
+    },
+    {
+      "frame": 4,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 819314265,
+        "expected": 819314265
+      }
+    },
+    {
+      "frame": 4,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 819314265,
+        "expected": 819314265
+      }
+    },
+    {
+      "frame": 5,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 819314265,
+        "expected": 819314265
+      }
+    },
+    {
+      "frame": 5,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1866467256,
+        "expected": 1866467256
+      }
+    },
+    {
+      "frame": 6,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1866467256,
+        "expected": 1866467256
+      }
+    },
+    {
+      "frame": 6,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1866467256,
+        "expected": 1866467256
+      }
+    },
+    {
+      "frame": 7,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 7,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 8,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 8,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 9,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 9,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 10,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 10,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 11,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 11,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 12,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 12,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 13,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 13,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 14,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 14,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 464163826,
+        "expected": 464163826
+      }
+    },
+    {
+      "frame": 15,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 15,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 16,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 16,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 17,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 17,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 18,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 18,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 19,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 19,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 20,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 20,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 21,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 21,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 22,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 22,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 23,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 23,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 24,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 24,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 25,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 25,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 26,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 26,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 27,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 27,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 28,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 28,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 29,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 29,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 30,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 30,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 31,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 31,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 32,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 32,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 33,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 33,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 34,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 34,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 35,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 35,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 36,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 36,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 37,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 37,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 38,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 38,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 39,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 39,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 40,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 40,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 41,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 41,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 42,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 42,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 43,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 43,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 44,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 44,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 45,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 45,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 46,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 46,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 47,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1623691350,
+        "expected": 1623691350
+      }
+    },
+    {
+      "frame": 47,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1623691350,
+        "expected": 1623691350
+      }
+    },
+    {
+      "frame": 48,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2435368385,
+        "expected": 2435368385
+      }
+    },
+    {
+      "frame": 48,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2435368385,
+        "expected": 2435368385
+      }
+    },
+    {
+      "frame": 49,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1920373120,
+        "expected": 1920373120
+      }
+    },
+    {
+      "frame": 49,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1920373120,
+        "expected": 1920373120
+      }
+    },
+    {
+      "frame": 50,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3689474627,
+        "expected": 3689474627
+      }
+    },
+    {
+      "frame": 50,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3689474627,
+        "expected": 3689474627
+      }
+    },
+    {
+      "frame": 51,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3689474627,
+        "expected": 3689474627
+      }
+    },
+    {
+      "frame": 51,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3689474627,
+        "expected": 3689474627
+      }
+    },
+    {
+      "frame": 52,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2536058871,
+        "expected": 2536058871
+      }
+    },
+    {
+      "frame": 52,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2536058871,
+        "expected": 2536058871
+      }
+    },
+    {
+      "frame": 53,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3142429406,
+        "expected": 3142429406
+      }
+    },
+    {
+      "frame": 53,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3142429406,
+        "expected": 3142429406
+      }
+    },
+    {
+      "frame": 54,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1882887721,
+        "expected": 1882887721
+      }
+    },
+    {
+      "frame": 54,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1882887721,
+        "expected": 1882887721
+      }
+    },
+    {
+      "frame": 55,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 30720072,
+        "expected": 30720072
+      }
+    },
+    {
+      "frame": 55,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 30720072,
+        "expected": 30720072
+      }
+    },
+    {
+      "frame": 56,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3197337067,
+        "expected": 3197337067
+      }
+    },
+    {
+      "frame": 56,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3197337067,
+        "expected": 3197337067
+      }
+    },
+    {
+      "frame": 57,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1805619458,
+        "expected": 1805619458
+      }
+    },
+    {
+      "frame": 57,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1805619458,
+        "expected": 1805619458
+      }
+    },
+    {
+      "frame": 58,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3537007549,
+        "expected": 3537007549
+      }
+    },
+    {
+      "frame": 58,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3537007549,
+        "expected": 3537007549
+      }
+    },
+    {
+      "frame": 59,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3382998924,
+        "expected": 3382998924
+      }
+    },
+    {
+      "frame": 59,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3382998924,
+        "expected": 3382998924
+      }
+    },
+    {
+      "frame": 60,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3114166303,
+        "expected": 3114166303
+      }
+    },
+    {
+      "frame": 60,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3114166303,
+        "expected": 3114166303
+      }
+    },
+    {
+      "frame": 61,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 525378150,
+        "expected": 525378150
+      }
+    },
+    {
+      "frame": 61,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 525378150,
+        "expected": 525378150
+      }
+    },
+    {
+      "frame": 62,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 4102672273,
+        "expected": 4102672273
+      }
+    },
+    {
+      "frame": 62,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 4102672273,
+        "expected": 4102672273
+      }
+    },
+    {
+      "frame": 63,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 744403984,
+        "expected": 744403984
+      }
+    },
+    {
+      "frame": 63,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 744403984,
+        "expected": 744403984
+      }
+    }
+  ],
+  "renderCameraInputs": true,
+  "drawReports": [
+    {
+      "frame": 0,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 0,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 0,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 0,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 1,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 1,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 1,
+      "actor": 82803448,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 1,
+      "actor": 82937728,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 2,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 2,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 2,
+      "actor": 82803448,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 2,
+      "actor": 82937728,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 3,
+      "actor": 82612896,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 3,
+      "actor": 82648800,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 3,
+      "actor": 82803448,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 3,
+      "actor": 82937728,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 4,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 4,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 4,
+      "actor": 82803448,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 4,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 5,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 5,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 5,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 5,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 6,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 6,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 6,
+      "actor": 82803448,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 6,
+      "actor": 82937728,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 7,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 7,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 7,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 7,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 8,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 8,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 8,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 8,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 9,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 9,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 9,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 9,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 10,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 10,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 10,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 10,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 11,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 11,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 11,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 11,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 12,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 12,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 12,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 12,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 13,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 13,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 13,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 13,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 14,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 14,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 14,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 14,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 15,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 15,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 15,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 15,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 16,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 16,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 16,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 16,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 17,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 17,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 17,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 17,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 18,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 18,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 18,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 18,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 19,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 19,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 19,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 19,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 20,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 20,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 20,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 20,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 21,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 21,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 21,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 21,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 22,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 22,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 22,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 22,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 23,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 23,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 23,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 23,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 24,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 24,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 24,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 24,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 25,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 25,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 25,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 25,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 26,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 26,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 26,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 26,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 27,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 27,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 27,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 27,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 28,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 28,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 28,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 28,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 29,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 29,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 29,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 29,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 30,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 30,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 30,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 30,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 31,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 31,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 31,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 31,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 32,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 32,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 32,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 32,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 33,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 33,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 33,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 33,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 34,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 34,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 34,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 34,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 35,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 35,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 35,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 35,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 36,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 36,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 36,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 36,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 37,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 37,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 37,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 37,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 38,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 38,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 38,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 38,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 39,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 39,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 39,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 39,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 40,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 40,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 40,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 40,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 41,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 41,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 41,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 41,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 42,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 42,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 42,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 42,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 43,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 43,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 43,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 43,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 44,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 44,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 44,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 44,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 45,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 45,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 45,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 45,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 46,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 46,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 46,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 46,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 47,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 47,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 47,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 47,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 48,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 48,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 48,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 48,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 49,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 49,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 49,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 49,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 50,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 50,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 50,
+      "actor": 82803448,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 50,
+      "actor": 82937728,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 51,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 51,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 51,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 51,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 52,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 52,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 52,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 52,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 53,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 53,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 53,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 53,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 54,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 54,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 54,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 54,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 55,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 55,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 55,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 55,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 56,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 56,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 56,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 56,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 57,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 57,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 57,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 57,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 58,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 58,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 58,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 58,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 59,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 59,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 59,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 59,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 60,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 60,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 60,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 60,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 61,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 61,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 61,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 61,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 62,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 62,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 62,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 62,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    }
+  ],
+  "collisionReports": [
+    {
+      "frame": 0,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 0,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 1,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 1,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 2,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 2,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 3,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 3,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 4,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 4,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 5,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 5,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 6,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 6,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 7,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 7,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 8,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 8,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 9,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 9,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 10,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 10,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 11,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 11,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 12,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 12,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 13,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 13,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 14,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 14,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 15,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 15,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 16,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 16,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 17,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 17,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 18,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 18,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 19,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 19,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 20,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 20,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 21,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 21,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 22,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 22,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 23,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 23,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 24,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 24,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 25,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 25,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 26,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 26,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 27,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 27,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 28,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 28,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 29,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 29,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 30,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 30,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 31,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 31,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 32,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 32,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 33,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 33,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 34,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 34,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 35,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 35,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 36,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 36,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 37,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 37,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 38,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 38,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 39,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 39,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 40,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 40,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 41,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 41,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 42,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 42,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 43,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 43,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 44,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 44,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 45,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 45,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 46,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 46,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 47,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 47,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 48,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 48,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 49,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 49,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 50,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 50,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 51,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 51,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 52,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 52,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 53,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 53,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 54,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 54,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 55,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 55,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 56,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 56,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 57,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 57,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 58,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 58,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 59,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 59,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 60,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 60,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 61,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 61,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 62,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 62,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 63,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    }
+  ],
+  "riderReports": [
+    {
+      "frame": 0,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 1,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 2,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 3,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 4,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 5,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 6,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 7,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 8,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 9,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 10,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 11,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 12,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 13,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 14,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 15,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 16,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 17,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 18,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 19,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 20,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 21,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 22,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 23,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 24,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 25,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 26,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 27,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 28,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 29,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 30,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 31,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 32,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 33,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 34,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 35,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 36,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 37,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 38,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 39,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 40,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 41,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 42,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 43,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 44,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 45,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 46,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 47,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 48,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 49,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 50,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 51,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 52,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 53,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 54,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 55,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 56,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 57,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 58,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 59,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 60,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 61,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 62,
+      "words": 623,
+      "differences": []
+    }
+  ],
+  "visualReports": [
+    {
+      "frame": 0,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 0,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 1,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 1,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 2,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 2,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 3,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 3,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 4,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 4,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 5,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 5,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 6,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 6,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 7,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 7,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 8,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 8,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 9,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 9,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 10,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 10,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 11,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 11,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 12,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 12,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 13,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 13,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 14,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 14,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 15,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 15,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 16,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 16,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 17,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 17,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 18,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 18,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 19,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 19,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 20,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 20,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 21,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 21,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 22,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 22,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 23,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 23,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 24,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 24,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 25,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 25,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 26,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 26,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 27,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 27,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 28,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 28,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 29,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 29,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 30,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 30,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 31,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 31,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 32,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 32,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 33,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 33,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 34,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 34,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 35,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 35,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 36,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 36,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 37,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 37,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 38,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 38,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 39,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 39,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 40,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 40,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 41,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 41,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 42,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 42,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 43,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 43,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 44,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 44,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 45,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 45,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 46,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 46,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 47,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 47,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 48,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 48,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 49,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 49,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 50,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 50,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 51,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 51,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 52,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 52,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 53,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 53,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 54,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 54,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 55,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 55,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 56,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 56,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 57,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 57,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 58,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 58,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 59,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 59,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 60,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 60,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 61,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 61,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 62,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 62,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 63,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    }
+  ],
+  "scope": "Retained bike physics and rider ticks; AI rider/child, rider collider and visual allocations compared; world presentation/rendering, player rider observations and full collision allocations remain incomplete",
+  "reports": [
+    {
+      "frame": 0,
+      "bike": 82612896,
+      "delta": 0.09200000762939453,
+      "substeps": 5,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 4287906471,
+        "expected": 4287906471
+      }
+    },
+    {
+      "frame": 0,
+      "bike": 82803448,
+      "delta": 0.09200000762939453,
+      "substeps": 5,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 4287906471,
+        "expected": 4287906471
+      }
+    },
+    {
+      "frame": 1,
+      "bike": 82612896,
+      "delta": 2.9600000381469727,
+      "substeps": 10,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 4287906471,
+        "expected": 4287906471
+      }
+    },
+    {
+      "frame": 1,
+      "bike": 82803448,
+      "delta": 2.9600000381469727,
+      "substeps": 10,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 722678478,
+        "expected": 722678478
+      }
+    },
+    {
+      "frame": 2,
+      "bike": 82612896,
+      "delta": 0.6650000214576721,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 722678478,
+        "expected": 722678478
+      }
+    },
+    {
+      "frame": 2,
+      "bike": 82803448,
+      "delta": 0.6650000214576721,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 722678478,
+        "expected": 722678478
+      }
+    },
+    {
+      "frame": 3,
+      "bike": 82612896,
+      "delta": 0.706000030040741,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 819314265,
+        "expected": 819314265
+      }
+    },
+    {
+      "frame": 3,
+      "bike": 82803448,
+      "delta": 0.706000030040741,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 819314265,
+        "expected": 819314265
+      }
+    },
+    {
+      "frame": 4,
+      "bike": 82612896,
+      "delta": 0.7460000514984131,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 819314265,
+        "expected": 819314265
+      }
+    },
+    {
+      "frame": 4,
+      "bike": 82803448,
+      "delta": 0.7460000514984131,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 819314265,
+        "expected": 819314265
+      }
+    },
+    {
+      "frame": 5,
+      "bike": 82612896,
+      "delta": 0.7570000290870667,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1866467256,
+        "expected": 1866467256
+      }
+    },
+    {
+      "frame": 5,
+      "bike": 82803448,
+      "delta": 0.7570000290870667,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1866467256,
+        "expected": 1866467256
+      }
+    },
+    {
+      "frame": 6,
+      "bike": 82612896,
+      "delta": 0.7550000548362732,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1866467256,
+        "expected": 1866467256
+      }
+    },
+    {
+      "frame": 6,
+      "bike": 82803448,
+      "delta": 0.7550000548362732,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 7,
+      "bike": 82612896,
+      "delta": 0.7070000171661377,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 7,
+      "bike": 82803448,
+      "delta": 0.7070000171661377,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 8,
+      "bike": 82612896,
+      "delta": 0.7460000514984131,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 8,
+      "bike": 82803448,
+      "delta": 0.7460000514984131,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 9,
+      "bike": 82612896,
+      "delta": 0.7450000643730164,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 9,
+      "bike": 82803448,
+      "delta": 0.7450000643730164,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 10,
+      "bike": 82612896,
+      "delta": 0.7380000352859497,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 10,
+      "bike": 82803448,
+      "delta": 0.7380000352859497,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 11,
+      "bike": 82612896,
+      "delta": 0.7490000128746033,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 11,
+      "bike": 82803448,
+      "delta": 0.7490000128746033,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 12,
+      "bike": 82612896,
+      "delta": 0.7450000643730164,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 12,
+      "bike": 82803448,
+      "delta": 0.7450000643730164,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 13,
+      "bike": 82612896,
+      "delta": 0.7440000176429749,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 13,
+      "bike": 82803448,
+      "delta": 0.7440000176429749,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3415959451,
+        "expected": 3415959451
+      }
+    },
+    {
+      "frame": 14,
+      "bike": 82612896,
+      "delta": 0.7450000643730164,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 464163826,
+        "expected": 464163826
+      }
+    },
+    {
+      "frame": 14,
+      "bike": 82803448,
+      "delta": 0.7450000643730164,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 15,
+      "bike": 82612896,
+      "delta": 0.7490000128746033,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 15,
+      "bike": 82803448,
+      "delta": 0.7490000128746033,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 16,
+      "bike": 82612896,
+      "delta": 0.7420000433921814,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 16,
+      "bike": 82803448,
+      "delta": 0.7420000433921814,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 17,
+      "bike": 82612896,
+      "delta": 0.7420000433921814,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 17,
+      "bike": 82803448,
+      "delta": 0.7420000433921814,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 18,
+      "bike": 82612896,
+      "delta": 0.7670000195503235,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 18,
+      "bike": 82803448,
+      "delta": 0.7670000195503235,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 19,
+      "bike": 82612896,
+      "delta": 0.7440000176429749,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 19,
+      "bike": 82803448,
+      "delta": 0.7440000176429749,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 20,
+      "bike": 82612896,
+      "delta": 0.7400000095367432,
+      "substeps": 10,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 20,
+      "bike": 82803448,
+      "delta": 0.7400000095367432,
+      "substeps": 10,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3091802861,
+        "expected": 3091802861
+      }
+    },
+    {
+      "frame": 21,
+      "bike": 82612896,
+      "delta": 0.7250000238418579,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 21,
+      "bike": 82803448,
+      "delta": 0.7250000238418579,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 22,
+      "bike": 82612896,
+      "delta": 0.7480000257492065,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 22,
+      "bike": 82803448,
+      "delta": 0.7480000257492065,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 23,
+      "bike": 82612896,
+      "delta": 0.7520000338554382,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 23,
+      "bike": 82803448,
+      "delta": 0.7520000338554382,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 24,
+      "bike": 82612896,
+      "delta": 0.7470000386238098,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 24,
+      "bike": 82803448,
+      "delta": 0.7470000386238098,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 25,
+      "bike": 82612896,
+      "delta": 0.7470000386238098,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 25,
+      "bike": 82803448,
+      "delta": 0.7470000386238098,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 26,
+      "bike": 82612896,
+      "delta": 0.7450000643730164,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 26,
+      "bike": 82803448,
+      "delta": 0.7450000643730164,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 27,
+      "bike": 82612896,
+      "delta": 0.7520000338554382,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 27,
+      "bike": 82803448,
+      "delta": 0.7520000338554382,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 28,
+      "bike": 82612896,
+      "delta": 0.7500000596046448,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 28,
+      "bike": 82803448,
+      "delta": 0.7500000596046448,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 29,
+      "bike": 82612896,
+      "delta": 0.7410000562667847,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 29,
+      "bike": 82803448,
+      "delta": 0.7410000562667847,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 30,
+      "bike": 82612896,
+      "delta": 0.7420000433921814,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 30,
+      "bike": 82803448,
+      "delta": 0.7420000433921814,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 31,
+      "bike": 82612896,
+      "delta": 0.7360000610351562,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 31,
+      "bike": 82803448,
+      "delta": 0.7360000610351562,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 32,
+      "bike": 82612896,
+      "delta": 0.7430000305175781,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 32,
+      "bike": 82803448,
+      "delta": 0.7430000305175781,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 33,
+      "bike": 82612896,
+      "delta": 0.7550000548362732,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 33,
+      "bike": 82803448,
+      "delta": 0.7550000548362732,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 34,
+      "bike": 82612896,
+      "delta": 0.7480000257492065,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 34,
+      "bike": 82803448,
+      "delta": 0.7480000257492065,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 35,
+      "bike": 82612896,
+      "delta": 0.7430000305175781,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 35,
+      "bike": 82803448,
+      "delta": 0.7430000305175781,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 36,
+      "bike": 82612896,
+      "delta": 0.7450000643730164,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 36,
+      "bike": 82803448,
+      "delta": 0.7450000643730164,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 37,
+      "bike": 82612896,
+      "delta": 0.7450000643730164,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 37,
+      "bike": 82803448,
+      "delta": 0.7450000643730164,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 38,
+      "bike": 82612896,
+      "delta": 0.7510000467300415,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 38,
+      "bike": 82803448,
+      "delta": 0.7510000467300415,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 39,
+      "bike": 82612896,
+      "delta": 0.7520000338554382,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 39,
+      "bike": 82803448,
+      "delta": 0.7520000338554382,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 40,
+      "bike": 82612896,
+      "delta": 0.7500000596046448,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 40,
+      "bike": 82803448,
+      "delta": 0.7500000596046448,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 41,
+      "bike": 82612896,
+      "delta": 0.7390000224113464,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 41,
+      "bike": 82803448,
+      "delta": 0.7390000224113464,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 42,
+      "bike": 82612896,
+      "delta": 0.7440000176429749,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 42,
+      "bike": 82803448,
+      "delta": 0.7440000176429749,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 43,
+      "bike": 82612896,
+      "delta": 0.7660000324249268,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 43,
+      "bike": 82803448,
+      "delta": 0.7660000324249268,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 44,
+      "bike": 82612896,
+      "delta": 0.7510000467300415,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 44,
+      "bike": 82803448,
+      "delta": 0.7510000467300415,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 45,
+      "bike": 82612896,
+      "delta": 0.7390000224113464,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 45,
+      "bike": 82803448,
+      "delta": 0.7390000224113464,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 46,
+      "bike": 82612896,
+      "delta": 0.7410000562667847,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3346600444,
+        "expected": 3346600444
+      }
+    },
+    {
+      "frame": 46,
+      "bike": 82803448,
+      "delta": 0.7410000562667847,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1623691350,
+        "expected": 1623691350
+      }
+    },
+    {
+      "frame": 47,
+      "bike": 82612896,
+      "delta": 0.7190000414848328,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1623691350,
+        "expected": 1623691350
+      }
+    },
+    {
+      "frame": 47,
+      "bike": 82803448,
+      "delta": 0.7190000414848328,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2435368385,
+        "expected": 2435368385
+      }
+    },
+    {
+      "frame": 48,
+      "bike": 82612896,
+      "delta": 0.718000054359436,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2435368385,
+        "expected": 2435368385
+      }
+    },
+    {
+      "frame": 48,
+      "bike": 82803448,
+      "delta": 0.718000054359436,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1920373120,
+        "expected": 1920373120
+      }
+    },
+    {
+      "frame": 49,
+      "bike": 82612896,
+      "delta": 0.7250000238418579,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1920373120,
+        "expected": 1920373120
+      }
+    },
+    {
+      "frame": 49,
+      "bike": 82803448,
+      "delta": 0.7250000238418579,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3689474627,
+        "expected": 3689474627
+      }
+    },
+    {
+      "frame": 50,
+      "bike": 82612896,
+      "delta": 0.7280000448226929,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3689474627,
+        "expected": 3689474627
+      }
+    },
+    {
+      "frame": 50,
+      "bike": 82803448,
+      "delta": 0.7280000448226929,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3689474627,
+        "expected": 3689474627
+      }
+    },
+    {
+      "frame": 51,
+      "bike": 82612896,
+      "delta": 0.6630000472068787,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3689474627,
+        "expected": 3689474627
+      }
+    },
+    {
+      "frame": 51,
+      "bike": 82803448,
+      "delta": 0.6630000472068787,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2536058871,
+        "expected": 2536058871
+      }
+    },
+    {
+      "frame": 52,
+      "bike": 82612896,
+      "delta": 0.6660000085830688,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2536058871,
+        "expected": 2536058871
+      }
+    },
+    {
+      "frame": 52,
+      "bike": 82803448,
+      "delta": 0.6660000085830688,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3142429406,
+        "expected": 3142429406
+      }
+    },
+    {
+      "frame": 53,
+      "bike": 82612896,
+      "delta": 0.7000000476837158,
+      "substeps": 10,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3142429406,
+        "expected": 3142429406
+      }
+    },
+    {
+      "frame": 53,
+      "bike": 82803448,
+      "delta": 0.7000000476837158,
+      "substeps": 10,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1882887721,
+        "expected": 1882887721
+      }
+    },
+    {
+      "frame": 54,
+      "bike": 82612896,
+      "delta": 0.6730000376701355,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1882887721,
+        "expected": 1882887721
+      }
+    },
+    {
+      "frame": 54,
+      "bike": 82803448,
+      "delta": 0.6730000376701355,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 30720072,
+        "expected": 30720072
+      }
+    },
+    {
+      "frame": 55,
+      "bike": 82612896,
+      "delta": 0.7210000157356262,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 30720072,
+        "expected": 30720072
+      }
+    },
+    {
+      "frame": 55,
+      "bike": 82803448,
+      "delta": 0.7210000157356262,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3197337067,
+        "expected": 3197337067
+      }
+    },
+    {
+      "frame": 56,
+      "bike": 82612896,
+      "delta": 0.7130000591278076,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3197337067,
+        "expected": 3197337067
+      }
+    },
+    {
+      "frame": 56,
+      "bike": 82803448,
+      "delta": 0.7130000591278076,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1805619458,
+        "expected": 1805619458
+      }
+    },
+    {
+      "frame": 57,
+      "bike": 82612896,
+      "delta": 0.6770000457763672,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1805619458,
+        "expected": 1805619458
+      }
+    },
+    {
+      "frame": 57,
+      "bike": 82803448,
+      "delta": 0.6770000457763672,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3537007549,
+        "expected": 3537007549
+      }
+    },
+    {
+      "frame": 58,
+      "bike": 82612896,
+      "delta": 0.7080000042915344,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3537007549,
+        "expected": 3537007549
+      }
+    },
+    {
+      "frame": 58,
+      "bike": 82803448,
+      "delta": 0.7080000042915344,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3382998924,
+        "expected": 3382998924
+      }
+    },
+    {
+      "frame": 59,
+      "bike": 82612896,
+      "delta": 0.6840000152587891,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3382998924,
+        "expected": 3382998924
+      }
+    },
+    {
+      "frame": 59,
+      "bike": 82803448,
+      "delta": 0.6840000152587891,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3114166303,
+        "expected": 3114166303
+      }
+    },
+    {
+      "frame": 60,
+      "bike": 82612896,
+      "delta": 0.6770000457763672,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3114166303,
+        "expected": 3114166303
+      }
+    },
+    {
+      "frame": 60,
+      "bike": 82803448,
+      "delta": 0.6770000457763672,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 525378150,
+        "expected": 525378150
+      }
+    },
+    {
+      "frame": 61,
+      "bike": 82612896,
+      "delta": 0.6930000185966492,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 525378150,
+        "expected": 525378150
+      }
+    },
+    {
+      "frame": 61,
+      "bike": 82803448,
+      "delta": 0.6930000185966492,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 4102672273,
+        "expected": 4102672273
+      }
+    },
+    {
+      "frame": 62,
+      "bike": 82612896,
+      "delta": 0.6940000057220459,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 4102672273,
+        "expected": 4102672273
+      }
+    },
+    {
+      "frame": 62,
+      "bike": 82803448,
+      "delta": 0.6940000057220459,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 744403984,
+        "expected": 744403984
+      }
+    },
+    {
+      "frame": 63,
+      "bike": 82612896,
+      "delta": 0.7100000381469727,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 744403984,
+        "expected": 744403984
+      }
+    },
+    {
+      "frame": 63,
+      "bike": 82803448,
+      "delta": 0.7100000381469727,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 744403984,
+        "expected": 744403984
+      }
+    }
+  ]
+}

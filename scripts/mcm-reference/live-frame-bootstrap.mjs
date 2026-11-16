@@ -16,12 +16,12 @@ const strict=(value,name)=>new Proxy(value,{get(target,key,receiver){
  if(typeof key==='string'&&!(key in target))throw Error(`Unmapped live frame dependency: ${name}.${key}`);
  return Reflect.get(target,key,receiver);
 }});
-export function loadLiveFrameBootstrap({checkpoint,animations,environment,collision,row,terrain,throttle,brake,aiEnvironment}){
+export function loadLiveFrameBootstrap({checkpoint,animations,environment,collision,row,terrain,throttle,brake,aiEnvironment,sharedWorld,sharedOrdered,sharedRandom,sharedAnimationChildren}){
  if(!Number.isInteger(throttle)||!Number.isInteger(brake))throw Error('Explicit digital action responses required');
  const m=checkpointMemory(checkpoint),a=checkpoint.bikeAddress,component=m.u32(a+0x8ec);
  if(checkpoint.captureBoundary==='ai-frame-entry'&&!m.u32(a+0x614))throw Error('AI frame entry requires an AI bike');
- const world=loadLiveCollisionWorld(checkpoint,collision),visuals=loadLiveVisuals(checkpoint,{nodes:world.transformNodes,extraRoots:[m.u32(component+0x50)]});
- const animation=loadLiveNormalRider(checkpoint,animations,{visuals,allowRetainedTrick:true}),env=loadLiveFrameEnvironment(checkpoint,environment);
+ const world=sharedWorld??loadLiveCollisionWorld(checkpoint,collision),visuals=loadLiveVisuals(checkpoint,{nodes:world.transformNodes,extraRoots:[m.u32(component+0x50)]});
+ const animation=loadLiveNormalRider(checkpoint,animations,{visuals,allowRetainedTrick:true,sharedAnimationChildren}),env=loadLiveFrameEnvironment(checkpoint,environment);
  if(!env.input||!animations.retainedFrames)throw Error('Complete input/animation observations required');
  // The retained adapter builds a live view of c.bike at frame end. Do not
  // retain the normal-pose helper's detached bike view in its spread arguments.
@@ -73,8 +73,8 @@ export function loadLiveFrameBootstrap({checkpoint,animations,environment,collis
   componentAxis:contact.context.componentAxis,componentAngle:contact.context.componentAngle,riderComponentLimit:m.f32(component+0x48),
   frontRadius:contact.context.radius,rearRadius:contact.context.rearRadius,points:contact.context.points,heights:contact.context.heights,
   contactScratch:Object.fromEntries(['resampleNormal','rearResampleNormal','probeNormals','refinedNormals'].map(k=>[k,contact.context[k]]))},'context');
- const random=connectLiveFrameEvents(context,{checkpoint,memory:m,animation,environment:env,row,strict});
- const ordered=connectLiveFrameFinish(context,{checkpoint,memory:m,collision,world,environment:env});
+ const random=connectLiveFrameEvents(context,{checkpoint,memory:m,animation,environment:env,row,strict,sharedRandom,world});
+ const ordered=connectLiveFrameFinish(context,{checkpoint,memory:m,collision,world,environment:env,sharedOrdered});
  if(env.resetSupport){
   if(env.resetDecision.mode!==0)throw Error('Unsupported live reset mode');
   const support=env.resetSupport;

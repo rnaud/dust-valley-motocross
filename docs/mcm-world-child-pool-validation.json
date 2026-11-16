@@ -1,0 +1,65 @@
+{
+  "scope": "Independent captured original 0x43b200 calls, each initialized from observed pre-call inputs. All pool header/slot words and all 1000 complete 72-byte allocations compared. Does not establish retained world scheduling or rendering parity.",
+  "ticks": 7,
+  "comparedWords": 140343,
+  "changedWords": 6251,
+  "differences": 0,
+  "reports": [
+    {
+      "dtBits": 1036697732,
+      "paused": 0,
+      "comparedWords": 20049,
+      "changedWords": 724,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "dtBits": 1078322005,
+      "paused": 0,
+      "comparedWords": 20049,
+      "changedWords": 1370,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "dtBits": 1061309908,
+      "paused": 0,
+      "comparedWords": 20049,
+      "changedWords": 1213,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "dtBits": 1061293130,
+      "paused": 0,
+      "comparedWords": 20049,
+      "changedWords": 896,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "dtBits": 1061980996,
+      "paused": 0,
+      "comparedWords": 20049,
+      "changedWords": 749,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "dtBits": 1061997773,
+      "paused": 0,
+      "comparedWords": 20049,
+      "changedWords": 665,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "dtBits": 1060705928,
+      "paused": 0,
+      "comparedWords": 20049,
+      "changedWords": 634,
+      "differences": 0,
+      "firstDifferences": []
+    }
+  ]
+}

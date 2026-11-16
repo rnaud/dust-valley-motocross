@@ -1,0 +1,5684 @@
+{
+  "collisionReports": [
+    {
+      "frame": 0,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 0,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 1,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 1,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 2,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 2,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 3,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    }
+  ],
+  "riderReports": [
+    {
+      "frame": 0,
+      "words": 625,
+      "differences": []
+    },
+    {
+      "frame": 1,
+      "words": 625,
+      "differences": []
+    },
+    {
+      "frame": 2,
+      "words": 625,
+      "differences": []
+    }
+  ],
+  "visualReports": [
+    {
+      "frame": 0,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 0,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 1,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": [
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xc4",
+          "actual": 1059602935,
+          "expected": 1059603372
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xc8",
+          "actual": 3077931124,
+          "expected": 3089654278
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xcc",
+          "actual": 3208704083,
+          "expected": 3208703701
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xd4",
+          "actual": 3197025855,
+          "expected": 3196219181
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xd8",
+          "actual": 1064163025,
+          "expected": 1064365425
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xdc",
+          "actual": 3195599903,
+          "expected": 3194196131
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xe4",
+          "actual": 1060323493,
+          "expected": 1060475763
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xe8",
+          "actual": 1052600196,
+          "expected": 1051530913
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xec",
+          "actual": 1058820606,
+          "expected": 1058953941
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xf4",
+          "actual": 1160933312,
+          "expected": 1160951903
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xf8",
+          "actual": 1111760714,
+          "expected": 1111971019
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xfc",
+          "actual": 1160758536,
+          "expected": 1160775599
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xc4",
+          "actual": 1059602934,
+          "expected": 1059603371
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xc8",
+          "actual": 3077931123,
+          "expected": 3089654277
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xcc",
+          "actual": 3208704082,
+          "expected": 3208703700
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xd4",
+          "actual": 1049419570,
+          "expected": 1050216529
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xd8",
+          "actual": 1064195336,
+          "expected": 1063977608
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xdc",
+          "actual": 1047899917,
+          "expected": 1048932546
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xe4",
+          "actual": 1060347722,
+          "expected": 1060183159
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xe8",
+          "actual": 3199920301,
+          "expected": 3200977470
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xec",
+          "actual": 1058841977,
+          "expected": 1058699407
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xf4",
+          "actual": 1160933370,
+          "expected": 1160951985
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xf8",
+          "actual": 1111819121,
+          "expected": 1112029223
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xfc",
+          "actual": 1160758587,
+          "expected": 1160775670
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xc4",
+          "actual": 1059602934,
+          "expected": 1059603371
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xc8",
+          "actual": 3077931123,
+          "expected": 3089654277
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xcc",
+          "actual": 3208704082,
+          "expected": 3208703700
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xd4",
+          "actual": 1042784464,
+          "expected": 1044460796
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xd8",
+          "actual": 1064952723,
+          "expected": 1064819073
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xdc",
+          "actual": 1041377870,
+          "expected": 1042838347
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xe4",
+          "actual": 1060918564,
+          "expected": 1060817390
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xe8",
+          "actual": 3193857867,
+          "expected": 3196070414
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xec",
+          "actual": 1059339747,
+          "expected": 1059252413
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xf4",
+          "actual": 1160935171,
+          "expected": 1160953964
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xf8",
+          "actual": 1112265136,
+          "expected": 1112469768
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xfc",
+          "actual": 1160760158,
+          "expected": 1160777396
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xc4",
+          "actual": 1051511611,
+          "expected": 1050715848
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xc8",
+          "actual": 3211427221,
+          "expected": 3211645230
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xcc",
+          "actual": 1046360602,
+          "expected": 1044975916
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xd4",
+          "actual": 1054421098,
+          "expected": 1054376371
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xd8",
+          "actual": 3178018460,
+          "expected": 3175507681
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xdc",
+          "actual": 3211221616,
+          "expected": 3211241305
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xe4",
+          "actual": 1062674433,
+          "expected": 1062838923
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xe8",
+          "actual": 1053509908,
+          "expected": 1052500642
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xec",
+          "actual": 1052570740,
+          "expected": 1052858608
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xf4",
+          "actual": 1160932707,
+          "expected": 1160951454
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xf8",
+          "actual": 1112148971,
+          "expected": 1112355764
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xfc",
+          "actual": 1160761525,
+          "expected": 1160778723
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xc4",
+          "actual": 1051511638,
+          "expected": 1050715875
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xc8",
+          "actual": 3211427216,
+          "expected": 3211645225
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xcc",
+          "actual": 1046360610,
+          "expected": 1044975924
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xd4",
+          "actual": 3187585516,
+          "expected": 3188073610
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xd8",
+          "actual": 3196793760,
+          "expected": 3195870092
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xdc",
+          "actual": 3212069512,
+          "expected": 3212167031
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xe4",
+          "actual": 1064230453,
+          "expected": 1064353587
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xe8",
+          "actual": 1050088215,
+          "expected": 1049432427
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xec",
+          "actual": 3193084706,
+          "expected": 3192653991
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xf4",
+          "actual": 1160931014,
+          "expected": 1160949765
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xf8",
+          "actual": 1112160371,
+          "expected": 1112364833
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xfc",
+          "actual": 1160765093,
+          "expected": 1160782294
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xc4",
+          "actual": 1061651542,
+          "expected": 1061378140
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xc8",
+          "actual": 3206542584,
+          "expected": 3206854941
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xcc",
+          "actual": 3175032686,
+          "expected": 3178834985
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xd4",
+          "actual": 3197895123,
+          "expected": 3198151721
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xd8",
+          "actual": 3198169188,
+          "expected": 3197225063
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xdc",
+          "actual": 3211152337,
+          "expected": 3211264710
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xe4",
+          "actual": 1057761425,
+          "expected": 1058069090
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xe8",
+          "actual": 1060577247,
+          "expected": 1060497264
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xec",
+          "actual": 3202241270,
+          "expected": 3201705221
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xf4",
+          "actual": 1160931488,
+          "expected": 1160950264
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xf8",
+          "actual": 1112227038,
+          "expected": 1112425513
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xfc",
+          "actual": 1160768703,
+          "expected": 1160785927
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xc4",
+          "actual": 3197633400,
+          "expected": 3196836466
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xc8",
+          "actual": 1063964848,
+          "expected": 1064183569
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xcc",
+          "actual": 3196580782,
+          "expected": 3195715197
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xd4",
+          "actual": 3210888907,
+          "expected": 3210954825
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xd8",
+          "actual": 3189936204,
+          "expected": 3189066459
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xdc",
+          "actual": 1054948716,
+          "expected": 1054833311
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xe4",
+          "actual": 1052312749,
+          "expected": 1052614385
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xe8",
+          "actual": 1052445316,
+          "expected": 1051482633
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xec",
+          "actual": 1062968868,
+          "expected": 1063100864
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xf4",
+          "actual": 1160936191,
+          "expected": 1160954937
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xf8",
+          "actual": 1112148966,
+          "expected": 1112355751
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xfc",
+          "actual": 1160757530,
+          "expected": 1160774728
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xc4",
+          "actual": 3197633396,
+          "expected": 3196836462
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xc8",
+          "actual": 1063964847,
+          "expected": 1064183568
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xcc",
+          "actual": 3196580787,
+          "expected": 3195715207
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xd4",
+          "actual": 3212077156,
+          "expected": 3212197513
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xd8",
+          "actual": 3197425008,
+          "expected": 3196643809
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xdc",
+          "actual": 1031913048,
+          "expected": 1030341771
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xe4",
+          "actual": 3164359011,
+          "expected": 3159027239
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xe8",
+          "actual": 1049324819,
+          "expected": 1048613764
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xec",
+          "actual": 1064715985,
+          "expected": 1064814243
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xf4",
+          "actual": 1160939686,
+          "expected": 1160958446
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xf8",
+          "actual": 1112185886,
+          "expected": 1112389415
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xfc",
+          "actual": 1160755775,
+          "expected": 1160772986
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xc4",
+          "actual": 3187241071,
+          "expected": 3184993555
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xc8",
+          "actual": 1059324360,
+          "expected": 1059655185
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xcc",
+          "actual": 3208778606,
+          "expected": 3208534422
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xd4",
+          "actual": 3211777361,
+          "expected": 3211912224
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xd8",
+          "actual": 3198626081,
+          "expected": 3197717901
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xdc",
+          "actual": 3187697193,
+          "expected": 3188169453
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xe4",
+          "actual": 3198671577,
+          "expected": 3198075750
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xe8",
+          "actual": 1060235518,
+          "expected": 1060129860
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xec",
+          "actual": 1059312728,
+          "expected": 1059572294
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xf4",
+          "actual": 1160943298,
+          "expected": 1160962085
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xf8",
+          "actual": 1112257216,
+          "expected": 1112455109
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xfc",
+          "actual": 1160755534,
+          "expected": 1160772769
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xc4",
+          "actual": 1064352770,
+          "expected": 1064242444
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xc8",
+          "actual": 3195844852,
+          "expected": 3196582437
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xcc",
+          "actual": 3194991747,
+          "expected": 3195374284
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xd4",
+          "actual": 3194997008,
+          "expected": 3194919944
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xd8",
+          "actual": 1022452079,
+          "expected": 1030377648
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xdc",
+          "actual": 3212362907,
+          "expected": 3212346774
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xe4",
+          "actual": 1048356234,
+          "expected": 1049298762
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xe8",
+          "actual": 1064826717,
+          "expected": 1064722220
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xec",
+          "actual": 3170267303,
+          "expected": 3154818189
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xf4",
+          "actual": 1160932793,
+          "expected": 1160951375
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xf8",
+          "actual": 1111738237,
+          "expected": 1111947752
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xfc",
+          "actual": 1160759692,
+          "expected": 1160776747
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xc4",
+          "actual": 1064352770,
+          "expected": 1064242444
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xc8",
+          "actual": 3195844847,
+          "expected": 3196582434
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xcc",
+          "actual": 3194991747,
+          "expected": 3195374283
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xd4",
+          "actual": 3144174588,
+          "expected": 1013481441
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xd8",
+          "actual": 1060001717,
+          "expected": 1060271467
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xdc",
+          "actual": 3208344767,
+          "expected": 3208086038
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xe4",
+          "actual": 1051600546,
+          "expected": 1052184193
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xe8",
+          "actual": 1060142469,
+          "expected": 1059749076
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xec",
+          "actual": 1059305717,
+          "expected": 1059560379
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xf4",
+          "actual": 1160934273,
+          "expected": 1160952848
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xf8",
+          "actual": 1111726308,
+          "expected": 1111924801
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xfc",
+          "actual": 1160765694,
+          "expected": 1160782743
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xc4",
+          "actual": 1063925119,
+          "expected": 1063773649
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xc8",
+          "actual": 3199157617,
+          "expected": 3199779023
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xcc",
+          "actual": 3193645789,
+          "expected": 3194171664
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xd4",
+          "actual": 3170793892,
+          "expected": 3164167737
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xd8",
+          "actual": 1055920237,
+          "expected": 1056600552
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xdc",
+          "actual": 3210869190,
+          "expected": 3210689348
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xe4",
+          "actual": 1053694123,
+          "expected": 1054387079
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xe8",
+          "actual": 1062236485,
+          "expected": 1061898013
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xec",
+          "actual": 1054224234,
+          "expected": 1054828592
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xf4",
+          "actual": 1160934239,
+          "expected": 1160952717
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xf8",
+          "actual": 1111487631,
+          "expected": 1111680449
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xfc",
+          "actual": 1160769794,
+          "expected": 1160786758
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xc4",
+          "actual": 1037217026,
+          "expected": 1038108285
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xc8",
+          "actual": 1048419091,
+          "expected": 1049127250
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xcc",
+          "actual": 3212222311,
+          "expected": 3212125733
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xd4",
+          "actual": 3212737474,
+          "expected": 3212735072
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xd8",
+          "actual": 3154930239,
+          "expected": 1017048422
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xdc",
+          "actual": 3185436417,
+          "expected": 3185424884
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xe4",
+          "actual": 3171924651,
+          "expected": 3156751472
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xe8",
+          "actual": 1064829905,
+          "expected": 1064743517
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xec",
+          "actual": 1048261480,
+          "expected": 1049144302
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xf4",
+          "actual": 1160934387,
+          "expected": 1160952969
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xf8",
+          "actual": 1111738235,
+          "expected": 1111947746
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xfc",
+          "actual": 1160757865,
+          "expected": 1160774920
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xc4",
+          "actual": 1037217098,
+          "expected": 1038108354
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xc8",
+          "actual": 1048419033,
+          "expected": 1049127220
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xcc",
+          "actual": 3212222313,
+          "expected": 3212125735
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xd4",
+          "actual": 3208490861,
+          "expected": 3208200502
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xd8",
+          "actual": 1059736763,
+          "expected": 1060015194
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xdc",
+          "actual": 1035744367,
+          "expected": 1037764022
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xe4",
+          "actual": 1059709796,
+          "expected": 1060008371
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xe8",
+          "actual": 1060393256,
+          "expected": 1060005762
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xec",
+          "actual": 1048641054,
+          "expected": 1049162121
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xf4",
+          "actual": 1160940531,
+          "expected": 1160959112
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xf8",
+          "actual": 1111741322,
+          "expected": 1111939721
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xfc",
+          "actual": 1160758568,
+          "expected": 1160775622
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xc4",
+          "actual": 1032755556,
+          "expected": 1033972266
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xc8",
+          "actual": 1051661029,
+          "expected": 1052297862
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xcc",
+          "actual": 3211782216,
+          "expected": 3211650218
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xd4",
+          "actual": 3210998170,
+          "expected": 3210801985
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xd8",
+          "actual": 1055115469,
+          "expected": 1055802254
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xdc",
+          "actual": 1036318596,
+          "expected": 1037681481
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xe4",
+          "actual": 1055280589,
+          "expected": 1055985564
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xe8",
+          "actual": 1062463102,
+          "expected": 1062135231
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xec",
+          "actual": 1051443001,
+          "expected": 1052057796
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xf4",
+          "actual": 1160944671,
+          "expected": 1160963157
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xf8",
+          "actual": 1111508293,
+          "expected": 1111700834
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xfc",
+          "actual": 1160758000,
+          "expected": 1160774972
+        }
+      ]
+    },
+    {
+      "frame": 1,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": [
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xc4",
+          "actual": 1059602935,
+          "expected": 1059603372
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xc8",
+          "actual": 3077931124,
+          "expected": 3089654278
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xcc",
+          "actual": 3208704083,
+          "expected": 3208703701
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xd4",
+          "actual": 3197025855,
+          "expected": 3196219181
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xd8",
+          "actual": 1064163025,
+          "expected": 1064365425
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xdc",
+          "actual": 3195599903,
+          "expected": 3194196131
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xe4",
+          "actual": 1060323493,
+          "expected": 1060475763
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xe8",
+          "actual": 1052600196,
+          "expected": 1051530913
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xec",
+          "actual": 1058820606,
+          "expected": 1058953941
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xf4",
+          "actual": 1160933312,
+          "expected": 1160951903
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xf8",
+          "actual": 1111760714,
+          "expected": 1111971019
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xfc",
+          "actual": 1160758536,
+          "expected": 1160775599
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xc4",
+          "actual": 1059602934,
+          "expected": 1059603371
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xc8",
+          "actual": 3077931123,
+          "expected": 3089654277
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xcc",
+          "actual": 3208704082,
+          "expected": 3208703700
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xd4",
+          "actual": 1049419570,
+          "expected": 1050216529
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xd8",
+          "actual": 1064195336,
+          "expected": 1063977608
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xdc",
+          "actual": 1047899917,
+          "expected": 1048932546
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xe4",
+          "actual": 1060347722,
+          "expected": 1060183159
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xe8",
+          "actual": 3199920301,
+          "expected": 3200977470
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xec",
+          "actual": 1058841977,
+          "expected": 1058699407
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xf4",
+          "actual": 1160933370,
+          "expected": 1160951985
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xf8",
+          "actual": 1111819121,
+          "expected": 1112029223
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xfc",
+          "actual": 1160758587,
+          "expected": 1160775670
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xc4",
+          "actual": 1059602934,
+          "expected": 1059603371
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xc8",
+          "actual": 3077931123,
+          "expected": 3089654277
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xcc",
+          "actual": 3208704082,
+          "expected": 3208703700
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xd4",
+          "actual": 1042784464,
+          "expected": 1044460796
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xd8",
+          "actual": 1064952723,
+          "expected": 1064819073
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xdc",
+          "actual": 1041377870,
+          "expected": 1042838347
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xe4",
+          "actual": 1060918564,
+          "expected": 1060817390
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xe8",
+          "actual": 3193857867,
+          "expected": 3196070414
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xec",
+          "actual": 1059339747,
+          "expected": 1059252413
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xf4",
+          "actual": 1160935171,
+          "expected": 1160953964
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xf8",
+          "actual": 1112265136,
+          "expected": 1112469768
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xfc",
+          "actual": 1160760158,
+          "expected": 1160777396
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xc4",
+          "actual": 1051511611,
+          "expected": 1050715848
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xc8",
+          "actual": 3211427221,
+          "expected": 3211645230
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xcc",
+          "actual": 1046360602,
+          "expected": 1044975916
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xd4",
+          "actual": 1054421098,
+          "expected": 1054376371
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xd8",
+          "actual": 3178018460,
+          "expected": 3175507681
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xdc",
+          "actual": 3211221616,
+          "expected": 3211241305
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xe4",
+          "actual": 1062674433,
+          "expected": 1062838923
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xe8",
+          "actual": 1053509908,
+          "expected": 1052500642
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xec",
+          "actual": 1052570740,
+          "expected": 1052858608
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xf4",
+          "actual": 1160932707,
+          "expected": 1160951454
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xf8",
+          "actual": 1112148971,
+          "expected": 1112355764
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xfc",
+          "actual": 1160761525,
+          "expected": 1160778723
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xc4",
+          "actual": 1051511638,
+          "expected": 1050715875
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xc8",
+          "actual": 3211427216,
+          "expected": 3211645225
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xcc",
+          "actual": 1046360610,
+          "expected": 1044975924
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xd4",
+          "actual": 3187585516,
+          "expected": 3188073610
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xd8",
+          "actual": 3196793760,
+          "expected": 3195870092
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xdc",
+          "actual": 3212069512,
+          "expected": 3212167031
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xe4",
+          "actual": 1064230453,
+          "expected": 1064353587
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xe8",
+          "actual": 1050088215,
+          "expected": 1049432427
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xec",
+          "actual": 3193084706,
+          "expected": 3192653991
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xf4",
+          "actual": 1160931014,
+          "expected": 1160949765
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xf8",
+          "actual": 1112160371,
+          "expected": 1112364833
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xfc",
+          "actual": 1160765093,
+          "expected": 1160782294
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xc4",
+          "actual": 1061651542,
+          "expected": 1061378140
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xc8",
+          "actual": 3206542584,
+          "expected": 3206854941
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xcc",
+          "actual": 3175032686,
+          "expected": 3178834985
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xd4",
+          "actual": 3197895123,
+          "expected": 3198151721
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xd8",
+          "actual": 3198169188,
+          "expected": 3197225063
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xdc",
+          "actual": 3211152337,
+          "expected": 3211264710
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xe4",
+          "actual": 1057761425,
+          "expected": 1058069090
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xe8",
+          "actual": 1060577247,
+          "expected": 1060497264
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xec",
+          "actual": 3202241270,
+          "expected": 3201705221
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xf4",
+          "actual": 1160931488,
+          "expected": 1160950264
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xf8",
+          "actual": 1112227038,
+          "expected": 1112425513
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xfc",
+          "actual": 1160768703,
+          "expected": 1160785927
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xc4",
+          "actual": 3197633400,
+          "expected": 3196836466
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xc8",
+          "actual": 1063964848,
+          "expected": 1064183569
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xcc",
+          "actual": 3196580782,
+          "expected": 3195715197
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xd4",
+          "actual": 3210888907,
+          "expected": 3210954825
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xd8",
+          "actual": 3189936204,
+          "expected": 3189066459
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xdc",
+          "actual": 1054948716,
+          "expected": 1054833311
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xe4",
+          "actual": 1052312749,
+          "expected": 1052614385
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xe8",
+          "actual": 1052445316,
+          "expected": 1051482633
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xec",
+          "actual": 1062968868,
+          "expected": 1063100864
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xf4",
+          "actual": 1160936191,
+          "expected": 1160954937
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xf8",
+          "actual": 1112148966,
+          "expected": 1112355751
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xfc",
+          "actual": 1160757530,
+          "expected": 1160774728
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xc4",
+          "actual": 3197633396,
+          "expected": 3196836462
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xc8",
+          "actual": 1063964847,
+          "expected": 1064183568
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xcc",
+          "actual": 3196580787,
+          "expected": 3195715207
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xd4",
+          "actual": 3212077156,
+          "expected": 3212197513
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xd8",
+          "actual": 3197425008,
+          "expected": 3196643809
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xdc",
+          "actual": 1031913048,
+          "expected": 1030341771
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xe4",
+          "actual": 3164359011,
+          "expected": 3159027239
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xe8",
+          "actual": 1049324819,
+          "expected": 1048613764
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xec",
+          "actual": 1064715985,
+          "expected": 1064814243
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xf4",
+          "actual": 1160939686,
+          "expected": 1160958446
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xf8",
+          "actual": 1112185886,
+          "expected": 1112389415
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xfc",
+          "actual": 1160755775,
+          "expected": 1160772986
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xc4",
+          "actual": 3187241071,
+          "expected": 3184993555
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xc8",
+          "actual": 1059324360,
+          "expected": 1059655185
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xcc",
+          "actual": 3208778606,
+          "expected": 3208534422
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xd4",
+          "actual": 3211777361,
+          "expected": 3211912224
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xd8",
+          "actual": 3198626081,
+          "expected": 3197717901
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xdc",
+          "actual": 3187697193,
+          "expected": 3188169453
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xe4",
+          "actual": 3198671577,
+          "expected": 3198075750
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xe8",
+          "actual": 1060235518,
+          "expected": 1060129860
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xec",
+          "actual": 1059312728,
+          "expected": 1059572294
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xf4",
+          "actual": 1160943298,
+          "expected": 1160962085
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xf8",
+          "actual": 1112257216,
+          "expected": 1112455109
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xfc",
+          "actual": 1160755534,
+          "expected": 1160772769
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xc4",
+          "actual": 1064352770,
+          "expected": 1064242444
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xc8",
+          "actual": 3195844852,
+          "expected": 3196582437
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xcc",
+          "actual": 3194991747,
+          "expected": 3195374284
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xd4",
+          "actual": 3194997008,
+          "expected": 3194919944
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xd8",
+          "actual": 1022452079,
+          "expected": 1030377648
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xdc",
+          "actual": 3212362907,
+          "expected": 3212346774
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xe4",
+          "actual": 1048356234,
+          "expected": 1049298762
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xe8",
+          "actual": 1064826717,
+          "expected": 1064722220
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xec",
+          "actual": 3170267303,
+          "expected": 3154818189
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xf4",
+          "actual": 1160932793,
+          "expected": 1160951375
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xf8",
+          "actual": 1111738237,
+          "expected": 1111947752
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xfc",
+          "actual": 1160759692,
+          "expected": 1160776747
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xc4",
+          "actual": 1064352770,
+          "expected": 1064242444
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xc8",
+          "actual": 3195844847,
+          "expected": 3196582434
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xcc",
+          "actual": 3194991747,
+          "expected": 3195374283
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xd4",
+          "actual": 3144174588,
+          "expected": 1013481441
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xd8",
+          "actual": 1060001717,
+          "expected": 1060271467
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xdc",
+          "actual": 3208344767,
+          "expected": 3208086038
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xe4",
+          "actual": 1051600546,
+          "expected": 1052184193
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xe8",
+          "actual": 1060142469,
+          "expected": 1059749076
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xec",
+          "actual": 1059305717,
+          "expected": 1059560379
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xf4",
+          "actual": 1160934273,
+          "expected": 1160952848
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xf8",
+          "actual": 1111726308,
+          "expected": 1111924801
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xfc",
+          "actual": 1160765694,
+          "expected": 1160782743
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xc4",
+          "actual": 1063925119,
+          "expected": 1063773649
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xc8",
+          "actual": 3199157617,
+          "expected": 3199779023
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xcc",
+          "actual": 3193645789,
+          "expected": 3194171664
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xd4",
+          "actual": 3170793892,
+          "expected": 3164167737
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xd8",
+          "actual": 1055920237,
+          "expected": 1056600552
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xdc",
+          "actual": 3210869190,
+          "expected": 3210689348
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xe4",
+          "actual": 1053694123,
+          "expected": 1054387079
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xe8",
+          "actual": 1062236485,
+          "expected": 1061898013
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xec",
+          "actual": 1054224234,
+          "expected": 1054828592
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xf4",
+          "actual": 1160934239,
+          "expected": 1160952717
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xf8",
+          "actual": 1111487631,
+          "expected": 1111680449
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xfc",
+          "actual": 1160769794,
+          "expected": 1160786758
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xc4",
+          "actual": 1037217026,
+          "expected": 1038108285
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xc8",
+          "actual": 1048419091,
+          "expected": 1049127250
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xcc",
+          "actual": 3212222311,
+          "expected": 3212125733
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xd4",
+          "actual": 3212737474,
+          "expected": 3212735072
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xd8",
+          "actual": 3154930239,
+          "expected": 1017048422
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xdc",
+          "actual": 3185436417,
+          "expected": 3185424884
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xe4",
+          "actual": 3171924651,
+          "expected": 3156751472
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xe8",
+          "actual": 1064829905,
+          "expected": 1064743517
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xec",
+          "actual": 1048261480,
+          "expected": 1049144302
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xf4",
+          "actual": 1160934387,
+          "expected": 1160952969
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xf8",
+          "actual": 1111738235,
+          "expected": 1111947746
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xfc",
+          "actual": 1160757865,
+          "expected": 1160774920
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xc4",
+          "actual": 1037217098,
+          "expected": 1038108354
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xc8",
+          "actual": 1048419033,
+          "expected": 1049127220
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xcc",
+          "actual": 3212222313,
+          "expected": 3212125735
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xd4",
+          "actual": 3208490861,
+          "expected": 3208200502
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xd8",
+          "actual": 1059736763,
+          "expected": 1060015194
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xdc",
+          "actual": 1035744367,
+          "expected": 1037764022
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xe4",
+          "actual": 1059709796,
+          "expected": 1060008371
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xe8",
+          "actual": 1060393256,
+          "expected": 1060005762
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xec",
+          "actual": 1048641054,
+          "expected": 1049162121
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xf4",
+          "actual": 1160940531,
+          "expected": 1160959112
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xf8",
+          "actual": 1111741322,
+          "expected": 1111939721
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xfc",
+          "actual": 1160758568,
+          "expected": 1160775622
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xc4",
+          "actual": 1032755556,
+          "expected": 1033972266
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xc8",
+          "actual": 1051661029,
+          "expected": 1052297862
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xcc",
+          "actual": 3211782216,
+          "expected": 3211650218
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xd4",
+          "actual": 3210998170,
+          "expected": 3210801985
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xd8",
+          "actual": 1055115469,
+          "expected": 1055802254
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xdc",
+          "actual": 1036318596,
+          "expected": 1037681481
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xe4",
+          "actual": 1055280589,
+          "expected": 1055985564
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xe8",
+          "actual": 1062463102,
+          "expected": 1062135231
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xec",
+          "actual": 1051443001,
+          "expected": 1052057796
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xf4",
+          "actual": 1160944671,
+          "expected": 1160963157
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xf8",
+          "actual": 1111508293,
+          "expected": 1111700834
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xfc",
+          "actual": 1160758000,
+          "expected": 1160774972
+        }
+      ]
+    },
+    {
+      "frame": 2,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": [
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xc4",
+          "actual": 1059602935,
+          "expected": 1059603372
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xc8",
+          "actual": 3077931124,
+          "expected": 3089654278
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xcc",
+          "actual": 3208704083,
+          "expected": 3208703701
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xd4",
+          "actual": 3197025855,
+          "expected": 3192028687
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xd8",
+          "actual": 1064163025,
+          "expected": 1064811521
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xdc",
+          "actual": 3195599903,
+          "expected": 3190402400
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xe4",
+          "actual": 1060323493,
+          "expected": 1060811924
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xe8",
+          "actual": 1052600196,
+          "expected": 1048644951
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xec",
+          "actual": 1058820606,
+          "expected": 1059247197
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xf4",
+          "actual": 1160933312,
+          "expected": 1161000483
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xf8",
+          "actual": 1111760714,
+          "expected": 1112245313
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xfc",
+          "actual": 1160758536,
+          "expected": 1160820186
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xc4",
+          "actual": 1059602934,
+          "expected": 1059603371
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xc8",
+          "actual": 3077931123,
+          "expected": 3089654277
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xcc",
+          "actual": 3208704082,
+          "expected": 3208703700
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xd4",
+          "actual": 1049419570,
+          "expected": 1052263632
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xd8",
+          "actual": 1064195336,
+          "expected": 1063316848
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xdc",
+          "actual": 1047899917,
+          "expected": 1050717975
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xe4",
+          "actual": 1060347722,
+          "expected": 1059685146
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xe8",
+          "actual": 3199920301,
+          "expected": 3203693786
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xec",
+          "actual": 1058841977,
+          "expected": 1058265143
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xf4",
+          "actual": 1160933370,
+          "expected": 1161000626
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xf8",
+          "actual": 1111819121,
+          "expected": 1112302656
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xfc",
+          "actual": 1160758587,
+          "expected": 1160820311
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xc4",
+          "actual": 1059602934,
+          "expected": 1059603371
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xc8",
+          "actual": 3077931123,
+          "expected": 3089654277
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xcc",
+          "actual": 3208704082,
+          "expected": 3208703700
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xd4",
+          "actual": 1042784464,
+          "expected": 1048694564
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xd8",
+          "actual": 1064952723,
+          "expected": 1064375558
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xdc",
+          "actual": 1041377870,
+          "expected": 1046634280
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xe4",
+          "actual": 1060918564,
+          "expected": 1060483100
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xe8",
+          "actual": 3193857867,
+          "expected": 3198957967
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xec",
+          "actual": 1059339747,
+          "expected": 1058960943
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xf4",
+          "actual": 1160935171,
+          "expected": 1161003064
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xf8",
+          "actual": 1112265136,
+          "expected": 1112726301
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xfc",
+          "actual": 1160760158,
+          "expected": 1160822437
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xc4",
+          "actual": 1051511611,
+          "expected": 1048555309
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xc8",
+          "actual": 3211427221,
+          "expected": 3212133600
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xcc",
+          "actual": 1046360602,
+          "expected": 1041225486
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xd4",
+          "actual": 1054421098,
+          "expected": 1054294613
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xd8",
+          "actual": 3178018460,
+          "expected": 3166686186
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xdc",
+          "actual": 3211221616,
+          "expected": 3211276980
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xe4",
+          "actual": 1062674433,
+          "expected": 1063210636
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xe8",
+          "actual": 1053509908,
+          "expected": 1049768306
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xec",
+          "actual": 1052570740,
+          "expected": 1053507126
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xf4",
+          "actual": 1160932707,
+          "expected": 1161000436
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xf8",
+          "actual": 1112148971,
+          "expected": 1112618630
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xfc",
+          "actual": 1160761525,
+          "expected": 1160823661
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xc4",
+          "actual": 1051511638,
+          "expected": 1048555364
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xc8",
+          "actual": 3211427216,
+          "expected": 3212133596
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xcc",
+          "actual": 1046360610,
+          "expected": 1041225495
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xd4",
+          "actual": 3187585516,
+          "expected": 3189048084
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xd8",
+          "actual": 3196793760,
+          "expected": 3191398494
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xdc",
+          "actual": 3212069512,
+          "expected": 3212379560
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xe4",
+          "actual": 1064230453,
+          "expected": 1064637299
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xe8",
+          "actual": 1050088215,
+          "expected": 1046726850
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xec",
+          "actual": 3193084706,
+          "expected": 3191664056
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xf4",
+          "actual": 1160931014,
+          "expected": 1160998753
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xf8",
+          "actual": 1112160371,
+          "expected": 1112621478
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xfc",
+          "actual": 1160765093,
+          "expected": 1160827238
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xc4",
+          "actual": 1061651542,
+          "expected": 1060619046
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xc8",
+          "actual": 3206542584,
+          "expected": 3207618567
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xcc",
+          "actual": 3175032686,
+          "expected": 3184354666
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xd4",
+          "actual": 3197895123,
+          "expected": 3198713995
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xd8",
+          "actual": 3198169188,
+          "expected": 3193297148
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xdc",
+          "actual": 3211152337,
+          "expected": 3211509968
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xe4",
+          "actual": 1057761425,
+          "expected": 1058869348
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xe8",
+          "actual": 1060577247,
+          "expected": 1060220324
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xec",
+          "actual": 3202241270,
+          "expected": 3200309319
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xf4",
+          "actual": 1160931488,
+          "expected": 1160999308
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xf8",
+          "actual": 1112227038,
+          "expected": 1112666005
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xfc",
+          "actual": 1160768703,
+          "expected": 1160830919
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xc4",
+          "actual": 3197633400,
+          "expected": 3193306665
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xc8",
+          "actual": 1063964848,
+          "expected": 1064673770
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xcc",
+          "actual": 3196580782,
+          "expected": 3191959331
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xd4",
+          "actual": 3210888907,
+          "expected": 3211101053
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xd8",
+          "actual": 3189936204,
+          "expected": 3185769040
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xdc",
+          "actual": 1054948716,
+          "expected": 1054578187
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xe4",
+          "actual": 1052312749,
+          "expected": 1053292931
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xe8",
+          "actual": 1052445316,
+          "expected": 1048877410
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xec",
+          "actual": 1062968868,
+          "expected": 1063396827
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xf4",
+          "actual": 1160936191,
+          "expected": 1161003919
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xf8",
+          "actual": 1112148966,
+          "expected": 1112618616
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xfc",
+          "actual": 1160757530,
+          "expected": 1160819667
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xc4",
+          "actual": 3197633396,
+          "expected": 3193306657
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xc8",
+          "actual": 1063964847,
+          "expected": 1064673769
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xcc",
+          "actual": 3196580787,
+          "expected": 3191959341
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xd4",
+          "actual": 3212077156,
+          "expected": 3212466372
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xd8",
+          "actual": 3197425008,
+          "expected": 3193006484
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xdc",
+          "actual": 1031913048,
+          "expected": 1026589151
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xe4",
+          "actual": 3164359011,
+          "expected": 993136505
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xe8",
+          "actual": 1049324819,
+          "expected": 1044800099
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xec",
+          "actual": 1064715985,
+          "expected": 1065035281
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xf4",
+          "actual": 1160939686,
+          "expected": 1161007459
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xf8",
+          "actual": 1112185886,
+          "expected": 1112643513
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xfc",
+          "actual": 1160755775,
+          "expected": 1160817952
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xc4",
+          "actual": 3187241071,
+          "expected": 3178223640
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xc8",
+          "actual": 1059324360,
+          "expected": 1060467148
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xcc",
+          "actual": 3208778606,
+          "expected": 3207854141
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xd4",
+          "actual": 3211777361,
+          "expected": 3212211746
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xd8",
+          "actual": 3198626081,
+          "expected": 3194471581
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xdc",
+          "actual": 3187697193,
+          "expected": 3189214615
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xe4",
+          "actual": 3198671577,
+          "expected": 3196529839
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xe8",
+          "actual": 1060235518,
+          "expected": 1059785636
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xec",
+          "actual": 1059312728,
+          "expected": 1060246437
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xf4",
+          "actual": 1160943298,
+          "expected": 1161011160
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xf8",
+          "actual": 1112257216,
+          "expected": 1112693975
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xfc",
+          "actual": 1160755534,
+          "expected": 1160817789
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xc4",
+          "actual": 1064352770,
+          "expected": 1063912479
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xc8",
+          "actual": 3195844852,
+          "expected": 3198194395
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xcc",
+          "actual": 3194991747,
+          "expected": 3196292431
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xd4",
+          "actual": 3194997008,
+          "expected": 3194492742
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xd8",
+          "actual": 1022452079,
+          "expected": 1040533153
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xdc",
+          "actual": 3212362907,
+          "expected": 3212253694
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xe4",
+          "actual": 1048356234,
+          "expected": 1051467071
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xe8",
+          "actual": 1064826717,
+          "expected": 1064356411
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xec",
+          "actual": 3170267303,
+          "expected": 1027877864
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xf4",
+          "actual": 1160932793,
+          "expected": 1160999929
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xf8",
+          "actual": 1111738237,
+          "expected": 1112220086
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xfc",
+          "actual": 1160759692,
+          "expected": 1160821312
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xc4",
+          "actual": 1064352770,
+          "expected": 1063912480
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xc8",
+          "actual": 3195844847,
+          "expected": 3198194392
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xcc",
+          "actual": 3194991747,
+          "expected": 3196292431
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xd4",
+          "actual": 3144174588,
+          "expected": 1031845443
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xd8",
+          "actual": 1060001717,
+          "expected": 1060918835
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xdc",
+          "actual": 3208344767,
+          "expected": 3207374120
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xe4",
+          "actual": 1051600546,
+          "expected": 1053626975
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xe8",
+          "actual": 1060142469,
+          "expected": 1058647936
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xec",
+          "actual": 1059305717,
+          "expected": 1060189591
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xf4",
+          "actual": 1160934273,
+          "expected": 1161001362
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xf8",
+          "actual": 1111726308,
+          "expected": 1112168155
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xfc",
+          "actual": 1160765694,
+          "expected": 1160827273
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xc4",
+          "actual": 1063925119,
+          "expected": 1063335830
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xc8",
+          "actual": 3199157617,
+          "expected": 3201350024
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xcc",
+          "actual": 3193645789,
+          "expected": 3195698855
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xd4",
+          "actual": 3170793892,
+          "expected": 1015345545
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xd8",
+          "actual": 1055920237,
+          "expected": 1057635397
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xdc",
+          "actual": 3210869190,
+          "expected": 3210178000
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xe4",
+          "actual": 1053694123,
+          "expected": 1056130827
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xe8",
+          "actual": 1062236485,
+          "expected": 1060930083
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xec",
+          "actual": 1054224234,
+          "expected": 1056349486
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xf4",
+          "actual": 1160934239,
+          "expected": 1161000964
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xf8",
+          "actual": 1111487631,
+          "expected": 1111910173
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xfc",
+          "actual": 1160769794,
+          "expected": 1160831056
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xc4",
+          "actual": 1037217026,
+          "expected": 1040472003
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xc8",
+          "actual": 1048419091,
+          "expected": 1050741352
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xcc",
+          "actual": 3212222311,
+          "expected": 3211837062
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xd4",
+          "actual": 3212737474,
+          "expected": 3212670978
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xd8",
+          "actual": 3154930239,
+          "expected": 1035904245
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xdc",
+          "actual": 3185436417,
+          "expected": 3184978224
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xe4",
+          "actual": 3171924651,
+          "expected": 1029660716
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xe8",
+          "actual": 1064829905,
+          "expected": 1064424946
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xec",
+          "actual": 1048261480,
+          "expected": 1051040694
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xf4",
+          "actual": 1160934387,
+          "expected": 1161001523
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xf8",
+          "actual": 1111738235,
+          "expected": 1112220080
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xfc",
+          "actual": 1160757865,
+          "expected": 1160819484
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xc4",
+          "actual": 1037217098,
+          "expected": 1040472033
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xc8",
+          "actual": 1048419033,
+          "expected": 1050741322
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xcc",
+          "actual": 3212222313,
+          "expected": 3211837065
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xd4",
+          "actual": 3208490861,
+          "expected": 3207400843
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xd8",
+          "actual": 1059736763,
+          "expected": 1060685660
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xdc",
+          "actual": 1035744367,
+          "expected": 1041765215
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xe4",
+          "actual": 1059709796,
+          "expected": 1060747717
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xe8",
+          "actual": 1060393256,
+          "expected": 1058919327
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xec",
+          "actual": 1048641054,
+          "expected": 1050451862
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xf4",
+          "actual": 1160940531,
+          "expected": 1161007642
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xf8",
+          "actual": 1111741322,
+          "expected": 1112182782
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xfc",
+          "actual": 1160758568,
+          "expected": 1160820165
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xc4",
+          "actual": 1032755556,
+          "expected": 1037482052
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xc8",
+          "actual": 1051661029,
+          "expected": 1053912982
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xcc",
+          "actual": 3211782216,
+          "expected": 3211267633
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xd4",
+          "actual": 3210998170,
+          "expected": 3210242470
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xd8",
+          "actual": 1055115469,
+          "expected": 1057245547
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xdc",
+          "actual": 1036318596,
+          "expected": 1040886147
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xe4",
+          "actual": 1055280589,
+          "expected": 1057363983
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xe8",
+          "actual": 1062463102,
+          "expected": 1061194062
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xec",
+          "actual": 1051443001,
+          "expected": 1053608380
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xf4",
+          "actual": 1160944671,
+          "expected": 1161011426
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xf8",
+          "actual": 1111508293,
+          "expected": 1111929778
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xfc",
+          "actual": 1160758000,
+          "expected": 1160819287
+        }
+      ]
+    },
+    {
+      "frame": 2,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": [
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xc4",
+          "actual": 1059602935,
+          "expected": 1059603372
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xc8",
+          "actual": 3077931124,
+          "expected": 3089654278
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xcc",
+          "actual": 3208704083,
+          "expected": 3208703701
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xd4",
+          "actual": 3197025855,
+          "expected": 3192028687
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xd8",
+          "actual": 1064163025,
+          "expected": 1064811521
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xdc",
+          "actual": 3195599903,
+          "expected": 3190402400
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xe4",
+          "actual": 1060323493,
+          "expected": 1060811924
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xe8",
+          "actual": 1052600196,
+          "expected": 1048644951
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xec",
+          "actual": 1058820606,
+          "expected": 1059247197
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xf4",
+          "actual": 1160933312,
+          "expected": 1161000483
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xf8",
+          "actual": 1111760714,
+          "expected": 1112245313
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xfc",
+          "actual": 1160758536,
+          "expected": 1160820186
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xc4",
+          "actual": 1059602934,
+          "expected": 1059603371
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xc8",
+          "actual": 3077931123,
+          "expected": 3089654277
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xcc",
+          "actual": 3208704082,
+          "expected": 3208703700
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xd4",
+          "actual": 1049419570,
+          "expected": 1052263632
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xd8",
+          "actual": 1064195336,
+          "expected": 1063316848
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xdc",
+          "actual": 1047899917,
+          "expected": 1050717975
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xe4",
+          "actual": 1060347722,
+          "expected": 1059685146
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xe8",
+          "actual": 3199920301,
+          "expected": 3203693786
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xec",
+          "actual": 1058841977,
+          "expected": 1058265143
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xf4",
+          "actual": 1160933370,
+          "expected": 1161000626
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xf8",
+          "actual": 1111819121,
+          "expected": 1112302656
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xfc",
+          "actual": 1160758587,
+          "expected": 1160820311
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xc4",
+          "actual": 1059602934,
+          "expected": 1059603371
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xc8",
+          "actual": 3077931123,
+          "expected": 3089654277
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xcc",
+          "actual": 3208704082,
+          "expected": 3208703700
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xd4",
+          "actual": 1042784464,
+          "expected": 1048694564
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xd8",
+          "actual": 1064952723,
+          "expected": 1064375558
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xdc",
+          "actual": 1041377870,
+          "expected": 1046634280
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xe4",
+          "actual": 1060918564,
+          "expected": 1060483100
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xe8",
+          "actual": 3193857867,
+          "expected": 3198957967
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xec",
+          "actual": 1059339747,
+          "expected": 1058960943
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xf4",
+          "actual": 1160935171,
+          "expected": 1161003064
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xf8",
+          "actual": 1112265136,
+          "expected": 1112726301
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xfc",
+          "actual": 1160760158,
+          "expected": 1160822437
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xc4",
+          "actual": 1051511611,
+          "expected": 1048555309
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xc8",
+          "actual": 3211427221,
+          "expected": 3212133600
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xcc",
+          "actual": 1046360602,
+          "expected": 1041225486
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xd4",
+          "actual": 1054421098,
+          "expected": 1054294613
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xd8",
+          "actual": 3178018460,
+          "expected": 3166686186
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xdc",
+          "actual": 3211221616,
+          "expected": 3211276980
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xe4",
+          "actual": 1062674433,
+          "expected": 1063210636
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xe8",
+          "actual": 1053509908,
+          "expected": 1049768306
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xec",
+          "actual": 1052570740,
+          "expected": 1053507126
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xf4",
+          "actual": 1160932707,
+          "expected": 1161000436
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xf8",
+          "actual": 1112148971,
+          "expected": 1112618630
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xfc",
+          "actual": 1160761525,
+          "expected": 1160823661
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xc4",
+          "actual": 1051511638,
+          "expected": 1048555364
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xc8",
+          "actual": 3211427216,
+          "expected": 3212133596
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xcc",
+          "actual": 1046360610,
+          "expected": 1041225495
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xd4",
+          "actual": 3187585516,
+          "expected": 3189048084
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xd8",
+          "actual": 3196793760,
+          "expected": 3191398494
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xdc",
+          "actual": 3212069512,
+          "expected": 3212379560
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xe4",
+          "actual": 1064230453,
+          "expected": 1064637299
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xe8",
+          "actual": 1050088215,
+          "expected": 1046726850
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xec",
+          "actual": 3193084706,
+          "expected": 3191664056
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xf4",
+          "actual": 1160931014,
+          "expected": 1160998753
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xf8",
+          "actual": 1112160371,
+          "expected": 1112621478
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xfc",
+          "actual": 1160765093,
+          "expected": 1160827238
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xc4",
+          "actual": 1061651542,
+          "expected": 1060619046
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xc8",
+          "actual": 3206542584,
+          "expected": 3207618567
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xcc",
+          "actual": 3175032686,
+          "expected": 3184354666
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xd4",
+          "actual": 3197895123,
+          "expected": 3198713995
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xd8",
+          "actual": 3198169188,
+          "expected": 3193297148
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xdc",
+          "actual": 3211152337,
+          "expected": 3211509968
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xe4",
+          "actual": 1057761425,
+          "expected": 1058869348
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xe8",
+          "actual": 1060577247,
+          "expected": 1060220324
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xec",
+          "actual": 3202241270,
+          "expected": 3200309319
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xf4",
+          "actual": 1160931488,
+          "expected": 1160999308
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xf8",
+          "actual": 1112227038,
+          "expected": 1112666005
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xfc",
+          "actual": 1160768703,
+          "expected": 1160830919
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xc4",
+          "actual": 3197633400,
+          "expected": 3193306665
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xc8",
+          "actual": 1063964848,
+          "expected": 1064673770
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xcc",
+          "actual": 3196580782,
+          "expected": 3191959331
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xd4",
+          "actual": 3210888907,
+          "expected": 3211101053
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xd8",
+          "actual": 3189936204,
+          "expected": 3185769040
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xdc",
+          "actual": 1054948716,
+          "expected": 1054578187
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xe4",
+          "actual": 1052312749,
+          "expected": 1053292931
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xe8",
+          "actual": 1052445316,
+          "expected": 1048877410
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xec",
+          "actual": 1062968868,
+          "expected": 1063396827
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xf4",
+          "actual": 1160936191,
+          "expected": 1161003919
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xf8",
+          "actual": 1112148966,
+          "expected": 1112618616
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xfc",
+          "actual": 1160757530,
+          "expected": 1160819667
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xc4",
+          "actual": 3197633396,
+          "expected": 3193306657
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xc8",
+          "actual": 1063964847,
+          "expected": 1064673769
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xcc",
+          "actual": 3196580787,
+          "expected": 3191959341
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xd4",
+          "actual": 3212077156,
+          "expected": 3212466372
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xd8",
+          "actual": 3197425008,
+          "expected": 3193006484
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xdc",
+          "actual": 1031913048,
+          "expected": 1026589151
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xe4",
+          "actual": 3164359011,
+          "expected": 993136505
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xe8",
+          "actual": 1049324819,
+          "expected": 1044800099
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xec",
+          "actual": 1064715985,
+          "expected": 1065035281
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xf4",
+          "actual": 1160939686,
+          "expected": 1161007459
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xf8",
+          "actual": 1112185886,
+          "expected": 1112643513
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xfc",
+          "actual": 1160755775,
+          "expected": 1160817952
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xc4",
+          "actual": 3187241071,
+          "expected": 3178223640
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xc8",
+          "actual": 1059324360,
+          "expected": 1060467148
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xcc",
+          "actual": 3208778606,
+          "expected": 3207854141
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xd4",
+          "actual": 3211777361,
+          "expected": 3212211746
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xd8",
+          "actual": 3198626081,
+          "expected": 3194471581
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xdc",
+          "actual": 3187697193,
+          "expected": 3189214615
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xe4",
+          "actual": 3198671577,
+          "expected": 3196529839
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xe8",
+          "actual": 1060235518,
+          "expected": 1059785636
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xec",
+          "actual": 1059312728,
+          "expected": 1060246437
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xf4",
+          "actual": 1160943298,
+          "expected": 1161011160
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xf8",
+          "actual": 1112257216,
+          "expected": 1112693975
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xfc",
+          "actual": 1160755534,
+          "expected": 1160817789
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xc4",
+          "actual": 1064352770,
+          "expected": 1063912479
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xc8",
+          "actual": 3195844852,
+          "expected": 3198194395
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xcc",
+          "actual": 3194991747,
+          "expected": 3196292431
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xd4",
+          "actual": 3194997008,
+          "expected": 3194492742
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xd8",
+          "actual": 1022452079,
+          "expected": 1040533153
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xdc",
+          "actual": 3212362907,
+          "expected": 3212253694
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xe4",
+          "actual": 1048356234,
+          "expected": 1051467071
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xe8",
+          "actual": 1064826717,
+          "expected": 1064356411
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xec",
+          "actual": 3170267303,
+          "expected": 1027877864
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xf4",
+          "actual": 1160932793,
+          "expected": 1160999929
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xf8",
+          "actual": 1111738237,
+          "expected": 1112220086
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xfc",
+          "actual": 1160759692,
+          "expected": 1160821312
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xc4",
+          "actual": 1064352770,
+          "expected": 1063912480
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xc8",
+          "actual": 3195844847,
+          "expected": 3198194392
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xcc",
+          "actual": 3194991747,
+          "expected": 3196292431
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xd4",
+          "actual": 3144174588,
+          "expected": 1031845443
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xd8",
+          "actual": 1060001717,
+          "expected": 1060918835
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xdc",
+          "actual": 3208344767,
+          "expected": 3207374120
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xe4",
+          "actual": 1051600546,
+          "expected": 1053626975
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xe8",
+          "actual": 1060142469,
+          "expected": 1058647936
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xec",
+          "actual": 1059305717,
+          "expected": 1060189591
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xf4",
+          "actual": 1160934273,
+          "expected": 1161001362
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xf8",
+          "actual": 1111726308,
+          "expected": 1112168155
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xfc",
+          "actual": 1160765694,
+          "expected": 1160827273
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xc4",
+          "actual": 1063925119,
+          "expected": 1063335830
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xc8",
+          "actual": 3199157617,
+          "expected": 3201350024
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xcc",
+          "actual": 3193645789,
+          "expected": 3195698855
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xd4",
+          "actual": 3170793892,
+          "expected": 1015345545
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xd8",
+          "actual": 1055920237,
+          "expected": 1057635397
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xdc",
+          "actual": 3210869190,
+          "expected": 3210178000
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xe4",
+          "actual": 1053694123,
+          "expected": 1056130827
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xe8",
+          "actual": 1062236485,
+          "expected": 1060930083
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xec",
+          "actual": 1054224234,
+          "expected": 1056349486
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xf4",
+          "actual": 1160934239,
+          "expected": 1161000964
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xf8",
+          "actual": 1111487631,
+          "expected": 1111910173
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xfc",
+          "actual": 1160769794,
+          "expected": 1160831056
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xc4",
+          "actual": 1037217026,
+          "expected": 1040472003
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xc8",
+          "actual": 1048419091,
+          "expected": 1050741352
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xcc",
+          "actual": 3212222311,
+          "expected": 3211837062
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xd4",
+          "actual": 3212737474,
+          "expected": 3212670978
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xd8",
+          "actual": 3154930239,
+          "expected": 1035904245
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xdc",
+          "actual": 3185436417,
+          "expected": 3184978224
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xe4",
+          "actual": 3171924651,
+          "expected": 1029660716
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xe8",
+          "actual": 1064829905,
+          "expected": 1064424946
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xec",
+          "actual": 1048261480,
+          "expected": 1051040694
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xf4",
+          "actual": 1160934387,
+          "expected": 1161001523
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xf8",
+          "actual": 1111738235,
+          "expected": 1112220080
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xfc",
+          "actual": 1160757865,
+          "expected": 1160819484
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xc4",
+          "actual": 1037217098,
+          "expected": 1040472033
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xc8",
+          "actual": 1048419033,
+          "expected": 1050741322
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xcc",
+          "actual": 3212222313,
+          "expected": 3211837065
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xd4",
+          "actual": 3208490861,
+          "expected": 3207400843
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xd8",
+          "actual": 1059736763,
+          "expected": 1060685660
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xdc",
+          "actual": 1035744367,
+          "expected": 1041765215
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xe4",
+          "actual": 1059709796,
+          "expected": 1060747717
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xe8",
+          "actual": 1060393256,
+          "expected": 1058919327
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xec",
+          "actual": 1048641054,
+          "expected": 1050451862
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xf4",
+          "actual": 1160940531,
+          "expected": 1161007642
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xf8",
+          "actual": 1111741322,
+          "expected": 1112182782
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xfc",
+          "actual": 1160758568,
+          "expected": 1160820165
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xc4",
+          "actual": 1032755556,
+          "expected": 1037482052
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xc8",
+          "actual": 1051661029,
+          "expected": 1053912982
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xcc",
+          "actual": 3211782216,
+          "expected": 3211267633
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xd4",
+          "actual": 3210998170,
+          "expected": 3210242470
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xd8",
+          "actual": 1055115469,
+          "expected": 1057245547
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xdc",
+          "actual": 1036318596,
+          "expected": 1040886147
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xe4",
+          "actual": 1055280589,
+          "expected": 1057363983
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xe8",
+          "actual": 1062463102,
+          "expected": 1061194062
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xec",
+          "actual": 1051443001,
+          "expected": 1053608380
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xf4",
+          "actual": 1160944671,
+          "expected": 1161011426
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xf8",
+          "actual": 1111508293,
+          "expected": 1111929778
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xfc",
+          "actual": 1160758000,
+          "expected": 1160819287
+        }
+      ]
+    },
+    {
+      "frame": 3,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": [
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xc4",
+          "actual": 1059602935,
+          "expected": 1059603372
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xc8",
+          "actual": 3077931124,
+          "expected": 3089654278
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xcc",
+          "actual": 3208704083,
+          "expected": 3208703701
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xd4",
+          "actual": 3197025855,
+          "expected": 3187782343
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xd8",
+          "actual": 1064163025,
+          "expected": 1065114476
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xdc",
+          "actual": 3195599903,
+          "expected": 3185727090
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xe4",
+          "actual": 1060323493,
+          "expected": 1061040208
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xe8",
+          "actual": 1052600196,
+          "expected": 1043079533
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xec",
+          "actual": 1058820606,
+          "expected": 1059446366
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xf4",
+          "actual": 1160933312,
+          "expected": 1161046797
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xf8",
+          "actual": 1111760714,
+          "expected": 1112135879
+        },
+        {
+          "name": "frame-rider-visual-51d6848",
+          "offset": "0xfc",
+          "actual": 1160758536,
+          "expected": 1160862696
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xc4",
+          "actual": 1059602934,
+          "expected": 1059603371
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xc8",
+          "actual": 3077931123,
+          "expected": 3089654277
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xcc",
+          "actual": 3208704082,
+          "expected": 3208703700
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xd4",
+          "actual": 1049419570,
+          "expected": 1054125416
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xd8",
+          "actual": 1064195336,
+          "expected": 1062575118
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xdc",
+          "actual": 1047899917,
+          "expected": 1052341786
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xe4",
+          "actual": 1060347722,
+          "expected": 1059126112
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xe8",
+          "actual": 3199920301,
+          "expected": 3205306233
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xec",
+          "actual": 1058841977,
+          "expected": 1057777654
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xf4",
+          "actual": 1160933370,
+          "expected": 1161046998
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xf8",
+          "actual": 1111819121,
+          "expected": 1112191968
+        },
+        {
+          "name": "frame-rider-visual-51d6ae8",
+          "offset": "0xfc",
+          "actual": 1160758587,
+          "expected": 1160862871
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xc4",
+          "actual": 1059602934,
+          "expected": 1059603371
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xc8",
+          "actual": 3077931123,
+          "expected": 3089654277
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xcc",
+          "actual": 3208704082,
+          "expected": 3208703700
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xd4",
+          "actual": 1042784464,
+          "expected": 1050706438
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xd8",
+          "actual": 1064952723,
+          "expected": 1063833089
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xdc",
+          "actual": 1041377870,
+          "expected": 1049359829
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xe4",
+          "actual": 1060918564,
+          "expected": 1060074235
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xe8",
+          "actual": 3193857867,
+          "expected": 3201627528
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xec",
+          "actual": 1059339747,
+          "expected": 1058604428
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xf4",
+          "actual": 1160935171,
+          "expected": 1161049855
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xf8",
+          "actual": 1112265136,
+          "expected": 1112596290
+        },
+        {
+          "name": "frame-rider-visual-51d7d48",
+          "offset": "0xfc",
+          "actual": 1160760158,
+          "expected": 1160865362
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xc4",
+          "actual": 1051511611,
+          "expected": 1044345453
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xc8",
+          "actual": 3211427221,
+          "expected": 3212478107
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xcc",
+          "actual": 1046360602,
+          "expected": 1034920577
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xd4",
+          "actual": 1054421098,
+          "expected": 1054269967
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xd8",
+          "actual": 3178018460,
+          "expected": 975664559
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xdc",
+          "actual": 3211221616,
+          "expected": 3211287749
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xe4",
+          "actual": 1062674433,
+          "expected": 1063477556
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xe8",
+          "actual": 1053509908,
+          "expected": 1045602401
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xec",
+          "actual": 1052570740,
+          "expected": 1053972851
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xf4",
+          "actual": 1160932707,
+          "expected": 1161047121
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xf8",
+          "actual": 1112148971,
+          "expected": 1112495473
+        },
+        {
+          "name": "frame-rider-visual-51d7fe8",
+          "offset": "0xfc",
+          "actual": 1160761525,
+          "expected": 1160866495
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xc4",
+          "actual": 1051511638,
+          "expected": 1044345509
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xc8",
+          "actual": 3211427216,
+          "expected": 3212478104
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xcc",
+          "actual": 1046360610,
+          "expected": 1034920597
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xd4",
+          "actual": 3187585516,
+          "expected": 3189691607
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xd8",
+          "actual": 3196793760,
+          "expected": 3186410851
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xdc",
+          "actual": 3212069512,
+          "expected": 3212519929
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xe4",
+          "actual": 1064230453,
+          "expected": 1064850644
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xe8",
+          "actual": 1050088215,
+          "expected": 1043215814
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xec",
+          "actual": 3193084706,
+          "expected": 3190919605
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xf4",
+          "actual": 1160931014,
+          "expected": 1161045438
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xf8",
+          "actual": 1112160371,
+          "expected": 1112492365
+        },
+        {
+          "name": "frame-rider-visual-5232c90",
+          "offset": "0xfc",
+          "actual": 1160765093,
+          "expected": 1160870072
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xc4",
+          "actual": 1061651542,
+          "expected": 1059849477
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xc8",
+          "actual": 3206542584,
+          "expected": 3208259783
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xcc",
+          "actual": 3175032686,
+          "expected": 3188697400
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xd4",
+          "actual": 3197895123,
+          "expected": 3199087422
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xd8",
+          "actual": 3198169188,
+          "expected": 3188332102
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xdc",
+          "actual": 3211152337,
+          "expected": 3211672875
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xe4",
+          "actual": 1057761425,
+          "expected": 1059612301
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xe8",
+          "actual": 1060577247,
+          "expected": 1059868156
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xec",
+          "actual": 3202241270,
+          "expected": 3199013367
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xf4",
+          "actual": 1160931488,
+          "expected": 1161046030
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xf8",
+          "actual": 1112227038,
+          "expected": 1112521145
+        },
+        {
+          "name": "frame-rider-visual-5232f30",
+          "offset": "0xfc",
+          "actual": 1160768703,
+          "expected": 1160873786
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xc4",
+          "actual": 3197633400,
+          "expected": 3189090422
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xc8",
+          "actual": 1063964848,
+          "expected": 1065019843
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xcc",
+          "actual": 3196580782,
+          "expected": 3188282260
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xd4",
+          "actual": 3210888907,
+          "expected": 3211202950
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xd8",
+          "actual": 3189936204,
+          "expected": 3181179529
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xdc",
+          "actual": 1054948716,
+          "expected": 1054400389
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xe4",
+          "actual": 1052312749,
+          "expected": 1053773148
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xe8",
+          "actual": 1052445316,
+          "expected": 1044076620
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xec",
+          "actual": 1062968868,
+          "expected": 1063606302
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xf4",
+          "actual": 1160936191,
+          "expected": 1161050605
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xf8",
+          "actual": 1112148966,
+          "expected": 1112495460
+        },
+        {
+          "name": "frame-rider-visual-51d8288",
+          "offset": "0xfc",
+          "actual": 1160757530,
+          "expected": 1160862500
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xc4",
+          "actual": 3197633396,
+          "expected": 3189090414
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xc8",
+          "actual": 1063964847,
+          "expected": 1065019842
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xcc",
+          "actual": 3196580787,
+          "expected": 3188282270
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xd4",
+          "actual": 3212077156,
+          "expected": 3212655188
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xd8",
+          "actual": 3197425008,
+          "expected": 3188875377
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xdc",
+          "actual": 1031913048,
+          "expected": 1023953501
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xe4",
+          "actual": 3164359011,
+          "expected": 1012678812
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xe8",
+          "actual": 1049324819,
+          "expected": 1041027527
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xec",
+          "actual": 1064715985,
+          "expected": 1065192276
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xf4",
+          "actual": 1160939686,
+          "expected": 1161054166
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xf8",
+          "actual": 1112185886,
+          "expected": 1112511804
+        },
+        {
+          "name": "frame-rider-visual-5232750",
+          "offset": "0xfc",
+          "actual": 1160755775,
+          "expected": 1160860803
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xc4",
+          "actual": 3187241071,
+          "expected": 3157878424
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xc8",
+          "actual": 1059324360,
+          "expected": 1061151964
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xcc",
+          "actual": 3208778606,
+          "expected": 3207162963
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xd4",
+          "actual": 3211777361,
+          "expected": 3212418912
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xd8",
+          "actual": 3198626081,
+          "expected": 3189677725
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xdc",
+          "actual": 3187697193,
+          "expected": 3189937577
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xe4",
+          "actual": 3198671577,
+          "expected": 3194148996
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xe8",
+          "actual": 1060235518,
+          "expected": 1059372568
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xec",
+          "actual": 1059312728,
+          "expected": 1060868082
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xf4",
+          "actual": 1160943298,
+          "expected": 1161057910
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xf8",
+          "actual": 1112257216,
+          "expected": 1112547352
+        },
+        {
+          "name": "frame-rider-visual-52329f0",
+          "offset": "0xfc",
+          "actual": 1160755534,
+          "expected": 1160860678
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xc4",
+          "actual": 1064352770,
+          "expected": 1063548014
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xc8",
+          "actual": 3195844852,
+          "expected": 3199652775
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xcc",
+          "actual": 3194991747,
+          "expected": 3196928082
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xd4",
+          "actual": 3194997008,
+          "expected": 3193777551
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xd8",
+          "actual": 1022452079,
+          "expected": 1045137486
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xdc",
+          "actual": 3212362907,
+          "expected": 3212097818
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xe4",
+          "actual": 1048356234,
+          "expected": 1053481296
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xe8",
+          "actual": 1064826717,
+          "expected": 1063888219
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xec",
+          "actual": 3170267303,
+          "expected": 1036865249
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xf4",
+          "actual": 1160932793,
+          "expected": 1161046217
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xf8",
+          "actual": 1111738237,
+          "expected": 1112108973
+        },
+        {
+          "name": "frame-rider-visual-51d6d88",
+          "offset": "0xfc",
+          "actual": 1160759692,
+          "expected": 1160863799
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xc4",
+          "actual": 1064352770,
+          "expected": 1063548015
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xc8",
+          "actual": 3195844847,
+          "expected": 3199652772
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xcc",
+          "actual": 3194991747,
+          "expected": 3196928081
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xd4",
+          "actual": 3144174588,
+          "expected": 1038378349
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xd8",
+          "actual": 1060001717,
+          "expected": 1061443210
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xdc",
+          "actual": 3208344767,
+          "expected": 3206661948
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xe4",
+          "actual": 1051600546,
+          "expected": 1054858863
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xe8",
+          "actual": 1060142469,
+          "expected": 1057521336
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xec",
+          "actual": 1059305717,
+          "expected": 1060726838
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xf4",
+          "actual": 1160934273,
+          "expected": 1161047584
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xf8",
+          "actual": 1111726308,
+          "expected": 1112029786
+        },
+        {
+          "name": "frame-rider-visual-51d7808",
+          "offset": "0xfc",
+          "actual": 1160765694,
+          "expected": 1160869702
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xc4",
+          "actual": 1063925119,
+          "expected": 1062870170
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xc8",
+          "actual": 3199157617,
+          "expected": 3202745493
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xcc",
+          "actual": 3193645789,
+          "expected": 3196691417
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xd4",
+          "actual": 3170793892,
+          "expected": 1029154960
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xd8",
+          "actual": 1055920237,
+          "expected": 1058380579
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xdc",
+          "actual": 3210869190,
+          "expected": 3209645103
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xe4",
+          "actual": 1053694123,
+          "expected": 1057315073
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xe8",
+          "actual": 1062236485,
+          "expected": 1059913330
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xec",
+          "actual": 1054224234,
+          "expected": 1057326340
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xf4",
+          "actual": 1160934239,
+          "expected": 1161046919
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xf8",
+          "actual": 1111487631,
+          "expected": 1111760749
+        },
+        {
+          "name": "frame-rider-visual-51d7aa8",
+          "offset": "0xfc",
+          "actual": 1160769794,
+          "expected": 1160873252
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xc4",
+          "actual": 1037217026,
+          "expected": 1041934220
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xc8",
+          "actual": 1048419091,
+          "expected": 1052201531
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xcc",
+          "actual": 3212222311,
+          "expected": 3211518287
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xd4",
+          "actual": 3212737474,
+          "expected": 3212531977
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xd8",
+          "actual": 3154930239,
+          "expected": 1042716429
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xdc",
+          "actual": 3185436417,
+          "expected": 3184008887
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xe4",
+          "actual": 3171924651,
+          "expected": 1038833584
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xe8",
+          "actual": 1064829905,
+          "expected": 1064001305
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xec",
+          "actual": 1048261480,
+          "expected": 1052807654
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xf4",
+          "actual": 1160934387,
+          "expected": 1161047811
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xf8",
+          "actual": 1111738235,
+          "expected": 1112108967
+        },
+        {
+          "name": "frame-rider-visual-51d7028",
+          "offset": "0xfc",
+          "actual": 1160757865,
+          "expected": 1160861971
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xc4",
+          "actual": 1037217098,
+          "expected": 1041934246
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xc8",
+          "actual": 1048419033,
+          "expected": 1052201500
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xcc",
+          "actual": 3212222313,
+          "expected": 3211518291
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xd4",
+          "actual": 3208490861,
+          "expected": 3206598612
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xd8",
+          "actual": 1059736763,
+          "expected": 1061233838
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xdc",
+          "actual": 1035744367,
+          "expected": 1044563726
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xe4",
+          "actual": 1059709796,
+          "expected": 1061381653
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xe8",
+          "actual": 1060393256,
+          "expected": 1057804704
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xec",
+          "actual": 1048641054,
+          "expected": 1051557738
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xf4",
+          "actual": 1160940531,
+          "expected": 1161053879
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xf8",
+          "actual": 1111741322,
+          "expected": 1112044024
+        },
+        {
+          "name": "frame-rider-visual-51d72c8",
+          "offset": "0xfc",
+          "actual": 1160758568,
+          "expected": 1160862607
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xc4",
+          "actual": 1032755556,
+          "expected": 1040706368
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xc8",
+          "actual": 1051661029,
+          "expected": 1055350175
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xcc",
+          "actual": 3211782216,
+          "expected": 3210859588
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xd4",
+          "actual": 3210998170,
+          "expected": 3209656331
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xd8",
+          "actual": 1055115469,
+          "expected": 1058002551
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xdc",
+          "actual": 1036318596,
+          "expected": 1042930769
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xe4",
+          "actual": 1055280589,
+          "expected": 1058149207
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xe8",
+          "actual": 1062463102,
+          "expected": 1060200845
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xec",
+          "actual": 1051443001,
+          "expected": 1054978132
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xf4",
+          "actual": 1160944671,
+          "expected": 1161057401
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xf8",
+          "actual": 1111508293,
+          "expected": 1111779462
+        },
+        {
+          "name": "frame-rider-visual-51d7568",
+          "offset": "0xfc",
+          "actual": 1160758000,
+          "expected": 1160861501
+        }
+      ]
+    }
+  ],
+  "scope": "Retained bike physics and rider ticks; AI rider/child, rider collider and visual allocations compared; world presentation/rendering, player rider observations and full collision allocations remain incomplete",
+  "reports": [
+    {
+      "frame": 0,
+      "bike": 85758624,
+      "delta": 0.08300000429153442,
+      "substeps": 5,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 10650150,
+        "expected": 10650150
+      }
+    },
+    {
+      "frame": 0,
+      "bike": 85949176,
+      "delta": 0.08300000429153442,
+      "substeps": 5,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2940416081,
+        "expected": 2940416081
+      }
+    },
+    {
+      "frame": 1,
+      "bike": 85758624,
+      "delta": 2.957000255584717,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2940416081,
+        "expected": 2940416081
+      }
+    },
+    {
+      "frame": 1,
+      "bike": 85949176,
+      "delta": 2.957000255584717,
+      "substeps": 11,
+      "words": 818,
+      "differences": [
+        {
+          "offset": "0x488",
+          "actual": 416,
+          "expected": 425
+        },
+        {
+          "offset": "0x48c",
+          "actual": 163,
+          "expected": 172
+        },
+        {
+          "offset": "0x490",
+          "actual": 420,
+          "expected": 431
+        },
+        {
+          "offset": "0x494",
+          "actual": 168,
+          "expected": 179
+        }
+      ],
+      "random": {
+        "actual": 1545966032,
+        "expected": 1545966032
+      }
+    },
+    {
+      "frame": 2,
+      "bike": 85758624,
+      "delta": 0.7270000576972961,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1545966032,
+        "expected": 1545966032
+      }
+    },
+    {
+      "frame": 2,
+      "bike": 85949176,
+      "delta": 0.7270000576972961,
+      "substeps": 11,
+      "words": 818,
+      "differences": [
+        {
+          "offset": "0x488",
+          "actual": 416,
+          "expected": 180
+        },
+        {
+          "offset": "0x48c",
+          "actual": 163,
+          "expected": 397
+        },
+        {
+          "offset": "0x490",
+          "actual": 420,
+          "expected": 439
+        },
+        {
+          "offset": "0x494",
+          "actual": 168,
+          "expected": 480
+        },
+        {
+          "offset": "0x4a4",
+          "actual": 2,
+          "expected": 0
+        }
+      ],
+      "random": {
+        "actual": 2615224659,
+        "expected": 2615224659
+      }
+    },
+    {
+      "frame": 3,
+      "bike": 85758624,
+      "delta": 0.7220000624656677,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2615224659,
+        "expected": 2615224659
+      }
+    },
+    {
+      "frame": 3,
+      "bike": 85949176,
+      "delta": 0.7220000624656677,
+      "substeps": 11,
+      "words": 818,
+      "differences": [
+        {
+          "offset": "0x488",
+          "actual": 416,
+          "expected": 152
+        },
+        {
+          "offset": "0x48c",
+          "actual": 163,
+          "expected": 418
+        },
+        {
+          "offset": "0x490",
+          "actual": 420,
+          "expected": 465
+        },
+        {
+          "offset": "0x494",
+          "actual": 168,
+          "expected": 480
+        },
+        {
+          "offset": "0x4a4",
+          "actual": 2,
+          "expected": 0
+        }
+      ],
+      "random": {
+        "actual": 2004233930,
+        "expected": 2004233930
+      }
+    }
+  ]
+}

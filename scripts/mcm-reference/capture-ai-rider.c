@@ -23,8 +23,8 @@ static int trace_ai_rider(const char*phase,DWORD rider,DWORD dt){
  if(!ai_rider_out){ai_rider_out=fopen(getenv("MCM_AI_RIDER_TRACE"),"wx");if(!ai_rider_out)return 0;}
  FILE*out=ai_rider_out;
  fprintf(out,"{\"phase\":\"%s\",\"captureId\":\"%s\",\"eventSequence\":%lu,\"completedBikeFrames\":%lu,\"bikeActive\":%d,\"bike\":%lu,\"rider\":%lu,\"address\":%lu,\"paused\":%lu,\"globalDtBits\":%lu,\"dtBits\":%lu,\"ownerGate\":%lu,\"updateAddress\":%lu,\"hex\":\"",phase,frame_capture_id,ai_rider_sequence++,player_frame,player_active,bike,rider,child,paused,globalDt,dt,gate,update);
- for(unsigned i=0;i<sizeof bytes;i++)fprintf(out,"%02x",bytes[i]);
- fprintf(out,"\",\"riderHex\":\"");for(unsigned i=0;i<sizeof state;i++)fprintf(out,"%02x",state[i]);fprintf(out,"\"");
+ for(unsigned i=0;i<0x610;i++)fprintf(out,"%02x",bytes[i]);
+ fprintf(out,"\",\"boundaryWords\":[%lu,%lu],\"riderHex\":\"",*(DWORD*)(bytes+0x610),*(DWORD*)(bytes+0x614));for(unsigned i=0;i<sizeof state;i++)fprintf(out,"%02x",state[i]);fprintf(out,"\"");
  if(!capture_retained_particle_pool(out,pool)||!observe_rider_collision(out,rider))return 0;
  if(capture_ai_spray&&!strcmp(phase,"initial-rider")){
   DWORD spray;BYTE full[0x614];

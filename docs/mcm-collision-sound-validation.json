@@ -1,0 +1,10 @@
+{
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSha256": "da84c75f1bf71186e2699b481fe0d06b8062fb13c9f895d8441992f176e0167a",
+  "casesSha256": "7b48ed5d26c88171b9a06bc95af8c2b0437577667efc103d147d781bd8c41ac7",
+  "resultsSha256": "1d74142c354d0cef79e7b2389b38439127348e15b562f721eee10d4aae30c315",
+  "controlWord": 639,
+  "cases": 512,
+  "differences": 0,
+  "scope": "Original 427230 sound selection, RNG and device call arguments. Playback status/callbacks are supplied at device boundaries; live notification routing remains unconnected."
+}

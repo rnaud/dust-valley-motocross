@@ -9,16 +9,21 @@ export function loadLiveActorTree(checkpoint,collision,observation){
  for(const raw of observation.nodes){
   assert.ok(Number.isInteger(raw.address)&&raw.address>0&&!nodes.has(raw.address),'Duplicate actor');
   const bytes=Buffer.from(raw.hex,'hex');assert.equal(bytes.length,0x30);
-  for(const source of [checkpoint,collision])for(const block of source.blocks){
-   const start=Math.max(raw.address,block.address),end=Math.min(raw.address+bytes.length,block.address+block.size);
-   if(start<end)assert.ok(bytes.subarray(start-raw.address,end-raw.address).equals(Buffer.from(block.hex,'hex').subarray(start-block.address,end-block.address)),'Actor checkpoint overlap differs');
-  }
   const u=o=>bytes.readUInt32LE(o),ownerAddress=u(0x1c);
+  const stateBytes=raw.ownedStateHex===undefined?null:Buffer.from(raw.ownedStateHex,'hex');
+  if(stateBytes){assert.equal(stateBytes.length,u(8),'Actor owned size differs');assert.ok(stateBytes.subarray(0,0x30).equals(bytes),'Actor owned header differs');}
+  const boundaryWords=raw.boundaryWords;
+  if(boundaryWords!==undefined)assert.ok(raw.update===0x439a30&&Array.isArray(boundaryWords)&&boundaryWords.length===2&&boundaryWords.every(v=>Number.isInteger(v)&&v>=0&&v<=0xffffffff),'Invalid impact emitter boundary words');
+  const observed=stateBytes??bytes;
+  for(const source of [checkpoint,collision])for(const block of source.blocks){
+   const start=Math.max(raw.address,block.address),end=Math.min(raw.address+observed.length,block.address+block.size);
+   if(start<end)assert.ok(observed.subarray(start-raw.address,end-raw.address).equals(Buffer.from(block.hex,'hex').subarray(start-block.address,end-block.address)),'Actor checkpoint overlap differs');
+  }
   if(ownerAddress){
    const value={world:raw.owner,gate:raw.gate,device:raw.device,deviceEnabled:raw.deviceEnabled};
    if(owners.has(ownerAddress))assert.deepEqual(value,owners.get(ownerAddress));else owners.set(ownerAddress,value);
   }else for(const key of ['owner','gate','device','deviceEnabled'])assert.equal(raw[key],0);
-  nodes.set(raw.address,{address:raw.address,vtable:u(0),update:raw.update,destroy:raw.destroy,previousAddress:u(0xc),nextAddress:u(0x10),firstAddress:u(0x14),parentAddress:u(0x18),ownerAddress,enabled:u(0x20),paused:u(0x28),removed:u(0x2c)});
+  nodes.set(raw.address,{address:raw.address,stateBytes,boundaryWords,vtable:u(0),update:raw.update,destroy:raw.destroy,previousAddress:u(0xc),nextAddress:u(0x10),firstAddress:u(0x14),parentAddress:u(0x18),ownerAddress,enabled:u(0x20),paused:u(0x28),removed:u(0x2c)});
  }
  const resolve=address=>{if(!address)return null;assert.ok(nodes.has(address),'Missing actor link');return nodes.get(address);};
  for(const node of nodes.values())for(const key of ['previous','next','first','parent'])node[key]=resolve(node[key+'Address']);

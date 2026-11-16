@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <math.h>
 #define MCM_ANIMATION_EMBEDDED
 #include "capture-animation-assets.c"
 #undef MCM_ANIMATION_EMBEDDED
@@ -42,8 +43,11 @@ static const char*export_boundary="player-frame-entry";
 static DWORD capture_frame;
 static DWORD player_frame, requested_throttle, pass, random_state=12345;
 static int player_active;
-// Explicit read-only focus; never combines with scripted input/checkpoint writes.
+// AI state remains observation-only. The separate world throttle pulse changes
+// only player input-query returns; it never forces timing, RNG or checkpoints.
 static DWORD observe_ai,observed_random_address,observed_random_thread;
+static int world_throttle_pulse,world_pursuit;
+static DWORD world_input_bike,world_input_frame,world_input_throttle;
 static int capture_ai_environment;
 static int capture_ai_rider,ai_rider_active,capture_ai_queries,capture_ai_query_gating;
 static unsigned ai_query_gate_transitions;
@@ -252,6 +256,7 @@ static int observe_rider_collision(FILE *out,DWORD rider) {
 #include "capture-animation-observations.c"
 #include "capture-ai-draw.c"
 #include "capture-ai-grid.c"
+#include "capture-world-audio.c"
 #include "capture-world-entry.c"
 #include "capture-bike-prefix.c"
 
@@ -377,6 +382,12 @@ int main(int argc, char **argv) {
     profile_capture=getenv("MCM_PROFILE_CAPTURE")!=NULL;
     if(profile_capture&&(!QueryPerformanceFrequency(&profile_frequency)||profile_frequency.QuadPart<=0))return 2;
     scripted = getenv("MCM_SCRIPTED") != NULL;
+    if(getenv("MCM_WORLD_THROTTLE_PULSE")&&getenv("MCM_WORLD_THROTTLE_HOLD")){fprintf(stderr,"Choose one world throttle protocol.\n");return 2;}
+    world_throttle_pulse=getenv("MCM_WORLD_THROTTLE_HOLD")?2:getenv("MCM_WORLD_THROTTLE_PULSE")!=NULL;
+    world_pursuit=getenv("MCM_WORLD_PURSUIT")?(strcmp(getenv("MCM_WORLD_PURSUIT"),"2")==0?2:1):0;
+    if(world_pursuit&&world_throttle_pulse!=2){fprintf(stderr,"Pursuit requires the held-throttle world protocol.\n");return 2;}
+    if(world_pursuit)world_throttle_pulse=strcmp(getenv("MCM_WORLD_THROTTLE_HOLD"),"96")==0?4:3;
+    if(world_throttle_pulse&&(!getenv("MCM_OBSERVE_AI")||!getenv("MCM_WORLD_ENTRY")||scripted)){fprintf(stderr,"World pulse requires observed world capture without scripted state restoration.\n");return 2;}
     const char *ai_arg=getenv("MCM_OBSERVE_AI");
     if(ai_arg){char *end;observe_ai=strtoul(ai_arg,&end,0);
         if(!*ai_arg||*end||!observe_ai||scripted||getenv("MCM_RIDER_TIMING")||!getenv("MCM_CAPTURE_TRICK_ANIMATIONS")||getenv("MCM_INITIAL_CHECKPOINT")||getenv("MCM_FIXED_RIDER")||getenv("MCM_CAPTURE_FRAME")||getenv("MCM_CAPTURE_CONTACT")||getenv("MCM_CAPTURE_TIRES")||getenv("MCM_CAPTURE_MOTION")||getenv("MCM_CAPTURE_CONTROLS")||getenv("MCM_CAPTURE_LOOP_RIDER")||getenv("MCM_CAPTURE_FINISH")||getenv("MCM_CAPTURE_EFFECTS")||getenv("MCM_CAPTURE_FILTER")||getenv("MCM_CAPTURE_FRAME_RIDER")||getenv("MCM_CAPTURE_RETURN")||!getenv("MCM_STACK")||!getenv("MCM_CHECKPOINT")||!getenv("MCM_ANIMATIONS")||!getenv("MCM_COLLISION_WORLD")||!getenv("MCM_FRAME_ENVIRONMENT")){
@@ -551,13 +562,17 @@ int main(int argc, char **argv) {
                     TerminateProcess(process, 5);
                     done = 2;
                 } else {
+                    if(capture_world_initial&&world_initial_done&&(matched==0||matched==1)&&!trace_world_bike_boundary(matched==0,&context,event.dwThreadId))done=2;
+                    if(world_throttle_pulse&&world_initial_done&&matched==2&&!apply_world_throttle(&context,event.dwThreadId))done=2;
+                    if(capture_world_initial&&world_initial_done&&capture_ai_draws&&player_frame&&(matched==17||matched==18)&&!trace_world_draw((matched==17?context.Ecx:context.Ebx)-0x404,matched==18))done=2;
+                    if(capture_world_initial&&world_initial_done&&capture_ai_rider&&(matched==6||matched==7)&&!trace_world_rider_boundary(matched==6,&context,event.dwThreadId))done=2;
                     if(capture_world_initial&&world_initial_done&&(matched==45||matched==0)&&!trace_world_bike_prefix(matched==45,&context,event.dwThreadId))done=2;
                     if(capture_world_initial&&matched==45){
                         // Observed above; this hook has no simulation side effects.
                     }else if(capture_world_initial&&matched==44){
                         if(!world_initial_done){DWORD rider,parent,actor;
                             if(!read_memory(observe_ai+0x874,&rider,4)||!read_memory(rider+0x18,&parent,4)||!read_memory(parent+0x18,&actor,4))done=2;
-                            else if(context.Ecx==actor){if(!capture_world_entry(actor,context.Esp))done=2;else world_initial_done=1;}
+                            else if(context.Ecx==actor&&observed_random_address&&observed_random_thread==event.dwThreadId){if(!capture_world_entry(actor,context.Esp))done=2;else world_initial_done=1;}
                         }
                     }else if(capture_ai_grid&&matched>=40){
                         if(player_frame){
@@ -750,7 +765,7 @@ int main(int argc, char **argv) {
                     }
                 }
                 if (thread) CloseHandle(thread);
-                if (!done && count >= limit){done=capture_contact&&!contact_exported?2:1;if(done==2)fprintf(stderr,"No requested contact boundary captured.\n");}
+                if (!done && count >= limit&&(!capture_world_initial||world_pair_complete)){done=capture_contact&&!contact_exported?2:1;if(done==2)fprintf(stderr,"No requested contact boundary captured.\n");}
                 if (!done) {
                     write_byte(addresses[pending], 0xcc);
                     armed[pending] = 1;
@@ -774,6 +789,7 @@ int main(int argc, char **argv) {
             done = 2;
         }
         if (done) {
+            if(!restore_world_steering())done=2;
             for (unsigned i = 0; i < hook_count; i++) if (armed[i]) {
                 write_byte(addresses[i], saved[i]);
                 armed[i] = 0;
@@ -808,9 +824,13 @@ int main(int argc, char **argv) {
     if(fclose(out))done=2;
     if(ai_rider_out&&fclose(ai_rider_out))done=2;
     if(ai_substeps_out&&fclose(ai_substeps_out))done=2;
+    if(world_inputs_out&&fclose(world_inputs_out))done=2;
+    if(world_draws_out&&fclose(world_draws_out))done=2;
+    if(world_riders_out&&fclose(world_riders_out))done=2;
     if(ai_draws_out&&fclose(ai_draws_out))done=2;
     if(ai_grid_out&&fclose(ai_grid_out))done=2;
     if(world_prefix_out&&fclose(world_prefix_out))done=2;
+    if(world_bikes_out&&fclose(world_bikes_out))done=2;
     if(world_prefix_pending)done=2;
     CloseHandle(process);
     fprintf(stderr, "captured=%lu status=%d\n", count, done);

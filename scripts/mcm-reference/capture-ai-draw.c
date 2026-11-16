@@ -10,12 +10,11 @@ static int draw_block(FILE*out,DWORD address,DWORD size){
  if(ok){fprintf(out,"{\"address\":%lu,\"size\":%lu,\"hex\":\"",address,size);ok=substep_hex(out,bytes,size);fprintf(out,"\"}");}
  free(bytes);return ok;
 }
-static int trace_ai_draw(DWORD actor,int after){
+static int write_ai_draw(FILE*out,DWORD actor,int after,const char*capture_id,const char*boundary){
  DWORD node,rect[4],selection;
  if(!read_memory(actor+0x434,&node,4)||!read_memory(actor+0x488,rect,sizeof rect)||!read_memory(actor+0x4a4,&selection,4))return 0;
- if(!ai_draws_out){ai_draws_out=fopen(getenv("MCM_AI_DRAW_TRACE"),"wx");if(!ai_draws_out)return 0;}
- FILE*out=ai_draws_out;
- fprintf(out,"{\"phase\":\"%s\",\"captureId\":\"%s\",\"completedBikeFrames\":%lu,\"eventSequence\":%lu,\"actor\":%lu,\"node\":%lu",after?"after-draw":"before-draw",frame_capture_id,player_frame,ai_rider_sequence,actor,node);
+ fprintf(out,"{\"phase\":\"%s\",\"captureId\":\"%s\",\"completedBikeFrames\":%lu,\"eventSequence\":%lu,\"actor\":%lu,\"node\":%lu",after?"after-draw":"before-draw",capture_id,player_frame,ai_rider_sequence,actor,node);
+ if(boundary)fprintf(out,",\"captureBoundary\":\"%s\"",boundary);
  if(!draw_words(out,"rect",rect,4))return 0;
  fprintf(out,",\"selection\":%lu,\"lodNodes\":[",selection);unsigned emitted=0;
  for(unsigned i=0;i<block_count;i++)if(blocks[i].size==0x114){DWORD lod[2];if(!read_memory(blocks[i].address+0x118,lod,8))return 0;fprintf(out,"%s{\"address\":%lu,\"levels\":%lu,\"index\":%lu}",emitted++?",":"",blocks[i].address,lod[0],lod[1]);}fprintf(out,"]");
@@ -48,4 +47,17 @@ static int trace_ai_draw(DWORD actor,int after){
   fprintf(out,"]");
  }
  fprintf(out,"}\n");return !ferror(out)&&fflush(out)==0;
+}
+
+static int trace_ai_draw(DWORD actor,int after){
+ if(!ai_draws_out){ai_draws_out=fopen(getenv("MCM_AI_DRAW_TRACE"),"wx");if(!ai_draws_out)return 0;}
+ return write_ai_draw(ai_draws_out,actor,after,frame_capture_id,NULL);
+}
+// Captures mesh tables, LOD state and camera inputs while the world is paused
+// at its initial pre-physics boundary. No draw is invoked and no state written.
+static int capture_world_mesh(DWORD bike,const char*path,const char*id){
+ DWORD proxy;if(!read_memory(bike+0xc8c,&proxy,4)||!proxy)return 0;
+ FILE*out=fopen(path,"wx");if(!out)return 0;
+ int ok=write_ai_draw(out,bike,0,id,"world-frame-entry")&&write_ai_draw(out,proxy,0,id,"world-frame-entry");
+ if(fclose(out))ok=0;return ok;
 }

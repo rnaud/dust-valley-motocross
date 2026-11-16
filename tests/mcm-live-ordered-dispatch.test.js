@@ -15,6 +15,6 @@ test('reversed order and suppression variants match native callback traces and m
 });
 test('ordered dispatch requires observed gates and rejects unsupported callbacks',()=>{
  const {captured:c}=fixture();c.observation.bikeCallbackGatesCaptured=false;assert.throws(()=>loadLiveOrderedDispatch(c.checkpoint,c.observation),/dependencies/);
- const {captured:d}=fixture(),w=loadLiveOrderedDispatch(d.checkpoint,d.observation);assert.throws(()=>w.objects[3].onPrimary(),/Unsupported live callback/);
+ const {captured:d}=fixture(),w=loadLiveOrderedDispatch(d.checkpoint,d.observation);w.objects[3].setCallbacks([0x12345678,0]);assert.throws(()=>w.objects[3].onPrimary(),/Unsupported live callback/);
  const {captured:e}=fixture();e.observation.blocks=e.observation.blocks.filter(b=>b.address!==0x508270);e.observation.blockCount--;assert.throws(()=>loadLiveOrderedDispatch(e.checkpoint,e.observation),/Missing|Uncaptured/);
 });

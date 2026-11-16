@@ -1,5 +1,5 @@
 import {tickMcmRiderParticles} from '../../src/physics/mcm/rider-particle-tick.js';
-export function compareRiderParticleTick(input,output){
+export function compareRiderParticleTick(input,output,{separateBoundary=false}={}){
  const inputSize=0x624,outputSize=0x61c+1000*0x44;
  if(input.length%inputSize||output.length!==input.length/inputSize*outputSize)throw Error('Wrong rider particle oracle sizes');
  let comparedWords=0,changedWords=0;const differences=[];
@@ -8,7 +8,7 @@ export function compareRiderParticleTick(input,output){
   const recovered=Buffer.alloc(outputSize,0xa5);source.copy(recovered,0,0,0x618);recovered.writeUInt32LE(source.readUInt32LE(0x620),0x618);
   const before=Buffer.from(recovered),view=(o,n)=>new DataView(recovered.buffer,recovered.byteOffset+o,n);
   const pool={get count(){return recovered.readUInt32LE(0x618);},set count(v){recovered.writeUInt32LE(v,0x618);},particle:n=>view(0x61c+n*0x44,0x44)};
-  tickMcmRiderParticles(view(0,0x618),{dt:source.readFloatLE(0x618),paused:source.readUInt32LE(0x61c),pool});
+  tickMcmRiderParticles(view(0,separateBoundary?0x610:0x618),{boundaryWords:separateBoundary?[source.readUInt32LE(0x610),source.readUInt32LE(0x614)]:undefined,dt:source.readFloatLE(0x618),paused:source.readUInt32LE(0x61c),pool});
   for(let o=0;o<outputSize;o+=4){comparedWords++;if(before.readUInt32LE(o)!==original.readUInt32LE(o))changedWords++;if(original.readUInt32LE(o)!==recovered.readUInt32LE(o))differences.push({case:i,offset:o,original:original.readUInt32LE(o),recovered:recovered.readUInt32LE(o)});}
  }
  return {cases:input.length/inputSize,comparedWords,changedWords,differences};

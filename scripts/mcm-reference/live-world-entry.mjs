@@ -23,8 +23,8 @@ export function loadLiveWorldEntry(files){
   for(const kind of ['bike','environment','collision',...(artifacts.aiEnvironment?['aiEnvironment']:[])])for(const block of artifacts[kind].blocks)append(block);
   const checkpoint=artifacts.bike,collision=loadLiveCollisionWorld(checkpoint,artifacts.collision),environment=loadLiveFrameEnvironment(checkpoint,artifacts.environment),animations=loadLiveAnimationAssets(artifacts.animations);
   const memory=collision.memory,child=artifacts.child,rider=memory.u32(entry.bikes[i]+0x874);
-  assert.equal(child.rider,rider);assert.equal(child.address,memory.u32(rider+0x14));assert.equal(Buffer.from(child.hex,'hex').length,0x618);
-  append({address:rider,size:0x3ac,hex:child.riderHex});append({address:child.address,size:0x618,hex:child.hex});append({address:child.poolAddress,size:0x2004,hex:child.poolHex});
+  assert.equal(child.rider,rider);assert.equal(child.address,memory.u32(rider+0x14));assert.ok([0x610,0x618].includes(Buffer.from(child.hex,'hex').length),'Invalid rider child allocation size');
+  append({address:rider,size:0x3ac,hex:child.riderHex});append({address:child.address,size:child.hex.length/2,hex:child.hex});append({address:child.poolAddress,size:0x2004,hex:child.poolHex});
   assert.equal(child.particleStride,72);assert.equal(child.particleOrder,'initial-allocation-order');assert.equal(child.particlesHex.length,1000*72*2);
   const pool=Buffer.from(child.poolHex,'hex'),particles=Buffer.from(child.particlesHex,'hex');
   for(let j=0;j<1000;j++)append({address:pool.readUInt32LE(0x44+j*4),size:72,hex:particles.subarray(j*72,(j+1)*72).toString('hex')});

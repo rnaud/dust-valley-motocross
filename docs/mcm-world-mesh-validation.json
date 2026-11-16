@@ -1,0 +1,327 @@
+{
+  "entryReports": [
+    {
+      "frame": 0,
+      "bike": 85758624,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 129668234,
+        "expected": 129668234
+      }
+    },
+    {
+      "frame": 0,
+      "bike": 85949176,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 129668234,
+        "expected": 129668234
+      }
+    },
+    {
+      "frame": 1,
+      "bike": 85758624,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 906594597,
+        "expected": 906594597
+      }
+    },
+    {
+      "frame": 1,
+      "bike": 85949176,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 906594597,
+        "expected": 906594597
+      }
+    },
+    {
+      "frame": 2,
+      "bike": 85758624,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2179389268,
+        "expected": 2179389268
+      }
+    },
+    {
+      "frame": 2,
+      "bike": 85949176,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2179389268,
+        "expected": 2179389268
+      }
+    },
+    {
+      "frame": 3,
+      "bike": 85758624,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1369467079,
+        "expected": 1369467079
+      }
+    },
+    {
+      "frame": 3,
+      "bike": 85949176,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1369467079,
+        "expected": 1369467079
+      }
+    }
+  ],
+  "renderCameraInputs": true,
+  "drawReports": [
+    {
+      "frame": 0,
+      "actor": 85949176,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 0,
+      "actor": 86083456,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 1,
+      "actor": 85949176,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 1,
+      "actor": 86083456,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 2,
+      "actor": 85949176,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 2,
+      "actor": 86083456,
+      "accepted": 1,
+      "queries": 30
+    }
+  ],
+  "collisionReports": [
+    {
+      "frame": 0,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 0,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 1,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 1,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 2,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 2,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 3,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    }
+  ],
+  "riderReports": [
+    {
+      "frame": 0,
+      "words": 625,
+      "differences": []
+    },
+    {
+      "frame": 1,
+      "words": 625,
+      "differences": []
+    },
+    {
+      "frame": 2,
+      "words": 625,
+      "differences": []
+    }
+  ],
+  "visualReports": [
+    {
+      "frame": 0,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 0,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 1,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 1,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 2,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 2,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 3,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    }
+  ],
+  "scope": "Retained bike physics and rider ticks; AI rider/child, rider collider and visual allocations compared; world presentation/rendering, player rider observations and full collision allocations remain incomplete",
+  "reports": [
+    {
+      "frame": 0,
+      "bike": 85758624,
+      "delta": 0.18900001049041748,
+      "substeps": 10,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 129668234,
+        "expected": 129668234
+      }
+    },
+    {
+      "frame": 0,
+      "bike": 85949176,
+      "delta": 0.18900001049041748,
+      "substeps": 10,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 906594597,
+        "expected": 906594597
+      }
+    },
+    {
+      "frame": 1,
+      "bike": 85758624,
+      "delta": 4.160000324249268,
+      "substeps": 10,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 906594597,
+        "expected": 906594597
+      }
+    },
+    {
+      "frame": 1,
+      "bike": 85949176,
+      "delta": 4.160000324249268,
+      "substeps": 10,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2179389268,
+        "expected": 2179389268
+      }
+    },
+    {
+      "frame": 2,
+      "bike": 85758624,
+      "delta": 1.6850000619888306,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2179389268,
+        "expected": 2179389268
+      }
+    },
+    {
+      "frame": 2,
+      "bike": 85949176,
+      "delta": 1.6850000619888306,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1369467079,
+        "expected": 1369467079
+      }
+    },
+    {
+      "frame": 3,
+      "bike": 85758624,
+      "delta": 2.200000047683716,
+      "substeps": 10,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1369467079,
+        "expected": 1369467079
+      }
+    },
+    {
+      "frame": 3,
+      "bike": 85949176,
+      "delta": 2.200000047683716,
+      "substeps": 10,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 1369467079,
+        "expected": 1369467079
+      }
+    }
+  ]
+}

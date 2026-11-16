@@ -1,0 +1,14 @@
+{
+  "provenance": {
+    "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+    "inputSha256": "e10261490928f7060b841cc63d99ff4c3ed56b9f26395276b38c81a97c7cae56",
+    "outputSha256": "5e357c5cd788f09975dc137d5c86f3f49ff62ab9ff24309ce17c8b3a637d74a7",
+    "routine": "0x439a30",
+    "oracleSourceSha256": "e6ed37b8e20fe3a460dd6233d6e3f8f404b8d1cc87e33ad2af0f763ba8b923ea",
+    "note": "256 isolated original executions; full emitter including two trailing boundary words and all 1000 complete particle allocations. Does not prove world integration."
+  },
+  "cases": 256,
+  "comparedWords": 4708096,
+  "changedWords": 82579,
+  "differences": []
+}

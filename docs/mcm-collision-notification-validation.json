@@ -1,0 +1,10 @@
+{
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "oracleSha256": "7dc1633c7b5d7041c10b36b22d6e53a09782aecf7c92793341fe1cf1e92deda8",
+  "casesSha256": "bcece0534b63b1bd12fcafe0ffc5b657285071f46625df99634353c7482fb4e6",
+  "resultsSha256": "d7b6e65cb30bde1af33b2a0c78da4349d6e67bcf3e925af90bfd1a0879ae4858",
+  "controlWord": 639,
+  "cases": 1536,
+  "differences": 0,
+  "scope": "Original collision notification, spatial attenuation, sound selection, RNG and playback call arguments. Device playback statuses are supplied; live audio allocation capture remains required."
+}

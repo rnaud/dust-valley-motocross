@@ -17,7 +17,13 @@ test('rider-particle tick and particle writes match 160 original executable case
 });
 test('active rider particles require pool state and table-boundary bytes',()=>{
  const {input}=fixture(),bytes=Buffer.from(input.subarray(5*0x624,6*0x624)),view=new DataView(bytes.buffer,bytes.byteOffset,0x610);
+ assert.throws(()=>tickMcmRiderParticles(view,{dt:.02,paused:0,boundaryWords:[0]}),/Invalid rider particle boundary inputs/);
  assert.throws(()=>tickMcmRiderParticles(view,{dt:.02,paused:0}),/captured particle pool/);
  const record=new DataView(new ArrayBuffer(0x44));
  assert.throws(()=>tickMcmRiderParticles(view,{dt:.02,paused:0,pool:{count:0,particle:()=>record}}),/boundary bytes/);
+});
+
+test('explicit boundary inputs preserve all native particle results without extending the owned object',()=>{
+ const {input,output}=fixture(),report=compareRiderParticleTick(input,output,{separateBoundary:true});
+ assert.equal(report.cases,160);assert.deepEqual(report.differences,[]);
 });

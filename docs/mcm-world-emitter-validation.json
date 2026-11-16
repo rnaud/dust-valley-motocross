@@ -1,0 +1,513 @@
+{
+  "scope": "Retained six dust/spray/exhaust emitters and shared particle pool; recorded pool and presentation invocation boundaries and camera matrices remain explicit inputs. Five custom child actors remain deferred. No later native pool state imported.",
+  "frames": 7,
+  "particleBoundaries": 63,
+  "comparedWords": 1268995,
+  "differences": 0,
+  "reports": [
+    {
+      "frame": 0,
+      "phase": "before-dust",
+      "address": 28427232,
+      "words": 20082,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 0,
+      "phase": "after-dust",
+      "address": 28427232,
+      "words": 20082,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 0,
+      "phase": "before-spray",
+      "address": 83078608,
+      "words": 20438,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 0,
+      "phase": "after-spray",
+      "address": 83078608,
+      "words": 20438,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 0,
+      "phase": "before-pool",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 0,
+      "phase": "after-pool",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 0,
+      "phase": "before-particle-draw",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 0,
+      "phase": "before-particle-cull",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 0,
+      "phase": "after-particle-cull",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 1,
+      "phase": "before-dust",
+      "address": 28427232,
+      "words": 20082,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 1,
+      "phase": "after-dust",
+      "address": 28427232,
+      "words": 20082,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 1,
+      "phase": "before-spray",
+      "address": 83078608,
+      "words": 20438,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 1,
+      "phase": "after-spray",
+      "address": 83078608,
+      "words": 20438,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 1,
+      "phase": "before-pool",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 1,
+      "phase": "after-pool",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 1,
+      "phase": "before-particle-draw",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 1,
+      "phase": "before-particle-cull",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 1,
+      "phase": "after-particle-cull",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 2,
+      "phase": "before-dust",
+      "address": 28427232,
+      "words": 20082,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 2,
+      "phase": "after-dust",
+      "address": 28427232,
+      "words": 20082,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 2,
+      "phase": "before-spray",
+      "address": 83078608,
+      "words": 20438,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 2,
+      "phase": "after-spray",
+      "address": 83078608,
+      "words": 20438,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 2,
+      "phase": "before-pool",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 2,
+      "phase": "after-pool",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 2,
+      "phase": "before-particle-draw",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 2,
+      "phase": "before-particle-cull",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 2,
+      "phase": "after-particle-cull",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 3,
+      "phase": "before-dust",
+      "address": 28427232,
+      "words": 20082,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 3,
+      "phase": "after-dust",
+      "address": 28427232,
+      "words": 20082,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 3,
+      "phase": "before-spray",
+      "address": 83078608,
+      "words": 20438,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 3,
+      "phase": "after-spray",
+      "address": 83078608,
+      "words": 20438,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 3,
+      "phase": "before-pool",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 3,
+      "phase": "after-pool",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 3,
+      "phase": "before-particle-draw",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 3,
+      "phase": "before-particle-cull",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 3,
+      "phase": "after-particle-cull",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 4,
+      "phase": "before-dust",
+      "address": 28427232,
+      "words": 20082,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 4,
+      "phase": "after-dust",
+      "address": 28427232,
+      "words": 20082,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 4,
+      "phase": "before-spray",
+      "address": 83078608,
+      "words": 20438,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 4,
+      "phase": "after-spray",
+      "address": 83078608,
+      "words": 20438,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 4,
+      "phase": "before-pool",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 4,
+      "phase": "after-pool",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 4,
+      "phase": "before-particle-draw",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 4,
+      "phase": "before-particle-cull",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 4,
+      "phase": "after-particle-cull",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 5,
+      "phase": "before-dust",
+      "address": 28427232,
+      "words": 20082,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 5,
+      "phase": "after-dust",
+      "address": 28427232,
+      "words": 20082,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 5,
+      "phase": "before-spray",
+      "address": 83078608,
+      "words": 20438,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 5,
+      "phase": "after-spray",
+      "address": 83078608,
+      "words": 20438,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 5,
+      "phase": "before-pool",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 5,
+      "phase": "after-pool",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 5,
+      "phase": "before-particle-draw",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 5,
+      "phase": "before-particle-cull",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 5,
+      "phase": "after-particle-cull",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 6,
+      "phase": "before-dust",
+      "address": 28427232,
+      "words": 20082,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 6,
+      "phase": "after-dust",
+      "address": 28427232,
+      "words": 20082,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 6,
+      "phase": "before-spray",
+      "address": 83078608,
+      "words": 20438,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 6,
+      "phase": "after-spray",
+      "address": 83078608,
+      "words": 20438,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 6,
+      "phase": "before-pool",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 6,
+      "phase": "after-pool",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 6,
+      "phase": "before-particle-draw",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 6,
+      "phase": "before-particle-cull",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    },
+    {
+      "frame": 6,
+      "phase": "after-particle-cull",
+      "address": 73441120,
+      "words": 20049,
+      "differences": 0,
+      "firstDifferences": []
+    }
+  ]
+}

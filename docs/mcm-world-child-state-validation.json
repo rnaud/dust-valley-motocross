@@ -1,0 +1,1787 @@
+{
+  "inputProtocol": {
+    "protocol": "player-throttle-frames-1-through-2",
+    "frames": [
+      {
+        "frame": 0,
+        "throttle": 0,
+        "queries": 5
+      },
+      {
+        "frame": 1,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 2,
+        "throttle": 1,
+        "queries": 11
+      },
+      {
+        "frame": 3,
+        "throttle": 0,
+        "queries": 11
+      },
+      {
+        "frame": 4,
+        "throttle": 0,
+        "queries": 11
+      },
+      {
+        "frame": 5,
+        "throttle": 0,
+        "queries": 10
+      },
+      {
+        "frame": 6,
+        "throttle": 0,
+        "queries": 11
+      },
+      {
+        "frame": 7,
+        "throttle": 0,
+        "queries": 11
+      }
+    ]
+  },
+  "worldChildReports": [
+    {
+      "frame": 0,
+      "riderOrder": [
+        82612896,
+        82803448
+      ],
+      "externalActors": [
+        {
+          "address": 26733296,
+          "update": 4446288,
+          "delta": 0.0990000069141388
+        },
+        {
+          "address": 26767616,
+          "update": 4674640,
+          "delta": 0.0990000069141388
+        },
+        {
+          "address": 28336784,
+          "update": 4427280,
+          "delta": 0.0990000069141388
+        },
+        {
+          "address": 82691240,
+          "update": 4428752,
+          "delta": 0.0990000069141388
+        },
+        {
+          "address": 82692800,
+          "update": 4430384,
+          "delta": 0.0990000069141388
+        },
+        {
+          "address": 82694360,
+          "update": 4433616,
+          "delta": 0.0990000069141388
+        },
+        {
+          "address": 28427232,
+          "update": 4427280,
+          "delta": 0.0990000069141388
+        },
+        {
+          "address": 83078608,
+          "update": 4428752,
+          "delta": 0.0990000069141388
+        },
+        {
+          "address": 83080168,
+          "update": 4430384,
+          "delta": 0.0990000069141388
+        },
+        {
+          "address": 83081728,
+          "update": 4433616,
+          "delta": 0.0990000069141388
+        },
+        {
+          "address": 28458400,
+          "update": 4351120,
+          "delta": 0.0990000069141388
+        }
+      ]
+    },
+    {
+      "frame": 1,
+      "riderOrder": [
+        82612896,
+        82803448
+      ],
+      "externalActors": [
+        {
+          "address": 26733296,
+          "update": 4446288,
+          "delta": 3.0920002460479736
+        },
+        {
+          "address": 26767616,
+          "update": 4674640,
+          "delta": 3.0920002460479736
+        },
+        {
+          "address": 28336784,
+          "update": 4427280,
+          "delta": 3.0920002460479736
+        },
+        {
+          "address": 82691240,
+          "update": 4428752,
+          "delta": 3.0920002460479736
+        },
+        {
+          "address": 82692800,
+          "update": 4430384,
+          "delta": 3.0920002460479736
+        },
+        {
+          "address": 82694360,
+          "update": 4433616,
+          "delta": 3.0920002460479736
+        },
+        {
+          "address": 28427232,
+          "update": 4427280,
+          "delta": 3.0920002460479736
+        },
+        {
+          "address": 83078608,
+          "update": 4428752,
+          "delta": 3.0920002460479736
+        },
+        {
+          "address": 83080168,
+          "update": 4430384,
+          "delta": 3.0920002460479736
+        },
+        {
+          "address": 83081728,
+          "update": 4433616,
+          "delta": 3.0920002460479736
+        },
+        {
+          "address": 28458400,
+          "update": 4351120,
+          "delta": 3.0920002460479736
+        }
+      ]
+    },
+    {
+      "frame": 2,
+      "riderOrder": [
+        82612896,
+        82803448
+      ],
+      "externalActors": [
+        {
+          "address": 26733296,
+          "update": 4446288,
+          "delta": 0.7590000629425049
+        },
+        {
+          "address": 26767616,
+          "update": 4674640,
+          "delta": 0.7590000629425049
+        },
+        {
+          "address": 28336784,
+          "update": 4427280,
+          "delta": 0.7590000629425049
+        },
+        {
+          "address": 82691240,
+          "update": 4428752,
+          "delta": 0.7590000629425049
+        },
+        {
+          "address": 82692800,
+          "update": 4430384,
+          "delta": 0.7590000629425049
+        },
+        {
+          "address": 82694360,
+          "update": 4433616,
+          "delta": 0.7590000629425049
+        },
+        {
+          "address": 28427232,
+          "update": 4427280,
+          "delta": 0.7590000629425049
+        },
+        {
+          "address": 83078608,
+          "update": 4428752,
+          "delta": 0.7590000629425049
+        },
+        {
+          "address": 83080168,
+          "update": 4430384,
+          "delta": 0.7590000629425049
+        },
+        {
+          "address": 83081728,
+          "update": 4433616,
+          "delta": 0.7590000629425049
+        },
+        {
+          "address": 28458400,
+          "update": 4351120,
+          "delta": 0.7590000629425049
+        }
+      ]
+    },
+    {
+      "frame": 3,
+      "riderOrder": [
+        82612896,
+        82803448
+      ],
+      "externalActors": [
+        {
+          "address": 26733296,
+          "update": 4446288,
+          "delta": 0.7580000162124634
+        },
+        {
+          "address": 26767616,
+          "update": 4674640,
+          "delta": 0.7580000162124634
+        },
+        {
+          "address": 28336784,
+          "update": 4427280,
+          "delta": 0.7580000162124634
+        },
+        {
+          "address": 82691240,
+          "update": 4428752,
+          "delta": 0.7580000162124634
+        },
+        {
+          "address": 82692800,
+          "update": 4430384,
+          "delta": 0.7580000162124634
+        },
+        {
+          "address": 82694360,
+          "update": 4433616,
+          "delta": 0.7580000162124634
+        },
+        {
+          "address": 28427232,
+          "update": 4427280,
+          "delta": 0.7580000162124634
+        },
+        {
+          "address": 83078608,
+          "update": 4428752,
+          "delta": 0.7580000162124634
+        },
+        {
+          "address": 83080168,
+          "update": 4430384,
+          "delta": 0.7580000162124634
+        },
+        {
+          "address": 83081728,
+          "update": 4433616,
+          "delta": 0.7580000162124634
+        },
+        {
+          "address": 28458400,
+          "update": 4351120,
+          "delta": 0.7580000162124634
+        }
+      ]
+    },
+    {
+      "frame": 4,
+      "riderOrder": [
+        82612896,
+        82803448
+      ],
+      "externalActors": [
+        {
+          "address": 26733296,
+          "update": 4446288,
+          "delta": 0.7990000247955322
+        },
+        {
+          "address": 26767616,
+          "update": 4674640,
+          "delta": 0.7990000247955322
+        },
+        {
+          "address": 28336784,
+          "update": 4427280,
+          "delta": 0.7990000247955322
+        },
+        {
+          "address": 82691240,
+          "update": 4428752,
+          "delta": 0.7990000247955322
+        },
+        {
+          "address": 82692800,
+          "update": 4430384,
+          "delta": 0.7990000247955322
+        },
+        {
+          "address": 82694360,
+          "update": 4433616,
+          "delta": 0.7990000247955322
+        },
+        {
+          "address": 28427232,
+          "update": 4427280,
+          "delta": 0.7990000247955322
+        },
+        {
+          "address": 83078608,
+          "update": 4428752,
+          "delta": 0.7990000247955322
+        },
+        {
+          "address": 83080168,
+          "update": 4430384,
+          "delta": 0.7990000247955322
+        },
+        {
+          "address": 83081728,
+          "update": 4433616,
+          "delta": 0.7990000247955322
+        },
+        {
+          "address": 28458400,
+          "update": 4351120,
+          "delta": 0.7990000247955322
+        }
+      ]
+    },
+    {
+      "frame": 5,
+      "riderOrder": [
+        82612896,
+        82803448
+      ],
+      "externalActors": [
+        {
+          "address": 26733296,
+          "update": 4446288,
+          "delta": 0.800000011920929
+        },
+        {
+          "address": 26767616,
+          "update": 4674640,
+          "delta": 0.800000011920929
+        },
+        {
+          "address": 28336784,
+          "update": 4427280,
+          "delta": 0.800000011920929
+        },
+        {
+          "address": 82691240,
+          "update": 4428752,
+          "delta": 0.800000011920929
+        },
+        {
+          "address": 82692800,
+          "update": 4430384,
+          "delta": 0.800000011920929
+        },
+        {
+          "address": 82694360,
+          "update": 4433616,
+          "delta": 0.800000011920929
+        },
+        {
+          "address": 28427232,
+          "update": 4427280,
+          "delta": 0.800000011920929
+        },
+        {
+          "address": 83078608,
+          "update": 4428752,
+          "delta": 0.800000011920929
+        },
+        {
+          "address": 83080168,
+          "update": 4430384,
+          "delta": 0.800000011920929
+        },
+        {
+          "address": 83081728,
+          "update": 4433616,
+          "delta": 0.800000011920929
+        },
+        {
+          "address": 28458400,
+          "update": 4351120,
+          "delta": 0.800000011920929
+        }
+      ]
+    },
+    {
+      "frame": 6,
+      "riderOrder": [
+        82612896,
+        82803448
+      ],
+      "externalActors": [
+        {
+          "address": 26733296,
+          "update": 4446288,
+          "delta": 0.7230000495910645
+        },
+        {
+          "address": 26767616,
+          "update": 4674640,
+          "delta": 0.7230000495910645
+        },
+        {
+          "address": 28336784,
+          "update": 4427280,
+          "delta": 0.7230000495910645
+        },
+        {
+          "address": 82691240,
+          "update": 4428752,
+          "delta": 0.7230000495910645
+        },
+        {
+          "address": 82692800,
+          "update": 4430384,
+          "delta": 0.7230000495910645
+        },
+        {
+          "address": 82694360,
+          "update": 4433616,
+          "delta": 0.7230000495910645
+        },
+        {
+          "address": 28427232,
+          "update": 4427280,
+          "delta": 0.7230000495910645
+        },
+        {
+          "address": 83078608,
+          "update": 4428752,
+          "delta": 0.7230000495910645
+        },
+        {
+          "address": 83080168,
+          "update": 4430384,
+          "delta": 0.7230000495910645
+        },
+        {
+          "address": 83081728,
+          "update": 4433616,
+          "delta": 0.7230000495910645
+        },
+        {
+          "address": 28458400,
+          "update": 4351120,
+          "delta": 0.7230000495910645
+        }
+      ]
+    }
+  ],
+  "worldSchedulerReports": [
+    {
+      "frame": 0,
+      "bikes": 2,
+      "markerRequests": [
+        {
+          "address": 26767616,
+          "position": [
+            1567.8421630859375,
+            51.91977310180664,
+            2331.704833984375
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 1,
+      "bikes": 2,
+      "markerRequests": [
+        {
+          "address": 26767616,
+          "position": [
+            1564.628662109375,
+            51.91200256347656,
+            2338.507568359375
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 2,
+      "bikes": 2,
+      "markerRequests": [
+        {
+          "address": 26767616,
+          "position": [
+            1560.8690185546875,
+            51.90882110595703,
+            2346.46630859375
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 3,
+      "bikes": 2,
+      "markerRequests": [
+        {
+          "address": 26767616,
+          "position": [
+            1556.7459716796875,
+            51.907440185546875,
+            2355.194580078125
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 4,
+      "bikes": 2,
+      "markerRequests": [
+        {
+          "address": 26767616,
+          "position": [
+            1552.74462890625,
+            51.90685272216797,
+            2363.665771484375
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 5,
+      "bikes": 2,
+      "markerRequests": [
+        {
+          "address": 26767616,
+          "position": [
+            1549.1817626953125,
+            51.906593322753906,
+            2371.209716796875
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 6,
+      "bikes": 2,
+      "markerRequests": [
+        {
+          "address": 26767616,
+          "position": [
+            1545.34130859375,
+            51.90647888183594,
+            2379.3408203125
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 7,
+      "bikes": 2,
+      "markerRequests": [
+        {
+          "address": 26767616,
+          "position": [
+            1541.8896484375,
+            51.90631103515625,
+            2386.64892578125
+          ]
+        }
+      ]
+    }
+  ],
+  "contactReports": [],
+  "sceneReports": [
+    {
+      "frame": 0,
+      "bike": 82803448,
+      "nodes": [
+        82672968,
+        82668264,
+        82667592,
+        82666920
+      ]
+    },
+    {
+      "frame": 1,
+      "bike": 82803448,
+      "nodes": [
+        82672968,
+        82668264,
+        82667592,
+        82666920
+      ]
+    },
+    {
+      "frame": 2,
+      "bike": 82803448,
+      "nodes": [
+        82672968,
+        82668264,
+        82667592,
+        82666920
+      ]
+    },
+    {
+      "frame": 3,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 4,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 5,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    },
+    {
+      "frame": 6,
+      "bike": 82803448,
+      "nodes": [
+        82672968
+      ]
+    }
+  ],
+  "worldRiderReports": [
+    {
+      "frame": 0,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 0,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 0,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 0,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 1,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 1,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 1,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 1,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 2,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 2,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 2,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 2,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 3,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 3,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 3,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 3,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 4,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 4,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 4,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 4,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 5,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 5,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 5,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 5,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 6,
+      "bike": 82612896,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 6,
+      "bike": 82612896,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 6,
+      "bike": 82803448,
+      "phase": "before-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    },
+    {
+      "frame": 6,
+      "bike": 82803448,
+      "phase": "after-rider",
+      "rider": {
+        "words": 623,
+        "differences": []
+      },
+      "collision": {
+        "words": 213,
+        "differences": []
+      }
+    }
+  ],
+  "entryReports": [
+    {
+      "frame": 0,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2662033633,
+        "expected": 2662033633
+      }
+    },
+    {
+      "frame": 0,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2662033633,
+        "expected": 2662033633
+      }
+    },
+    {
+      "frame": 1,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2662033633,
+        "expected": 2662033633
+      }
+    },
+    {
+      "frame": 1,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2662033633,
+        "expected": 2662033633
+      }
+    },
+    {
+      "frame": 2,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3869452320,
+        "expected": 3869452320
+      }
+    },
+    {
+      "frame": 2,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 565245850,
+        "expected": 565245850
+      }
+    },
+    {
+      "frame": 3,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 565245850,
+        "expected": 565245850
+      }
+    },
+    {
+      "frame": 3,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 565245850,
+        "expected": 565245850
+      }
+    },
+    {
+      "frame": 4,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 565245850,
+        "expected": 565245850
+      }
+    },
+    {
+      "frame": 4,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 565245850,
+        "expected": 565245850
+      }
+    },
+    {
+      "frame": 5,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 565245850,
+        "expected": 565245850
+      }
+    },
+    {
+      "frame": 5,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 565245850,
+        "expected": 565245850
+      }
+    },
+    {
+      "frame": 6,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 565245850,
+        "expected": 565245850
+      }
+    },
+    {
+      "frame": 6,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2208735221,
+        "expected": 2208735221
+      }
+    },
+    {
+      "frame": 7,
+      "bike": 82612896,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2542719716,
+        "expected": 2542719716
+      }
+    },
+    {
+      "frame": 7,
+      "bike": 82803448,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2542719716,
+        "expected": 2542719716
+      }
+    }
+  ],
+  "renderCameraInputs": true,
+  "drawReports": [
+    {
+      "frame": 0,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 0,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 0,
+      "actor": 82803448,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 0,
+      "actor": 82937728,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 1,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 1,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 1,
+      "actor": 82803448,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 1,
+      "actor": 82937728,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 2,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 2,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 2,
+      "actor": 82803448,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 2,
+      "actor": 82937728,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 3,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 3,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 3,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 3,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 4,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 4,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 4,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 4,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 5,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 5,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 5,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 5,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    },
+    {
+      "frame": 6,
+      "actor": 82612896,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 6,
+      "actor": 82648800,
+      "accepted": 0,
+      "queries": 0
+    },
+    {
+      "frame": 6,
+      "actor": 82803448,
+      "accepted": 1,
+      "queries": 12
+    },
+    {
+      "frame": 6,
+      "actor": 82937728,
+      "accepted": 1,
+      "queries": 30
+    }
+  ],
+  "collisionReports": [
+    {
+      "frame": 0,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 0,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 1,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 1,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 2,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 2,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 3,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 3,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 4,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 4,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 5,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 5,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 6,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 6,
+      "stage": "after-rider",
+      "words": 213,
+      "differences": []
+    },
+    {
+      "frame": 7,
+      "stage": "bike-tail",
+      "words": 213,
+      "differences": []
+    }
+  ],
+  "riderReports": [
+    {
+      "frame": 0,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 1,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 2,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 3,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 4,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 5,
+      "words": 623,
+      "differences": []
+    },
+    {
+      "frame": 6,
+      "words": 623,
+      "differences": []
+    }
+  ],
+  "visualReports": [
+    {
+      "frame": 0,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 0,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 1,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 1,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 2,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 2,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 3,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 3,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 4,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 4,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 5,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 5,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 6,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    },
+    {
+      "frame": 6,
+      "stage": "after-rider",
+      "words": 1995,
+      "differences": []
+    },
+    {
+      "frame": 7,
+      "stage": "bike-tail",
+      "words": 348822,
+      "differences": []
+    }
+  ],
+  "scope": "Retained player/AI bike bodies and shared RNG compared at every boundary; both rider/child and rider collider observations compared when captured; AI visual allocations compared. Camera/draw scheduling and particle boundary words remain explicit external inputs; full collision allocation and autonomous world scheduling coverage remain incomplete",
+  "reports": [
+    {
+      "frame": 0,
+      "bike": 82612896,
+      "delta": 0.0990000069141388,
+      "substeps": 5,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2662033633,
+        "expected": 2662033633
+      }
+    },
+    {
+      "frame": 0,
+      "bike": 82803448,
+      "delta": 0.0990000069141388,
+      "substeps": 5,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2662033633,
+        "expected": 2662033633
+      }
+    },
+    {
+      "frame": 1,
+      "bike": 82612896,
+      "delta": 3.0920002460479736,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2662033633,
+        "expected": 2662033633
+      }
+    },
+    {
+      "frame": 1,
+      "bike": 82803448,
+      "delta": 3.0920002460479736,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 3869452320,
+        "expected": 3869452320
+      }
+    },
+    {
+      "frame": 2,
+      "bike": 82612896,
+      "delta": 0.7590000629425049,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 565245850,
+        "expected": 565245850
+      }
+    },
+    {
+      "frame": 2,
+      "bike": 82803448,
+      "delta": 0.7590000629425049,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 565245850,
+        "expected": 565245850
+      }
+    },
+    {
+      "frame": 3,
+      "bike": 82612896,
+      "delta": 0.7580000162124634,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 565245850,
+        "expected": 565245850
+      }
+    },
+    {
+      "frame": 3,
+      "bike": 82803448,
+      "delta": 0.7580000162124634,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 565245850,
+        "expected": 565245850
+      }
+    },
+    {
+      "frame": 4,
+      "bike": 82612896,
+      "delta": 0.7990000247955322,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 565245850,
+        "expected": 565245850
+      }
+    },
+    {
+      "frame": 4,
+      "bike": 82803448,
+      "delta": 0.7990000247955322,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 565245850,
+        "expected": 565245850
+      }
+    },
+    {
+      "frame": 5,
+      "bike": 82612896,
+      "delta": 0.800000011920929,
+      "substeps": 10,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 565245850,
+        "expected": 565245850
+      }
+    },
+    {
+      "frame": 5,
+      "bike": 82803448,
+      "delta": 0.800000011920929,
+      "substeps": 10,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 565245850,
+        "expected": 565245850
+      }
+    },
+    {
+      "frame": 6,
+      "bike": 82612896,
+      "delta": 0.7230000495910645,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2208735221,
+        "expected": 2208735221
+      }
+    },
+    {
+      "frame": 6,
+      "bike": 82803448,
+      "delta": 0.7230000495910645,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2542719716,
+        "expected": 2542719716
+      }
+    },
+    {
+      "frame": 7,
+      "bike": 82612896,
+      "delta": 0.7700000405311584,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2542719716,
+        "expected": 2542719716
+      }
+    },
+    {
+      "frame": 7,
+      "bike": 82803448,
+      "delta": 0.7700000405311584,
+      "substeps": 11,
+      "words": 818,
+      "differences": [],
+      "random": {
+        "actual": 2542719716,
+        "expected": 2542719716
+      }
+    }
+  ]
+}

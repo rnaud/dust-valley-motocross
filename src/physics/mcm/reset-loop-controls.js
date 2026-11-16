@@ -7,7 +7,7 @@ import {alignMcmSubstepGroundContact} from './normal-alignment-substep.js';
 export function continueMcmResetLoopControls(c){
  const b=c.bike,p=c.contactPhase,r=c.rider;
  Object.assign(p.controllerHandoff,{velocity:r.velocity,angularVelocity:r.angularVelocity,
-  flag13c:r.flag13c,kind:b.field8b4,other:b.field8b0,otherVelocity:[0,0,0],axis:b.axis624});
+  flag13c:r.flag13c,kind:b.field8b4,other:b.field8b0,otherVelocity:'otherBikeVelocity' in c?c.otherBikeVelocity():[0,0,0],axis:b.axis624});
  p.contactCorrection.controller140=r.field140;
  // Live bikes read *(bike+8d8), which can differ from the body root during
  // tricks. Synthetic one-node oracle contexts omit the separate base node.

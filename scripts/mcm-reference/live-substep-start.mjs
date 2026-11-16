@@ -13,7 +13,7 @@ export function loadLiveSuspension(checkpoint,visuals=loadLiveVisuals(checkpoint
 export function loadLiveSubstepStart(checkpoint,{dt=.02,throttle=0,brake=0,visuals}={}){
  if(!Number.isFinite(dt)||dt<=0)throw Error('Invalid substep interval');
  const {engine,memory:m,address:engineAddress}=loadLiveEngine(checkpoint),bike=checkpoint.bikeAddress;
- const ai=checkpoint.captureBoundary==='ai-frame-entry';
+ const ai=checkpoint.captureBoundary==='ai-frame-entry'||(checkpoint.captureBoundary==='world-frame-entry'&&!!m.u32(bike+0x614));
  if(ai&&!m.u32(bike+0x614))throw Error('AI frame entry requires an AI bike');
  for(const o of (ai?[0x844,0x618,0x6f8,0xc68]:[0x844,0x614,0x618,0x6f8,0xc68,0xb04,0xb08]))if(m.u32(bike+o))throw Error('Unsupported live substep controller/state');
  const loaded=loadLiveSuspension(checkpoint,visuals),filter=m.u32(bike+0x8fc),vec=o=>[0,4,8].map(i=>m.f32(bike+o+i));
