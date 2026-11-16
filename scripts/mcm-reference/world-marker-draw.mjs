@@ -9,8 +9,8 @@ export function connectWorldMarkerDraw(runtime,markers,files,chase){
  const marker=markers.markers.get(initial.marker);assert.ok(marker);assert.equal(initial.node,marker.root.address);
  const child=runtime.world.tree.nodes.get(initial.child);assert.equal(child,marker.actor.first);assert.equal(child.address,initial.node+0x14c);assert.equal(child.vtable,0x4d775c);assert.equal(child.next,null);
  const blocks=new Map(initial.blocks.map(b=>[b.address,Buffer.from(b.hex,'hex')])),raw=blocks.get(initial.node);
- assert.equal(raw.length,0x250);assert.deepEqual(raw.subarray(0x14c),child.stateBytes.subarray(0,0x104));
- assert.deepEqual(blocks.get(initial.marker),marker.actor.stateBytes);
+ assert.equal(raw.length,0x250);assert.ok(raw.subarray(0x14c).equals(child.stateBytes.subarray(0,0x104)));
+ assert.ok(blocks.get(initial.marker).equals(marker.actor.stateBytes));
  assert.equal(raw.readUInt32LE(0x130),1,'Uncached shape bounds need geometry reconstruction');
  const center=Array.from({length:3},(_,i)=>raw.readFloatLE(0x134+i*4)),extent=Array.from({length:3},(_,i)=>raw.readFloatLE(0x140+i*4));
  const levels=raw.readUInt32LE(0x118),table=blocks.get(raw.readUInt32LE(0x234));assert.equal(table.length,levels*8);
@@ -33,7 +33,7 @@ export function connectWorldMarkerDraw(runtime,markers,files,chase){
   for(const row of rows.filter(r=>r.completedBikeFrames===frame+1)){
    assert.equal(row.captureBoundary,'marker-draw-entry');assert.equal(row.marker,initial.marker);assert.equal(row.node,initial.node);assert.equal(row.camera,initial.camera);
    const expected=new Map(row.blocks.map(b=>[b.address,Buffer.from(b.hex,'hex')])),shape=expected.get(initial.node);
-   assert.deepEqual(expected.get(initial.marker),marker.actor.stateBytes);comparedWords+=0xa4/4;compareNode(marker.root,shape);
+   assert.ok(expected.get(initial.marker).equals(marker.actor.stateBytes));comparedWords+=0xa4/4;compareNode(marker.root,shape);
    for(const [o,value]of [[0x11c,index],[0x12c,mesh.hidden],[0x130,1],[0x180,mesh.needsUpdate],[0x18c,mesh.dispatchReady],[0x190,mesh.buffersReady],...mesh.rect.map((v,i)=>[0x240+i*4,v>>>0])]){assert.equal(shape.readUInt32LE(o),value);comparedWords++;}
    for(let i=0;i<6;i++){assert.equal(shape.readUInt32LE(0x134+i*4),bits([...center,...extent][i]));comparedWords++;}
    const projection=chase.projection;assert.deepEqual(Array.from(projection,bits),row.projection,'Computed marker camera differs');

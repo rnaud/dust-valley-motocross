@@ -15,6 +15,8 @@ test('captured byte views preserve native words, slice offsets and independent c
  view.writeFloatLE(-0,4);assert.equal(bytes.readUInt32LE(8),0x80000000);
  assert.equal(copy.readUInt32LE(4),0x7fc00000);
  assert.equal(bytes.equals(native),false);
+ for(const value of [-2147483648,-1,0,2147483647]){view.writeInt32LE(value,0);assert.equal(view.readInt32LE(0),value);assert.equal(bytes.readInt32LE(4),value);}
+ for(const value of [-2147483649,2147483648,NaN,1.5])assert.throws(()=>view.writeInt32LE(value),RangeError);
  for(const [source,encoding] of [['abc','hex'],['zz','hex'],['00','utf8']])assert.throws(()=>CapturedBytes.from(source,encoding));
  for(const offset of [-1,.5,bytes.length-3])assert.throws(()=>bytes.readUInt32LE(offset),RangeError);
  for(const value of [undefined,-1,0x100000000,NaN])assert.throws(()=>bytes.writeUInt32LE(value),RangeError);

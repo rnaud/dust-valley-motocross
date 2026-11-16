@@ -34,6 +34,11 @@ export class CapturedBytes extends Uint8Array {
     this.view(offset, 4).setUint32(0, value, true);
     return offset + 4;
   }
+  writeInt32LE(value, offset = 0) {
+    if (!Number.isInteger(value) || value < -0x80000000 || value > 0x7fffffff) throw new RangeError('Invalid captured int32');
+    this.view(offset, 4).setInt32(0, value, true);
+    return offset + 4;
+  }
   writeFloatLE(value, offset = 0) {
     if (typeof value !== 'number') throw new TypeError('Invalid captured float');
     this.view(offset, 4).setFloat32(0, value, true);

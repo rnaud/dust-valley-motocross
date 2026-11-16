@@ -1,11 +1,12 @@
-import assert from 'node:assert/strict';
+import {CapturedBytes} from '../../src/physics/mcm/captured-bytes.js';
+import assert from '../../src/physics/mcm/captured-invariants.js';
 // Original 426490 and inactive 403030 paths. Active display content/animation
 // is not silently skipped: it requires further recovery and fails explicitly.
 export function connectWorldHudRuntime(runtime){
  const actors=new Map(),children=new Set(),world=runtime.world;
  for(const actor of world.tree.nodes.values()){
   if(actor.update!==0x426490||!actor.hudEnvironment)continue;
-  const e=actor.hudEnvironment,b=Buffer.from(world.entry.worldHex,'hex');
+  const e=actor.hudEnvironment,b=CapturedBytes.from(world.entry.worldHex,'hex');
   assert.equal(actor.stateBytes?.length,0x128);
   assert.equal(e.app,world.entry.world);assert.equal(e.view,b.readUInt32LE(0x30c));
   assert.equal(e.enabled,b.readUInt32LE(0x700));assert.equal(e.menu,b.readUInt32LE(0x614));
@@ -32,7 +33,7 @@ export function connectWorldHudRuntime(runtime){
   const hud=actors.get(row.address);assert.ok(hud,'Unknown HUD assertion');
   const differences=[];let words=0;
   const compare=(address,hex)=>{
-   const actual=world.tree.nodes.get(address)?.stateBytes,expected=Buffer.from(hex,'hex');assert.ok(actual);assert.equal(actual.length,expected.length);
+   const actual=world.tree.nodes.get(address)?.stateBytes,expected=CapturedBytes.from(hex,'hex');assert.ok(actual);assert.equal(actual.length,expected.length);
    for(let o=0;o<expected.length;o+=4){words++;const a=actual.readUInt32LE(o),e=expected.readUInt32LE(o);if(a!==e)differences.push({address,offset:o,actual:a,expected:e});}
   };
   compare(row.address,row.hex);

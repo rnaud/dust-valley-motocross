@@ -1,3 +1,4 @@
+import {connectMcmWorldUpdate} from '../../src/physics/mcm/world-update.js';
 import {connectWorldApplicationFrame} from './world-application-frame.mjs';
 import {connectWorldSceneTick} from './world-scene-tick.mjs';
 import {connectWorldMarkerDraw} from './world-marker-draw.mjs';
@@ -14,7 +15,6 @@ import {tickMcmParticlePool} from '../../src/physics/mcm/particle-pool-tick.js';
 import {prepareLiveParticleDraw,cullLiveParticleDraw,generateLiveParticleQuads} from './live-particle-draw.mjs';
 import {connectWorldEmitterRuntime} from './world-emitter-runtime.mjs';
 import {connectWorldChildRuntime} from './world-child-runtime.mjs';
-import {connectWorldActorRuntime} from './world-actor-runtime.mjs';
 import {decodeWorldFrames} from './world-observation-codec.mjs';
 import {validateWorldInputProtocol,worldThrottleAtFrame} from './world-input-protocol.mjs';
 import fs from 'node:fs';
@@ -56,7 +56,8 @@ export function analyzeWorldBikes(files,terrain,{renderCameraInputs=false,partic
  const markerDraw=markerDrawIntegration?connectWorldMarkerDraw(runtime,markers,files,chase):null;
  const hud=hudIntegration?connectWorldHudRuntime(runtime):null,hudReports=[];
  if(hudIntegration&&!hud.actors.size)throw Error('Missing captured HUD dependencies');
- const schedule=runtime.world.entry.refreshDevice?connectWorldActorRuntime(runtime):null,worldSchedulerReports=[];
+ const worldUpdate=runtime.world.entry.refreshDevice?connectMcmWorldUpdate(runtime,{emitters,markers,hud}):null;
+ const schedule=worldUpdate?.step,worldSchedulerReports=[];
  const scheduleChildren=connectWorldChildRuntime(runtime),worldChildReports=[];
  if(sceneChildIntegration&&!particleIntegration)throw Error('Scene pool scheduling requires particle integration');
  if(sceneQueueIntegration&&!sceneChildIntegration)throw Error('Scene queue requires scene scheduling');
@@ -159,16 +160,20 @@ export function analyzeWorldBikes(files,terrain,{renderCameraInputs=false,partic
   const advanceChildren=()=>{
   if(worldRiders.length&&!worldRiders[worldRiderIndex])return;
   const riderOrder=[],externalActors=[],actorUpdates=[];
-  scheduleChildren(delta,{actor:(node,dt,children)=>{
-   actorUpdates.push({address:node.address,update:node.update});
-   if(markers?.step(node,dt,children)||hud?.step(node,dt,children))return;
-   if(emitters?.step(node,dt,runtime.world.context.world.paused,(phase,state)=>{
-    if(state.update===0x439a30)impactReports.push({frame:frameNumber,address:node.address,phase,active:state.bytes.readUInt32LE(0x64),poolCount:runtime.particles.pool.count});
+  const observeEmitter=(phase,state)=>{
+    if(state.update===0x439a30)impactReports.push({frame:frameNumber,address:state.address,phase,active:state.bytes.readUInt32LE(0x64),poolCount:runtime.particles.pool.count});
     const kind=state.update===0x438e10?'dust':state.update===0x4393d0?'spray':'exhaust';
-    const row=particleRows.find(r=>r.completedBikeFrames===frameNumber+1&&r.emitter===node.address&&r.phase===`${phase}-${kind}`);
-    if(!row)return;
-    compareParticle(row,state.bytes);
-   }))return;
+    const row=particleRows.find(r=>r.completedBikeFrames===frameNumber+1&&r.emitter===state.address&&r.phase===`${phase}-${kind}`);
+    if(row)compareParticle(row,state.bytes);
+  };
+  const beforeActor=node=>actorUpdates.push({address:node.address,update:node.update});
+  const walk=worldUpdate?.children??scheduleChildren;
+  walk(delta,{beforeActor,observeEmitter,actor:(node,dt,children)=>{
+   if(!worldUpdate){
+    beforeActor(node);
+    if(markers?.step(node,dt,children)||hud?.step(node,dt,children))return;
+    if(emitters?.step(node,dt,runtime.world.context.world.paused,(phase,state)=>observeEmitter(phase,state)))return;
+   }
    externalActors.push({address:node.address,update:node.update,delta:dt});
   },rider:address=>{
    riderOrder.push(address);

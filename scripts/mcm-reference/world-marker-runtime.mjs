@@ -1,4 +1,5 @@
-import assert from 'node:assert/strict';
+import {CapturedBytes} from '../../src/physics/mcm/captured-bytes.js';
+import assert from '../../src/physics/mcm/captured-invariants.js';
 import {tickMcmMarker} from '../../src/physics/mcm/marker-tick.js';
 import {rotateMcmTransform} from '../../src/physics/mcm/transform.js';
 import {invalidateMcmTransform} from '../../src/physics/mcm/event-orientation.js';
@@ -12,7 +13,7 @@ export function connectWorldMarkerRuntime(runtime){
   assert.ok(actor.shapeTransforms.length>0&&actor.shapeTransforms.length<=8192);
   for(const raw of actor.shapeTransforms){
    assert.ok(Number.isInteger(raw.address)&&raw.address>0&&!nodes.has(raw.address));
-   const b=Buffer.from(raw.hex,'hex');assert.equal(b.length,0x114);rawNodes.set(raw.address,b);
+   const b=CapturedBytes.from(raw.hex,'hex');assert.equal(b.length,0x114);rawNodes.set(raw.address,b);
    // Shared scene nodes must not silently become detached presentation copies.
    assert.ok(!runtime.ordered.transformNodes.has(raw.address),'Marker graph overlaps retained scene; shared binding required');
    nodes.set(raw.address,{address:raw.address,local:Array.from({length:16},(_,i)=>b.readFloatLE(0x84+i*4)),world:Array.from({length:16},(_,i)=>b.readFloatLE(0xc4+i*4)),cacheValid:b.readUInt32LE(0x104)});
@@ -23,7 +24,7 @@ export function connectWorldMarkerRuntime(runtime){
  }
  return {markers,compare(row){
   const marker=markers.get(row.address);assert.ok(marker,'Unknown marker assertion');assert.equal(row.shape,marker.root.address);
-  const expected=Buffer.from(row.hex,'hex'),shape=Buffer.from(row.shapeHex,'hex');assert.equal(expected.length,0xa4);assert.equal(shape.length,0x114);
+  const expected=CapturedBytes.from(row.hex,'hex'),shape=CapturedBytes.from(row.shapeHex,'hex');assert.equal(expected.length,0xa4);assert.equal(shape.length,0x114);
   const differences=[],cacheDifferences=[];let words=0;
   const check=(target,name,offset,actual,value)=>{words++;if(actual!==value)target.push({name,offset,actual,expected:value});};
   for(let o=0;o<expected.length;o+=4)check(differences,'marker',o,marker.actor.stateBytes.readUInt32LE(o),expected.readUInt32LE(o));

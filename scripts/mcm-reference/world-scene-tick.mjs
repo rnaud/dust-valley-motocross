@@ -8,7 +8,7 @@ export function connectWorldSceneTick(runtime,chase,files,frameCount){
  assert.equal(initial.phase,'world-entry');assert.equal(initial.frame,0);assert.equal(initial.deltaBits,runtime.world.entry.dtBits);
  assert.equal(scene?.update,0x481310);assert.equal(scene, runtime.world.tree.nodes.get(runtime.world.entry.actor).parent);
  assert.equal(scene.stateBytes?.length,0x78);assert.equal(initial.app,runtime.world.entry.world);assert.equal(initial.camera,chase.address);
- const blocks=new Map(initial.blocks.map(b=>[b.address,Buffer.from(b.hex,'hex')]));assert.deepEqual(blocks.get(scene.address),scene.stateBytes);blocks.set(scene.address,scene.stateBytes);
+ const blocks=new Map(initial.blocks.map(b=>[b.address,Buffer.from(b.hex,'hex')]));assert.ok(blocks.get(scene.address).equals(scene.stateBytes));blocks.set(scene.address,scene.stateBytes);
  const app=Buffer.from(runtime.world.entry.worldHex,'hex');
  for(const [o,v]of [[0x10,initial.input],[0x614,initial.menu],[0x618,initial.control]])assert.equal(app.readUInt32LE(o),v);
  const rows=files['world-scene-tick-observations.jsonl'].trim().split('\n').filter(Boolean).map(JSON.parse),reports=[];
@@ -33,7 +33,7 @@ export function connectWorldSceneTick(runtime,chase,files,frameCount){
   for(const raw of row.blocks){
    const expected=Buffer.from(raw.hex,'hex');
    if(raw.address===initial.camera){for(let i=0;i<3;i++){assert.equal(expected.readUInt32LE(0x144+i*4),u32(initial.camera+0x144+i*4),'Retained scene camera position differs');comparedWords++;}continue;}
-   const actual=blocks.get(raw.address);assert.ok(actual);assert.deepEqual(actual,expected,'Retained scene update bytes differ');comparedWords+=actual.length/4;
+   const actual=blocks.get(raw.address);assert.ok(actual);assert.ok(actual.equals(expected),'Retained scene update bytes differ');comparedWords+=actual.length/4;
   }
  };
  const observe=phase=>{const row=selected[cursor++];assert.equal(row?.phase,phase,'Missing/reordered scene boundary');compare(row);consumed++;return row;};

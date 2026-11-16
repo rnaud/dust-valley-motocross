@@ -1,3 +1,4 @@
+import {CapturedBytes} from '../../src/physics/mcm/captured-bytes.js';
 import {connectWorldCollisionAudio} from './world-collision-audio.mjs';
 import {connectLiveSceneRiderPosition} from './live-scene-rider-position.mjs';
 import {connectWorldMeshes} from './world-mesh-runtime.mjs';
@@ -19,10 +20,10 @@ export function createWorldBikeRuntime(files,terrain,{throttle,brake}){
  const ordered=loadLiveOrderedDispatch(first.bike,first.collision),bikes=new Map(),sharedAnimationChildren=new Map();let sharedParticles;
  for(const source of world.bikes){
   const {artifacts}=source,checkpoint=artifacts.bike,address=source.address;
-  const stack=Buffer.from(entry.stackHex,'hex').subarray(0,0xc00);
+  const stack=CapturedBytes.from(entry.stackHex,'hex').subarray(0,0xc00);
   stack.writeUInt32LE(address===entry.bikes[0]?0x459126:0x45915b,0xbf8);stack.writeUInt32LE(entry.dtBits,0xbfc);
   for(const offset of [0x1c,0x2c,0x30])stack.writeUInt32LE(0,offset);
-  const body=Buffer.from(checkpoint.blocks.find(b=>b.address===address).hex,'hex');
+  const body=CapturedBytes.from(checkpoint.blocks.find(b=>b.address===address).hex,'hex');
   const row={phase:'before-update',pass:0,playerFrame:0,bike:address.toString(16),stateHex:body.toString('hex'),stackHex:stack.toString('hex'),stackAddress:entry.stackAddress.toString(16).padStart(8,'0'),frameBits:entry.dtBits,dtBits:stack.readUInt32LE(0x10),steps:stack.readUInt32LE(0x20),randomState:entry.randomState,...artifacts.effects};
   const loaded=loadLiveFrameBootstrap({checkpoint,animations:artifacts.animations,environment:artifacts.environment,collision:artifacts.collision,aiEnvironment:artifacts.aiEnvironment,row,terrain,throttle,brake,sharedWorld:ordered,sharedOrdered:ordered,sharedRandom:random,sharedAnimationChildren}),c=loaded.context;
   const projection='aiController' in c?c.aiController:connectMcmRetainedBikeBody(c,new DataView(body.buffer,body.byteOffset,body.length));

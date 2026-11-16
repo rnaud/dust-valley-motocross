@@ -1,0 +1,20 @@
+{
+  "browser": "Chrome",
+  "bikes": 2,
+  "comparedNativeBodyWords": 1636,
+  "sharedIdentities": true,
+  "errors": [],
+  "worldRiders": 2,
+  "comparedEmitters": 2,
+  "scope": "Atomic first bike pair plus complete first world update with both riders and shared emitters. Input-device and rider boundary words are explicit services. Continuous browser scene scheduling remains unproven.",
+  "fixtures": [
+    "tests/fixtures/mcm/world-bikes-wine11.json.br",
+    "tests/fixtures/mcm/world-application-frame-wine11.json.br"
+  ],
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "browserNodePolyfills": false,
+  "worldDependencyModules": 244,
+  "worldDependencyNodeImports": 0,
+  "joinedWorldBikeBodyWords": 1636,
+  "joinedWorldRiderWords": 1246
+}

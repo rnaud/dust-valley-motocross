@@ -1,4 +1,5 @@
-import assert from 'node:assert/strict';
+import {CapturedBytes} from '../../src/physics/mcm/captured-bytes.js';
+import assert from '../../src/physics/mcm/captured-invariants.js';
 import {drawMcmRetainedMesh} from '../../src/physics/mcm/retained-mesh-draw.js';
 // Mesh resources and mutable LOD state are initialized only at world entry.
 // Subsequent calls accept camera/viewport inputs, never observed mesh outputs.
@@ -12,7 +13,7 @@ export function connectWorldMeshes(files,world,bikes){
    assert.equal(row.captureBoundary,'world-frame-entry');assert.equal(row.captureId,world.entry.captureId);
    const kind=j?'rider':'bike',visual=loaded.visuals[kind];assert.equal(row.actor,visual.address);assert.equal(row.node,visual.bodyNode.address);
    for(const n of row.lodNodes){const state={levels:n.levels|0,index:n.index|0};if(lodNodes.has(n.address))assert.deepEqual(lodNodes.get(n.address),state);else lodNodes.set(n.address,state);}
-   const blocks=new Map(row.blocks.map(b=>[b.address,Buffer.from(b.hex,'hex')])),mesh=blocks.get(row.node),table=blocks.get(row.table);
+   const blocks=new Map(row.blocks.map(b=>[b.address,CapturedBytes.from(b.hex,'hex')])),mesh=blocks.get(row.node),table=blocks.get(row.table);
    assert.equal(mesh.length,0x238);assert.equal(mesh.readUInt32LE(0x234),row.table);assert.equal(table.length,row.levels*8);
    const groups=Array.from({length:row.levels},(_,level)=>{
     const count=table.readUInt32LE(level*8),groups=blocks.get(table.readUInt32LE(level*8+4));assert.equal(groups.length,count*40);
