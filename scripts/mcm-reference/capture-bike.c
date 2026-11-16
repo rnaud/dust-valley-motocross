@@ -22,6 +22,7 @@
 #include "capture-collision-world.c"
 #include "capture-frame-environment.c"
 #include "capture-ai-frame-environment.c"
+#include "capture-world-protocol.h"
 
 static DWORD addresses[] = {0x4a54b6, 0x4ad0e1, 0x4ad5a2, 0x4bf195, 0x40e990, 0x42ce38, 0x4acfd8, 0x4acaad, 0x4b6930, 0x422f50, 0x422fad, 0x4a64dc, 0x4a8be0, 0x4ab7fd, 0x4ac5c5, 0x4ac6cd, 0x4ac952, 0x44faf0, 0x44ff95, 0x43b200, 0x43b334, 0x43b216, 0x438e10, 0x438e34, 0x438e6c, 0x438e89, 0x438ebd, 0x4390ff, 0x43910e, 0x4393d0, 0x4393f2, 0x439426, 0x43944a, 0x439786, 0x439795, 0x43b3a0, 0x43b4bc, 0x43b582, 0x43b599, 0x43b835, 0x42a6e0, 0x42b673, 0x42a998, 0x42b005, 0x4590b0, 0x4a52c0, 0x47b107, 0x47db8f, 0x47dbdc};
 static BYTE expected[][6] = {{0xd9, 0x86, 0xc8, 0x08, 0, 0},
@@ -384,11 +385,9 @@ int main(int argc, char **argv) {
     profile_capture=getenv("MCM_PROFILE_CAPTURE")!=NULL;
     if(profile_capture&&(!QueryPerformanceFrequency(&profile_frequency)||profile_frequency.QuadPart<=0))return 2;
     scripted = getenv("MCM_SCRIPTED") != NULL;
-    if(getenv("MCM_WORLD_THROTTLE_PULSE")&&getenv("MCM_WORLD_THROTTLE_HOLD")){fprintf(stderr,"Choose one world throttle protocol.\n");return 2;}
-    world_throttle_pulse=getenv("MCM_WORLD_THROTTLE_HOLD")?2:getenv("MCM_WORLD_THROTTLE_PULSE")!=NULL;
-    world_pursuit=getenv("MCM_WORLD_PURSUIT")?(strcmp(getenv("MCM_WORLD_PURSUIT"),"2")==0?2:1):0;
-    if(world_pursuit&&world_throttle_pulse!=2){fprintf(stderr,"Pursuit requires the held-throttle world protocol.\n");return 2;}
-    if(world_pursuit)world_throttle_pulse=strcmp(getenv("MCM_WORLD_THROTTLE_HOLD"),"96")==0?4:3;
+    if(!parse_world_capture_protocol(getenv("MCM_WORLD_THROTTLE_PULSE"),getenv("MCM_WORLD_THROTTLE_HOLD"),getenv("MCM_WORLD_PURSUIT"),&world_throttle_pulse,&world_pursuit)){
+        fprintf(stderr,"Invalid world input protocol: PULSE=1, HOLD=12, or HOLD=48/96 with PURSUIT=1/2.\n");return 2;
+    }
     if(world_throttle_pulse&&(!getenv("MCM_OBSERVE_AI")||!getenv("MCM_WORLD_ENTRY")||scripted)){fprintf(stderr,"World pulse requires observed world capture without scripted state restoration.\n");return 2;}
     const char *ai_arg=getenv("MCM_OBSERVE_AI");
     if(ai_arg){char *end;observe_ai=strtoul(ai_arg,&end,0);

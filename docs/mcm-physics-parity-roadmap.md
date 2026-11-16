@@ -2,18 +2,19 @@
 
 ## Current status — November 16, 2026
 
-**Full physics parity is not achieved.** Expanded rider-collision comparison now exposes 76 shared-grid link mismatches in the latest eight-frame fixture, starting before its first separate rider tick. Existing bike/substep checks still pass; they do not prove complete collision-world parity. The previously failing scene trajectory (38 bike / 28 visual DWORDs) now passes its modeled bike/visual checks after correcting the base-component transform used by airborne control. The retained recovery wrapper has also been corrected against the original recovery corpus. Historical milestone descriptions below preserve what was known at those commits; their old “next work” paragraphs are not the current task list.
+**Full physics parity is not achieved.** The current retained two-bike world passes a 64-update acceleration/release recording and a 160-update pursuit/contact/recovery recording, including both complete bike bodies, shared RNG, rider/collider state, particles, markers, HUD and the connected chase camera. The camera now reads simulated bike/rider/transform state and supplies computed audio position and bike/rider drawing matrices. Earlier mismatch reports below describe historical diagnostics; they are not the current blocker list.
 
 | Area | Current evidence | Still required |
 | --- | --- | --- |
-| Retained AI bike physics | Twenty captures pass modeled bike/substep checks across 124 frames and 7,382 observed substep boundaries, complete bike bodies and twelve component words per boundary. An eight-frame run starts during an active trick and validates retained rider animation, visible bike/rider draw rectangles, LOD selection and mesh-cache writes. Two subsequent runs validate batched particle observation. The previously failing scene trajectory also passes. | Longer, normal-rate trajectories; uncovered controller modes and interactions. |
-| Recovery orientation | Retained wrapper matches 327 pinned-original synthetic cases over four calls each, including graphs, animation and orientation scratch. | Live complete crash/recovery sequences in the surrounding world. |
-| Player acceleration and throttle release | One 400-frame crash/throttle-release capture matches the modeled physics words; shared visual/particle differences remain. | A separate negative-steering run still diverges at frame 38 (41 physics differences) without observed caller scratch; finish the world inputs and prove sustained repeatability without reseeding. |
-| Shared world and scheduling | Separate rider, dust-emitter, spray-emitter and shared-pool ticks, scene-position-query prefix, and draw rectangle/LOD/cache updates are connected in native replay. Camera matrices and draw scheduling remain captured stage inputs. | Remaining scene update/scheduler logic, camera producers, shared-particle writers and other actors. Full rider-collider/entry/pair assertions expose shared-grid ordering differences. A separate all-actor grid trace matches every grid cell and entry across 78 calls with external geometry/order; those other actors must still be evolved by the retained world simulation. Particle-pool mismatches remain explicit. |
-| Observation quality | Read-only batching and buffered record output reduce observation cost; the latest eight-frame capture has intervals 0.092, 1.197, then 0.668–0.727 seconds. Same-boundary individual-read audit passes. | Further reduce overhead; validate at normal frame timing. |
-| Preview | Uses the shared recovered runtime; desktop/touch startup and driving checks pass for the airborne-control fix. | Continued gameplay validation across jumps, collisions, recovery, maps and input modes; a playable preview is not proof of parity. |
+| Player and AI physics together | Both bikes initialize from one atomic world checkpoint. The latest joined camera fixture matches 128 bike entries and 128 tails over 64 world updates: 12 throttle-on, then 52 released. | Broader interactions, uncovered controller branches and sustained normal-rate trajectories. |
+| Riders, collisions and recovery | The joined pursuit run matches 636 rider/collider boundaries, 56 contact callbacks and two player crash/recovery sequences. Separate retained-world particle recovery coverage extends to 163 updates. | Player-following camera during crashes, remaining collision/impact paths and broader recovery conditions. |
+| Shared particles | Dust/spray/exhaust/rider emitters and the shared pool run from retained world/scene ordering. The 64-update joined run matches 567 particle boundaries; a separate 163-update recovery run matches 1,463. | Active impact-burst coverage, dynamic heap-boundary behavior and remaining particle presentation inputs. |
+| Chase camera and drawing | Initialized active chase state is retained. It reads 24 simulated bike/rider/transform words per entry; 63 updates / 9,450 camera output words match in the joined run. Audio position and mesh projection are derived. | Initialization, alternate/crash camera paths, active tail controls and remaining world/device context. Viewport and draw invocation data remain external. |
+| Remaining scene execution | World, child actors, markers, HUD, shared pool and active chase camera are connected. Scene 481310 switching/timer sequence matches 4,096 isolated original executions. | Connect scene prefix/tail and outer 4997b0. Four custom scene methods remain: 43e660, 411000, 423b50 and 4253e0. |
+| Observation quality | Original byte guards, independent hook restoration, debugger detachment, input restoration and camera restoration are checked. No later bike state is imported into replay. | Debugger overhead still changes observed timing. Normal-rate parity remains unproved. |
+| Playable preview | Recent milestones improve reference simulation and validation on main. | These integrations have not yet changed the playable preview; separate integration and gameplay testing remain. |
 
-There is no measured completion percentage yet. The user-requested planning estimate is approximately 70% (rough range 60–80%), not a coverage score: the remaining world/order dependencies can reveal additional errors. Green regression tests prove their stated boundaries, not complete gameplay equivalence.
+Current evidence: [joined pursuit/recovery](mcm-world-chase-recovery-validation.json), [joined world/camera](mcm-world-chase-validation.json), [scene sequence](mcm-scene-tick-validation.json), and [retained scene pool](mcm-scene-pool-validation.json). The earlier approximately 70% planning estimate was not a coverage score and has not been replaced by a measured percentage. Passing tests prove the boundaries they compare, not complete gameplay equivalence.
 
 ## Historical milestones
 
@@ -7558,3 +7559,37 @@ inputs and particle presentation still have recorded dependencies; active impact
 bursts, dynamic heap-boundary inputs and sustained normal-rate validation remain.
 This is a substantial reference-simulation integration; the playable preview is
 unchanged, and the full goal is not complete.
+
+### Joined camera survives two-bike pursuit and player recoveries (2026-11-16)
+
+The joined two-bike recorder now covers **160 world updates**, with 96 throttle-on
+updates and 64 released, using the existing bounded player pursuit protocol.
+Both bikes, their shared RNG, rider/collider state, animation/mesh state, markers,
+HUD, particles and AI-following chase camera match with zero differences. The
+run includes **56 contact callbacks across kinds 0–5** and two player crash/recovery
+sequences: crash flags at frame tails 54–56 and 122–125, followed by recovery.
+
+Coverage is 320 bike entries, 320 tails, 636 rider/collider boundaries, 640 marker
+boundaries, 640 HUD boundaries, 1,431 particle assertions, and 159 camera updates
+(23,850 output words / 3,840 projected bike-input words including initialization).
+All 49 hooks, debugger, steering, throttle and player camera were restored. See
+`world-chase-recovery-wine11.json.br` and
+`mcm-world-chase-recovery-validation.json`. The new regression asserts both crash
+intervals, all contact kinds and continued zero differences through the tail.
+It also explicitly asserts **zero active impact-emitter ticks**: contact callbacks
+alone do not close the active-burst gap.
+
+The recorder now parses exact input-protocol values before touching the game.
+`PULSE=1`, `HOLD=12`, and pursuit `HOLD=48/96` with `PURSUIT=1/2` are explicit;
+legacy `HOLD=1` retains its documented/default meaning. Unsupported combinations
+and ambiguous values such as `PULSE=2` fail rather than silently recording the
+short pulse. A portable C self-test verifies all 512 combinations of absent,
+empty, valid and invalid choices (10 accepted, 502 rejected), and the Windows
+recorder compiles. Existing captured input logs still independently validate
+what was applied.
+
+The roadmap's top-level tally has been updated: historical shared-grid and
+camera-input gaps no longer masquerade as the current blockers. Player-following
+crash-camera coverage, remaining scene execution, active impacts, dynamic heap
+boundaries and normal-rate validation remain open. No preview change or full
+parity claim is made.
