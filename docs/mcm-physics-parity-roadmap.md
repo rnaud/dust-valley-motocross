@@ -6300,3 +6300,13 @@ Decompiled `426be0` identifies the player's engine playback state machine: idle/
 The isolated pinned-original oracle matches all three output words over 664 cases (1,992 DWORDs), including distance boundaries, large vertical offsets, diagonal rejection, signed zero, infinities, NaNs and denormals. It executes both original functions completely, with no replacement audio or math calls. A changed pan output is detected. Browser audio still uses synthesis until the recovered playback controls are connected; this milestone does not claim audible parity.
 
 Validation: all 760 tests pass (112 seconds), production build passes, and the attenuation corpus also passes on x64 Node 22.
+
+## Normal-riding engine audio command policy recovered (2026-11-15)
+
+`riding-sound.js` ports the normal-riding branch of original `426be0`. It derives sound demand from the original player/secondary/replay/AI fields, retains prior throttle/gear/engine state, emits the original stop/play/seek ordering, and handles landing notifications, release, airborne demand and return from a previously crashed state. Idle and bike stops preserve cursors; deceleration and launch stops reset them. Engine starts select one of the seven original byte offsets using the supplied random result. These are sample seeks, not pitch estimates.
+
+The isolated oracle executes original `426be0` with explicit audio-status/cursor, control and RNG boundary callbacks. It compares all manager bytes, modeled device status/cursors and the ordered boundary calls. All 906 cases / 306,228 DWORDs match, including 6,591 calls: 1,567 stops, 1,593 plays, 426 seeks, and 3,005 status/cursor/control/RNG reads. Coverage crosses AI/secondary/replay/player demand, throttle and gear transitions, deceleration cursor threshold, airborne state, landing, previous crash cleanup, null launch handle and random seek boundaries. Corrupting an untouched manager word or a command fails the comparison.
+
+Scope remains explicit: the actual crash branch is rejected until recovered; the callback devices model supplied state and do not validate DirectSound timing, wrapper enable gates, audible output or shared world/RNG scheduling. Browser audio still uses synthesis. The next audio step is crash/event policy and the playback adapter, followed by live command captures and audible preview checks. No original-game debugger was attached for this isolated corpus; an initial harness calling-convention fault was corrected before collecting the passing output.
+
+Validation: all 762 tests pass (128 seconds), production build passes, and the two new audio policy regressions pass on x64 Node 22. The preceding attenuation deployment also passes public desktop/touch asset/startup checks.
