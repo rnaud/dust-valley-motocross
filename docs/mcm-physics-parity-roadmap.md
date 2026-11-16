@@ -7462,3 +7462,44 @@ its retained update. The five deferred scene methods and outer 4997b0 remain.
 Active impact-burst coverage, dynamic heap-boundary inputs and sustained normal-
 rate validation are still open. This changes reference validation, not the
 playable site's physics or presentation.
+
+### Camera evolved from one frame entry through matrices (2026-11-16)
+
+Reused the existing chase recovery instead of rebuilding it. `chase-frame.js`
+now composes source/base construction, controls, heading/factor/eye, smoothing,
+post-smoothing, terrain clearance, pose/visibility, FOV and camera matrices in one
+retained update. `analyze-chase-frame.mjs` consumes only frame-entry inputs for
+numerical evolution; downstream observations are assertions. Camera, filters,
+shared axis, target, visibility, FOV and matrices initialize once. Fixed camera
+context and pointer identities must remain unchanged or fail explicitly.
+
+This joined path matches all 390 prior camera frames (60 held-input, 320 held-
+input and 10 neutral). It no longer supplies computed locals from intermediate
+source/base/heading/post/clearance/FOV checkpoints. The required tail-control
+service remains explicitly assertion-gated: native 47d9f4 mode/FOV controls must
+leave the tracked state unchanged in these recordings. Active control changes
+are not silently treated as supported.
+
+Added a three-boundary raw-memory recorder and `chase-frame-memory.mjs` to map
+camera/world/bike/rider/device fields directly, without captured stack locals.
+Fresh captures match 60 player-camera frames and 60 AI-camera frames, with all
+60 AI entry positions distinct. Total joined coverage is **510 frames / 76,500
+compared output words, zero differences**. Source hashes include original CRLF
+bytes; both raw recordings restored all three instructions and detached the
+debugger. AI camera selection was restored to the player and verified. The
+first exploratory player capture is retained in /tmp but not counted here.
+
+Evidence is in `chase-frame-memory-wine11.json.br` and
+`mcm-chase-frame-validation.json`. Seven targeted camera/scene tests and the
+production build pass, including corrupted-output, missing-memory, retained-
+state, changed-context and incomplete-recording rejection. The preceding main
+milestone 3b43247 completed its full CI tests, build and Pages deployment in run
+43905935404. This milestone is being published to main.
+
+**Remaining integration:** raw bike/world/input fields still come from frame
+entry observations, not the retained two-bike world. A joint checkpoint before
+scene/camera update and writes back into retained camera/render nodes are still
+needed. The initialized active mode-0 path is proven here; initialization,
+alternate/crash camera paths, active tail controls and other scene methods are
+not closed by these checks. The scene/world/physics milestone remains active;
+there is no playable-preview behavior change in this commit.

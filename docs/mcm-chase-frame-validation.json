@@ -1,0 +1,42 @@
+{
+  "provenance": {
+    "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+    "harnessSha256": "089c0fc173d280193812814ef538607b72282516d48eb240b1a166623253b4c6",
+    "hooks": [
+      "0x47b107",
+      "0x47db8f",
+      "0x47dbdc"
+    ],
+    "scope": "Read-only initialized chase frame entries, pre-FOV assertions and completed camera updates. Bike/world/input state remains external; camera/filter/node/matrix state retained from first entry."
+  },
+  "existingCaptures": {
+    "held60": 60,
+    "held320": 320,
+    "neutral10": 10,
+    "frames": 390,
+    "comparedOutputWords": 58500
+  },
+  "rawCaptures": {
+    "player": {
+      "sourceSha256": "18d7b6e2520e144976a9b9361dadae35b785dec6dad47fa66f6091815cacda65",
+      "frames": 60,
+      "comparedOutputWords": 9000,
+      "cleanup": "hook=0047b107 restored=1\r\nhook=0047db8f restored=1\r\nhook=0047dbdc restored=1\r\nrenderFrames=60 status=1 debugger=0\r\n"
+    },
+    "ai": {
+      "sourceSha256": "e97fdeb3d2827867acc2f6eb1dd5649e4168f0833a66bcaea94335cff50db262",
+      "frames": 60,
+      "comparedOutputWords": 9000,
+      "cleanup": "hook=0047b107 restored=1\r\nhook=0047db8f restored=1\r\nhook=0047dbdc restored=1\r\nrenderFrames=60 status=1 debugger=0\r\n"
+    }
+  },
+  "totalFrames": 510,
+  "totalComparedOutputWords": 76500,
+  "intermediateEvolutionInputs": 0,
+  "remainingInputs": [
+    "Bike, rider, input device and world fields read at each frame entry",
+    "Initialized mode-0 active chase path only",
+    "Tail mode/FOV controls are assertion-gated, not implemented",
+    "Not yet scheduled from a joint pre-scene two-bike checkpoint"
+  ]
+}
