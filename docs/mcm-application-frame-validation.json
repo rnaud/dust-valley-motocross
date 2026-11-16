@@ -1,0 +1,12 @@
+{
+  "provenance": {
+    "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+    "inputSha256": "076cbf4ff5a0132b5db37689c12df3738d0228dcb8765c3d69f6a2ef23f5e6fc",
+    "outputSha256": "17b7bdf5ee876e54f7e66bf67dbe75f59621ab06028757df7d9ea96343c948e7",
+    "harnessSha256": "ff1f4da6064e572e5544c9f942947baa147c746545d4304d19c0dcb78689340b",
+    "scope": "Complete original 467f40 / 467ff0 and owner 494820; clock, input, optional and virtual update/draw/present services are harness callbacks. Includes signed clock wrap, initialization, pause gates and callback mutations. Does not prove live joint replay integration."
+  },
+  "cases": 9728,
+  "comparedWords": 194560,
+  "differences": []
+}

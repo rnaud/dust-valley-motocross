@@ -1,0 +1,739 @@
+{
+  "scope": "467f40 derives elapsed time and calls retained root update, drawing and 494820 owner in order. Platform clock returns and input/presentation service boundaries remain external. First checkpoint starts inside update; final checkpoint ends inside update. Optional services or changed application context fail explicitly.",
+  "fixture": "tests/fixtures/mcm/world-application-frame-wine11.json.br",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "frames": 64,
+  "applicationFrameReport": {
+    "frames": 64,
+    "clocks": 63,
+    "updates": 64,
+    "draws": 63,
+    "presentations": 63,
+    "ownerFrames": 63,
+    "comparedWords": 6048,
+    "reports": [
+      {
+        "frame": 0,
+        "deltaBits": 1060454269,
+        "current": 368196227,
+        "previous": 368196227
+      },
+      {
+        "frame": 1,
+        "deltaBits": 1085244703,
+        "current": 368201712,
+        "previous": 368201712
+      },
+      {
+        "frame": 2,
+        "deltaBits": 1070747092,
+        "current": 368203355,
+        "previous": 368203355
+      },
+      {
+        "frame": 3,
+        "deltaBits": 1070084392,
+        "current": 368204919,
+        "previous": 368204919
+      },
+      {
+        "frame": 4,
+        "deltaBits": 1071200076,
+        "current": 368206616,
+        "previous": 368206616
+      },
+      {
+        "frame": 5,
+        "deltaBits": 1070772257,
+        "current": 368208262,
+        "previous": 368208262
+      },
+      {
+        "frame": 6,
+        "deltaBits": 1070671594,
+        "current": 368209896,
+        "previous": 368209896
+      },
+      {
+        "frame": 7,
+        "deltaBits": 1069815956,
+        "current": 368211428,
+        "previous": 368211428
+      },
+      {
+        "frame": 8,
+        "deltaBits": 1070856144,
+        "current": 368213084,
+        "previous": 368213084
+      },
+      {
+        "frame": 9,
+        "deltaBits": 1070621262,
+        "current": 368214712,
+        "previous": 368214712
+      },
+      {
+        "frame": 10,
+        "deltaBits": 1070847755,
+        "current": 368216367,
+        "previous": 368216367
+      },
+      {
+        "frame": 11,
+        "deltaBits": 1070621262,
+        "current": 368217995,
+        "previous": 368217995
+      },
+      {
+        "frame": 12,
+        "deltaBits": 1070243775,
+        "current": 368219578,
+        "previous": 368219578
+      },
+      {
+        "frame": 13,
+        "deltaBits": 1071980217,
+        "current": 368221368,
+        "previous": 368221368
+      },
+      {
+        "frame": 14,
+        "deltaBits": 1071862777,
+        "current": 368223144,
+        "previous": 368223144
+      },
+      {
+        "frame": 15,
+        "deltaBits": 1071091025,
+        "current": 368224828,
+        "previous": 368224828
+      },
+      {
+        "frame": 16,
+        "deltaBits": 1071107802,
+        "current": 368226514,
+        "previous": 368226514
+      },
+      {
+        "frame": 17,
+        "deltaBits": 1070847755,
+        "current": 368228169,
+        "previous": 368228169
+      },
+      {
+        "frame": 18,
+        "deltaBits": 1070612874,
+        "current": 368229796,
+        "previous": 368229796
+      },
+      {
+        "frame": 19,
+        "deltaBits": 1071669839,
+        "current": 368231549,
+        "previous": 368231549
+      },
+      {
+        "frame": 20,
+        "deltaBits": 1070789035,
+        "current": 368233197,
+        "previous": 368233197
+      },
+      {
+        "frame": 21,
+        "deltaBits": 1071393014,
+        "current": 368234917,
+        "previous": 368234917
+      },
+      {
+        "frame": 22,
+        "deltaBits": 1070621262,
+        "current": 368236545,
+        "previous": 368236545
+      },
+      {
+        "frame": 23,
+        "deltaBits": 1071074247,
+        "current": 368238227,
+        "previous": 368238227
+      },
+      {
+        "frame": 24,
+        "deltaBits": 1070856144,
+        "current": 368239883,
+        "previous": 368239883
+      },
+      {
+        "frame": 25,
+        "deltaBits": 1071971828,
+        "current": 368241672,
+        "previous": 368241672
+      },
+      {
+        "frame": 26,
+        "deltaBits": 1071141356,
+        "current": 368243362,
+        "previous": 368243362
+      },
+      {
+        "frame": 27,
+        "deltaBits": 1070940030,
+        "current": 368245028,
+        "previous": 368245028
+      },
+      {
+        "frame": 28,
+        "deltaBits": 1070319273,
+        "current": 368246620,
+        "previous": 368246620
+      },
+      {
+        "frame": 29,
+        "deltaBits": 1070931641,
+        "current": 368248285,
+        "previous": 368248285
+      },
+      {
+        "frame": 30,
+        "deltaBits": 1070604485,
+        "current": 368249911,
+        "previous": 368249911
+      },
+      {
+        "frame": 31,
+        "deltaBits": 1070445102,
+        "current": 368251518,
+        "previous": 368251518
+      },
+      {
+        "frame": 32,
+        "deltaBits": 1071057470,
+        "current": 368253198,
+        "previous": 368253198
+      },
+      {
+        "frame": 33,
+        "deltaBits": 1071065859,
+        "current": 368254879,
+        "previous": 368254879
+      },
+      {
+        "frame": 34,
+        "deltaBits": 1071258797,
+        "current": 368256583,
+        "previous": 368256583
+      },
+      {
+        "frame": 35,
+        "deltaBits": 1070143112,
+        "current": 368258154,
+        "previous": 368258154
+      },
+      {
+        "frame": 36,
+        "deltaBits": 1070310884,
+        "current": 368259745,
+        "previous": 368259745
+      },
+      {
+        "frame": 37,
+        "deltaBits": 1070856144,
+        "current": 368261401,
+        "previous": 368261401
+      },
+      {
+        "frame": 38,
+        "deltaBits": 1070906475,
+        "current": 368263063,
+        "previous": 368263063
+      },
+      {
+        "frame": 39,
+        "deltaBits": 1070931641,
+        "current": 368264728,
+        "previous": 368264728
+      },
+      {
+        "frame": 40,
+        "deltaBits": 1070671594,
+        "current": 368266362,
+        "previous": 368266362
+      },
+      {
+        "frame": 41,
+        "deltaBits": 1070998750,
+        "current": 368268035,
+        "previous": 368268035
+      },
+      {
+        "frame": 42,
+        "deltaBits": 1070327661,
+        "current": 368269628,
+        "previous": 368269628
+      },
+      {
+        "frame": 43,
+        "deltaBits": 1070814200,
+        "current": 368271279,
+        "previous": 368271279
+      },
+      {
+        "frame": 44,
+        "deltaBits": 1071560787,
+        "current": 368273019,
+        "previous": 368273019
+      },
+      {
+        "frame": 45,
+        "deltaBits": 1069211976,
+        "current": 368274479,
+        "previous": 368274479
+      },
+      {
+        "frame": 46,
+        "deltaBits": 1070294107,
+        "current": 368276068,
+        "previous": 368276068
+      },
+      {
+        "frame": 47,
+        "deltaBits": 1071795668,
+        "current": 368277836,
+        "previous": 368277836
+      },
+      {
+        "frame": 48,
+        "deltaBits": 1071434957,
+        "current": 368279561,
+        "previous": 368279561
+      },
+      {
+        "frame": 49,
+        "deltaBits": 1069975340,
+        "current": 368281112,
+        "previous": 368281112
+      },
+      {
+        "frame": 50,
+        "deltaBits": 1071082636,
+        "current": 368282795,
+        "previous": 368282795
+      },
+      {
+        "frame": 51,
+        "deltaBits": 1071535621,
+        "current": 368284532,
+        "previous": 368284532
+      },
+      {
+        "frame": 52,
+        "deltaBits": 1070579319,
+        "current": 368286155,
+        "previous": 368286155
+      },
+      {
+        "frame": 53,
+        "deltaBits": 1070520599,
+        "current": 368287771,
+        "previous": 368287771
+      },
+      {
+        "frame": 54,
+        "deltaBits": 1070453490,
+        "current": 368289379,
+        "previous": 368289379
+      },
+      {
+        "frame": 55,
+        "deltaBits": 1070101169,
+        "current": 368290945,
+        "previous": 368290945
+      },
+      {
+        "frame": 56,
+        "deltaBits": 1069983728,
+        "current": 368292497,
+        "previous": 368292497
+      },
+      {
+        "frame": 57,
+        "deltaBits": 1069396526,
+        "current": 368293979,
+        "previous": 368293979
+      },
+      {
+        "frame": 58,
+        "deltaBits": 1069354583,
+        "current": 368295456,
+        "previous": 368295456
+      },
+      {
+        "frame": 59,
+        "deltaBits": 1069035815,
+        "current": 368296895,
+        "previous": 368296895
+      },
+      {
+        "frame": 60,
+        "deltaBits": 1070109557,
+        "current": 368298462,
+        "previous": 368298462
+      },
+      {
+        "frame": 61,
+        "deltaBits": 1069690127,
+        "current": 368299979,
+        "previous": 368299979
+      },
+      {
+        "frame": 62,
+        "deltaBits": 1070310884,
+        "current": 368301570,
+        "previous": 368301570
+      },
+      {
+        "frame": 63,
+        "deltaBits": 1070260552,
+        "current": 368303155,
+        "previous": 368301570
+      }
+    ],
+    "scope": "467f40 derives elapsed time and calls retained root update, drawing and 494820 owner in order. Platform clock returns and input/presentation service boundaries remain external. First checkpoint starts inside update; final checkpoint ends inside update. Optional services or changed application context fail explicitly."
+  },
+  "sceneTickReport": {
+    "heads": 63,
+    "tails": 63,
+    "inputQueries": 63,
+    "positions": 0,
+    "ownerFrames": 63,
+    "comparedWords": 22932,
+    "reports": [
+      {
+        "frame": 0,
+        "minutes": 0,
+        "seconds": 1.636000156402588
+      },
+      {
+        "frame": 1,
+        "minutes": 0,
+        "seconds": 7.121000289916992
+      },
+      {
+        "frame": 2,
+        "minutes": 0,
+        "seconds": 8.763999938964844
+      },
+      {
+        "frame": 3,
+        "minutes": 0,
+        "seconds": 10.32800006866455
+      },
+      {
+        "frame": 4,
+        "minutes": 0,
+        "seconds": 12.024999618530273
+      },
+      {
+        "frame": 5,
+        "minutes": 0,
+        "seconds": 13.670999526977539
+      },
+      {
+        "frame": 6,
+        "minutes": 0,
+        "seconds": 15.304999351501465
+      },
+      {
+        "frame": 7,
+        "minutes": 0,
+        "seconds": 16.836999893188477
+      },
+      {
+        "frame": 8,
+        "minutes": 0,
+        "seconds": 18.493000030517578
+      },
+      {
+        "frame": 9,
+        "minutes": 0,
+        "seconds": 20.121000289916992
+      },
+      {
+        "frame": 10,
+        "minutes": 0,
+        "seconds": 21.7760009765625
+      },
+      {
+        "frame": 11,
+        "minutes": 0,
+        "seconds": 23.404001235961914
+      },
+      {
+        "frame": 12,
+        "minutes": 0,
+        "seconds": 24.987001419067383
+      },
+      {
+        "frame": 13,
+        "minutes": 0,
+        "seconds": 26.777002334594727
+      },
+      {
+        "frame": 14,
+        "minutes": 0,
+        "seconds": 28.553003311157227
+      },
+      {
+        "frame": 15,
+        "minutes": 0,
+        "seconds": 30.237003326416016
+      },
+      {
+        "frame": 16,
+        "minutes": 0,
+        "seconds": 31.923004150390625
+      },
+      {
+        "frame": 17,
+        "minutes": 0,
+        "seconds": 33.5780029296875
+      },
+      {
+        "frame": 18,
+        "minutes": 0,
+        "seconds": 35.20500183105469
+      },
+      {
+        "frame": 19,
+        "minutes": 0,
+        "seconds": 36.95800018310547
+      },
+      {
+        "frame": 20,
+        "minutes": 0,
+        "seconds": 38.60599899291992
+      },
+      {
+        "frame": 21,
+        "minutes": 0,
+        "seconds": 40.32600021362305
+      },
+      {
+        "frame": 22,
+        "minutes": 0,
+        "seconds": 41.95399856567383
+      },
+      {
+        "frame": 23,
+        "minutes": 0,
+        "seconds": 43.6359977722168
+      },
+      {
+        "frame": 24,
+        "minutes": 0,
+        "seconds": 45.29199981689453
+      },
+      {
+        "frame": 25,
+        "minutes": 0,
+        "seconds": 47.08100128173828
+      },
+      {
+        "frame": 26,
+        "minutes": 0,
+        "seconds": 48.770999908447266
+      },
+      {
+        "frame": 27,
+        "minutes": 0,
+        "seconds": 50.4370002746582
+      },
+      {
+        "frame": 28,
+        "minutes": 0,
+        "seconds": 52.02899932861328
+      },
+      {
+        "frame": 29,
+        "minutes": 0,
+        "seconds": 53.694000244140625
+      },
+      {
+        "frame": 30,
+        "minutes": 0,
+        "seconds": 55.31999969482422
+      },
+      {
+        "frame": 31,
+        "minutes": 0,
+        "seconds": 56.926998138427734
+      },
+      {
+        "frame": 32,
+        "minutes": 0,
+        "seconds": 58.606998443603516
+      },
+      {
+        "frame": 33,
+        "minutes": 1,
+        "seconds": 0.2879981994628906
+      },
+      {
+        "frame": 34,
+        "minutes": 1,
+        "seconds": 1.991998314857483
+      },
+      {
+        "frame": 35,
+        "minutes": 1,
+        "seconds": 3.5629982948303223
+      },
+      {
+        "frame": 36,
+        "minutes": 1,
+        "seconds": 5.153998374938965
+      },
+      {
+        "frame": 37,
+        "minutes": 1,
+        "seconds": 6.809998512268066
+      },
+      {
+        "frame": 38,
+        "minutes": 1,
+        "seconds": 8.47199821472168
+      },
+      {
+        "frame": 39,
+        "minutes": 1,
+        "seconds": 10.136998176574707
+      },
+      {
+        "frame": 40,
+        "minutes": 1,
+        "seconds": 11.770998001098633
+      },
+      {
+        "frame": 41,
+        "minutes": 1,
+        "seconds": 13.443998336791992
+      },
+      {
+        "frame": 42,
+        "minutes": 1,
+        "seconds": 15.036998748779297
+      },
+      {
+        "frame": 43,
+        "minutes": 1,
+        "seconds": 16.687999725341797
+      },
+      {
+        "frame": 44,
+        "minutes": 1,
+        "seconds": 18.42799949645996
+      },
+      {
+        "frame": 45,
+        "minutes": 1,
+        "seconds": 19.88800048828125
+      },
+      {
+        "frame": 46,
+        "minutes": 1,
+        "seconds": 21.477001190185547
+      },
+      {
+        "frame": 47,
+        "minutes": 1,
+        "seconds": 23.2450008392334
+      },
+      {
+        "frame": 48,
+        "minutes": 1,
+        "seconds": 24.970001220703125
+      },
+      {
+        "frame": 49,
+        "minutes": 1,
+        "seconds": 26.5210018157959
+      },
+      {
+        "frame": 50,
+        "minutes": 1,
+        "seconds": 28.204002380371094
+      },
+      {
+        "frame": 51,
+        "minutes": 1,
+        "seconds": 29.941001892089844
+      },
+      {
+        "frame": 52,
+        "minutes": 1,
+        "seconds": 31.564001083374023
+      },
+      {
+        "frame": 53,
+        "minutes": 1,
+        "seconds": 33.18000030517578
+      },
+      {
+        "frame": 54,
+        "minutes": 1,
+        "seconds": 34.788002014160156
+      },
+      {
+        "frame": 55,
+        "minutes": 1,
+        "seconds": 36.35400390625
+      },
+      {
+        "frame": 56,
+        "minutes": 1,
+        "seconds": 37.906005859375
+      },
+      {
+        "frame": 57,
+        "minutes": 1,
+        "seconds": 39.388004302978516
+      },
+      {
+        "frame": 58,
+        "minutes": 1,
+        "seconds": 40.86500549316406
+      },
+      {
+        "frame": 59,
+        "minutes": 1,
+        "seconds": 42.30400466918945
+      },
+      {
+        "frame": 60,
+        "minutes": 1,
+        "seconds": 43.87100601196289
+      },
+      {
+        "frame": 61,
+        "minutes": 1,
+        "seconds": 45.388004302978516
+      },
+      {
+        "frame": 62,
+        "minutes": 1,
+        "seconds": 46.97900390625
+      }
+    ],
+    "scope": "Retained 481310 prefix/timer tail surround computed child traversal; 494820 advances the owner after drawing. Input-device return remains external; changed menu/timer context and camera-switch service requests fail explicitly. First snapshot starts inside children; final snapshot ends inside children."
+  },
+  "bikeEntries": 128,
+  "bikeTails": 128,
+  "nonzeroDifferenceReports": [],
+  "restoredHooks": 78,
+  "limitations": [
+    "Native debugger overhead affects elapsed time; this is not normal-rate validation.",
+    "Clock returns, device input, presentation internals and individual draw submissions remain explicit service boundaries.",
+    "Optional application service and changed application context fail explicitly; uncovered branches remain.",
+    "First and last captures are partial application frames.",
+    "Playable preview is unchanged."
+  ]
+}
