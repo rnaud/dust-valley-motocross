@@ -304,3 +304,10 @@ test('atomic actor-tree capture retains bike and visual trajectories with explic
  assert.deepEqual(r.visualDifferences,[]);assert.deepEqual(r.particleDifferences,[]);
  assert.equal(r.collisionStatus,'diverged');assert.equal(r.collisionDifferences.length,32);
 });
+
+test('world-entry observation preserves subsequent retained AI evidence without merging boundaries',()=>{
+ const f=fixture('ai-world-entry'),i=input(f),r=analyzeAiSubsteps(i,i.rows,rider(f),trace(f));
+ assert.equal(r.frames,4);assert.equal(r.substepBoundaries,214);assert.equal(r.componentWords,2568);
+ assert.deepEqual(r.visualDifferences,[]);assert.deepEqual(r.particleDifferences,[]);
+ assert.equal(r.collisionStatus,'diverged');assert.equal(r.collisionDifferences.length,32);
+});
