@@ -7503,3 +7503,58 @@ needed. The initialized active mode-0 path is proven here; initialization,
 alternate/crash camera paths, active tail controls and other scene methods are
 not closed by these checks. The scene/world/physics milestone remains active;
 there is no playable-preview behavior change in this commit.
+
+### Retained bikes now drive the chase camera and mesh projection (2026-11-16)
+
+Added optional `MCM_WORLD_CAMERA` observation to the existing world recorder.
+It captures camera dependencies at the same stopped world-entry boundary as both
+bikes, then observes three chase boundaries per later frame. All 49 hook guards
+are independently verified by `verify-world-capture.c`; the archive requires
+all three additional restored addresses when camera initialization is present.
+The standalone and joined recorders share the raw-memory reader.
+
+`world-chase-runtime.mjs` binds camera initialization to the exact world and bike
+checkpoint bytes. Each subsequent update projects **24 bike/rider/transform
+words from the retained simulation**, compares them to native entry assertions,
+and supplies those computed values to the joined chase pipeline. Later native
+bike values are never imported. Camera, filters, target, pose, FOV and matrices
+retain state across frames. Scene child order dispatches the camera before the
+world physics update. The first camera update predates the atomic world entry;
+its resulting state is initialization, not an invented extra update. The final
+recording fragment executes the observed camera/world prefix without fabricating
+unobserved children or particle ticks.
+
+`--chase-integration` requires scene scheduling and draw replay. Computed camera
+position feeds collision audio, and computed combined matrices feed both bike
+and rider mesh drawing. The native audio-position and projection rows are now
+assertions for these consumers. Four custom scene methods remain deferred:
+43e660, 411000, 423b50 and 4253e0.
+
+The accepted joined-v3 recording has **64 world updates: 12 throttle-on, then 52
+released**. It matches 128 bike entries, 128 bike tails/shared RNG, 252 rider and
+collider boundaries, 256 marker boundaries, 256 HUD boundaries, 567 particle
+boundaries, plus animation/mesh checks. The recovered camera matches 63 later
+updates / 9,450 output words and all 1,536 bike-input words (including initial
+checkpoint validation). There are zero differences. All 49 hooks, debugger,
+player input and player camera were restored. See `mcm-world-chase-validation.json`
+and `world-chase-wine11.json.br`.
+
+The earlier joined-v1 short run and joined-v2 64-update run also matched, but v2
+used a two-update pulse due to an environment-option mistake; it is not counted
+as 12-update acceleration coverage. The accepted fixture is v3, whose recorded
+protocol is explicitly tested. Another initial attempt rejected an existing
+output path before attaching and is not counted as a capture.
+
+Regression tests reject altered native camera matrices and altered native bike
+camera inputs, missing scene scheduling and incomplete camera phases. Runtime
+guards also reject mixed initialization. Four targeted tests, all **864 full-suite
+tests**, and the production build pass. The preceding c317721
+milestone completed Pages deployment successfully in run 43907959687.
+
+**Still open:** scene 481310 prefix/tail and outer 4997b0 integration, four custom
+scene methods, changing camera world/device context, alternate/crash camera
+paths, camera initialization and active tail controls. Viewport/draw invocation
+inputs and particle presentation still have recorded dependencies; active impact
+bursts, dynamic heap-boundary inputs and sustained normal-rate validation remain.
+This is a substantial reference-simulation integration; the playable preview is
+unchanged, and the full goal is not complete.

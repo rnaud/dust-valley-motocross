@@ -46,6 +46,7 @@ static int capture_world_entry(DWORD actor,DWORD esp){
  if(world_pursuit)fprintf(out,",\"steeringProtocol\":\"%s\"",world_pursuit==2?"player-pursuit-ai-v2":"player-pursuit-ai-v1");
  if(world_throttle_pulse)fprintf(out,",\"inputProtocol\":\"%s\"",world_throttle_pulse==4?"player-throttle-frames-0-through-95":world_throttle_pulse==3?"player-throttle-frames-0-through-47":world_throttle_pulse==2?"player-throttle-frames-0-through-11":"player-throttle-frames-1-through-2");
  fprintf(out,"}\n");if(ferror(out))ok=0;if(fclose(out))ok=0;if(!ok)return 0;
+ if(capture_world_camera&&!capture_initial_world_camera(dir,view,dt))return 0;
  const char*oldBoundary=export_boundary;export_boundary="world-frame-entry";
  snprintf(path,sizeof path,"%s\\world-actor-tree.json",dir);ok=capture_actor_tree(bikes[0],path,id);export_boundary=oldBoundary;if(!ok)return 0;
  for(unsigned i=0;i<n;i++){

@@ -9,16 +9,19 @@ const visibility=nodes=>nodes.flatMap(n=>[n.flag12c,...bits(n.fields240)]);
 const filterWords=c=>c.filters.flatMap(f=>bits(f));
 // Entry-only numerical evolution. The intermediate FOV-entry row is an
 // assertion that uncaptured mode/FOV buttons caused no changes; never an input.
-export function analyzeChaseFrame(rows,terrain){
- let state=null,pending=null,tail=null,frames=0,words=0,expectedPhase='source-entry',cameraAddress=null,identity=null,entry=null;
+export function createChaseFrameComparison(terrain,{initial=null,projectEntry=null}={}){
+ let state=null,pending=null,tail=null,frames=initial?1:0,words=0,expectedPhase='source-entry',cameraAddress=null,identity=null,entry=null;
  const fixedFields=[10,11,61,72,74,78,88,91,93,98,99,100,101];
- for(const r of rows){
-  if(!['source-entry','fov-entry','updated'].includes(r.phase))continue;
+ const observe=observed=>{
+  if(!['source-entry','fov-entry','updated'].includes(observed.phase))return;
+  let r=observed;
+  if(projectEntry&&r.phase==='source-entry')r=projectEntry(r);
   assert.equal(r.phase,expectedPhase,'Missing chase frame boundary');
   assert.equal(r.frame,frames,'Nonsequential chase frame');
   if(r.phase==='source-entry'){
    assert.equal(r.inputs.length,102);const v=floats(r.inputs);
    if(!state){
+    const r=initial??observed,v=floats(r.inputs);
     cameraAddress=r.camera;
     identity={pointers:r.pointers.slice(),fixed:fixedFields.map(i=>r.inputs[i])};
     state={controller:{settings:v.slice(50,54),eyeResetFlag:r.inputs[28],restoreFlag:r.inputs[73],previousMode:r.inputs[75],target:floats(r.result.slice(0,3)),camera:{zoom:v[49],pitch:v[23],radius:v[24],yaw:v[26],orbitAngle:v[27],backup:v.slice(33,36)},axis:v.slice(20,23),filters:Array.from({length:6},(_,i)=>floats(r.filters.slice(i*4,i*4+4)))},renderCamera:{values:Array.from(floats(r.cameraPose.slice(0,10))),upValid:r.cameraPose[10],forwardValid:r.cameraPose[11],refreshCounter:r.cameraPose[12],retainedMode:r.inputs[88],fov:v[90],refreshByte:r.inputs[92],skipUpdate:r.inputs[91],near:v[98],far:v[99],aspect:v[100],width:r.inputs[101]},nodes:[0,1].map(i=>({flag12c:r.nodeVisibility[i*9],fields240:floats(r.nodeVisibility.slice(i*9+1,i*9+9))})),fovFilter:v.slice(94,98),matrices:floats(r.matrices)};
@@ -71,7 +74,13 @@ export function analyzeChaseFrame(rows,terrain){
    assert.deepEqual(r.matrices,bits(state.matrices),'Frame matrices differ');
    words+=150;frames++;pending=null;tail=null;expectedPhase='source-entry';
   }
- }
- assert.ok(state&&!pending&&expectedPhase==='source-entry','Incomplete chase frames');
- return {frames,words,intermediateEvolutionInputs:0,tailControlAssertions:frames};
+ };
+ return {observe,get state(){return state;},finish(){
+  assert.ok(state&&!pending&&expectedPhase==='source-entry','Incomplete chase frames');
+  const count=frames-(initial?1:0);
+  return {frames:count,words,intermediateEvolutionInputs:0,tailControlAssertions:count};
+ }};
+}
+export function analyzeChaseFrame(rows,terrain){
+ const comparison=createChaseFrameComparison(terrain);for(const row of rows)comparison.observe(row);return comparison.finish();
 }

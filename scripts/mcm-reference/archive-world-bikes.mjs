@@ -61,12 +61,16 @@ for(const name of fs.readdirSync(directory).sort()){
 }
 if(animationBlocks.length)files['world-animation-observations.json']=JSON.stringify(animationBlocks);
 const cleanup=files['cleanup.log'];assert.match(cleanup,/debugger=0 clean=1/);assert.ok(!cleanup.includes('restored=0'));
-const restored=[...cleanup.matchAll(/([0-9a-f]{8}) restored=1/g)].map(m=>m[1]);assert.equal(new Set(restored).size,46);
+const restored=[...cleanup.matchAll(/([0-9a-f]{8}) restored=1/g)].map(m=>m[1]);assert.equal(new Set(restored).size,files['world-camera-initial.json']?49:46);
+if(files['world-camera-initial.json']){
+ assert.ok(files['world-camera-observations.jsonl'],'Missing joint camera observations');
+ for(const address of ['0047b107','0047db8f','0047dbdc'])assert.ok(restored.includes(address));
+}
 for(const address of ['004590b0','004a52c0','004a54b6','004ad0e1','004ad5a2','004bf195'])assert.ok(restored.includes(address));
 const count=Number(files['capture.log'].match(/captured=(\d+) status=1/)?.[1]);assert.ok(count>=4);assert.equal(retainedRows['frames.jsonl'].physicsRows,count);const completeFrames=retainedRows['frames.jsonl'].selected;
 assert.equal(files['world-bikes.jsonl'].trim().split('\n').length,completeFrames*4,'Capture ended inside a world bike pair');
 const selected=files['camera-selection.log'].match(/target_changed=([0-9a-f]+)->([0-9a-f]+) verified=1/);assert.ok(selected);assert.ok(files['camera-restoration.log'].includes(`target_changed=${selected[2]}->${selected[1]} verified=1`));
 validateWorldInputProtocol(files);
-const provenance={executableSha256,sourceSha256,fileSha256:Object.fromEntries(Object.entries(files).map(([name,value])=>[name,hash(value)])),retainedRows,note:'Combined-world boundary subset. Full original files are hashed before filtering. Frame output retains after-update only with losslessly deduplicated animation allocation assertions; rider output retains after-rider and scene-position only. Native grid pointer-transition evidence is retained separately; it is not fed into physics. Emitter, pool and particle presentation boundaries are retained separately in particle-observations.jsonl as assertion targets for shared-world integration. Other stage observations are not used by this comparator. Inputs are captured separately from state assertion targets; no later physics state is imported.'};
+const provenance={executableSha256,sourceSha256,fileSha256:Object.fromEntries(Object.entries(files).map(([name,value])=>[name,hash(value)])),retainedRows,note:'Combined-world boundary subset. Full original files are hashed before filtering. Frame output retains after-update only with losslessly deduplicated animation allocation assertions; rider output retains after-rider and scene-position only. Native grid pointer-transition evidence is retained separately; it is not fed into physics. Emitter, pool and particle presentation boundaries are retained separately in particle-observations.jsonl as assertion targets for shared-world integration. Optional world-camera-initial.json is atomic initialization; world-camera-observations.jsonl retains later camera assertions and external world/device context separately. Other stage observations are not used by this comparator. Inputs are captured separately from state assertion targets; no later physics state is imported.'};
 fs.writeFileSync(output,brotliCompressSync(Buffer.from(JSON.stringify({provenance,files})),{params:{[constants.BROTLI_PARAM_QUALITY]:6}}));
 console.log({frames:completeFrames,bytes:fs.statSync(output).size,retainedRows});

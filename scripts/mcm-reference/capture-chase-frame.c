@@ -17,25 +17,9 @@ static int armed[HOOK_COUNT];
 static int fatal_stop(void){fprintf(stderr,"Unrecoverable debugger cleanup; stopping reference to avoid executing armed hooks\n");TerminateProcess(process,5);return 5;}
 static int readmem(DWORD a,void*b,SIZE_T n){SIZE_T got;return ReadProcessMemory(process,(void*)(uintptr_t)a,b,n,&got)&&got==n;}
 static int writebyte(DWORD a,BYTE b){SIZE_T n;return WriteProcessMemory(process,(void*)(uintptr_t)a,&b,1,&n)&&n==1&&FlushInstructionCache(process,(void*)(uintptr_t)a,1);}
-// Raw dependencies, captured atomically while stopped. Only the first entry
-// initializes camera state; later bytes are assertions or external bike/input data.
-static int block(FILE*out,DWORD address,DWORD size,int*first){
- BYTE bytes[0x1330];if(!address||size>sizeof bytes||!readmem(address,bytes,size))return 0;
- fprintf(out,"%s{\"address\":%lu,\"size\":%lu,\"hex\":\"",*first?"":",",address,size);*first=0;
- for(DWORD i=0;i<size;i++)fprintf(out,"%02x",bytes[i]);fprintf(out,"\"}");return 1;
-}
-static int snapshot(FILE*out,const char*phase,DWORD frame,DWORD camera,DWORD dt){
- DWORD app,owner,target,terrain,rider,root,renderRider,renderRoot,devices,keyboard,joystick,filter;
- if(!readmem(0x4e4fb4,&app,4)||!readmem(camera+0x1c,&owner,4)||!readmem(camera+0x1ec,&target,4)||!readmem(camera+0x1f0,&terrain,4)||
- !readmem(target+0x874,&rider,4)||!readmem(target+0x434,&root,4)||!readmem(target+0xc8c,&renderRider,4)||!readmem(renderRider+0x434,&renderRoot,4)||
- !readmem(app+0x10,&devices,4)||!readmem(devices+0x24,&keyboard,4)||!readmem(devices+0xc,&joystick,4))return 0;
- fprintf(out,"{\"phase\":\"%s\",\"frame\":%lu,\"camera\":%lu,\"deltaBits\":%lu,\"blocks\":[",phase,frame,camera,dt);int first=1;
- DWORD pairs[][2]={{0x4e4fb4,4},{0x51edb0,12},{camera,0x254},{app,0x1330},{owner,0x40},{target,0xcc8},{terrain,0xa08},{rider,0x3ac},{root,0x260},{renderRider+0x434,4},{renderRoot,0x260},{devices,0x28},{keyboard,0x1100}};
- for(unsigned i=0;i<sizeof pairs/sizeof pairs[0];i++)if(!block(out,pairs[i][0],pairs[i][1],&first))return 0;
- if(joystick&&!block(out,joystick,0x600,&first))return 0;
- for(unsigned o=0x210;o<=0x228;o+=4)if(!readmem(camera+o,&filter,4)||!filter||!block(out,filter,16,&first))return 0;
- fprintf(out,"]}\n");return !ferror(out);
-}
+#define read_memory readmem
+#include "capture-chase-memory.h"
+#undef read_memory
 int main(int argc,char**argv){
  if(argc!=4)return 2;
  DWORD pid=strtoul(argv[1],0,0),limit=strtoul(argv[3],0,0);if(!pid||!limit||limit>10000)return 2;
@@ -67,7 +51,7 @@ int main(int argc,char**argv){
      else collecting=initialized!=0;
     }
     if(collecting&&!done){
-     if(match!=phaseIndex||!readmem(c.Ebp+8,&dt,4)||!snapshot(out,phases[match],frame,c.Esi,dt))done=2;
+     if(match!=phaseIndex||!readmem(c.Ebp+8,&dt,4)||!capture_chase_memory(out,phases[match],frame,c.Esi,dt))done=2;
      else {start=GetTickCount();phaseIndex=(phaseIndex+1)%HOOK_COUNT;if(match==2)frame++;}
     }
     if(!writebyte(addresses[match],instructions[match][0])){fprintf(stderr,"Cannot restore breakpoint\n");return fatal_stop();}armed[match]=0;c.Eip=addresses[match];c.EFlags|=0x100;c.ContextFlags=CONTEXT_CONTROL;
