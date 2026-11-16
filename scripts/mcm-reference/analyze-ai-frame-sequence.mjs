@@ -21,7 +21,17 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents,{diagnosticBody=f
  const loaded=runtime?.loaded??loadLiveFrameBootstrap({...inputs,row:first}),c=loaded.context;
  const meshDraw=inputs.draws?connectLiveMeshDraw(runtime,first):null;let drawIndex=0;
  let riderTicks=0,riderBytes=0,eventIndex=1;
- const particleDifferences=[],worldQueries=[];
+ const particleDifferences=[],worldQueries=[],poolReports=[];
+ const comparePool=(event,frame,stage)=>{
+  const start=particleDifferences.length;let words=0;
+  assert.equal(event.poolAddress,riderEvents[0].poolAddress,'Shared pool identity');
+  assert.equal(event.particleStride,72);assert.equal(event.particleOrder,'initial-allocation-order');
+  for(const [name,actual,hex]of [['pool',runtime.external.poolBytes,event.poolHex],['particles',runtime.external.particleBytes,event.particlesHex]]){
+   const expected=Buffer.from(hex,'hex');assert.equal(actual.length,expected.length);
+   for(let o=0;o<expected.length;o+=4){words++;const a=actual.readUInt32LE(o),b=expected.readUInt32LE(o);if(a!==b)particleDifferences.push({frame,stage,name,offset:o,actual:a,expected:b});}
+  }
+  return {words,differences:particleDifferences.length-start};
+ };
  const bodyDifferences=[];
  const sceneReports=[];let pendingScene=null;
  const visualDifferences=[],intervals=[],substeps=[];let bodyBoundaries=0,bodyBytes=0;
@@ -81,6 +91,15 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents,{diagnosticBody=f
    while(riderEvents[eventIndex]?.completedBikeFrames===frame+1){
     drainDraws();
     const before=riderEvents[eventIndex++];
+    if(before.phase==='before-pool'){
+     const after=riderEvents[eventIndex++];assert.equal(after?.phase,'after-pool','Missing pool return');
+     for(const e of [before,after]){assert.equal(e.completedBikeFrames,frame+1);assert.equal(e.bikeActive,0);assert.equal(e.riderActive,0);}
+     assert.equal(after.dtBits,before.dtBits);assert.equal(after.paused,before.paused);
+     const entry=comparePool(before,frame,'before-pool');
+     runtime.stepPool({delta:bitsFloat(before.dtBits),paused:before.paused});
+     const exit=comparePool(after,frame,'after-pool');
+     poolReports.push({frame,dtBits:before.dtBits,paused:before.paused,entry,exit});continue;
+    }
     if(before.phase==='scene-entry'){
      assert.ok(runtime.scenePosition,'Missing initial scene inputs');assert.equal(pendingScene,null,'Overlapping scene queries');
      const {address,state}=runtime.scenePosition;
@@ -121,5 +140,5 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents,{diagnosticBody=f
  if(riderEvents)assert.equal(eventIndex,riderEvents.length,'Unconsumed rider events');
  assert.equal(pendingScene,null,'Incomplete scene query');
  if(meshDraw){meshDraw.complete();assert.equal(drawIndex,inputs.draws.length,'Unconsumed draws');}
- return {frames:intervals.length,intervals,substeps,bodyBoundaries,bodyBytes,randomDraws:loaded.random.calls,visualDifferences,...(meshDraw?{drawReports:meshDraw.reports,drawNodeWords:meshDraw.nodeWords}:{}),...(diagnosticBody?{diagnosticBody:true,bodyDifferences}:{}),...(riderEvents?{riderTicks,riderBytes,particleDifferences,worldQueries,...(runtime.scenePosition?{sceneReports}:{})}:{})};
+ return {frames:intervals.length,intervals,substeps,bodyBoundaries,bodyBytes,randomDraws:loaded.random.calls,visualDifferences,...(meshDraw?{drawReports:meshDraw.reports,drawNodeWords:meshDraw.nodeWords}:{}),...(poolReports.length?{poolReports}:{}),...(diagnosticBody?{diagnosticBody:true,bodyDifferences}:{}),...(riderEvents?{riderTicks,riderBytes,particleDifferences,worldQueries,...(runtime.scenePosition?{sceneReports}:{})}:{})};
 }

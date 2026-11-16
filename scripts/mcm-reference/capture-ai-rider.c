@@ -35,3 +35,13 @@ static int trace_ai_rider(const char*phase,DWORD rider,DWORD dt){
  }
  fprintf(out,"]}\n");return !ferror(out)&&fflush(out)==0;
 }
+
+// Actual shared-pool scheduling, kept in the same event sequence as rider and
+// transform queries. No assumed relationship to bike or rider delta.
+static int trace_ai_pool(const char*phase){
+ DWORD world,paused;
+ if(!ai_rider_out||!read_memory(0x4e4fb4,&world,4)||!read_memory(world+0x132c,&paused,4))return 0;
+ fprintf(ai_rider_out,"{\"phase\":\"%s\",\"captureId\":\"%s\",\"eventSequence\":%lu,\"completedBikeFrames\":%lu,\"bikeActive\":%d,\"riderActive\":%d,\"paused\":%lu,\"dtBits\":%lu",phase,frame_capture_id,ai_rider_sequence++,player_frame,player_active,ai_rider_active,paused,ai_pool_dt);
+ if(!capture_retained_particle_pool(ai_rider_out,retained_pool_address))return 0;
+ fprintf(ai_rider_out,"}\n");return !ferror(ai_rider_out)&&fflush(ai_rider_out)==0;
+}

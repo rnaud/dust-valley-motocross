@@ -103,3 +103,25 @@ test('rider orientation resets use the base component through visible bike and r
  assert.equal(visible.reduce((n,d)=>n+d.queries,0),168);
  assert.equal(r.particleDifferences.length,47716);
 });
+
+test('shared pool ticks retain state using their actual native timing and report external writers',()=>{
+ const f=fixture('ai-pool-world');
+ for(const [name,value]of Object.entries(f.files))assert.equal(createHash('sha256').update(value).digest('hex'),f.provenance.fileSha256[name]);
+ assert.match(f.files['cleanup.log'],/debugger=0 clean=1/);assert.equal((f.files['cleanup.log'].match(/restored=1/g)||[]).length,22);
+ const i=input(f),events=rider(f),r=analyzeAiSubsteps(i,i.rows,events,trace(f));
+ assert.equal(r.frames,8);assert.equal(r.substepBoundaries,474);assert.equal(r.componentWords,5688);assert.equal(r.bodyBoundaries,32);
+ assert.deepEqual(r.visualDifferences,[]);assert.equal(r.poolReports.length,7);
+ assert.deepEqual(r.poolReports.map(p=>p.dtBits),events.filter(e=>e.phase==='before-pool').map(e=>e.dtBits));
+ assert.ok(r.poolReports.every(p=>p.entry.words===20049&&p.exit.words===20049));
+ assert.equal(r.particleDifferences.length,99534);
+ assert.deepEqual(r.particleDifferences[0],{frame:0,stage:'before-rider',name:'pool',offset:0x30,actual:12,expected:107});
+ // Corrupt one observed age at pool entry. Only that comparison changes:
+ // native output is not imported into subsequent retained state.
+ const entry=events.find(e=>e.phase==='before-pool'),bytes=Buffer.from(entry.particlesHex,'hex');bytes[0x14]^=1;entry.particlesHex=bytes.toString('hex');
+ const changed=analyzeAiSubsteps(i,i.rows,events,trace(f));
+ assert.deepEqual(changed.poolReports.map(p=>p.exit),r.poolReports.map(p=>p.exit));
+ assert.deepEqual(changed.particleDifferences.filter(d=>d.stage!=='before-pool'),r.particleDifferences.filter(d=>d.stage!=='before-pool'));
+ assert.notDeepEqual(changed.particleDifferences.filter(d=>d.stage==='before-pool'),r.particleDifferences.filter(d=>d.stage==='before-pool'));
+ const missing=rider(f);missing.splice(missing.findIndex(e=>e.phase==='after-pool'),1);missing.forEach((e,n)=>e.eventSequence=n);
+ assert.throws(()=>analyzeAiSubsteps(i,i.rows,missing,trace(f)),/Missing pool return/);
+});
