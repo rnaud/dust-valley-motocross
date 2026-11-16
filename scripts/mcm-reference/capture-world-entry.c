@@ -50,6 +50,7 @@ static int capture_world_entry(DWORD actor,DWORD esp){
  const char*oldBoundary=export_boundary;export_boundary="world-frame-entry";
  snprintf(path,sizeof path,"%s\\world-actor-tree.json",dir);ok=capture_actor_tree(bikes[0],path,id);export_boundary=oldBoundary;if(!ok)return 0;
  if(capture_world_marker_draw&&!capture_initial_marker_draw(dir,id))return 0;
+ if(capture_world_scene_tick&&!capture_initial_scene_tick(dir,actor,dt))return 0;
  if(capture_world_renderer&&!capture_initial_world_renderer(dir,dt))return 0;
  for(unsigned i=0;i<n;i++){
   DWORD bike=bikes[i];for(unsigned j=0;j<i;j++)if(bikes[j]==bike)return 0;

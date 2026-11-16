@@ -1,7 +1,7 @@
 import {tickMcmActorChildren} from '../../src/physics/mcm/actor-children-tick.js';
 import {tickMcmParticlePool} from '../../src/physics/mcm/particle-pool-tick.js';
-// The child-walk inside original 481310. Camera switching/environment work
-// before this walk and scene timer work afterward are not implemented here.
+// The child walk inside original 481310. The optional world-scene-tick adapter
+// surrounds this traversal with retained prefix and timer execution.
 export function connectWorldSceneChildren(runtime,{queue=null,display=null}={}){
  const {tree,entry}=runtime.world,world=tree.nodes.get(entry.actor),pool=tree.nodes.get(runtime.particles.address),scene=world?.parent;
  if(!scene||scene.update!==0x481310||pool?.parent!==scene||pool.update!==0x43b200)throw Error('Missing shared scene/world/pool topology');

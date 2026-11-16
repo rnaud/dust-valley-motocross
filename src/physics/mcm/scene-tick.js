@@ -1,7 +1,7 @@
 // Original 481310. Dependencies are live memory reads and explicit services;
 // child traversal may change the menu/clock gates before the tail reads them.
-export function tickMcmScene(address,delta,memory,services){
- const {u32,f32,put32,putFloat}=memory;
+export function beginMcmScene(address,delta,memory,services){
+ const {u32,f32,put32}=memory;
  const invoke=(name,...args)=>{
   if(typeof services[name]!=='function')throw Error(`Unconnected scene service: ${name}`);
   return services[name](...args);
@@ -30,7 +30,12 @@ export function tickMcmScene(address,delta,memory,services){
    invoke('positionEnvironment',shape,[f32(camera+0x144),f32(shape+0x1c),f32(u32(owner+0x2c)+0x14c)],0,0);
   }
  }
- invoke('children',address,delta);
+}
+
+// 481407 tail, also needed when an atomic checkpoint starts inside children.
+export function finishMcmScene(address,delta,memory){
+ const {u32,f32,put32,putFloat}=memory;
+ const app=()=>u32(0x4e4fb4);
  if(u32(app()+0x614))return 1;
  if(!u32(u32(app()+0x618)+0x38)){
   putFloat(address+0x6c,f32(address+0x6c)+delta);
@@ -47,4 +52,11 @@ export function tickMcmScene(address,delta,memory,services){
   }
  }
  return 1;
+}
+
+export function tickMcmScene(address,delta,memory,services){
+ beginMcmScene(address,delta,memory,services);
+ if(typeof services.children!=='function')throw Error('Unconnected scene service: children');
+ services.children(address,delta);
+ return finishMcmScene(address,delta,memory);
 }

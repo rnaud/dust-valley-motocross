@@ -1,0 +1,726 @@
+{
+  "scope": "Retained 481310 prefix/timer tail surround computed child traversal; 494820 advances the owner after drawing. Input-device return remains external; changed menu/timer context and camera-switch service requests fail explicitly. First snapshot starts inside children; final snapshot ends inside children.",
+  "fixture": "tests/fixtures/mcm/world-scene-tick-wine11.json.br",
+  "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+  "frames": 64,
+  "sceneTickReport": {
+    "heads": 63,
+    "tails": 63,
+    "inputQueries": 63,
+    "positions": 0,
+    "ownerFrames": 63,
+    "comparedWords": 22932,
+    "reports": [
+      {
+        "frame": 0,
+        "minutes": 0,
+        "seconds": 1.6460001468658447
+      },
+      {
+        "frame": 1,
+        "minutes": 0,
+        "seconds": 7.094000816345215
+      },
+      {
+        "frame": 2,
+        "minutes": 0,
+        "seconds": 8.72900104522705
+      },
+      {
+        "frame": 3,
+        "minutes": 0,
+        "seconds": 10.244001388549805
+      },
+      {
+        "frame": 4,
+        "minutes": 0,
+        "seconds": 11.835000991821289
+      },
+      {
+        "frame": 5,
+        "minutes": 0,
+        "seconds": 13.533000946044922
+      },
+      {
+        "frame": 6,
+        "minutes": 0,
+        "seconds": 15.10300064086914
+      },
+      {
+        "frame": 7,
+        "minutes": 0,
+        "seconds": 16.606000900268555
+      },
+      {
+        "frame": 8,
+        "minutes": 0,
+        "seconds": 18.205001831054688
+      },
+      {
+        "frame": 9,
+        "minutes": 0,
+        "seconds": 19.80000114440918
+      },
+      {
+        "frame": 10,
+        "minutes": 0,
+        "seconds": 21.36100196838379
+      },
+      {
+        "frame": 11,
+        "minutes": 0,
+        "seconds": 22.93800163269043
+      },
+      {
+        "frame": 12,
+        "minutes": 0,
+        "seconds": 24.520002365112305
+      },
+      {
+        "frame": 13,
+        "minutes": 0,
+        "seconds": 26.213003158569336
+      },
+      {
+        "frame": 14,
+        "minutes": 0,
+        "seconds": 27.886003494262695
+      },
+      {
+        "frame": 15,
+        "minutes": 0,
+        "seconds": 29.4530029296875
+      },
+      {
+        "frame": 16,
+        "minutes": 0,
+        "seconds": 31.090003967285156
+      },
+      {
+        "frame": 17,
+        "minutes": 0,
+        "seconds": 32.695003509521484
+      },
+      {
+        "frame": 18,
+        "minutes": 0,
+        "seconds": 34.320003509521484
+      },
+      {
+        "frame": 19,
+        "minutes": 0,
+        "seconds": 36.00300216674805
+      },
+      {
+        "frame": 20,
+        "minutes": 0,
+        "seconds": 37.62900161743164
+      },
+      {
+        "frame": 21,
+        "minutes": 0,
+        "seconds": 39.39200210571289
+      },
+      {
+        "frame": 22,
+        "minutes": 0,
+        "seconds": 41.03700256347656
+      },
+      {
+        "frame": 23,
+        "minutes": 0,
+        "seconds": 42.763004302978516
+      },
+      {
+        "frame": 24,
+        "minutes": 0,
+        "seconds": 44.302005767822266
+      },
+      {
+        "frame": 25,
+        "minutes": 0,
+        "seconds": 46.04600524902344
+      },
+      {
+        "frame": 26,
+        "minutes": 0,
+        "seconds": 47.65800476074219
+      },
+      {
+        "frame": 27,
+        "minutes": 0,
+        "seconds": 49.267005920410156
+      },
+      {
+        "frame": 28,
+        "minutes": 0,
+        "seconds": 50.824005126953125
+      },
+      {
+        "frame": 29,
+        "minutes": 0,
+        "seconds": 52.45700454711914
+      },
+      {
+        "frame": 30,
+        "minutes": 0,
+        "seconds": 54.07500457763672
+      },
+      {
+        "frame": 31,
+        "minutes": 0,
+        "seconds": 55.603004455566406
+      },
+      {
+        "frame": 32,
+        "minutes": 0,
+        "seconds": 57.212005615234375
+      },
+      {
+        "frame": 33,
+        "minutes": 0,
+        "seconds": 58.96400451660156
+      },
+      {
+        "frame": 34,
+        "minutes": 1,
+        "seconds": 0.5410041809082031
+      },
+      {
+        "frame": 35,
+        "minutes": 1,
+        "seconds": 2.119004249572754
+      },
+      {
+        "frame": 36,
+        "minutes": 1,
+        "seconds": 3.739004373550415
+      },
+      {
+        "frame": 37,
+        "minutes": 1,
+        "seconds": 5.198004722595215
+      },
+      {
+        "frame": 38,
+        "minutes": 1,
+        "seconds": 6.865004539489746
+      },
+      {
+        "frame": 39,
+        "minutes": 1,
+        "seconds": 8.525004386901855
+      },
+      {
+        "frame": 40,
+        "minutes": 1,
+        "seconds": 10.012004852294922
+      },
+      {
+        "frame": 41,
+        "minutes": 1,
+        "seconds": 11.652005195617676
+      },
+      {
+        "frame": 42,
+        "minutes": 1,
+        "seconds": 13.17800521850586
+      },
+      {
+        "frame": 43,
+        "minutes": 1,
+        "seconds": 14.853005409240723
+      },
+      {
+        "frame": 44,
+        "minutes": 1,
+        "seconds": 16.45200538635254
+      },
+      {
+        "frame": 45,
+        "minutes": 1,
+        "seconds": 18.004005432128906
+      },
+      {
+        "frame": 46,
+        "minutes": 1,
+        "seconds": 19.82500457763672
+      },
+      {
+        "frame": 47,
+        "minutes": 1,
+        "seconds": 21.376005172729492
+      },
+      {
+        "frame": 48,
+        "minutes": 1,
+        "seconds": 22.839004516601562
+      },
+      {
+        "frame": 49,
+        "minutes": 1,
+        "seconds": 24.42000389099121
+      },
+      {
+        "frame": 50,
+        "minutes": 1,
+        "seconds": 25.993003845214844
+      },
+      {
+        "frame": 51,
+        "minutes": 1,
+        "seconds": 27.52300453186035
+      },
+      {
+        "frame": 52,
+        "minutes": 1,
+        "seconds": 29.02900505065918
+      },
+      {
+        "frame": 53,
+        "minutes": 1,
+        "seconds": 30.480005264282227
+      },
+      {
+        "frame": 54,
+        "minutes": 1,
+        "seconds": 32.05300521850586
+      },
+      {
+        "frame": 55,
+        "minutes": 1,
+        "seconds": 33.53400421142578
+      },
+      {
+        "frame": 56,
+        "minutes": 1,
+        "seconds": 35.05400466918945
+      },
+      {
+        "frame": 57,
+        "minutes": 1,
+        "seconds": 36.36000442504883
+      },
+      {
+        "frame": 58,
+        "minutes": 1,
+        "seconds": 37.730003356933594
+      },
+      {
+        "frame": 59,
+        "minutes": 1,
+        "seconds": 39.23600387573242
+      },
+      {
+        "frame": 60,
+        "minutes": 1,
+        "seconds": 40.7390022277832
+      },
+      {
+        "frame": 61,
+        "minutes": 1,
+        "seconds": 42.191001892089844
+      },
+      {
+        "frame": 62,
+        "minutes": 1,
+        "seconds": 43.694000244140625
+      }
+    ],
+    "scope": "Retained 481310 prefix/timer tail surround computed child traversal; 494820 advances the owner after drawing. Input-device return remains external; changed menu/timer context and camera-switch service requests fail explicitly. First snapshot starts inside children; final snapshot ends inside children."
+  },
+  "markerDrawReport": {
+    "draws": 63,
+    "queries": 63,
+    "comparedWords": 7749,
+    "reports": [
+      {
+        "frame": 0,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 1,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 2,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 3,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 4,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 5,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 6,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 7,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 8,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 9,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 10,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 11,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 12,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 13,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 14,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 15,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 16,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 17,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 18,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 19,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 20,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 21,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 22,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 23,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 24,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 25,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 26,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 27,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 28,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 29,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 30,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 31,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 32,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 33,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 34,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 35,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 36,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 37,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 38,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 39,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 40,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 41,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 42,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 43,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 44,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 45,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 46,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 47,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 48,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 49,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 50,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 51,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 52,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 53,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 54,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 55,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 56,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 57,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 58,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 59,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 60,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 61,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      },
+      {
+        "frame": 62,
+        "result": 1,
+        "accepted": 1,
+        "queries": 1
+      }
+    ],
+    "scope": "Computed marker gates, shape projection and component queries on retained marker state. Draw invocation, viewport and renderer mode remain external boundary inputs; no later marker outputs seed simulation."
+  },
+  "terrainNodeWords": 106394112,
+  "terrainAllocatorReport": {
+    "remainingAllocatorEvents": 0,
+    "allocatorGlobalDifferences": []
+  },
+  "differences": [],
+  "restoredHooks": 70,
+  "debuggerAttachedAfter": false
+}

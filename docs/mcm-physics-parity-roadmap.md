@@ -10,11 +10,13 @@
 | Riders, collisions and recovery | The joined pursuit run matches 636 rider/collider boundaries, 56 contact callbacks and two player crash/recovery sequences. Separate retained-world particle recovery coverage extends to 163 updates. | Broader collision/impact paths and recovery conditions; three player-following crash sequences now match. |
 | Shared particles | Dust/spray/exhaust/rider emitters and the shared pool run from retained world/scene ordering. The 64-update joined run matches 567 particle boundaries; a separate 163-update recovery run matches 1,463. | Six active impact checks and 1,573 particle boundaries now match in the 166-update run. Dynamic heap-boundary behavior and remaining particle presentation inputs remain. |
 | Chase camera and drawing | Initialized active and crash chase state is retained. It reads 27 simulated bike/rider/transform words per entry; the player-camera run matches 165 updates / 24,750 base output words plus retained crash-height checks. Audio position and mesh projection are derived. | Initialization, fixed-target/rider-position camera paths, active tail controls and remaining world/device context. Viewport and draw invocation data remain external. |
-| Remaining scene execution | World, child actors, markers, HUD, shared pool and active chase camera are connected. Scene 481310 switching/timer sequence matches 4,096 isolated original executions. | Connect scene prefix/tail and outer 4997b0. Display timer, full fade actors and draw-time visibility transitions are connected; graphics refresh and marker drawing-cache execution remain external. One custom scene update remains: 411000. Draw invocation scheduling and pixel drawing are still external. Scene renderer 43e660 now uses the retained camera; device return codes remain external. Event-queue allocator integration remains open; its empty live path is now connected. |
+| Marker drawing | Retained marker gates, shape projection and mesh-component queries match 256 boundaries and 63 draws in a 64-update run; local/world matrices and cache-valid flags all match. | Draw invocation, viewport and renderer mode remain external. Uncached geometry bounds and alternate/loading paths need integration. |
+| Terrain and allocation | Node traversal/update, mesh emission and shared AI/terrain allocation accounting are connected; 106,394,112 node words match in a 64-update run. | Full 411000 actor orchestration/clocks, optional terrain branches and CRT heap/pointer reconstruction. |
+| Remaining scene execution | Scene 481310 prefix/timer tail and 494820 owner advancement now surround retained child execution: 63 updates, including a minute rollover, match 22,932 words. HUD, queue empty path, display timers/fade/visibility and scene renderer are connected. | Outer 467f40/4997b0 clock/input/render scheduling, live camera-switch and changed menu/timer paths, active event-queue allocator integration, graphics refresh and pixel drawing. Input-device and device return codes remain external. |
 | Observation quality | Original byte guards, independent hook restoration, debugger detachment, input restoration and camera restoration are checked. No later bike state is imported into replay. | Debugger overhead still changes observed timing. Normal-rate parity remains unproved. |
 | Playable preview | Recent milestones improve reference simulation and validation on main. | These integrations have not yet changed the playable preview; separate integration and gameplay testing remain. |
 
-Current evidence: [joined full display visibility](mcm-world-scene-display-visibility-validation.json), [joined display state](mcm-world-scene-display-validation.json), [joined scene renderer](mcm-world-scene-renderer-validation.json), [joined scene queue](mcm-world-scene-queue-validation.json), [player-camera crashes and impacts](mcm-world-player-camera-recovery-validation.json), [joined pursuit/recovery](mcm-world-chase-recovery-validation.json), [joined world/camera](mcm-world-chase-validation.json), [scene sequence](mcm-scene-tick-validation.json), and [retained scene pool](mcm-scene-pool-validation.json). The earlier approximately 70% planning estimate was not a coverage score and has not been replaced by a measured percentage. Passing tests prove the boundaries they compare, not complete gameplay equivalence.
+Current evidence: [joined scene prefix/timer/owner](mcm-world-scene-tick-validation.json), [joined marker drawing](mcm-world-marker-draw-validation.json), [joined terrain emission/accounting](mcm-world-terrain-emission-validation.json), [joined full display visibility](mcm-world-scene-display-visibility-validation.json), [joined display state](mcm-world-scene-display-validation.json), [joined scene renderer](mcm-world-scene-renderer-validation.json), [joined scene queue](mcm-world-scene-queue-validation.json), [player-camera crashes and impacts](mcm-world-player-camera-recovery-validation.json), [joined pursuit/recovery](mcm-world-chase-recovery-validation.json), [joined world/camera](mcm-world-chase-validation.json), [scene sequence](mcm-scene-tick-validation.json), and [retained scene pool](mcm-scene-pool-validation.json). The earlier approximately 70% planning estimate was not a coverage score and has not been replaced by a measured percentage. Passing tests prove the boundaries they compare, not complete gameplay equivalence.
 
 ## Terrain mesh generation and shared accounting (2026-11-16)
 
@@ -7921,3 +7923,52 @@ active.
 Validation: all 934 tests pass (132.95 seconds), production build passes, and
 whitespace checks pass. Shipping this marker draw milestone to main under the
 requested milestone cadence.
+
+
+### Scene prefix, timer tail and frame-owner advance connected (2026-11-16)
+
+Marker milestone `7b7713e` deployed successfully in run 43948447605.
+
+The retained scene integration now surrounds the existing computed child walk
+with the recovered `481310` prefix and timer tail. It preserves the atomic
+checkpoint boundary: the first snapshot is already inside children, so only
+its remaining tail executes; the final capture ends inside children, so no
+unobserved tail is invented. Camera input-device returns remain explicit
+external inputs. Scene bytes are retained and checked at entry, after input,
+before/after children, and at exit; they are never replaced by later snapshots.
+
+The first expanded capture exposed owner+3c alternating between updates.
+Disassembly identified `494820`, called from `467fd3` after drawing, as its
+writer. Its ring index and total counter now advance from retained owner state.
+The original routine's equality wrap condition is preserved (not replaced by
+modulo), including unsigned overflow. An isolated 512-case original-executable
+oracle compares 2,048 words with zero differences. The existing 4,096-case
+scene oracle still passes after splitting prefix/tail execution.
+
+The accepted 64-update capture holds throttle for 12 updates, then releases it.
+It covers 63 scene prefixes, 63 timer tails, 63 camera input queries, and 63
+owner advances: 22,932 scene/owner assertion words, zero differences. The
+minute rollover occurs at update 34; the final completed scene reports one
+minute and 43.694000244140625 seconds. Marker, both bike/rider paths and all
+connected camera/display/particle/terrain comparisons remain at zero reported
+differences. All 70 hooks were independently verified restored, with debugger
+detached and input/camera cleanup successful. The v1/v2 exploratory captures
+are retained separately; only v3 supplies the accepted joined fixture.
+
+Evidence: `world-scene-tick-wine11.json.br`,
+`mcm-world-scene-tick-validation.json`, and
+`mcm-scene-owner-frame-validation.json`. Negative regressions alter the later
+clock and owner counter, remove an owner advancement, and change menu context;
+these must be rejected rather than imported.
+
+This does not complete the outer `467f40` clock/input/render scheduler or
+normal-rate trajectory validation. Camera switching requests and changed
+menu/timer context fail explicitly until their writers are connected; the
+live capture's optional environment pointer is null. Terrain's full actor
+orchestration/optional branches, active queue coverage, CRT heap reconstruction
+and preview integration remain open. The current milestone does not change
+the playable preview, and the full-parity goal remains active.
+
+Validation: all 938 tests pass (133.70 seconds), production build passes, and
+whitespace checks pass. Shipping the connected scene update and frame-owner
+milestone to main under the requested cadence.

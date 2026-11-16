@@ -61,7 +61,9 @@ for(const name of fs.readdirSync(directory).sort()){
 }
 if(animationBlocks.length)files['world-animation-observations.json']=JSON.stringify(animationBlocks);
 const cleanup=files['cleanup.log'];assert.match(cleanup,/debugger=0 clean=1/);assert.ok(!cleanup.includes('restored=0'));
-const restored=[...cleanup.matchAll(/([0-9a-f]{8}) restored=1/g)].map(m=>m[1]);assert.equal(new Set(restored).size,'world-marker-mesh.json' in files?61:'terrain-allocation-events.jsonl' in files?(files['terrain-allocation-events.jsonl'].includes('\"terrain\":')?60:58):files['world-renderer-initial.json']?52:files['world-camera-initial.json']?49:46);
+const restored=[...cleanup.matchAll(/([0-9a-f]{8}) restored=1/g)].map(m=>m[1]);assert.equal(new Set(restored).size,'world-scene-tick-initial.json' in files?(JSON.parse(files['world-scene-tick-initial.json']).blocks.some(b=>b.size===0x44)?70:68):'world-marker-mesh.json' in files?61:'terrain-allocation-events.jsonl' in files?(files['terrain-allocation-events.jsonl'].includes('\"terrain\":')?60:58):files['world-renderer-initial.json']?52:files['world-camera-initial.json']?49:46);
+if(files['world-scene-tick-initial.json']&&JSON.parse(files['world-scene-tick-initial.json']).blocks.some(b=>b.size===0x44))for(const address of ['00494820','0049483c'])assert.ok(restored.includes(address));
+if(files['world-scene-tick-initial.json']){for(const address of ['00481310','00481375','00481343','004813fb','00481407','00481416','0048147b'])assert.ok(restored.includes(address));assert.ok(files['world-scene-tick-observations.jsonl']);}
 if(files['world-marker-mesh.json']){assert.ok(restored.includes('00475560'));assert.ok(files['world-marker-draws.jsonl']);assert.ok(files['world-marker-queries.jsonl']);}
 if(files['terrain-allocation-events.jsonl']?.includes('\"terrain\":'))for(const address of ['0045c8d0','0045c8e6'])assert.ok(restored.includes(address));
 if('terrain-allocation-events.jsonl' in files){for(const address of ['0045c7f0','0045c801','0045c820','0045c832','0045c849','0045c854'])assert.ok(restored.includes(address));}

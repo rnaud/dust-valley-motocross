@@ -1,0 +1,13 @@
+{
+  "provenance": {
+    "executableSha256": "e02c8d16d3de24c11345b9fa71498b14f71d2ae9e674649bb673dcbd770b0f1b",
+    "oracleSha256": "d4ac25b408489f92ae9bf5b812cf58d368eb55ad326236e9358377b35f583c6f",
+    "loaderSha256": "6f628a2389ef08261b9a0720947b0a9284405d1263e1ba59407c97946c8321fe",
+    "inputSha256": "2b82a54a1c1f6328843eb120115b47b1572128f2af3bec3df72c604c78a5fc0f",
+    "outputSha256": "7c56addf2d4694b2713f12fc1d6760e5069fb1c60787cec4b72f601e58642f57",
+    "scope": "Unmodified original 494820 executed in the relocated original image; no mocked dependency calls."
+  },
+  "cases": 512,
+  "comparedWords": 2048,
+  "differences": []
+}
