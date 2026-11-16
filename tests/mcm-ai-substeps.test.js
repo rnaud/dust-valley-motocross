@@ -266,3 +266,25 @@ for(const [name,frames,steps,queries,transitions]of [['query',4,240,51,14],['sub
  const missingStep=trace(f);missingStep.splice(missingStep.findIndex(e=>e.phase==='contact'),1);
  assert.throws(()=>analyzeAiSubsteps(i,i.rows,rider(f),missingStep));
 });
+
+test('retained rider collision projection exposes shared-grid divergence without reseeding',()=>{
+ const f=fixture('ai-substep-gating'),i=input(f),r=analyzeAiSubsteps(i,i.rows,rider(f),trace(f));
+ assert.equal(r.collisionStatus,'diverged');assert.equal(r.collisionBoundaries,47);assert.equal(r.collisionWords,10011);assert.equal(r.collisionDifferences.length,76);
+ assert.ok(r.collisionDifferences.every(d=>d.name==='entries'&&[0,4].includes(d.offset)));
+ assert.deepEqual(r.collisionDifferences[0],{frame:0,stage:'before-rider',name:'entries',offset:0,actual:0x1b405d0,expected:0x518b9b8});
+ // Shape, callbacks, contacts and every pair-row/column word are also checked.
+ // Corrupting an observed shape or pair cannot become retained model state.
+ const changed=rider(f),e=changed.find(e=>e.phase==='after-rider');
+ for(const [field,offset]of [['stateHex',0x64],['pairRowHex',0],['pairColumnHex',0]]){const b=Buffer.from(e.riderCollision[field],'hex');b[offset]^=1;e.riderCollision[field]=b.toString('hex');}
+ const mutation=analyzeAiSubsteps(i,i.rows,changed,trace(f));
+ assert.equal(mutation.collisionDifferences.length,79);
+ assert.ok(mutation.collisionDifferences.some(d=>d.stage==='after-rider'&&d.name==='state'&&d.offset===0x64));
+ assert.ok(mutation.collisionDifferences.some(d=>d.name==='pairRow'&&d.offset===0));
+ assert.ok(mutation.collisionDifferences.some(d=>d.name==='pairColumn'&&d.offset===0));
+ const missing=input(f);delete missing.rows.find(r=>r.phase==='before-update').riderCollision;
+ assert.throws(()=>analyzeAiSubsteps(missing,missing.rows,rider(f),trace(f)),/Missing rider collision observation/);
+ const stripped=input(f),strippedEvents=rider(f);for(const e of [...stripped.rows,...strippedEvents])delete e.riderCollision;
+ assert.throws(()=>analyzeAiSubsteps(stripped,stripped.rows,strippedEvents,trace(f)),/Missing rider collision observation/);
+ const ownership=rider(f);ownership.find(e=>e.phase==='before-rider').riderCollision.entriesAddress+=24;
+ assert.throws(()=>analyzeAiSubsteps(i,i.rows,ownership,trace(f)),/collision ownership differs/);
+});

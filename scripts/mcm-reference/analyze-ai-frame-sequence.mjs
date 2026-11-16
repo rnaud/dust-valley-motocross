@@ -1,3 +1,4 @@
+import {createLiveRiderCollisionComparison} from './live-rider-collision-comparison.mjs';
 import {prepareLiveParticleDraw,cullLiveParticleDraw,generateLiveParticleQuads} from './live-particle-draw.mjs';
 import assert from 'node:assert/strict';
 import {loadLiveFrameBootstrap} from './live-frame-bootstrap.mjs';
@@ -21,6 +22,13 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents,{diagnosticBody=f
  const runtime=riderEvents?createCapturedFrameRuntime(inputs,first,riderEvents[0]):null;
  const loaded=runtime?.loaded??loadLiveFrameBootstrap({...inputs,row:first}),c=loaded.context;
  const meshDraw=inputs.draws?connectLiveMeshDraw(runtime,first):null;let drawIndex=0;
+ const collisionCompare=createLiveRiderCollisionComparison(loaded.ordered,inputs.checkpoint.bikeAddress);
+ const collisionDifferences=[];let collisionWords=0,collisionBoundaries=0;
+ const compareCollision=(event,frame,stage)=>{
+  const result=collisionCompare(event);collisionWords+=result.words;collisionBoundaries++;
+  for(const difference of result.differences)collisionDifferences.push({frame,stage,...difference});
+ };
+ if(riderEvents)compareCollision(riderEvents[0],0,'initial-rider');
  let riderTicks=0,riderBytes=0,eventIndex=1;
  const computeParticleProjection=!!riderEvents?.some(e=>e.projectionMatricesHex!==undefined);
  const particleDifferences=[],worldQueries=[],poolReports=[],dustReports=[],sprayReports=[],particleDrawReports=[];
@@ -50,7 +58,7 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents,{diagnosticBody=f
    else assert.equal(a,b,`AI sequence frame ${frame} ${stage} body ${o.toString(16)}`);
   }
   assert.equal(loaded.random.state,row.randomState,`AI sequence frame ${frame} ${stage} RNG`);
-  bodyBoundaries++;bodyBytes+=expected.length;
+  bodyBoundaries++;bodyBytes+=expected.length;compareCollision(row,frame,stage);
   // The original first snapshot supplies immutable allocation bytes throughout;
   // later native rows are comparison targets only, never serialization seeds.
   compareFrameRiderVisuals(loaded,first,row,visualCompare(frame,stage));
@@ -68,7 +76,7 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents,{diagnosticBody=f
    }
    if(name==='rider'||name==='child')riderBytes+=expected.length;
   }
-  compareFrameVisuals(loaded,first,e,visualCompare(frame,stage));
+  compareFrameVisuals(loaded,first,e,visualCompare(frame,stage));compareCollision(e,frame,stage);
  };
  for(let frame=0;frame<observations.length/4;frame++){
   const group=observations.slice(frame*4,frame*4+4),entry=group[0];
@@ -184,5 +192,5 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents,{diagnosticBody=f
  if(riderEvents)assert.equal(eventIndex,riderEvents.length,'Unconsumed rider events');
  assert.equal(pendingScene,null,'Incomplete scene query');
  if(meshDraw){meshDraw.complete();assert.equal(drawIndex,inputs.draws.length,'Unconsumed draws');}
- return {frames:intervals.length,intervals,substeps,bodyBoundaries,bodyBytes,randomDraws:loaded.random.calls,visualDifferences,...(meshDraw?{drawReports:meshDraw.reports,drawNodeWords:meshDraw.nodeWords}:{}),...(poolReports.length?{poolReports}:{}),...(dustReports.length?{dustReports}:{}),...(sprayReports.length?{sprayReports}:{}),...(particleDrawReports.length?{particleDrawReports}:{}),...(diagnosticBody?{diagnosticBody:true,bodyDifferences}:{}),...(riderEvents?{riderTicks,riderBytes,particleDifferences,worldQueries,...(runtime.scenePosition?{sceneReports}:{})}:{})};
+ return {frames:intervals.length,intervals,substeps,bodyBoundaries,bodyBytes,collisionBoundaries,collisionWords,collisionDifferences,collisionStatus:collisionDifferences.length?'diverged':'matched',randomDraws:loaded.random.calls,visualDifferences,...(meshDraw?{drawReports:meshDraw.reports,drawNodeWords:meshDraw.nodeWords}:{}),...(poolReports.length?{poolReports}:{}),...(dustReports.length?{dustReports}:{}),...(sprayReports.length?{sprayReports}:{}),...(particleDrawReports.length?{particleDrawReports}:{}),...(diagnosticBody?{diagnosticBody:true,bodyDifferences}:{}),...(riderEvents?{riderTicks,riderBytes,particleDifferences,worldQueries,...(runtime.scenePosition?{sceneReports}:{})}:{})};
 }
