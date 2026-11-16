@@ -22,12 +22,12 @@
 #include "capture-frame-environment.c"
 #include "capture-ai-frame-environment.c"
 
-static DWORD addresses[] = {0x4a54b6, 0x4ad0e1, 0x4ad5a2, 0x4bf195, 0x40e990, 0x42ce38, 0x4acfd8, 0x4acaad, 0x4b6930, 0x422f50, 0x422fad, 0x4a64dc, 0x4a8be0, 0x4ab7fd, 0x4ac5c5, 0x4ac6cd, 0x4ac952, 0x44faf0, 0x44ff95, 0x43b200, 0x43b334, 0x43b216, 0x438e10, 0x438e34, 0x438e6c, 0x438e89, 0x438ebd, 0x4390ff, 0x43910e, 0x4393d0, 0x4393f2, 0x439426, 0x43944a, 0x439786, 0x439795, 0x43b3a0, 0x43b4bc, 0x43b582};
+static DWORD addresses[] = {0x4a54b6, 0x4ad0e1, 0x4ad5a2, 0x4bf195, 0x40e990, 0x42ce38, 0x4acfd8, 0x4acaad, 0x4b6930, 0x422f50, 0x422fad, 0x4a64dc, 0x4a8be0, 0x4ab7fd, 0x4ac5c5, 0x4ac6cd, 0x4ac952, 0x44faf0, 0x44ff95, 0x43b200, 0x43b334, 0x43b216, 0x438e10, 0x438e34, 0x438e6c, 0x438e89, 0x438ebd, 0x4390ff, 0x43910e, 0x4393d0, 0x4393f2, 0x439426, 0x43944a, 0x439786, 0x439795, 0x43b3a0, 0x43b4bc, 0x43b582, 0x43b599, 0x43b835};
 static BYTE expected[][6] = {{0xd9, 0x86, 0xc8, 0x08, 0, 0},
-                                  {0x8b, 0x86, 0xf8, 0x04, 0, 0}, {0x85, 0xc0}, {0x8b, 0x48, 0x14}, {0x8b,0x44,0x24,0x04}, {0x8b,0x44,0xbe,0x08}, {0x8d,0x86,0x10,0x05,0,0}, {0x8b,0xf8}, {0x53}, {0x83,0xec,0x2c}, {0xd9,0x44,0x24,0x14}, {0x33,0xc0}, {0xd9,0x44,0x24,0x74}, {0x8b,0x86,0x44,0x08,0,0}, {0x8b,0x44,0x24,0x10}, {0x8d,0x86,0xf8,0x04,0,0}, {0x85,0xc9}, {0x81,0xec,0xd8,0,0,0}, {0x5d}, {0x83,0xec,0x1c}, {0xb8,1,0,0,0}, {0xb8,1,0,0,0}, {0x83,0xec,0x28}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0x83,0xec,0x44}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0x81,0xec,0x80,0,0,0}, {0x39,0x7e,0x30}, {0x8b,0x46,0x34}};
-static unsigned lengths[] = {6, 6, 2, 3, 4, 4, 6, 2, 1, 3, 4, 2, 4, 6, 4, 6, 2, 6, 1, 3, 5, 5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 6, 3, 3};
-static BYTE saved[38];
-static int armed[38];
+                                  {0x8b, 0x86, 0xf8, 0x04, 0, 0}, {0x85, 0xc0}, {0x8b, 0x48, 0x14}, {0x8b,0x44,0x24,0x04}, {0x8b,0x44,0xbe,0x08}, {0x8d,0x86,0x10,0x05,0,0}, {0x8b,0xf8}, {0x53}, {0x83,0xec,0x2c}, {0xd9,0x44,0x24,0x14}, {0x33,0xc0}, {0xd9,0x44,0x24,0x74}, {0x8b,0x86,0x44,0x08,0,0}, {0x8b,0x44,0x24,0x10}, {0x8d,0x86,0xf8,0x04,0,0}, {0x85,0xc9}, {0x81,0xec,0xd8,0,0,0}, {0x5d}, {0x83,0xec,0x1c}, {0xb8,1,0,0,0}, {0xb8,1,0,0,0}, {0x83,0xec,0x28}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0x83,0xec,0x44}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0xc2,4,0}, {0x81,0xec,0x80,0,0,0}, {0x39,0x7e,0x30}, {0x8b,0x46,0x34}, {0x8d,0xbe,0xe4,0x0f,0,0}, {0x8b,0x8e,0x84,0x1f,0,0}};
+static unsigned lengths[] = {6, 6, 2, 3, 4, 4, 6, 2, 1, 3, 4, 2, 4, 6, 4, 6, 2, 6, 1, 3, 5, 5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 6, 3, 3, 6, 6};
+static BYTE saved[40];
+static int armed[40];
 static HANDLE process;
 static int capture_effects,capture_filter,capture_frame_rider,capture_return;
 static DWORD effect_query_count,effect_query_result;
@@ -56,7 +56,7 @@ static int capture_ai_dust,ai_dust_active;
 static DWORD ai_dust_address,ai_dust_dt,ai_dust_thread;
 static int capture_ai_spray,ai_spray_active;
 static DWORD ai_spray_address,ai_spray_dt,ai_spray_thread;
-static int capture_ai_particle_draw,ai_particle_draw_active;
+static int capture_ai_particle_draw,ai_particle_draw_active,capture_ai_particle_quads;
 static DWORD ai_particle_draw_thread;
 static FILE*ai_draws_out;
 static DWORD ai_rider_dt,ai_rider_thread,ai_rider_sequence;
@@ -79,6 +79,8 @@ static void configure_ai_dust_hooks(void){configure_ai_pool_hooks();hook_count=2
 static void configure_ai_spray_hooks(void){configure_ai_dust_hooks();hook_count=35;}
 
 static void configure_ai_particle_draw_hooks(void){configure_ai_spray_hooks();hook_count=38;}
+
+static void configure_ai_particle_quad_hooks(void){configure_ai_particle_draw_hooks();hook_count=40;}
 
 static int read_memory(DWORD address, void *buffer, SIZE_T size) {
     SIZE_T count;
@@ -370,8 +372,10 @@ int main(int argc, char **argv) {
     if(capture_ai_dust){if(!capture_ai_pool)return 2;configure_ai_dust_hooks();}
     capture_ai_spray=getenv("MCM_AI_SPRAY_TICKS")!=NULL;
     if(capture_ai_spray){if(!capture_ai_dust)return 2;configure_ai_spray_hooks();}
+    capture_ai_particle_quads=getenv("MCM_AI_PARTICLE_QUADS")!=NULL;
     capture_ai_particle_draw=getenv("MCM_AI_PARTICLE_DRAW")!=NULL;
     if(capture_ai_particle_draw){if(!capture_ai_spray)return 2;configure_ai_particle_draw_hooks();}
+    if(capture_ai_particle_quads){if(!capture_ai_particle_draw)return 2;configure_ai_particle_quad_hooks();}
     capture_stack = getenv("MCM_STACK") != NULL;
     capture_collision = getenv("MCM_COLLISION") != NULL;
     checkpoint_collision_callbacks = getenv("MCM_COLLISION_CALLBACKS") != NULL;
@@ -505,12 +509,13 @@ int main(int argc, char **argv) {
                             if(matched==35&&context.Ecx==retained_pool_address){DWORD count;
                                 if(!read_memory(retained_pool_address+0x30,&count,4)||count>1000)done=2;
                                 else if(count){
-                                    if(ai_particle_draw_active||!trace_ai_particle_draw("before-particle-draw"))done=2;
+                                    if(ai_particle_draw_active||!trace_ai_particle_draw("before-particle-draw",context.Esp))done=2;
                                     ai_particle_draw_active=1;ai_particle_draw_thread=event.dwThreadId;
                                 }
                             }else if(matched>35&&ai_particle_draw_active){
-                                if(context.Esi!=retained_pool_address||ai_particle_draw_thread!=event.dwThreadId||!trace_ai_particle_draw(matched==36?"before-particle-cull":"after-particle-cull"))done=2;
-                                if(matched==37)ai_particle_draw_active=0;
+                                if(context.Esi!=retained_pool_address||ai_particle_draw_thread!=event.dwThreadId||!trace_ai_particle_draw(matched==36?"before-particle-cull":matched==37?"after-particle-cull":matched==38?"before-particle-quads":"after-particle-quads",context.Esp))done=2;
+                                if(matched==37){DWORD visible;if(!read_memory(retained_pool_address+0x34,&visible,4))done=2;else if(!capture_ai_particle_quads||!visible)ai_particle_draw_active=0;}
+                                if(matched==39)ai_particle_draw_active=0;
                             }
                         }
                     } else if(capture_ai_spray&&matched>=29){

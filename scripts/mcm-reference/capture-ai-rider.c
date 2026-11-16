@@ -72,7 +72,7 @@ static int trace_ai_spray(const char*phase){
  fprintf(ai_rider_out,"}\n");return !ferror(ai_rider_out)&&fflush(ai_rider_out)==0;
 }
 
-static int trace_ai_particle_draw(const char*phase){
+static int trace_ai_particle_draw(const char*phase,DWORD esp){
  DWORD link,camera,scale,width,height,input,projected,count,yOffset;
  static BYTE inputs[32000],projections[32000];
  if(!ai_rider_out||!read_memory(retained_pool_address+0x30,&count,4)||count>1000||
@@ -89,6 +89,15 @@ static int trace_ai_particle_draw(const char*phase){
     !read_memory(state+0x2c94,matrices,64)||!read_memory(state+0x6c14,matrices+64,64)||!read_memory(state+0x2cd4,matrices+128,64))return 0;
  fprintf(ai_rider_out,",\"projectionViewport\":%lu,\"currentViewport\":%lu,\"viewport\":[%lu,%lu,%lu,%lu],\"projectionMatricesHex\":\"",viewport,currentViewport,viewportWords[0],viewportWords[1],viewportWords[2],viewportWords[3]);
  for(unsigned i=0;i<sizeof matrices;i++)fprintf(ai_rider_out,"%02x",matrices[i]);fprintf(ai_rider_out,"\"");
+ if(capture_ai_particle_quads)fprintf(ai_rider_out,",\"particleQuadObservation\":true");
+ if(capture_ai_particle_quads&&(!strcmp(phase,"before-particle-quads")||!strcmp(phase,"after-particle-quads"))){
+  DWORD visible,settings,flags,seed,texture,format;BYTE row[16],fog[8],uv[0x5a0];static BYTE quads[128000];
+  if(!read_memory(retained_pool_address+0x34,&visible,4)||visible>1000||!read_memory(link+4,&settings,4)||!read_memory(settings+0x180,&flags,4)||!read_memory(esp+0x58,&seed,4)||!read_memory(camera+0x1a8,fog,8)||!read_memory(0x4f7580,uv,sizeof uv)||!read_memory(retained_pool_address+0x1f84,&texture,4)||!read_memory(texture+0x44,&format,4))return 0;
+  for(unsigned j=0;j<4;j++)if(!read_memory(camera+0xb8+j*16,row+j*4,4))return 0;
+  fprintf(ai_rider_out,",\"diffuseSeed\":%lu,\"renderFlags\":%lu,\"textureFormat\":%lu,\"viewDepthHex\":\"",seed,flags,format);
+  for(unsigned j=0;j<sizeof row;j++)fprintf(ai_rider_out,"%02x",row[j]);fprintf(ai_rider_out,"\",\"fogHex\":\"");for(unsigned j=0;j<sizeof fog;j++)fprintf(ai_rider_out,"%02x",fog[j]);fprintf(ai_rider_out,"\",\"uvHex\":\"");for(unsigned j=0;j<sizeof uv;j++)fprintf(ai_rider_out,"%02x",uv[j]);fprintf(ai_rider_out,"\"");
+  if(!strcmp(phase,"after-particle-quads")){if(!read_memory(retained_pool_address+0x2004,quads,visible*128))return 0;fprintf(ai_rider_out,",\"quadHex\":\"");for(unsigned j=0;j<visible*128;j++)fprintf(ai_rider_out,"%02x",quads[j]);fprintf(ai_rider_out,"\"");}
+ }
  if(!capture_retained_particle_pool(ai_rider_out,retained_pool_address))return 0;
  fprintf(ai_rider_out,"}\n");return !ferror(ai_rider_out)&&fflush(ai_rider_out)==0;
 }

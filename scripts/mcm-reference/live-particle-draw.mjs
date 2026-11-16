@@ -1,3 +1,4 @@
+import {buildMcmParticleQuads} from '../../src/physics/mcm/particle-quads.js';
 import {projectWineParticleCenters} from '../../src/physics/mcm/particle-projection.js';
 import assert from 'node:assert/strict';
 import {CapturedBytes} from '../../src/physics/mcm/captured-bytes.js';
@@ -35,5 +36,20 @@ export function cullLiveParticleDraw(external,event,input){
  for(let i=0;i<pool.count;i++)if(updateMcmParticleVisibility(pool.particle(i),projected.view(i*32,32),camera)){
   const count=poolBytes.readUInt32LE(0x34);poolBytes.writeUInt32LE(poolBytes.readUInt32LE(0x44+i*4),0xfe4+count*4);poolBytes.writeUInt32LE(count+1,0x34);
  }
- return poolBytes.readUInt32LE(0x34);
+ external.particleDrawProjection=projected;return poolBytes.readUInt32LE(0x34);
+}
+
+export function generateLiveParticleQuads(external,before,after){
+ const {pool,poolBytes,particleDrawProjection:projected}=external;
+ assert.ok(projected,'Missing computed particle projection');
+ const count=poolBytes.readUInt32LE(0x34);assert.ok(count>0,'Empty particle draw tail');
+ for(const key of ['diffuseSeed','renderFlags','textureFormat','viewDepthHex','fogHex','uvHex'])assert.equal(after[key],before[key],`Particle quad input changed: ${key}`);
+ const depth=CapturedBytes.from(before.viewDepthHex,'hex'),fog=CapturedBytes.from(before.fogHex,'hex'),uv=CapturedBytes.from(before.uvHex,'hex');assert.equal(depth.length,16);assert.equal(fog.length,8);assert.equal(uv.length,0x5a0);
+ const byAddress=new Map(Array.from({length:pool.count},(_,i)=>[poolBytes.readUInt32LE(0x44+i*4),i]));
+ const addresses=Array.from({length:count},(_,i)=>poolBytes.readUInt32LE(0xfe4+i*4));
+ const indices=addresses.map(a=>{assert.ok(byAddress.has(a),'Unknown visible particle');return byAddress.get(a);});
+ const output=new CapturedBytes(count*128);
+ const order=buildMcmParticleQuads(indices.map(i=>pool.particle(i)),indices.map(i=>projected.view(i*32,32)),{flags:before.renderFlags,seed:before.diffuseSeed,near:fog.readFloatLE(0),far:fog.readFloatLE(4),viewDepth:[0,1,2,3].map(i=>depth.readFloatLE(i*4)),uv:uv.view(0,uv.length)},output.view(0,output.length));
+ order.forEach((i,j)=>poolBytes.writeUInt32LE(addresses[i],0xfe4+j*4));
+ assert.equal(output.toString('hex'),after.quadHex,'Computed particle quad vertices');return {visible:count,vertexWords:count*32};
 }

@@ -1,4 +1,4 @@
-import {prepareLiveParticleDraw,cullLiveParticleDraw} from './live-particle-draw.mjs';
+import {prepareLiveParticleDraw,cullLiveParticleDraw,generateLiveParticleQuads} from './live-particle-draw.mjs';
 import assert from 'node:assert/strict';
 import {loadLiveFrameBootstrap} from './live-frame-bootstrap.mjs';
 import {compareFrameRiderVisuals,compareFrameVisuals} from './compare-live-frame-rider-visuals.mjs';
@@ -104,7 +104,12 @@ export function analyzeAiFrameSequence(inputs,rows,riderEvents,{diagnosticBody=f
      const prepared=comparePool(projected,frame,'before-particle-cull');
      const accepted=cullLiveParticleDraw(runtime.external,projected,input);
      assert.equal(after.projectedHex,projected.projectedHex,'Particle cull changed projection');assert.equal(after.inputHex,projected.inputHex,'Particle cull changed input');
-     const exit=comparePool(after,frame,'after-particle-cull');particleDrawReports.push({frame,accepted,projectionMode:projected.projectionMatricesHex===undefined?'observed':'computed-from-device-matrices',entry,prepared,exit});continue;
+     const exit=comparePool(after,frame,'after-particle-cull');let quads;
+     if(accepted){const beforeQuads=riderEvents[eventIndex++],afterQuads=riderEvents[eventIndex++];assert.equal(beforeQuads?.phase,'before-particle-quads','Missing visible particle draw tail');assert.equal(afterQuads?.phase,'after-particle-quads','Missing particle quad return');
+      for(const e of [beforeQuads,afterQuads]){assert.equal(e.completedBikeFrames,frame+1);assert.equal(e.bikeActive,0);assert.equal(e.riderActive,0);assert.equal(e.poolAddress,before.poolAddress);assert.equal(e.projectedHex,after.projectedHex);assert.equal(e.inputHex,after.inputHex);}
+      comparePool(beforeQuads,frame,'before-particle-quads');quads=generateLiveParticleQuads(runtime.external,beforeQuads,afterQuads);comparePool(afterQuads,frame,'after-particle-quads');
+     }
+     particleDrawReports.push({frame,accepted,projectionMode:projected.projectionMatricesHex===undefined?'observed':'computed-from-device-matrices',entry,prepared,exit,...(quads?{quads}:{})});continue;
     }
     if(before.phase==='before-dust'){
      const after=riderEvents[eventIndex++];assert.equal(after?.phase,'after-dust','Missing dust return');
