@@ -1,11 +1,12 @@
+import {stepMcmCrashSound} from './crash-sound.js';
 import {bitsFloat,floatBits} from './math.js';
 import {mcmMultiply as mul,mcmSubtract as sub,mcmAdd as add} from './x87-arithmetic.js';
 export const MCM_ENGINE_SEEKS=Object.freeze([0x50e00,0x78200,0xa2600,0xe6200,0x14d200,0x192e00,0x1afe00]);
-// Original 426be0 normal-riding branch. Audio device status/cursors and controls
+// Original 426be0 riding/crash branches. Audio device status/cursors and controls
 // are explicit inputs; commands mutate the device through the supplied boundary.
-export function stepMcmRidingSound(manager,bike,engine,dt,device){
+export function stepMcmRidingSound(manager,bike,engine,dt,device,crashContext){
  const u=o=>manager.getUint32(o,true),put=(o,v)=>manager.setUint32(o,v>>>0,true),b=o=>bike.getInt32(o,true);
- if(b(0x844)!==0)throw Error('Crash audio policy is not connected');
+ if(b(0x844)!==0&&!crashContext)throw Error('Crash audio policy is not connected');
  const sound=o=>u(o),rpm=engine.getFloat32(0x15c,true),gear=engine.getInt32(0x158,true);
  let demand=0;
  if(b(0x614))demand=+(b(0xb04)>=0x3f800000);
@@ -14,6 +15,7 @@ export function stepMcmRidingSound(manager,bike,engine,dt,device){
   demand=+((floatBits(speed)|0)>=0x41a00000);
  }else if(b(0x6f8))demand=+(engine.getInt32(0x15c,true)>0&&!(sub(manager.getFloat32(0xb4,true),rpm)>=500));
  else demand=device.throttle(4,0);
+ if(b(0x844))return stepMcmCrashSound(manager,bike,dt,demand,device,crashContext);
  if(u(0x108)){
   device.stop(sound(0x68),1);if(sound(0x7c))device.stop(sound(0x7c),1);put(0x108,0);
  }

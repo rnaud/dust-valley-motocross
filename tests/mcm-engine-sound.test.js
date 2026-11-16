@@ -6,7 +6,7 @@ test('riding sound state and ordered commands match 906 original policy executio
  output[0x20]^=1;output[0x148]^=1;
  assert.deepEqual(compareEngineSound(input,output).differences.map(d=>[d.case,d.offset]),[[0,0x20],[0,0x148]]);
 });
-test('normal-riding sound policy explicitly rejects the unconnected crash branch',()=>{
+test('sound policy rejects crash execution without explicit crash context',()=>{
  const {input,output}=fixture();input.writeUInt32LE(1,0x128+0x844);
  assert.throws(()=>compareEngineSound(input,output),/Crash audio policy is not connected/);
 });

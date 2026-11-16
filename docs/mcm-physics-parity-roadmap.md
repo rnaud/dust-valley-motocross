@@ -6320,3 +6320,13 @@ The isolated original-code oracle executes the complete routine with explicit RN
 This recovers the helper, not its crash-state caller, actual playback clock, sound wrapper gates, shared-world RNG scheduling or browser audio integration. The browser still synthesizes sound. Full physics parity remains open, especially sustained player steering without substituted caller scratch and complete world update dependencies.
 
 Validation: all 763 tests pass (107 seconds), the production build passes, and the new original-code regression passes on x64 Node 22.
+
+## Complete crash audio controller composed (2026-11-15)
+
+`riding-sound.js` now dispatches the crash branch of original `426be0` through `crash-sound.js` when explicit rider, listener and wreck-length context is supplied. It retains the original first-crash sequence, launch-vs-idle/deceleration choice, selected wreck suppression, fall cooldown, delayed crowd reaction, timer stores and menu-sensitive play command. Assembly confirms deceleration/idle stop calls use reset=0 at crash entry; fall and crowd signed-bit timer gates include exactly five seconds and one second respectively. Missing crash context is still rejected rather than silently inventing external state.
+
+The oracle executes original `426be0`, `427230` and `427760` together, including original square-root lookup initialization. Across 1,024 cases, all 359,424 output words and 6,916 ordered calls match. Outputs cover all manager bytes (pointer tokens normalized), nineteen modeled device cursors/status bits and ordered control/audio/RNG calls. Inputs cross first/ongoing crash, crash kind 12, contact notifications, current wreck status, throttle/control modes, fall-trigger flag, cooldown boundaries, crowd latch, random index boundaries and near/far listener geometry. Tampered manager state and commands fail comparison. The existing 906 normal-riding cases remain regressions.
+
+Boundaries remain explicit: group-stop is a supplied callback (its collection membership and effects are not recovered here); play wrapper enable/menu gates, audio clock, actual audible output and shared RNG scheduling remain outside this oracle. Browser audio remains synthesized pending the playback adapter. No original-game debugger was attached or original process restarted.
+
+Validation: all 764 tests pass (145 seconds), production build passes, and the crash/normal-riding regressions pass on x64 Node 22. An initial x64 check started before fixture compression completed and reported a missing file; rerunning after the fixture existed passed all three tests.
