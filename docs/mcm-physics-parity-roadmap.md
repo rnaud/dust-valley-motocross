@@ -16,6 +16,18 @@
 
 Current evidence: [joined full display visibility](mcm-world-scene-display-visibility-validation.json), [joined display state](mcm-world-scene-display-validation.json), [joined scene renderer](mcm-world-scene-renderer-validation.json), [joined scene queue](mcm-world-scene-queue-validation.json), [player-camera crashes and impacts](mcm-world-player-camera-recovery-validation.json), [joined pursuit/recovery](mcm-world-chase-recovery-validation.json), [joined world/camera](mcm-world-chase-validation.json), [scene sequence](mcm-scene-tick-validation.json), and [retained scene pool](mcm-scene-pool-validation.json). The earlier approximately 70% planning estimate was not a coverage score and has not been replaced by a measured percentage. Passing tests prove the boundaries they compare, not complete gameplay equivalence.
 
+## Terrain traversal and detail selection recovered (2026-11-16)
+
+Milestone validation: all 911 repository tests and the production build pass. The native oracle variants compile and execute successfully. The preceding terrain-observation milestone `84ef9a9` deployed successfully.
+
+Recovered `48cf50` visibility traversal, `48d500` detail selection, `48aa50` recursive cleanup, and `47f620` sphere visibility. Traversal retains the original quadrant order, box/sphere choice, selection masks, complete-region shortcut, ancestor refresh flags and wrapping counters. Selection uses the recovered `48ca70` distance routine. The captured node class's distance callback resolves to `4ba1a0`, an empty `ret 4`; this is verified original behavior, not an invented service omission.
+
+Four isolated native configurations each match 512 cases: control-flow services (1,730,257 words), actual distance/selection/cleanup (1,777,554), actual box projection (1,692,900), and both actual projection paths (1,692,900). The last configuration executes 7,234 box checks, 114 sphere checks and 76 allocation-release callbacks. All node allocations, service traces, return values and counters match. Sphere visibility also matches 8,192 separate original executions / 16,384 words, including optional inside-result behavior and depth/clip boundaries. Fixtures are hashed, and regression tests reject corrupted outputs and omitted required services.
+
+Allocation release remains an explicit callback in these oracle configurations; real heap/accounting integration is not established. Lazy child loading has a service-order regression following disassembly but no native loading fixture yet. Inspection of the live capture finds zero unloaded child tables among its 12,594 nodes, but 4,749 nodes hold render allocation pointers. The captured initial graph must not be confused with validated retained traversal across live frames.
+
+Next: capture the original traversal configuration (sphere flag and row-offset table), connect this traversal to the retained graph/camera, recover `48d680`/`48d6f0` node updates and `48ac20` emission, and compare all observed node changes. Full terrain scene update `411000`, active release accounting and live traversal remain open. Preview gameplay is unchanged. Evidence: [traversal validation](mcm-terrain-traversal-validation.json) and [sphere projection](mcm-projected-sphere-validation.json).
+
 ## Terrain observation and camera/detail validation milestone (2026-11-16)
 
 Milestone validation: all 904 repository tests and the production build pass. The extended native capture program and node-distance oracle compile successfully.

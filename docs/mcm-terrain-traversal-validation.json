@@ -1,0 +1,27 @@
+{
+  "scope": "Original traversal control; selection integrates 48ca70/48d500/48aa50; bounds also integrates 47e8a0; projection adds 47f620 (7,234 box tests, 114 sphere tests, 76 releases). Allocation release is explicit. Live retained terrain updates and emission remain unconnected.",
+  "control": {
+    "cases": 512,
+    "words": 1730257,
+    "differences": 0,
+    "examples": []
+  },
+  "selection": {
+    "cases": 512,
+    "words": 1777554,
+    "differences": 0,
+    "examples": []
+  },
+  "bounds": {
+    "cases": 512,
+    "words": 1692900,
+    "differences": 0,
+    "examples": []
+  },
+  "projection": {
+    "cases": 512,
+    "words": 1692900,
+    "differences": 0,
+    "examples": []
+  }
+}
