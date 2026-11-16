@@ -45,10 +45,13 @@ static int player_active;
 // Explicit read-only focus; never combines with scripted input/checkpoint writes.
 static DWORD observe_ai,observed_random_address,observed_random_thread;
 static int capture_ai_environment;
-static int capture_ai_rider,ai_rider_active,capture_ai_queries;
+static int capture_ai_rider,ai_rider_active,capture_ai_queries,capture_ai_query_gating;
+static unsigned ai_query_gate_transitions;
+#include "capture-observation-gates.c"
 static FILE *ai_rider_out;
 static DWORD ai_scene_object,ai_substep;
-static int capture_ai_substeps;
+static int capture_ai_substeps,capture_ai_substep_gating;
+static unsigned ai_substep_gate_transitions;
 static FILE*ai_substeps_out;
 static int capture_ai_draws,capture_ai_pool,ai_pool_active;
 static DWORD ai_pool_dt,ai_pool_thread;
@@ -379,9 +382,13 @@ int main(int argc, char **argv) {
     if(capture_ai_rider){if(!capture_ai_environment)return 2;configure_ai_rider_hooks();}
     capture_ai_queries=getenv("MCM_AI_WORLD_QUERIES")!=NULL;
     if(capture_ai_queries){if(!capture_ai_rider)return 2;configure_ai_query_hooks();}
+    capture_ai_query_gating=getenv("MCM_AI_QUERY_GATING")!=NULL;
+    if(capture_ai_query_gating&&!capture_ai_queries)return 2;
     if(getenv("MCM_AI_SCENE_OBJECT")){char*end;ai_scene_object=strtoul(getenv("MCM_AI_SCENE_OBJECT"),&end,0);if(!ai_scene_object||*end||!capture_ai_queries)return 2;configure_ai_scene_hooks();}
     capture_ai_substeps=getenv("MCM_AI_SUBSTEPS")!=NULL;
     if(capture_ai_substeps){if(!ai_scene_object)return 2;configure_ai_substep_hooks();}
+    capture_ai_substep_gating=getenv("MCM_AI_SUBSTEP_GATING")!=NULL;
+    if(capture_ai_substep_gating&&!capture_ai_substeps)return 2;
     capture_ai_draws=getenv("MCM_AI_DRAW_TRACE")!=NULL;
     if(capture_ai_draws){if(!capture_ai_substeps)return 2;configure_ai_draw_hooks();}
     capture_ai_pool=getenv("MCM_AI_POOL_TICKS")!=NULL;
@@ -588,7 +595,7 @@ int main(int argc, char **argv) {
                             else if((actor==observe_ai||actor==proxy)&&!trace_ai_draw(actor,matched==18))done=2;
                         }
                     } else if(capture_ai_substeps&&matched>=11){
-                        if(player_frame&&player_active&&context.Esi==observe_ai){
+                        if(ai_substep_observable(player_frame,player_active)&&context.Esi==observe_ai){
                             const char*phases[]={"contact","tires","motion","controls","rider","finish"};
                             if(!trace_ai_substep(phases[matched-11],context.Esp))done=2;else start=GetTickCount();
                             if(matched==16)ai_substep++;
@@ -599,7 +606,7 @@ int main(int argc, char **argv) {
                             else start=GetTickCount();
                         }
                     } else if(capture_ai_queries&&matched==8){
-                        if(player_frame&&!player_active&&!ai_rider_active){
+                        if(ai_query_observable(player_frame,player_active,ai_rider_active)){
                             for(unsigned i=0;i<block_count;i++)if(blocks[i].size==0x114&&blocks[i].address==context.Ecx){
                                 DWORD caller,position_caller=0;if(!read_memory(context.Esp,&caller,4)||(caller==0x4b797f&&!read_memory(context.Esp+0x1c,&position_caller,4)))done=2;
                                 else {fprintf(ai_rider_out,"{\"phase\":\"world-query\",\"captureId\":\"%s\",\"eventSequence\":%lu,\"completedBikeFrames\":%lu,\"node\":%lu,\"caller\":%lu,\"positionCaller\":%lu}\n",frame_capture_id,ai_rider_sequence++,player_frame,context.Ecx,caller,position_caller);if(fflush(ai_rider_out))done=2;}break;
@@ -744,6 +751,12 @@ int main(int argc, char **argv) {
                 if (thread) CloseHandle(thread);
             }
         }
+        const int query_action=ai_query_hook_action(capture_ai_query_gating,installed,done,pending,armed[8],player_frame,player_active,ai_rider_active);
+        if(query_action>=0){write_byte(addresses[8],query_action?0xcc:saved[8]);armed[8]=query_action;ai_query_gate_transitions++;}
+        for(unsigned i=11;capture_ai_substep_gating&&i<=16;i++){
+            const int action=ai_substep_hook_action(1,installed,done,pending,i,armed[i],player_frame,player_active);
+            if(action>=0){write_byte(addresses[i],action?0xcc:saved[i]);armed[i]=action;ai_substep_gate_transitions++;}
+        }
         if(profile_capture){profile_events++;profile_stopped_ticks+=profile_now()-profile_event_start;}
         ContinueDebugEvent(event.dwProcessId, event.dwThreadId, status);
     }
@@ -752,6 +765,8 @@ int main(int argc, char **argv) {
      for(unsigned i=0;i<hook_count;i++)if(profile_hook_hits[i])fprintf(stderr,"capture-profile-hook address=%08lx hits=%llu\n",addresses[i],profile_hook_hits[i]);
     }
     DebugActiveProcessStop(pid);
+    if(capture_ai_query_gating)fprintf(stderr,"capture-query-gate enabled=1 transitions=%u\n",ai_query_gate_transitions);
+    if(capture_ai_substep_gating)fprintf(stderr,"capture-substep-gate enabled=1 transitions=%u\n",ai_substep_gate_transitions);
     if(fclose(out))done=2;
     if(ai_rider_out&&fclose(ai_rider_out))done=2;
     if(ai_substeps_out&&fclose(ai_substeps_out))done=2;

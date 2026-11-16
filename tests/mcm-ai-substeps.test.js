@@ -251,3 +251,18 @@ test('buffered per-record output retains original frame, substep and shared-worl
  assert.equal(r.frames,4);assert.equal(r.bodyBoundaries,16);assert.equal(r.substepBoundaries,237);assert.equal(r.componentWords,2844);
  assert.deepEqual(r.visualDifferences,[]);assert.deepEqual(r.particleDifferences,[]);
 });
+
+for(const [name,frames,steps,queries,transitions]of [['query',4,240,51,14],['substep',8,454,247,30]])test(`${name} hook gating preserves required original observations`,()=>{
+ const f=fixture(`ai-${name}-gating`);
+ for(const [key,value]of Object.entries(f.files))assert.equal(createHash('sha256').update(value).digest('hex'),f.provenance.fileSha256[key]);
+ assert.match(f.files['cleanup.log'],/debugger=0 clean=1/);assert.equal((f.files['cleanup.log'].match(/restored=1/g)||[]).length,40);
+ assert.ok(f.files['capture.log'].includes(`capture-query-gate enabled=1 transitions=${transitions}`));
+ if(name==='substep')assert.match(f.files['capture.log'],/capture-substep-gate enabled=1 transitions=102/);
+ const i=input(f),r=analyzeAiSubsteps(i,i.rows,rider(f),trace(f));
+ assert.equal(r.frames,frames);assert.equal(r.bodyBoundaries,frames*4);assert.equal(r.substepBoundaries,steps);assert.equal(r.componentWords,steps*12);assert.equal(r.worldQueries.length,queries);
+ assert.deepEqual(r.visualDifferences,[]);assert.deepEqual(r.particleDifferences,[]);
+ const missingQuery=rider(f);missingQuery.splice(missingQuery.findIndex(e=>e.phase==='world-query'),1);missingQuery.forEach((e,n)=>e.eventSequence=n);
+ assert.throws(()=>analyzeAiSubsteps(i,i.rows,missingQuery,trace(f)));
+ const missingStep=trace(f);missingStep.splice(missingStep.findIndex(e=>e.phase==='contact'),1);
+ assert.throws(()=>analyzeAiSubsteps(i,i.rows,rider(f),missingStep));
+});
