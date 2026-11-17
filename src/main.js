@@ -1,3 +1,4 @@
+import {VoxelTerrain} from './voxel-terrain.js';
 import {ArtStyleRenderer,artStyles} from './art-styles.js';
 import {McmParticles} from './mcm-particles.js';
 import {matchSkyHorizon} from './sky-haze.js';
@@ -379,6 +380,13 @@ const wheelShadows=[0,1].map(()=>{const m=new THREE.Mesh(new THREE.CircleGeometr
 const dustCount=180,dustGeo=new THREE.BufferGeometry(),dustPositions=new Float32Array(dustCount*3);dustGeo.setAttribute('position',new THREE.BufferAttribute(dustPositions,3));
 const dust=new THREE.Points(dustGeo,new THREE.PointsMaterial({map:createDustTexture(),color:'#f5dcb2',size:1.6,transparent:true,opacity:.46,depthWrite:false,sizeAttenuation:true}));dust.frustumCulled=false;scene.add(dust);
 const recoveredParticles=new McmParticles();scene.add(recoveredParticles.root);
+const voxelTerrain=new VoxelTerrain();scene.add(voxelTerrain.root);
+function renderArt(){
+ voxelTerrain.root.visible=artRenderer.style==='voxel'&&phase!=='menu';
+ const hidden=[];
+ if(voxelTerrain.root.visible){voxelTerrain.update(state.x,state.z,surfaceHeight);for(const mesh of [ground,...sandSurface.meshes.values()])if(mesh.visible){hidden.push(mesh);mesh.visible=false;}}
+ try{artRenderer.render(scene,camera);}finally{hidden.forEach(mesh=>mesh.visible=true);}
+}
 applyQuality();
 // Warm dust motes drifting around the camera add close-range atmosphere.
 const moteCount=110,moteGeo=new THREE.BufferGeometry(),motePos=new Float32Array(moteCount*3),moteBase=Array.from({length:moteCount},()=>({x:(Math.random()-.5)*36,y:Math.random()*9,z:(Math.random()-.5)*36,phase:Math.random()*6.28}));
@@ -466,7 +474,7 @@ function exitPhoto(){
 }
 $('photo').onclick=enterPhoto;$('photo-exit').onclick=exitPhoto;
 $('photo-save').onclick=()=>{
- artRenderer.render(scene,camera);
+ renderArt();
  renderer.domElement.toBlob(blob=>{if(!blob)return;const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='dust-valley-photo.png';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);},'image/png');
 };
 renderer.domElement.addEventListener('pointerdown',e=>{if(phase!=='photo')return;photoDrag=true;photoX=e.clientX;photoY=e.clientY;renderer.domElement.setPointerCapture(e.pointerId);});
@@ -716,7 +724,7 @@ if(phase==='photo'){
  camera.position.set(target.x+Math.sin(photoYaw)*cp*photoDistance,target.y+Math.sin(photoPitch)*photoDistance,target.z+Math.cos(photoYaw)*cp*photoDistance);
  camera.lookAt(target);camera.fov+=(55-camera.fov)*(1-Math.exp(-dt*8));camera.updateProjectionMatrix();
  sky.position.copy(camera.position);sunGlow.position.copy(camera.position).addScaledVector(sunDir,560);sunCore.position.copy(sunGlow.position);
- recoveredParticles.update(state,camera,renderAlpha);artRenderer.render(scene,camera);rideAudio.update(state,input,false);return;
+ recoveredParticles.update(state,camera,renderAlpha);renderArt();rideAudio.update(state,input,false);return;
 }
 ghostBike.visible=false;
 if(mode==='race'&&phase==='playing'&&countdown<=0&&activeGhost){
@@ -804,7 +812,7 @@ if(!state.physics?.shared&&phase==='playing'&&state.speed>4&&!state.air&&countdo
 for(let i=0;i<moteCount;i++){const m=moteBase[i];motePos[i*3]=camera.position.x+m.x+Math.sin(total*.13+m.phase)*1.2;motePos[i*3+1]=camera.position.y-1+m.y+Math.cos(total*.09+m.phase)*.35;motePos[i*3+2]=camera.position.z+m.z+Math.cos(total*.11+m.phase)*1.2;}moteGeo.attributes.position.needsUpdate=true;
 particles.forEach((p,i)=>{p.life-=dt*.62;if(p.life>0){p.x+=p.vx*dt;p.y+=p.vy*dt;p.z+=p.vz*dt;p.vx*=1-dt*1.4;p.vz*=1-dt*1.4;p.vy+=.12*dt;}dustPositions[i*3]=p.x;dustPositions[i*3+1]=p.life>0?p.y:-100;dustPositions[i*3+2]=p.z;});dustGeo.attributes.position.needsUpdate=true;
 rideAudio.update(state,input,phase==='playing'&&countdown<=0);
-$('speed').textContent=Math.round(state.speed*3.6);$('time').textContent=formatTime(elapsed);$('lap').innerHTML=mode==='free'?String(score):`${String(Math.min(lap,laps)).padStart(2,'0')}<span>/${String(laps).padStart(2,'0')}</span>`;$('gate').innerHTML=`${String(nextGate===0?12:nextGate).padStart(2,'0')}<span>/12</span>`;$('boost').style.width=state.boost+'%';$('gear').textContent=state.gear||1;$('rpm').style.width=Math.min(100,(state.rpm||1200)/10000*100)+'%';sandSurface.update(activeSand);groundDetail.update(state.x,state.z);sky.position.copy(camera.position);sunGlow.position.copy(camera.position).addScaledVector(sunDir,560);sunCore.position.copy(sunGlow.position);drawMap();gates.forEach(g=>{g.group.visible=phase==='menu'?camera.aspect>0.95:g.group.position.distanceTo(camera.position)>13;});recoveredParticles.update(state,camera,renderAlpha);artRenderer.render(scene,camera);if(!$('loading').hidden)$('loading').hidden=true;}
+$('speed').textContent=Math.round(state.speed*3.6);$('time').textContent=formatTime(elapsed);$('lap').innerHTML=mode==='free'?String(score):`${String(Math.min(lap,laps)).padStart(2,'0')}<span>/${String(laps).padStart(2,'0')}</span>`;$('gate').innerHTML=`${String(nextGate===0?12:nextGate).padStart(2,'0')}<span>/12</span>`;$('boost').style.width=state.boost+'%';$('gear').textContent=state.gear||1;$('rpm').style.width=Math.min(100,(state.rpm||1200)/10000*100)+'%';sandSurface.update(activeSand);groundDetail.update(state.x,state.z);sky.position.copy(camera.position);sunGlow.position.copy(camera.position).addScaledVector(sunDir,560);sunCore.position.copy(sunGlow.position);drawMap();gates.forEach(g=>{g.group.visible=phase==='menu'?camera.aspect>0.95:g.group.position.distanceTo(camera.position)>13;});recoveredParticles.update(state,camera,renderAlpha);renderArt();if(!$('loading').hidden)$('loading').hidden=true;}
 function resize(){renderer.setSize(innerWidth,innerHeight);if(speedCanvas){speedCanvas.width=innerWidth;speedCanvas.height=innerHeight;}camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}window.addEventListener('resize',resize);resize();updateDailyButton();
 requestAnimationFrame(animate);
 // Read-only diagnostics for smoke tests and performance inspection.
