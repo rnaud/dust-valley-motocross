@@ -42,7 +42,8 @@ export function createMcmCoreState(scene,{spawn={x:0,z:0,yaw:0},sand:trueSand=tr
  const shared=scene.worldFiles?createWorldBikeRuntime(scene.worldFiles,terrain,{throttle:0,brake:0}):null;
  if(shared&&scene.mapId!=='quarries-dunes')throw Error('Shared world requires its original terrain');
  const simulation=shared?connectMcmWorldSimulation(shared,JSON.parse(scene.worldFiles['world-camera-initial.json']),terrain,{initialFiles:scene.worldFiles}):null;
- const runtime=shared?shared.bikes.get(shared.world.entry.bikes[0]):createCapturedFrameRuntime({...scene.input,terrain},scene.row,scene.child),c=runtime.loaded.context;
+ const child=scene.particleAssets&&!scene.child.sprayHex?{...scene.child,sprayAddress:scene.row.visualEffects[1].address,sprayHex:scene.row.visualEffects[1].hex+scene.particleAssets.sprayTail}:scene.child;
+ const runtime=shared?shared.bikes.get(shared.world.entry.bikes[0]):createCapturedFrameRuntime({...scene.input,terrain},scene.row,child),c=runtime.loaded.context;
  if(scene.mapId&&scene.mapId!=='quarries-dunes'){const center=(16**(terrain.root.level+1)/2)/terrain.worldToGrid;c.pose={position:[...(scene.sceneSettings?.defaultStartPosition??[center,100,center])],forward:[...(scene.sceneSettings?.defaultStartDirection??[0,0,1])],up:[0,1,0]};resetMcmBikePose(c);c.contactPhase.normalEventDecision.terrainMode=scene.terrainMode;runtime.loaded.environment.terrainMode=scene.terrainMode;c.frameEffects.occlusion=!!scene.shadowTarget;if(scene.shadowTarget)c.frameEffects.resolveTarget=()=>scene.shadowTarget.map(Math.fround);}
  const initial=[...c.bike.position],ground=queryMcmTerrainHeight({...terrain,point:initial})[1];
  const angle=(spawn.yaw??0)-Math.atan2(c.bike.forward[0],c.bike.forward[2]),rotation=new Quaternion().setFromAxisAngle(new Vector3(0,1,0),angle),inverse=rotation.clone().invert();
@@ -112,8 +113,11 @@ export function stepMcmCoreState(s,input,dt,{worldEvents,observe}={}){
  runtime.loaded.input.longitudinalBits=floatBits(lean);
  const result=runtime.stepBike({delta:dt,throttle:input.gas?1:0,brake:input.brake?1:0,steerBits:floatBits(-steer)},observe);
  if(result.status!=='returned')throw Error(`Recovered bike stopped: ${result.status}`);
- for(const event of worldEvents??[{kind:'rider',delta:dt,paused:0},{kind:'pool',delta:dt,paused:0}]){
+ for(const event of worldEvents??[{kind:'rider',delta:dt,paused:0},...(s.physics.scene.particleAssets?['dust','spray','exhaust'].map(kind=>({kind,delta:dt,paused:0})):[]),{kind:'pool',delta:dt,paused:0}]){
   if(event.kind==='rider')runtime.stepRider(event);
+  else if(event.kind==='dust')runtime.stepDust(event);
+  else if(event.kind==='spray')runtime.stepSpray(event);
+  else if(event.kind==='exhaust')runtime.stepExhaust(event);
   else if(event.kind==='pool')runtime.stepPool(event);
   else throw Error('Unknown recovered world update');
  }

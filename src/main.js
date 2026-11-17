@@ -1,3 +1,4 @@
+import {loadMcmParticleAssets} from './mcm-particle-assets.js';
 import {VoxelTerrain} from './voxel-terrain.js';
 import {ArtStyleRenderer,artStyles} from './art-styles.js';
 import {McmParticles} from './mcm-particles.js';
@@ -525,7 +526,7 @@ async function start(){
  if(starting)return;starting=true;
  const startButton=$('start'),startLabel=startButton.innerHTML;startButton.disabled=true;
  try{
- if(physicsMode==='mcm-preview'){startButton.textContent='LOADING ORIGINAL PHYSICS…';corePreview??=await import('./mcm-core-preview.js');coreScene=await loadSelectedMcmMap(await corePreview.loadMcmCoreScene());if(coreScene.mapId==='quarries-dunes')coreScene.worldFiles=await corePreview.loadMcmWorldScene();if(!originalModels){const assets=await loadMcmOriginalModels();originalModels=createMcmOriginalModels(assets);opponentModels=createMcmOriginalModels(assets);opponentModels.root.name='mcm-opponent-models';scene.add(originalModels.root,opponentModels.root);}}
+ if(physicsMode==='mcm-preview'){startButton.textContent='LOADING ORIGINAL PHYSICS…';corePreview??=await import('./mcm-core-preview.js');coreScene=await loadSelectedMcmMap(await corePreview.loadMcmCoreScene());coreScene.particleAssets=await loadMcmParticleAssets();recoveredParticles.setAssets(coreScene.particleAssets);if(coreScene.mapId==='quarries-dunes')coreScene.worldFiles=await corePreview.loadMcmWorldScene();if(!originalModels){const assets=await loadMcmOriginalModels();originalModels=createMcmOriginalModels(assets);opponentModels=createMcmOriginalModels(assets);opponentModels.root.name='mcm-opponent-models';scene.add(originalModels.root,opponentModels.root);}}
  }
  catch(error){console.error(error);toast('Original physics could not load. Please try again.',5);return;}
  finally{starting=false;startButton.disabled=false;startButton.innerHTML=startLabel;}
@@ -712,7 +713,7 @@ if(phase==='playing'){
 const renderAlpha=phase==='playing'?accumulator/simulationStep():1;
 const visual=ridePose.sample(renderAlpha);
 recoveredParticles.root.visible=phase!=='menu'&&state.physicsBackend==='recovered-core';
-dust.visible=!state.physics?.shared&&settings.quality!=='low'&&!autoDowngraded;
+dust.visible=state.physicsBackend!=='recovered-core'&&settings.quality!=='low'&&!autoDowngraded;
 const showOriginal=phase!=='menu'&&state.physicsBackend==='recovered-core'&&!!originalModels;
 bike.visible=showBike&&!showOriginal;wheels.forEach(w=>w.visible=showBike&&!showOriginal);forks.forEach(p=>p.visible=showBike&&!showOriginal);frontFender.visible=showBike&&!showOriginal;
 if(originalModels){originalModels.root.visible=showBike&&showOriginal;if(showOriginal)originalModels.update(state,$('mcm-rider').value,$('mcm-bike').value,renderAlpha);}
@@ -805,7 +806,7 @@ forks.forEach((part,i)=>fitBikeLink(part,linkage[i].start,linkage[i].end));
 
 
 sun.position.set(state.x-110,state.y+62,state.z+48);sun.target.position.set(state.x,state.y,state.z);
-if(!state.physics?.shared&&phase==='playing'&&state.speed>4&&!state.air&&countdown<=0){
+if(state.physicsBackend!=='recovered-core'&&phase==='playing'&&state.speed>4&&!state.air&&countdown<=0){
   const back=1.05;
   puff(state.x-Math.sin(state.yaw)*back,state.y-.55,state.z-Math.cos(state.yaw)*back,input.boost?3:2,.3,.7);
 }
@@ -816,4 +817,4 @@ $('speed').textContent=Math.round(state.speed*3.6);$('time').textContent=formatT
 function resize(){renderer.setSize(innerWidth,innerHeight);if(speedCanvas){speedCanvas.width=innerWidth;speedCanvas.height=innerHeight;}camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}window.addEventListener('resize',resize);resize();updateDailyButton();
 requestAnimationFrame(animate);
 // Read-only diagnostics for smoke tests and performance inspection.
-window.__game={presentation:()=>({style:artRenderer.style,particles:recoveredParticles.count,nativeParticles:recoveredParticles.nativeCount}),audio:()=>rideAudio.original?.diagnostics()??{ready:false},sandSample:(x,z)=>activeSand?{height:activeSand.height(x,z),displacement:activeSand.displacementAt(x,z),compaction:activeSand.compaction(x,z)}:null,environment:()=>({sand:activeSand?{version:activeSand.version,tiles:activeSand.tiles.size,renderedTiles:sandSurface.meshes.size}:null,trackVisible:trackObjects.visible,trackTexture:materials.dirt.map===textures.macro,height:state.physics.height(state.x,state.z),visualHeight:terrain(state.x,state.z),mountains:mountains.map(m=>({x:m.position.x,z:m.position.z,radius:m.userData.radius*Math.max(m.scale.x,m.scale.z),foundation:m.userData.foundation}))}),snapshot:()=>({phase,mode,elapsed,lap,nextGate,score,countdown,originalAssets:state.physicsBackend==='recovered-core'?{map:coreScene.mapId??'quarries-dunes',rider:$('mcm-rider').value,bike:$('mcm-bike').value,parts:originalModels?.parts,opponentVisible:opponentModels?.root.visible??false,sceneSettings:coreScene.sceneSettings?.source??null,fogColor:coreScene.sceneSettings?.fogColor??null,proceduralScenery:heroGroup.visible,terrainTextures:!!originalTerrainTextures,missingTerrainTextures:originalTerrainTextures?.missing}:null,tireTrackSegments:tireTracks.count,...state}),renderer};
+window.__game={presentation:()=>({style:artRenderer.style,particles:recoveredParticles.count,nativeParticles:recoveredParticles.nativeCount,particleTexture:recoveredParticles.textureName,particleSprites:[...new Set(recoveredParticles.rows.map(r=>r.sprite))]}),audio:()=>rideAudio.original?.diagnostics()??{ready:false},sandSample:(x,z)=>activeSand?{height:activeSand.height(x,z),displacement:activeSand.displacementAt(x,z),compaction:activeSand.compaction(x,z)}:null,environment:()=>({sand:activeSand?{version:activeSand.version,tiles:activeSand.tiles.size,renderedTiles:sandSurface.meshes.size}:null,trackVisible:trackObjects.visible,trackTexture:materials.dirt.map===textures.macro,height:state.physics.height(state.x,state.z),visualHeight:terrain(state.x,state.z),mountains:mountains.map(m=>({x:m.position.x,z:m.position.z,radius:m.userData.radius*Math.max(m.scale.x,m.scale.z),foundation:m.userData.foundation}))}),snapshot:()=>({phase,mode,elapsed,lap,nextGate,score,countdown,originalAssets:state.physicsBackend==='recovered-core'?{map:coreScene.mapId??'quarries-dunes',rider:$('mcm-rider').value,bike:$('mcm-bike').value,parts:originalModels?.parts,opponentVisible:opponentModels?.root.visible??false,sceneSettings:coreScene.sceneSettings?.source??null,fogColor:coreScene.sceneSettings?.fogColor??null,proceduralScenery:heroGroup.visible,terrainTextures:!!originalTerrainTextures,missingTerrainTextures:originalTerrainTextures?.missing}:null,tireTrackSegments:tireTracks.count,...state}),renderer};

@@ -1,6 +1,7 @@
 {
   "canyon-canyon01": [
     {
+      "particleTexture": "particles\\dirtpart.tga",
       "title": "Canyon Country 01",
       "terrainFile": "CANYON01.trn",
       "waypointFile": null,
@@ -15,6 +16,7 @@
   ],
   "canyon-canyon02": [
     {
+      "particleTexture": "particles\\dirtpart.tga",
       "title": "Canyon Country 02",
       "terrainFile": "CANYON02.trn",
       "waypointFile": null,
@@ -29,6 +31,7 @@
   ],
   "canyon-canyon03": [
     {
+      "particleTexture": "particles\\dirtpart.tga",
       "title": "Canyon Country 03",
       "terrainFile": "CANYON03.trn",
       "waypointFile": null,
@@ -43,6 +46,7 @@
   ],
   "canyon-canyon04": [
     {
+      "particleTexture": "particles\\dirtpart.tga",
       "title": "Canyon Country 04",
       "terrainFile": "CANYON04.trn",
       "waypointFile": null,
@@ -57,6 +61,7 @@
   ],
   "canyon-canyon05": [
     {
+      "particleTexture": "particles\\dirtpart.tga",
       "title": "Canyon Country 05",
       "terrainFile": "CANYON05.trn",
       "waypointFile": null,
@@ -71,6 +76,7 @@
   ],
   "quarries-track13": [
     {
+      "particleTexture": "particles\\track16p.tga",
       "title": "Widowmaker",
       "terrainFile": "track13.trn",
       "waypointFile": null,
@@ -130,6 +136,7 @@
   ],
   "quarries-dunes": [
     {
+      "particleTexture": "particles\\track04p.tga",
       "title": "Yuma Sand Dunes",
       "terrainFile": "dunes.trn",
       "waypointFile": null,
@@ -189,6 +196,7 @@
   ],
   "quarries-quarry00": [
     {
+      "particleTexture": "particles\\track15p.tga",
       "title": "Arizona Exploration",
       "terrainFile": "quarry00.trn",
       "waypointFile": null,
@@ -248,6 +256,7 @@
   ],
   "quarries-quarry01": [
     {
+      "particleTexture": "particles\\track03p.tga",
       "title": "T-rific",
       "terrainFile": "quarry01.trn",
       "waypointFile": null,
@@ -307,6 +316,7 @@
   ],
   "quarries-quarry02": [
     {
+      "particleTexture": "particles\\track11p.tga",
       "title": "Rocky Road",
       "terrainFile": "quarry02.trn",
       "waypointFile": null,
@@ -366,6 +376,7 @@
   ],
   "quarries-quarry03": [
     {
+      "particleTexture": "particles\\track11p.tga",
       "title": "Painted Desert",
       "terrainFile": "quarry03.trn",
       "waypointFile": null,
@@ -425,6 +436,7 @@
   ],
   "quarries-quarry19": [
     {
+      "particleTexture": "particles\\dkgreen.tga",
       "title": "Bowling Greens",
       "terrainFile": "quarry19.trn",
       "waypointFile": null,
@@ -484,6 +496,7 @@
   ],
   "season-week01": [
     {
+      "particleTexture": "particles\\dirtpart.tga",
       "title": "Week 01 - San Diego",
       "terrainFile": "week01.trn",
       "waypointFile": null,
@@ -498,6 +511,7 @@
   ],
   "season-week02": [
     {
+      "particleTexture": "particles\\dirtpart.tga",
       "title": "Week 02 - Indianapolis",
       "terrainFile": "week02.trn",
       "waypointFile": null,
@@ -512,6 +526,7 @@
   ],
   "season-week03": [
     {
+      "particleTexture": "particles\\dirtpart.tga",
       "title": "Week 03 - Phoenix",
       "terrainFile": "week03.trn",
       "waypointFile": null,
@@ -526,6 +541,7 @@
   ],
   "season-week04": [
     {
+      "particleTexture": "particles\\dirtpart.tga",
       "title": "Week 04 - Minneapolis",
       "terrainFile": "week04.trn",
       "waypointFile": null,
@@ -540,6 +556,7 @@
   ],
   "season-week05": [
     {
+      "particleTexture": "particles\\dirtpart.tga",
       "title": "Week 05 - Denver",
       "terrainFile": "week05.trn",
       "waypointFile": null,
@@ -554,6 +571,7 @@
   ],
   "season-week06": [
     {
+      "particleTexture": "particles\\dirtpart.tga",
       "title": "Week 06 - Houston",
       "terrainFile": "WEEK06.trn",
       "waypointFile": null,
@@ -568,6 +586,7 @@
   ],
   "season-week07": [
     {
+      "particleTexture": "particles\\dirtpart.tga",
       "title": "Week 07 - Pittsburgh",
       "terrainFile": "week07.trn",
       "waypointFile": null,
@@ -582,6 +601,7 @@
   ],
   "season-week08": [
     {
+      "particleTexture": "particles\\dirtpart.tga",
       "title": "Week 08 - Detroit",
       "terrainFile": "week08.trn",
       "waypointFile": null,
@@ -596,6 +616,7 @@
   ],
   "season-week09": [
     {
+      "particleTexture": "particles\\dirtpart.tga",
       "title": "Week 09 - Seattle",
       "terrainFile": "week09.trn",
       "waypointFile": null,
@@ -610,6 +631,7 @@
   ],
   "season-week10": [
     {
+      "particleTexture": "particles\\dirtpart.tga",
       "title": "Week 10 - Boston",
       "terrainFile": "week10.trn",
       "waypointFile": null,
@@ -624,6 +646,7 @@
   ],
   "season-week11": [
     {
+      "particleTexture": "particles\\dirtpart.tga",
       "title": "Week 11 - Atlanta",
       "terrainFile": "week11.trn",
       "waypointFile": null,
@@ -638,6 +661,7 @@
   ],
   "season-week12": [
     {
+      "particleTexture": "particles\\dirtpart.tga",
       "title": "Week 12 - Tampa Bay",
       "terrainFile": "week12.trn",
       "waypointFile": null,
@@ -652,6 +676,7 @@
   ],
   "season-week13": [
     {
+      "particleTexture": "particles\\dirtpart.tga",
       "title": "Week 13 - Charlotte",
       "terrainFile": "week13.trn",
       "waypointFile": null,
@@ -666,6 +691,7 @@
   ],
   "season-week14": [
     {
+      "particleTexture": "particles\\dirtpart.tga",
       "title": "Week 14 - Cleveland",
       "terrainFile": "week14.trn",
       "waypointFile": null,
@@ -680,6 +706,7 @@
   ],
   "season-week15": [
     {
+      "particleTexture": "particles\\dirtpart.tga",
       "title": "Week 15 - Dallas",
       "terrainFile": "week15.trn",
       "waypointFile": null,
@@ -694,6 +721,7 @@
   ],
   "waypoint-baja00": [
     {
+      "particleTexture": "particles\\track15p.tga",
       "title": "Arizona Waypoint #1",
       "terrainFile": "Baja00.trn",
       "waypointFile": "Q00_B01.wpt",
@@ -751,6 +779,7 @@
       "sha256": "ce521b2d461632f9c80f1fde0031bb82a4209adaf85270208f055925c3f8282c"
     },
     {
+      "particleTexture": "particles\\track15p.tga",
       "title": "Arizona Waypoint #2",
       "terrainFile": "Baja00.trn",
       "waypointFile": "Q00_B02.wpt",
@@ -810,6 +839,7 @@
   ],
   "waypoint-baja01": [
     {
+      "particleTexture": "particles\\track03p.tga",
       "title": "T-rific Waypoint #1",
       "terrainFile": "baja01.trn",
       "waypointFile": "Q01_B01.wpt",
@@ -867,6 +897,7 @@
       "sha256": "edc634f36939a1c773c51241c5539d53673f73a1b14dd500949f5834757d8c04"
     },
     {
+      "particleTexture": "particles\\track03p.tga",
       "title": "T-rific Waypoint #2",
       "terrainFile": "baja01.trn",
       "waypointFile": "Q01_B02.wpt",
@@ -926,6 +957,7 @@
   ],
   "waypoint-baja02": [
     {
+      "particleTexture": "particles\\track11p.tga",
       "title": "Rocky Road Waypoint #1",
       "terrainFile": "baja02.trn",
       "waypointFile": "Q02_B01.wpt",
@@ -983,6 +1015,7 @@
       "sha256": "1cf0235bc749793d489ba08a03d9d5e27ab4827a8ac7b0ee36bfcbe343c058ff"
     },
     {
+      "particleTexture": "particles\\track11p.tga",
       "title": "Rocky Road Waypoint #2",
       "terrainFile": "baja02.trn",
       "waypointFile": "Q02_B02.wpt",
@@ -1042,6 +1075,7 @@
   ],
   "waypoint-baja03": [
     {
+      "particleTexture": "particles\\track11p.tga",
       "title": "Painted Desert Waypoint #1",
       "terrainFile": "baja03.trn",
       "waypointFile": "Q03_B01.wpt",
@@ -1099,6 +1133,7 @@
       "sha256": "13896431d46141bc41791d558c0ec5d8993f3520c3b6e889e76831ca8088a9d6"
     },
     {
+      "particleTexture": "particles\\track11p.tga",
       "title": "Painted Desert Waypoint #2",
       "terrainFile": "baja03.trn",
       "waypointFile": "Q03_B02.wpt",
@@ -1158,6 +1193,7 @@
   ],
   "waypoint-baja19": [
     {
+      "particleTexture": "particles\\dkgreen.tga",
       "title": "Bowling Greens Waypoint #1",
       "terrainFile": "baja19.trn",
       "waypointFile": "Q19_B01.wpt",
@@ -1215,6 +1251,7 @@
       "sha256": "58135041835fc1787a2dff24d6f876045c8e5e2f115cb0d2d3e18cb6898048c4"
     },
     {
+      "particleTexture": "particles\\dkgreen.tga",
       "title": "Bowling Greens Waypoint #2",
       "terrainFile": "baja19.trn",
       "waypointFile": "Q19_B02.wpt",
@@ -1274,6 +1311,7 @@
   ],
   "waypoint-dunebaja": [
     {
+      "particleTexture": "particles\\track04p.tga",
       "title": "Yuma Dunes Waypoint #1",
       "terrainFile": "duneBaja.trn",
       "waypointFile": null,
@@ -1331,6 +1369,7 @@
       "sha256": "4685991507b922e213de5e48f9cff04322472ec4583910149d4986e30c698d09"
     },
     {
+      "particleTexture": "particles\\track04p.tga",
       "title": "Yuma Dunes Waypoint #2",
       "terrainFile": "duneBaja.trn",
       "waypointFile": null,

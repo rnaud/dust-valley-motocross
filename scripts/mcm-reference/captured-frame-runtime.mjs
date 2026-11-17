@@ -4,6 +4,7 @@ import {connectLiveSceneRiderPosition} from './live-scene-rider-position.mjs';
 import {advanceMcmRetainedFrame} from '../../src/physics/mcm/retained-frame.js';
 import {advanceMcmRiderTick} from '../../src/physics/mcm/rider-tick.js';
 import {tickMcmParticlePool} from '../../src/physics/mcm/particle-pool-tick.js';
+import {tickMcmExhaust} from '../../src/physics/mcm/exhaust-tick.js';
 import {tickMcmDust} from '../../src/physics/mcm/dust-tick.js';
 import {tickMcmSpray} from '../../src/physics/mcm/spray-tick.js';
 import {CapturedBytes} from '../../src/physics/mcm/captured-bytes.js';
@@ -56,6 +57,7 @@ export function createCapturedFrameRuntime(inputs,row,child){
    if(!external.pool)throw Error('Missing captured particle pool');
    return tickMcmParticlePool(external.pool,{dt:delta,paused});
   },
+  stepExhaust({delta,paused}){const bytes=c.frameEffects.emitters[2].bytes;return tickMcmExhaust(bytes.view(0,bytes.length),{dt:delta,paused,pool:external.pool});},
   stepDust({delta,paused}){
    const emitter=c.frameEffects.emitters[0];
    return tickMcmDust(emitter.bytes.view(0,0x84),{dt:delta,paused,pool:external.pool});

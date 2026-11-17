@@ -15,7 +15,7 @@ test('particle presentation sorts its own copy, preserves native bytes and clear
  const view=new McmParticles(),camera=new THREE.PerspectiveCamera();view.update(state,camera);
  assert.equal(view.count,2);assert.equal(view.nativeCount,4);
  assert.equal(view.centers[2],-2);assert.equal(view.centers[5],-1);
- assert.ok(Math.abs(view.colors[3]-.8*.72)<1e-6);
+ assert.ok(Math.abs(view.colors[3]-204/255)<1e-6);
  assert.deepEqual(slots.map(p=>Buffer.from(p.buffer).toString('hex')),before);
  state.physicsBackend='legacy';view.update(state,camera);assert.equal(view.root.geometry.instanceCount,0);
  state.physicsBackend='recovered-core';state.physics.shared.particles.pool.count=0;view.update(state,camera);assert.equal(view.count,0);
