@@ -1,3 +1,5 @@
+import {ArtStyleRenderer,artStyles} from './art-styles.js';
+import {McmParticles} from './mcm-particles.js';
 import {matchSkyHorizon} from './sky-haze.js';
 import mcmSceneVariants from './mcm-scene-variants.json';
 import mcmSceneSettings from './mcm-scene-settings.json';
@@ -44,12 +46,14 @@ const mobile=matchMedia('(pointer: coarse)').matches||navigator.maxTouchPoints>0
 const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const readSetting=(key,fallback)=>{try{return localStorage.getItem(key)??fallback;}catch{return fallback;}};
 const writeSetting=(key,value)=>{try{localStorage.setItem(key,value);}catch{}};
-const settings={camera:readSetting('dust-valley-camera','near'),quality:readSetting('dust-valley-quality','auto'),time:readSetting('dust-valley-time','dawn'),sensitivity:Number(readSetting('dust-valley-sensitivity','1'))||1};
+const settings={art:readSetting('dust-valley-art','original'),camera:readSetting('dust-valley-camera','near'),quality:readSetting('dust-valley-quality','auto'),time:readSetting('dust-valley-time','dawn'),sensitivity:Number(readSetting('dust-valley-sensitivity','1'))||1};
 if(mobile)document.body.classList.add('touch-device');
 const scene=new THREE.Scene();scene.background=new THREE.Color('#c9b08c');scene.fog=new THREE.Fog('#d8c0a0',180,540);
 let renderer;
 try{renderer=new THREE.WebGLRenderer({canvas:$('game'),antialias:true,powerPreference:'high-performance'});}catch(e){$('menu').innerHTML='<h2>WebGL is unavailable</h2><p>Please open this game in a browser with hardware acceleration enabled.</p>';throw e;}
 renderer.setPixelRatio(Math.min(devicePixelRatio,mobile?1.5:2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
+const artRenderer=new ArtStyleRenderer(renderer);artRenderer.setStyle(settings.art);settings.art=artRenderer.style;
+for(const [id,title]of artStyles){const option=document.createElement('option');option.value=id;option.textContent=title;$('art-style').append(option);}
 const sky=new THREE.Mesh(new THREE.SphereGeometry(650,32,16),new THREE.MeshBasicMaterial({map:createSkyTexture(),side:THREE.BackSide,depthWrite:false,fog:false}));scene.add(sky);
 const environmentGenerator=new THREE.PMREMGenerator(renderer);
 let environmentTarget;
@@ -374,6 +378,7 @@ const shadowMat=new THREE.MeshBasicMaterial({color:0x2e2015,map:glowTexture,tran
 const wheelShadows=[0,1].map(()=>{const m=new THREE.Mesh(new THREE.CircleGeometry(1,20),shadowMat);m.rotation.x=-Math.PI/2;m.renderOrder=2;m.visible=false;scene.add(m);return m;});
 const dustCount=180,dustGeo=new THREE.BufferGeometry(),dustPositions=new Float32Array(dustCount*3);dustGeo.setAttribute('position',new THREE.BufferAttribute(dustPositions,3));
 const dust=new THREE.Points(dustGeo,new THREE.PointsMaterial({map:createDustTexture(),color:'#f5dcb2',size:1.6,transparent:true,opacity:.46,depthWrite:false,sizeAttenuation:true}));dust.frustumCulled=false;scene.add(dust);
+const recoveredParticles=new McmParticles();scene.add(recoveredParticles.root);
 applyQuality();
 // Warm dust motes drifting around the camera add close-range atmosphere.
 const moteCount=110,moteGeo=new THREE.BufferGeometry(),motePos=new Float32Array(moteCount*3),moteBase=Array.from({length:moteCount},()=>({x:(Math.random()-.5)*36,y:Math.random()*9,z:(Math.random()-.5)*36,phase:Math.random()*6.28}));
@@ -430,6 +435,7 @@ function syncSettingsUI(){
  for(const b of document.querySelectorAll('[data-camera]'))b.classList.toggle('selected',b.dataset.camera===settings.camera);
  for(const b of document.querySelectorAll('[data-quality]'))b.classList.toggle('selected',b.dataset.quality===settings.quality);
  for(const b of document.querySelectorAll('[data-time]'))b.classList.toggle('selected',b.dataset.time===settings.time);
+ $('art-style').value=settings.art;$('art-note').textContent=artStyles.find(s=>s[0]===settings.art)[2];
  $('sensitivity').value=String(settings.sensitivity);$('sensitivity-value').textContent=settings.sensitivity.toFixed(2);
 }
 function openSettings(){
@@ -445,6 +451,7 @@ $('settings-panel').addEventListener('click',e=>{if(e.target===$('settings-panel
 for(const b of document.querySelectorAll('[data-camera]'))b.onclick=()=>{settings.camera=b.dataset.camera;writeSetting('dust-valley-camera',settings.camera);cameraReady=false;syncSettingsUI();toast('CAMERA · '+settings.camera.toUpperCase(),1);};
 for(const b of document.querySelectorAll('[data-quality]'))b.onclick=()=>{settings.quality=b.dataset.quality;writeSetting('dust-valley-quality',settings.quality);autoDowngraded=false;applyQuality();syncSettingsUI();toast('QUALITY · '+settings.quality.toUpperCase(),1);};
 for(const b of document.querySelectorAll('[data-time]'))b.onclick=()=>{settings.time=b.dataset.time;writeSetting('dust-valley-time',settings.time);applyTime();syncSettingsUI();};
+$('art-style').onchange=e=>{artRenderer.setStyle(e.target.value);settings.art=artRenderer.style;writeSetting('dust-valley-art',settings.art);syncSettingsUI();};
 $('sensitivity').oninput=e=>{settings.sensitivity=Number(e.target.value);writeSetting('dust-valley-sensitivity',String(settings.sensitivity));$('sensitivity-value').textContent=settings.sensitivity.toFixed(2);};
 syncSettingsUI();
 let photoYaw=0,photoPitch=.32,photoDistance=8.5,photoDrag=false,photoX=0,photoY=0;
@@ -459,7 +466,7 @@ function exitPhoto(){
 }
 $('photo').onclick=enterPhoto;$('photo-exit').onclick=exitPhoto;
 $('photo-save').onclick=()=>{
- renderer.render(scene,camera);
+ artRenderer.render(scene,camera);
  renderer.domElement.toBlob(blob=>{if(!blob)return;const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='dust-valley-photo.png';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);},'image/png');
 };
 renderer.domElement.addEventListener('pointerdown',e=>{if(phase!=='photo')return;photoDrag=true;photoX=e.clientX;photoY=e.clientY;renderer.domElement.setPointerCapture(e.pointerId);});
@@ -696,6 +703,8 @@ if(phase==='playing'){
 }
 const renderAlpha=phase==='playing'?accumulator/simulationStep():1;
 const visual=ridePose.sample(renderAlpha);
+recoveredParticles.root.visible=phase!=='menu'&&state.physicsBackend==='recovered-core';
+dust.visible=!state.physics?.shared&&settings.quality!=='low'&&!autoDowngraded;
 const showOriginal=phase!=='menu'&&state.physicsBackend==='recovered-core'&&!!originalModels;
 bike.visible=showBike&&!showOriginal;wheels.forEach(w=>w.visible=showBike&&!showOriginal);forks.forEach(p=>p.visible=showBike&&!showOriginal);frontFender.visible=showBike&&!showOriginal;
 if(originalModels){originalModels.root.visible=showBike&&showOriginal;if(showOriginal)originalModels.update(state,$('mcm-rider').value,$('mcm-bike').value,renderAlpha);}
@@ -707,7 +716,7 @@ if(phase==='photo'){
  camera.position.set(target.x+Math.sin(photoYaw)*cp*photoDistance,target.y+Math.sin(photoPitch)*photoDistance,target.z+Math.cos(photoYaw)*cp*photoDistance);
  camera.lookAt(target);camera.fov+=(55-camera.fov)*(1-Math.exp(-dt*8));camera.updateProjectionMatrix();
  sky.position.copy(camera.position);sunGlow.position.copy(camera.position).addScaledVector(sunDir,560);sunCore.position.copy(sunGlow.position);
- renderer.render(scene,camera);rideAudio.update(state,input,false);return;
+ recoveredParticles.update(state,camera,renderAlpha);artRenderer.render(scene,camera);rideAudio.update(state,input,false);return;
 }
 ghostBike.visible=false;
 if(mode==='race'&&phase==='playing'&&countdown<=0&&activeGhost){
@@ -788,15 +797,15 @@ forks.forEach((part,i)=>fitBikeLink(part,linkage[i].start,linkage[i].end));
 
 
 sun.position.set(state.x-110,state.y+62,state.z+48);sun.target.position.set(state.x,state.y,state.z);
-if(phase==='playing'&&state.speed>4&&!state.air&&countdown<=0){
+if(!state.physics?.shared&&phase==='playing'&&state.speed>4&&!state.air&&countdown<=0){
   const back=1.05;
   puff(state.x-Math.sin(state.yaw)*back,state.y-.55,state.z-Math.cos(state.yaw)*back,input.boost?3:2,.3,.7);
 }
 for(let i=0;i<moteCount;i++){const m=moteBase[i];motePos[i*3]=camera.position.x+m.x+Math.sin(total*.13+m.phase)*1.2;motePos[i*3+1]=camera.position.y-1+m.y+Math.cos(total*.09+m.phase)*.35;motePos[i*3+2]=camera.position.z+m.z+Math.cos(total*.11+m.phase)*1.2;}moteGeo.attributes.position.needsUpdate=true;
 particles.forEach((p,i)=>{p.life-=dt*.62;if(p.life>0){p.x+=p.vx*dt;p.y+=p.vy*dt;p.z+=p.vz*dt;p.vx*=1-dt*1.4;p.vz*=1-dt*1.4;p.vy+=.12*dt;}dustPositions[i*3]=p.x;dustPositions[i*3+1]=p.life>0?p.y:-100;dustPositions[i*3+2]=p.z;});dustGeo.attributes.position.needsUpdate=true;
 rideAudio.update(state,input,phase==='playing'&&countdown<=0);
-$('speed').textContent=Math.round(state.speed*3.6);$('time').textContent=formatTime(elapsed);$('lap').innerHTML=mode==='free'?String(score):`${String(Math.min(lap,laps)).padStart(2,'0')}<span>/${String(laps).padStart(2,'0')}</span>`;$('gate').innerHTML=`${String(nextGate===0?12:nextGate).padStart(2,'0')}<span>/12</span>`;$('boost').style.width=state.boost+'%';$('gear').textContent=state.gear||1;$('rpm').style.width=Math.min(100,(state.rpm||1200)/10000*100)+'%';sandSurface.update(activeSand);groundDetail.update(state.x,state.z);sky.position.copy(camera.position);sunGlow.position.copy(camera.position).addScaledVector(sunDir,560);sunCore.position.copy(sunGlow.position);drawMap();gates.forEach(g=>{g.group.visible=phase==='menu'?camera.aspect>0.95:g.group.position.distanceTo(camera.position)>13;});renderer.render(scene,camera);if(!$('loading').hidden)$('loading').hidden=true;}
+$('speed').textContent=Math.round(state.speed*3.6);$('time').textContent=formatTime(elapsed);$('lap').innerHTML=mode==='free'?String(score):`${String(Math.min(lap,laps)).padStart(2,'0')}<span>/${String(laps).padStart(2,'0')}</span>`;$('gate').innerHTML=`${String(nextGate===0?12:nextGate).padStart(2,'0')}<span>/12</span>`;$('boost').style.width=state.boost+'%';$('gear').textContent=state.gear||1;$('rpm').style.width=Math.min(100,(state.rpm||1200)/10000*100)+'%';sandSurface.update(activeSand);groundDetail.update(state.x,state.z);sky.position.copy(camera.position);sunGlow.position.copy(camera.position).addScaledVector(sunDir,560);sunCore.position.copy(sunGlow.position);drawMap();gates.forEach(g=>{g.group.visible=phase==='menu'?camera.aspect>0.95:g.group.position.distanceTo(camera.position)>13;});recoveredParticles.update(state,camera,renderAlpha);artRenderer.render(scene,camera);if(!$('loading').hidden)$('loading').hidden=true;}
 function resize(){renderer.setSize(innerWidth,innerHeight);if(speedCanvas){speedCanvas.width=innerWidth;speedCanvas.height=innerHeight;}camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}window.addEventListener('resize',resize);resize();updateDailyButton();
 requestAnimationFrame(animate);
 // Read-only diagnostics for smoke tests and performance inspection.
-window.__game={audio:()=>rideAudio.original?.diagnostics()??{ready:false},sandSample:(x,z)=>activeSand?{height:activeSand.height(x,z),displacement:activeSand.displacementAt(x,z),compaction:activeSand.compaction(x,z)}:null,environment:()=>({sand:activeSand?{version:activeSand.version,tiles:activeSand.tiles.size,renderedTiles:sandSurface.meshes.size}:null,trackVisible:trackObjects.visible,trackTexture:materials.dirt.map===textures.macro,height:state.physics.height(state.x,state.z),visualHeight:terrain(state.x,state.z),mountains:mountains.map(m=>({x:m.position.x,z:m.position.z,radius:m.userData.radius*Math.max(m.scale.x,m.scale.z),foundation:m.userData.foundation}))}),snapshot:()=>({phase,mode,elapsed,lap,nextGate,score,countdown,originalAssets:state.physicsBackend==='recovered-core'?{map:coreScene.mapId??'quarries-dunes',rider:$('mcm-rider').value,bike:$('mcm-bike').value,parts:originalModels?.parts,opponentVisible:opponentModels?.root.visible??false,sceneSettings:coreScene.sceneSettings?.source??null,fogColor:coreScene.sceneSettings?.fogColor??null,proceduralScenery:heroGroup.visible,terrainTextures:!!originalTerrainTextures,missingTerrainTextures:originalTerrainTextures?.missing}:null,tireTrackSegments:tireTracks.count,...state}),renderer};
+window.__game={presentation:()=>({style:artRenderer.style,particles:recoveredParticles.count,nativeParticles:recoveredParticles.nativeCount}),audio:()=>rideAudio.original?.diagnostics()??{ready:false},sandSample:(x,z)=>activeSand?{height:activeSand.height(x,z),displacement:activeSand.displacementAt(x,z),compaction:activeSand.compaction(x,z)}:null,environment:()=>({sand:activeSand?{version:activeSand.version,tiles:activeSand.tiles.size,renderedTiles:sandSurface.meshes.size}:null,trackVisible:trackObjects.visible,trackTexture:materials.dirt.map===textures.macro,height:state.physics.height(state.x,state.z),visualHeight:terrain(state.x,state.z),mountains:mountains.map(m=>({x:m.position.x,z:m.position.z,radius:m.userData.radius*Math.max(m.scale.x,m.scale.z),foundation:m.userData.foundation}))}),snapshot:()=>({phase,mode,elapsed,lap,nextGate,score,countdown,originalAssets:state.physicsBackend==='recovered-core'?{map:coreScene.mapId??'quarries-dunes',rider:$('mcm-rider').value,bike:$('mcm-bike').value,parts:originalModels?.parts,opponentVisible:opponentModels?.root.visible??false,sceneSettings:coreScene.sceneSettings?.source??null,fogColor:coreScene.sceneSettings?.fogColor??null,proceduralScenery:heroGroup.visible,terrainTextures:!!originalTerrainTextures,missingTerrainTextures:originalTerrainTextures?.missing}:null,tireTrackSegments:tireTracks.count,...state}),renderer};

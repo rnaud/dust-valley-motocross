@@ -2,6 +2,8 @@
 
 ## Current status — November 16, 2026
 
+Presentation milestone: the playable renderer now displays the retained native particle pool, including the shared two-bike pool, with read-only depth sorting. Particle masks and inherited tint are presentation approximations; the original sprite atlas and complete native draw-state parity remain open. Single-bike maps retain their existing supplemental dust. Settings offers five optional art shaders (comic, woodcut, neon, blueprint, handheld), applied to gameplay and photos; Original remains the default. These styles do not alter physics.
+
 **Full physics parity is not achieved.** The current retained two-bike world passes a 1,500-update compact native recording (33 ms median sustained delta), a 64-update acceleration/release recording and a 160-update AI-camera pursuit/contact/recovery recording and a 166-update player-camera crash/impact recording, including both complete bike bodies, shared RNG, rider/collider state, particles, markers, HUD and the connected chase camera. The camera now reads simulated bike/rider/transform state and supplies computed audio position and bike/rider drawing matrices. Earlier mismatch reports below describe historical diagnostics; they are not the current blocker list.
 
 | Area | Current evidence | Still required |
