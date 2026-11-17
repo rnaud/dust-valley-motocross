@@ -1,3 +1,4 @@
+import {RemixWorld,remixLevels} from './remix-worlds.js';
 import {loadMcmParticleAssets} from './mcm-particle-assets.js';
 import {VoxelTerrain} from './voxel-terrain.js';
 import {ArtStyleRenderer,artStyles} from './art-styles.js';
@@ -26,12 +27,12 @@ import {SandSurface} from './sand-surface.js';
 import {RideAudio} from './audio.js';
 import {track,terrain as raceTerrain,freeTerrain,trackDistance,nearestTrack,createState,resetBike,stepBike,TAU} from './world.js';
 let activeSand=null,corePreview=null,coreScene=null;
-let previewHeight=null;
+let previewHeight=null,remix=null;
 let starting=false;
 let mode='free';
 let physicsMode='mcm-preview';
 const simulationStep=()=>physicsMode==='mcm-preview'?.02:1/120;
-const terrain=(x,z)=>activeSand?activeSand.height(x,z):(previewHeight?previewHeight(x,z):(mode==='free'?freeTerrain(x,z):raceTerrain(x,z)));
+const terrain=(x,z)=>remix?remix.height(x,z):activeSand?activeSand.height(x,z):(previewHeight?previewHeight(x,z):(mode==='free'?freeTerrain(x,z):raceTerrain(x,z)));
 const $=id=>document.getElementById(id);
 let originalModels,opponentModels;
 for(const map of mcmMaps){const option=document.createElement('option');option.value=map.id;option.textContent=map.title;$('mcm-map').append(option);}$('mcm-map').value='quarries-dunes';
@@ -43,6 +44,10 @@ async function loadSelectedMcmMap(base){const id=$('mcm-map').value;let asset=ma
 $('physics-mode').onchange=()=>{$('mcm-assets').hidden=$('physics-mode').value!=='mcm-preview';physicsMode=$('physics-mode').value;syncSandOption();$('physics-note').textContent=physicsMode==='mcm-preview'?'Original bike and rider physics, maps and sounds. Full matching is still in progress.':'Original Dust Valley handling.';$('menu-extra-control').innerHTML=physicsMode==='mcm-preview'?'I / K <b>Rider lean</b>':'SPACE <b>Boost</b>';$('tutorial-throttle').textContent=physicsMode==='mcm-preview'?'Hold W or GAS. Release to coast; S or BRAKE slows down.':'Hold W or GAS. Tap SPACE for boost.';};
 function syncSandOption(){$('sand-option').hidden=false;$('sand-mode').disabled=false;$('sand-note').textContent='Tires carve soft sand in every mode. Switch off for hardpack.';}
 $('physics-mode').onchange();
+for(const level of remixLevels){const option=document.createElement('option');option.value=level.id;option.textContent=level.name;$('remix-level').append(option);}
+$('remix-level').onchange=()=>{const level=remixLevels.find(l=>l.id===$('remix-level').value);$('legacy-game').hidden=!!level;$('remix-description').textContent=level?level.description:'Five experimental worlds with new rules.';$('mcm-assets').hidden=!!level||$('physics-mode').value!=='mcm-preview';$('sand-option').hidden=!!level;document.querySelector('.mode-picker').hidden=!!level;$('physics-note').textContent=level?'REMIX · Playground bike handling · moving worlds and new objectives':'Original bike and rider physics, maps and sounds. Full matching is still in progress.';};
+$('remix-action').onclick=()=>remix?.wakeGiant();window.addEventListener('keydown',e=>{if(e.code==='KeyE'&&phase==='playing')remix?.wakeGiant();});
+
 const speedCanvas=$('speedlines'),speedCtx=speedCanvas?speedCanvas.getContext('2d'):null;
 const mobile=matchMedia('(pointer: coarse)').matches||navigator.maxTouchPoints>0;
 const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -114,7 +119,7 @@ function updateOriginalTerrainMaterials(){
 const groundDetail=new GroundDetail(scene,(x,z)=>surfaceHeight(x,z));
 const tireTracks=new TireTracks(scene,{capacity:mobile?3000:6000,texture:createTreadTexture()});
 // Sample the rendered triangles so tread decals sit on the visible ground.
-function surfaceHeight(x,z){if(activeSand)return activeSand.height(x,z);if(previewHeight)return previewHeight(x,z);return sampleGrid(i=>pos.getY(i),x,z,360,2.5);}
+function surfaceHeight(x,z){if(remix)return remix.height(x,z);if(activeSand)return activeSand.height(x,z);if(previewHeight)return previewHeight(x,z);return sampleGrid(i=>pos.getY(i),x,z,360,2.5);}
 
 function mesh(geo,mat,x,y,z,parent=scene){const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);parent.add(m);return m;}
 function box(w,h,d,mat,x,y,z,parent){return mesh(new THREE.BoxGeometry(w,h,d),mat,x,y,z,parent);}
@@ -383,8 +388,9 @@ const dust=new THREE.Points(dustGeo,new THREE.PointsMaterial({map:createDustText
 const recoveredParticles=new McmParticles();scene.add(recoveredParticles.root);
 const voxelTerrain=new VoxelTerrain();scene.add(voxelTerrain.root);
 function renderArt(){
- voxelTerrain.root.visible=artRenderer.style==='voxel'&&phase!=='menu';
+ voxelTerrain.root.visible=!remix&&artRenderer.style==='voxel'&&phase!=='menu';
  const hidden=[];
+ if(remix)for(const mesh of [ground,...sandSurface.meshes.values(),trackObjects,tyreStacks,jumpMarkers,...mountainBatches,...decorationBatches,boulderMesh,heroGroup,arch,grassMesh,groundDetail.pebbles,groundDetail.scrub,sky,sunGlow,sunCore])if(mesh.visible){hidden.push(mesh);mesh.visible=false;}
  if(voxelTerrain.root.visible){voxelTerrain.update(state.x,state.z,surfaceHeight);for(const mesh of [ground,...sandSurface.meshes.values()])if(mesh.visible){hidden.push(mesh);mesh.visible=false;}}
  try{artRenderer.render(scene,camera);}finally{hidden.forEach(mesh=>mesh.visible=true);}
 }
@@ -485,7 +491,7 @@ renderer.domElement.addEventListener('pointermove',e=>{
 });
 for(const ev of ['pointerup','pointercancel','lostpointercapture'])renderer.domElement.addEventListener(ev,()=>{photoDrag=false;});
 renderer.domElement.addEventListener('wheel',e=>{if(phase!=='photo')return;e.preventDefault();photoDistance=Math.max(3,Math.min(22,photoDistance+e.deltaY*.01));},{passive:false});
-$('daily').onclick=()=>{physicsMode='classic';$('physics-mode').value='classic';$('physics-mode').onchange();mode='daily';activeSand=null;updateEnvironment();document.querySelectorAll('[data-mode]').forEach(v=>{v.classList.remove('selected');v.setAttribute('aria-pressed','false');});laps=1;start();};
+$('daily').onclick=()=>{$('remix-level').value='';$('remix-level').onchange();physicsMode='classic';$('physics-mode').value='classic';$('physics-mode').onchange();mode='daily';activeSand=null;updateEnvironment();document.querySelectorAll('[data-mode]').forEach(v=>{v.classList.remove('selected');v.setAttribute('aria-pressed','false');});laps=1;start();};
 function toast(text,duration=2){$('toast').textContent=text;toastTime=duration;}
 function formatTime(t){return `${String(Math.floor(t/60)).padStart(2,'0')}:${(t%60).toFixed(2).padStart(5,'0')}`;}
 function refreshMenuBest(){
@@ -524,6 +530,7 @@ function updateEnvironment(){
 }
 async function start(){
  if(starting)return;starting=true;
+ remix?.dispose();remix=$('remix-level').value?new RemixWorld($('remix-level').value):null;physicsMode=remix?'classic':$('physics-mode').value;if(remix)mode='free';$('remix-choice').hidden=true;
  const startButton=$('start'),startLabel=startButton.innerHTML;startButton.disabled=true;
  try{
  if(physicsMode==='mcm-preview'){startButton.textContent='LOADING ORIGINAL PHYSICS…';corePreview??=await import('./mcm-core-preview.js');coreScene=await loadSelectedMcmMap(await corePreview.loadMcmCoreScene());coreScene.particleAssets=await loadMcmParticleAssets();recoveredParticles.setAssets(coreScene.particleAssets);if(coreScene.mapId==='quarries-dunes')coreScene.worldFiles=await corePreview.loadMcmWorldScene();if(!originalModels){const assets=await loadMcmOriginalModels();originalModels=createMcmOriginalModels(assets);opponentModels=createMcmOriginalModels(assets);opponentModels.root.name='mcm-opponent-models';scene.add(originalModels.root,opponentModels.root);}}
@@ -534,10 +541,10 @@ async function start(){
  tireTracks.clear();
  laps=mode==='daily'?1:3;
  const spawnPoint=track(0),spawn=mode==='free'?{x:0,z:0,yaw:0}:{x:spawnPoint.x,z:spawnPoint.z,yaw:Math.atan2(spawnPoint.tx,spawnPoint.tz)};
- state=physicsMode==='mcm-preview'?corePreview.createMcmCoreState(coreScene,{spawn,sand:$('sand-mode').checked}):createState({physicsMode,sand:$('sand-mode').checked,...(mode==='free'?{height:freeTerrain,spawn}:{})});
+ state=remix?createState({physicsMode:'classic',sand:false,flat:true,customWorld:true,height:remix.height,spawn:remix.spawn}):physicsMode==='mcm-preview'?corePreview.createMcmCoreState(coreScene,{spawn,sand:$('sand-mode').checked}):createState({physicsMode,sand:$('sand-mode').checked,...(mode==='free'?{height:freeTerrain,spawn}:{})});
  updateOriginalTerrainMaterials();
  previewHeight=state.physicsBackend==='recovered-core'?state.physics.baseHeight:null;
- activeSand=state.physics?.renderSurface||state.physics?.sand||null;sandSurface.update(activeSand);updateEnvironment();
+ activeSand=state.physics?.renderSurface||state.physics?.sand||null;sandSurface.update(activeSand);updateEnvironment();if(remix)remix.attach(state,scene);$('remix-hud').hidden=!remix;$('remix-action').hidden=remix?.id!=='giant';if(remix)$('remix-title').textContent=remix.spec.name;document.querySelector('.map-panel>span').textContent=remix?'REMIX / LIVE':'REDROCK / LIVE';
  $('preview-badge').hidden=physicsMode!=='mcm-preview';
  $('preview-badge').textContent='MOTOCROSS MADNESS · RECOVERED';
  document.body.classList.toggle('mcm-preview',physicsMode==='mcm-preview');
@@ -545,7 +552,7 @@ async function start(){
  ridePose.reset(state);if(state.physicsBackend==='recovered-core')originalModels?.reset(state);if(state.opponents?.[0])opponentModels?.reset(state.opponents[0]);riderCrouch=0;riderBank=0;elapsed=0;lap=1;nextGate=1;score=0;lapStart=0;combo=0;comboTimer=0;wrongTime=0;shake=0;
  ghostRecord=[];ghostClock=0;activeGhost=physicsMode==='classic'?ghostBest:null;ghostBike.visible=false;countdown=mode==='free'?-.75:3;lastCountdownBeep=4;cameraReady=false;accumulator=0;clearInput();
  document.body.classList.add('playing');for(const id of ['menu','location','footer','overlay','tutorial'])$(id).hidden=true;for(const id of ['hud','pause'])$(id).hidden=false;$('touch').hidden=!mobile;
- $('lap-label').textContent=mode==='free'?'STUNT SCORE':'LAP';$('resume').hidden=false;$('wrong').hidden=true;$('combo').hidden=true;$('share').hidden=true;$('leaderboard').hidden=true;
+ $('lap-label').textContent=remix?'REMIX LAP':mode==='free'?'STUNT SCORE':'LAP';$('resume').hidden=false;$('wrong').hidden=true;$('combo').hidden=true;$('share').hidden=true;$('leaderboard').hidden=true;
  highlight();
  if(!readSetting('dust-valley-tutorial','')){
   phase='tutorial';$('tutorial').hidden=false;$('lights').hidden=true;
@@ -553,9 +560,9 @@ async function start(){
 }
 $('tutorial-start').onclick=()=>{writeSetting('dust-valley-tutorial','1');$('tutorial').hidden=true;phase='playing';countdown=mode==='free'?-.75:3;lastCountdownBeep=4;$('lights').hidden=mode==='free';setLights(3,false);cameraReady=false;if(mode==='daily')beginDaily();};
 $('start').onclick=start;$('restart').onclick=start;$('reset').onclick=()=>{if(phase==='playing')recover();};
-function recover(){if(state.physicsBackend==='recovered-core'){const {scene,spawn,sand}=state.physics;state=corePreview.createMcmCoreState(scene,{spawn,sand:!!sand});updateOriginalTerrainMaterials();activeSand=state.physics.renderSurface;previewHeight=state.physics.baseHeight;ridePose.reset(state);originalModels?.reset(state);if(state.opponents?.[0])opponentModels?.reset(state.opponents[0]);accumulator=0;cameraReady=false;tireTracks.clear();sandSurface.update(activeSand);toast('BACK TO START');return;}tireTracks.breakTrail();combo=0;comboTimer=0;wrongTime=0;$('combo').hidden=true;if(mode==='free'){const radius=Math.hypot(state.x,state.z),scale=radius>380?380/radius:1;resetBike(state,state.x*scale,state.z*scale,state.yaw);ridePose.reset(state);accumulator=0;cameraReady=false;toast('BACK ON THE DIRT');return;}const g=gates[(nextGate+11)%12];resetBike(state,g.p.x,g.p.z,g.yaw);ridePose.reset(state);accumulator=0;cameraReady=false;toast('BACK ON THE DIRT');}
+function recover(){if(remix){const p=remix.recovery();resetBike(state,p.x,p.z,p.yaw);ridePose.reset(state);remix.lastTrail=null;accumulator=0;cameraReady=false;tireTracks.breakTrail();toast('BACK TO THE LAST CHECKPOINT');return;}if(state.physicsBackend==='recovered-core'){const {scene,spawn,sand}=state.physics;state=corePreview.createMcmCoreState(scene,{spawn,sand:!!sand});updateOriginalTerrainMaterials();activeSand=state.physics.renderSurface;previewHeight=state.physics.baseHeight;ridePose.reset(state);originalModels?.reset(state);if(state.opponents?.[0])opponentModels?.reset(state.opponents[0]);accumulator=0;cameraReady=false;tireTracks.clear();sandSurface.update(activeSand);toast('BACK TO START');return;}tireTracks.breakTrail();combo=0;comboTimer=0;wrongTime=0;$('combo').hidden=true;if(mode==='free'){const radius=Math.hypot(state.x,state.z),scale=radius>380?380/radius:1;resetBike(state,state.x*scale,state.z*scale,state.yaw);ridePose.reset(state);accumulator=0;cameraReady=false;toast('BACK ON THE DIRT');return;}const g=gates[(nextGate+11)%12];resetBike(state,g.p.x,g.p.z,g.yaw);ridePose.reset(state);accumulator=0;cameraReady=false;toast('BACK ON THE DIRT');}
 function togglePause(){if(phase==='playing'){phase='paused';clearInput();$('overlay').hidden=false;$('overlay-label').textContent='TAKE A BREATHER';$('overlay-title').textContent='Ride paused.';$('overlay-copy').textContent='The desert isn’t going anywhere.';$('resume').hidden=false;$('photo').hidden=false;}else if(phase==='paused'){phase='playing';$('overlay').hidden=true;}}$('pause').onclick=togglePause;$('resume').onclick=togglePause;
-$('home').onclick=()=>{$('preview-badge').hidden=true;document.body.classList.remove('mcm-preview');phase='menu';clearInput();document.body.classList.remove('playing');if(mode==='daily'){mode='race';updateEnvironment();}for(const id of ['menu','location','footer'])$(id).hidden=false;for(const id of ['hud','pause','touch','overlay','lights'])$(id).hidden=true;ghostBike.visible=false;refreshMenuBest();updateDailyButton();};
+$('home').onclick=()=>{remix?.dispose();remix=null;physicsMode=$('physics-mode').value;activeSand=null;previewHeight=null;$('remix-hud').hidden=true;$('remix-choice').hidden=true;updateEnvironment();$('preview-badge').hidden=true;document.body.classList.remove('mcm-preview');phase='menu';clearInput();document.body.classList.remove('playing');if(mode==='daily'){mode='race';updateEnvironment();}for(const id of ['menu','location','footer'])$(id).hidden=false;for(const id of ['hud','pause','touch','overlay','lights'])$(id).hidden=true;ghostBike.visible=false;refreshMenuBest();updateDailyButton();};
 const todayKey=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
 function readTimes(key){try{const v=JSON.parse(localStorage.getItem(key));return Array.isArray(v)?v.filter(Number.isFinite):[];}catch{return [];}}
 function addTime(key,time){const list=[...readTimes(key),time].sort((a,b)=>a-b).slice(0,5);try{localStorage.setItem(key,JSON.stringify(list));}catch{}return list;}
@@ -584,6 +591,12 @@ function shareResult(isDaily){
   else download();
  },'image/png');
 }
+function finishRemix(){
+ phase='finished';clearInput();accumulator=0;$('overlay').hidden=false;$('overlay-label').textContent=remix.spec.name.toUpperCase();$('overlay-title').textContent=remix.result.won?'Remix complete.':'Give it another run.';$('overlay-copy').textContent=remix.result.text+` Time ${formatTime(remix.time)}.`;for(const id of ['resume','photo','share','leaderboard'])$(id).hidden=true;
+}
+function showRemixChoice(){
+ phase='remix-choice';clearInput();accumulator=0;$('remix-choice').hidden=false;$('remix-sectors').replaceChildren();remix.sectors.forEach((sector,i)=>{const button=document.createElement('button');button.className='primary';button.textContent=`SECTOR ${i+1} · ${sector.locked?'LOCKED':sector.tune>.55?'JUMPS':'TIGHT CORNERS'}`;button.disabled=sector.locked;button.onclick=()=>{if(remix.lockSection(i)){$('remix-choice').hidden=true;phase='playing';}};$('remix-sectors').append(button);});
+}
 function finish(){
  if(physicsMode==='mcm-preview'){
   phase='finished';clearInput();$('overlay').hidden=false;$('overlay-label').textContent='RIDE COMPLETE';$('overlay-title').textContent='Ride complete.';
@@ -609,6 +622,8 @@ function finish(){
 }
 const mapCtx=$('map').getContext('2d');function drawMap(){
   const ctx=mapCtx;ctx.clearRect(0,0,180,150);
+  if(remix){const p=remix.target();ctx.fillStyle='#e7fb7a';ctx.beginPath();ctx.arc(90+Math.max(-75,Math.min(75,(p.x-state.x)*.6)),75-Math.max(-60,Math.min(60,(p.z-state.z)*.6)),5,0,TAU);ctx.fill();ctx.fillStyle='#fff';ctx.font='11px Arial';ctx.textAlign='center';ctx.fillText('NEXT CHECKPOINT',90,145);ctx.save();ctx.translate(90,75);ctx.rotate(state.yaw);ctx.beginPath();ctx.moveTo(0,-6);ctx.lineTo(-4,4);ctx.lineTo(4,4);ctx.closePath();ctx.fill();ctx.restore();return;}
+
   if(mode==='free'){
     // A local compass replaces the race route and next-checkpoint marker.
     ctx.strokeStyle='#e5e0ca44';ctx.lineWidth=1;ctx.beginPath();ctx.arc(90,75,54,0,TAU);ctx.stroke();
@@ -661,7 +676,7 @@ if(phase==='playing'){
   elapsed+=dt;accumulator+=dt;
   while(accumulator>=simulationStep()){
    let result;
-   try{result=state.physicsBackend==='recovered-core'?corePreview.stepMcmCoreState(state,input,simulationStep()):stepBike(state,input,simulationStep());}
+   try{remix?.beforeStep(simulationStep(),input,state);result=state.physicsBackend==='recovered-core'?corePreview.stepMcmCoreState(state,input,simulationStep()):stepBike(state,input,simulationStep());}
    catch(error){console.error(error);state.physicsError=error.message;phase='paused';clearInput();$('overlay').hidden=false;$('overlay-label').textContent='PHYSICS STOPPED';$('overlay-title').textContent='Recovered physics stopped.';$('overlay-copy').textContent='This riding path reached an unresolved original dependency. Restart to ride again.';$('resume').hidden=true;break;}
    rideAudio.step(state,input,simulationStep(),camera.position);
    ridePose.push(state);if(state.physicsBackend==='recovered-core')originalModels?.push(state);if(state.opponents?.[0])opponentModels?.push(state.opponents[0]);tireTracks.update(state.crashed?[]:state.wheelContacts,surfaceHeight);
@@ -676,6 +691,8 @@ if(phase==='playing'){
     }
    }
    accumulator-=simulationStep();
+   if(remix){remix.afterStep(state);if(remix.resetPose){remix.resetPose=false;ridePose.reset(state);cameraReady=false;tireTracks.breakTrail();toast('LAP TWO · ONLY YOUR INK REMAINS',3);}if(remix.result){finishRemix();break;}if(remix.choicePending){showRemixChoice();break;}}
+
   }
   if(mode!=='free'&&physicsMode==='classic'){
    ghostClock+=dt;
@@ -688,7 +705,7 @@ if(phase==='playing'){
    if(state.speed>5&&near.distance<18&&Math.cos(state.yaw-trackYaw)<-.2)wrongTime+=dt;else wrongTime=0;
    $('wrong').hidden=wrongTime<.7;
   }else{$('wrong').hidden=true;wrongTime=0;}
-  if(Math.hypot(state.x,state.z)>400){recover();toast('BACK TO THE BASIN');}
+  if(!remix&&Math.hypot(state.x,state.z)>400){recover();toast('BACK TO THE BASIN');}
   if(mode!=='free'){
    const p=gates[nextGate].p;
    if(Math.hypot(state.x-p.x,state.z-p.z)<12){
@@ -710,6 +727,7 @@ if(phase==='playing'){
  if(state.crashed)toast('WIPEOUT · R OR ↺ TO RECOVER',1);
  toastTime-=dt;if(toastTime<=0)$('toast').textContent='';
 }
+if(remix){remix.updateVisuals();$('remix-status').textContent=remix.status();$('remix-action').disabled=remix.awake;$('remix-action').textContent=remix.awake?'GIANT AWAKE':mobile?'WAKE THE GIANT':'WAKE THE GIANT · E';}
 const renderAlpha=phase==='playing'?accumulator/simulationStep():1;
 const visual=ridePose.sample(renderAlpha);
 recoveredParticles.root.visible=phase!=='menu'&&state.physicsBackend==='recovered-core';
@@ -813,8 +831,8 @@ if(state.physicsBackend!=='recovered-core'&&phase==='playing'&&state.speed>4&&!s
 for(let i=0;i<moteCount;i++){const m=moteBase[i];motePos[i*3]=camera.position.x+m.x+Math.sin(total*.13+m.phase)*1.2;motePos[i*3+1]=camera.position.y-1+m.y+Math.cos(total*.09+m.phase)*.35;motePos[i*3+2]=camera.position.z+m.z+Math.cos(total*.11+m.phase)*1.2;}moteGeo.attributes.position.needsUpdate=true;
 particles.forEach((p,i)=>{p.life-=dt*.62;if(p.life>0){p.x+=p.vx*dt;p.y+=p.vy*dt;p.z+=p.vz*dt;p.vx*=1-dt*1.4;p.vz*=1-dt*1.4;p.vy+=.12*dt;}dustPositions[i*3]=p.x;dustPositions[i*3+1]=p.life>0?p.y:-100;dustPositions[i*3+2]=p.z;});dustGeo.attributes.position.needsUpdate=true;
 rideAudio.update(state,input,phase==='playing'&&countdown<=0);
-$('speed').textContent=Math.round(state.speed*3.6);$('time').textContent=formatTime(elapsed);$('lap').innerHTML=mode==='free'?String(score):`${String(Math.min(lap,laps)).padStart(2,'0')}<span>/${String(laps).padStart(2,'0')}</span>`;$('gate').innerHTML=`${String(nextGate===0?12:nextGate).padStart(2,'0')}<span>/12</span>`;$('boost').style.width=state.boost+'%';$('gear').textContent=state.gear||1;$('rpm').style.width=Math.min(100,(state.rpm||1200)/10000*100)+'%';sandSurface.update(activeSand);groundDetail.update(state.x,state.z);sky.position.copy(camera.position);sunGlow.position.copy(camera.position).addScaledVector(sunDir,560);sunCore.position.copy(sunGlow.position);drawMap();gates.forEach(g=>{g.group.visible=phase==='menu'?camera.aspect>0.95:g.group.position.distanceTo(camera.position)>13;});recoveredParticles.update(state,camera,renderAlpha);renderArt();if(!$('loading').hidden)$('loading').hidden=true;}
+$('speed').textContent=Math.round(state.speed*3.6);$('time').textContent=formatTime(elapsed);$('lap').innerHTML=remix?`${Math.min(remix.lap,remix.spec.laps)}<span>/${remix.spec.laps}</span>`:mode==='free'?String(score):`${String(Math.min(lap,laps)).padStart(2,'0')}<span>/${String(laps).padStart(2,'0')}</span>`;$('gate').innerHTML=`${String(nextGate===0?12:nextGate).padStart(2,'0')}<span>/12</span>`;$('boost').style.width=state.boost+'%';$('gear').textContent=state.gear||1;$('rpm').style.width=Math.min(100,(state.rpm||1200)/10000*100)+'%';sandSurface.update(activeSand);groundDetail.update(state.x,state.z);sky.position.copy(camera.position);sunGlow.position.copy(camera.position).addScaledVector(sunDir,560);sunCore.position.copy(sunGlow.position);drawMap();gates.forEach(g=>{g.group.visible=phase==='menu'?camera.aspect>0.95:g.group.position.distanceTo(camera.position)>13;});recoveredParticles.update(state,camera,renderAlpha);renderArt();if(!$('loading').hidden)$('loading').hidden=true;}
 function resize(){renderer.setSize(innerWidth,innerHeight);if(speedCanvas){speedCanvas.width=innerWidth;speedCanvas.height=innerHeight;}camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}window.addEventListener('resize',resize);resize();updateDailyButton();
 requestAnimationFrame(animate);
 // Read-only diagnostics for smoke tests and performance inspection.
-window.__game={presentation:()=>({style:artRenderer.style,particles:recoveredParticles.count,nativeParticles:recoveredParticles.nativeCount,particleTexture:recoveredParticles.textureName,particleSprites:[...new Set(recoveredParticles.rows.map(r=>r.sprite))]}),audio:()=>rideAudio.original?.diagnostics()??{ready:false},sandSample:(x,z)=>activeSand?{height:activeSand.height(x,z),displacement:activeSand.displacementAt(x,z),compaction:activeSand.compaction(x,z)}:null,environment:()=>({sand:activeSand?{version:activeSand.version,tiles:activeSand.tiles.size,renderedTiles:sandSurface.meshes.size}:null,trackVisible:trackObjects.visible,trackTexture:materials.dirt.map===textures.macro,height:state.physics.height(state.x,state.z),visualHeight:terrain(state.x,state.z),mountains:mountains.map(m=>({x:m.position.x,z:m.position.z,radius:m.userData.radius*Math.max(m.scale.x,m.scale.z),foundation:m.userData.foundation}))}),snapshot:()=>({phase,mode,elapsed,lap,nextGate,score,countdown,originalAssets:state.physicsBackend==='recovered-core'?{map:coreScene.mapId??'quarries-dunes',rider:$('mcm-rider').value,bike:$('mcm-bike').value,parts:originalModels?.parts,opponentVisible:opponentModels?.root.visible??false,sceneSettings:coreScene.sceneSettings?.source??null,fogColor:coreScene.sceneSettings?.fogColor??null,proceduralScenery:heroGroup.visible,terrainTextures:!!originalTerrainTextures,missingTerrainTextures:originalTerrainTextures?.missing}:null,tireTrackSegments:tireTracks.count,...state}),renderer};
+window.__game={remix:()=>remix?.diagnostics()??null,presentation:()=>({style:artRenderer.style,particles:recoveredParticles.count,nativeParticles:recoveredParticles.nativeCount,particleTexture:recoveredParticles.textureName,particleSprites:[...new Set(recoveredParticles.rows.map(r=>r.sprite))]}),audio:()=>rideAudio.original?.diagnostics()??{ready:false},sandSample:(x,z)=>activeSand?{height:activeSand.height(x,z),displacement:activeSand.displacementAt(x,z),compaction:activeSand.compaction(x,z)}:null,environment:()=>({sand:activeSand?{version:activeSand.version,tiles:activeSand.tiles.size,renderedTiles:sandSurface.meshes.size}:null,trackVisible:trackObjects.visible,trackTexture:materials.dirt.map===textures.macro,height:state.physics.height(state.x,state.z),visualHeight:terrain(state.x,state.z),mountains:mountains.map(m=>({x:m.position.x,z:m.position.z,radius:m.userData.radius*Math.max(m.scale.x,m.scale.z),foundation:m.userData.foundation}))}),snapshot:()=>({phase,mode,elapsed,lap,nextGate,score,countdown,originalAssets:state.physicsBackend==='recovered-core'?{map:coreScene.mapId??'quarries-dunes',rider:$('mcm-rider').value,bike:$('mcm-bike').value,parts:originalModels?.parts,opponentVisible:opponentModels?.root.visible??false,sceneSettings:coreScene.sceneSettings?.source??null,fogColor:coreScene.sceneSettings?.fogColor??null,proceduralScenery:heroGroup.visible,terrainTextures:!!originalTerrainTextures,missingTerrainTextures:originalTerrainTextures?.missing}:null,tireTrackSegments:tireTracks.count,...state}),renderer};

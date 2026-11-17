@@ -68,7 +68,7 @@ export function createState(options={}) {
   const world=new C.World({gravity:new C.Vec3(0,-9.81,0)});
   world.solver.iterations=12;
   world.defaultContactMaterial.friction=.65;
-  if(!sand){
+  if(!sand&&!options.customWorld){
   const data=[],size=options.flat?60:360,spacing=options.flat?10:2.5;
   const half=size*spacing/2;
   for(let i=0;i<=size;i++){const row=[];for(let j=0;j<=size;j++)row.push(height(i*spacing-half,half-j*spacing));data.push(row);}
@@ -85,7 +85,7 @@ export function createState(options={}) {
   chassis.inertia.set(110*inertiaScale,100*inertiaScale,75*inertiaScale);chassis.invInertia.set(1/(110*inertiaScale),1/(100*inertiaScale),1/(75*inertiaScale));chassis.updateInertiaWorld(true);
   chassis.position.set(p.x,height(p.x,p.z)+1.15,p.z);chassis.quaternion.setFromEuler(0,yaw,0);
   // A handful of large boulders are real colliders; the rest of the scatter is scenery.
-  for(const rock of options.flat?[]:heroRocks){
+  for(const rock of options.flat||options.customWorld?[]:heroRocks){
    const q=trackAt(rock.s),x=q.x+q.tz*rock.side,z=q.z-q.tx*rock.side,b=new C.Body({mass:0});
    b.addShape(new C.Sphere(rock.r*.78));b.position.set(x,height(x,z)+rock.r*.55,z);world.addBody(b);
   }
