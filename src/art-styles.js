@@ -1,19 +1,23 @@
+import {createAsciiAtlas,experimentalHelpers,experimentalColor,prepareRetroMaterials,restoreRetroMaterials} from './art-style-experiments.js';
 import * as THREE from 'three';
-export const artStyles=[['original','Original','Current terrain, textures and lighting.'],['comic','Desert comic','Bold ink contours, poster colors and printed halftones.'],['woodcut','Ink woodcut','Warm paper, black ink and carved crosshatching.'],['neon','Neon night','Ultraviolet shadows, glowing cyan contours and scanlines.'],['blueprint','Blueprint','Technical cyan linework, contour bands and a drafting grid.'],['handheld','Pocket desert','Chunky pixels, ordered dithering and four green shades.'],['moebius','Hiraeth / Moebius','Pale sand, lavender shade, fine ink and landscape-anchored stipple.'],['voxel','Voxel dunes','Experimental block-built terrain over the existing riding surface.']];
+export const artStyles=[['original','Original','Current terrain, textures and lighting.'],['comic','Desert comic','Bold ink contours, poster colors and printed halftones.'],['woodcut','Ink woodcut','Warm paper, black ink and carved crosshatching.'],['neon','Neon night','Ultraviolet shadows, glowing cyan contours and scanlines.'],['blueprint','Blueprint','Technical cyan linework, contour bands and a drafting grid.'],['handheld','Pocket desert','Chunky pixels, ordered dithering and four green shades.'],['moebius','Hiraeth / Moebius','Pale sand, lavender shade, fine ink and landscape-anchored stipple.'],['voxel','Voxel dunes','Experimental block-built terrain over the existing riding surface.'],['painted','Painted landscape','Directional brushwork, rich pigment and softened detail.'],['watercolor','Watercolor','Pale washes, pooled pigment and delicate paper highlights.'],['ps1','PS1 motocross','Low resolution, dithered color and snapping geometry.'],['pixel','Outlined pixel art','Chunky full-color pixels with crisp silhouette outlines.'],['ascii','ASCII world','The desert drawn in glowing text characters.']];
 export class ArtStyleRenderer{
  constructor(renderer){
+  this.retroMaterials=new Set();this.retroEnabled={value:0};this.retroGrid={value:new THREE.Vector2(160,120)};
   this.renderer=renderer;this.style='original';this.size=new THREE.Vector2();
   this.target=new THREE.WebGLRenderTarget(1,1,{type:THREE.HalfFloatType,depthTexture:new THREE.DepthTexture(1,1,THREE.UnsignedIntType)});
   this.normalTarget=new THREE.WebGLRenderTarget(1,1);this.normalMaterial=new THREE.MeshNormalMaterial();
-  this.uniforms={normals:{value:this.normalTarget.texture},inverseProjection:{value:new THREE.Matrix4()},cameraWorld:{value:new THREE.Matrix4()},sceneColor:{value:this.target.texture},sceneDepth:{value:this.target.depthTexture},resolution:{value:new THREE.Vector2(1,1)},style:{value:1},clip:{value:new THREE.Vector2(.1,1000)}};
+  this.uniforms={asciiAtlas:{value:createAsciiAtlas()},normals:{value:this.normalTarget.texture},inverseProjection:{value:new THREE.Matrix4()},cameraWorld:{value:new THREE.Matrix4()},sceneColor:{value:this.target.texture},sceneDepth:{value:this.target.depthTexture},resolution:{value:new THREE.Vector2(1,1)},style:{value:1},clip:{value:new THREE.Vector2(.1,1000)}};
   this.material=new THREE.ShaderMaterial({depthTest:false,depthWrite:false,uniforms:this.uniforms,vertexShader:'varying vec2 screenUV; void main(){screenUV=uv;gl_Position=vec4(position.xy,0.,1.);}',fragmentShader:`
    varying vec2 screenUV; uniform sampler2D sceneColor,sceneDepth,normals; uniform mat4 inverseProjection,cameraWorld; uniform vec2 resolution,clip; uniform int style;
    float lightness(vec3 c){return dot(c,vec3(.299,.587,.114));}
    float noise(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
    vec3 colorAt(vec2 uv){vec3 c=texture2D(sceneColor,uv).rgb;return pow(max(c/(1.+c),vec3(0.)),vec3(1./2.2));}
    float distanceAt(vec2 uv){float z=texture2D(sceneDepth,uv).x*2.-1.;return 2.*clip.x*clip.y/(clip.y+clip.x-z*(clip.y-clip.x));}
+   ${experimentalHelpers}
    void main(){
     vec2 px=screenUV*resolution,stepUV=1./resolution,uv=screenUV;
+    if(style==10)uv=(floor(px)+.5)/resolution;
     if(style==5)uv=(floor(px/4.)*4.+2.)/resolution;
     vec3 c=colorAt(uv);float l=lightness(c),d=distanceAt(uv);
     float ex=abs(distanceAt(uv+vec2(stepUV.x*1.5,0.))-d),ey=abs(distanceAt(uv+vec2(0.,stepUV.y*1.5))-d);
@@ -75,14 +79,15 @@ export class ArtStyleRenderer{
     }else if(style==7){
      outColor=floor(c*9.+.5)/9.;
     }
+    ${experimentalColor}
     gl_FragColor=vec4(clamp(outColor,0.,1.),1.);
    }`});
   this.scene=new THREE.Scene();this.scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),this.material));this.camera=new THREE.Camera();
  }
  setStyle(id){this.style=artStyles.some(s=>s[0]===id)?id:'original';this.uniforms.style.value=artStyles.findIndex(s=>s[0]===this.style);}
  render(scene,camera){
-  const r=this.renderer;if(this.style==='original'||this.style==='voxel'){r.render(scene,camera);return;}
-  r.getDrawingBufferSize(this.size);if(this.target.width!==this.size.x||this.target.height!==this.size.y){this.target.setSize(this.size.x,this.size.y);this.normalTarget.setSize(this.size.x,this.size.y);}
+  const r=this.renderer;this.retroEnabled.value=this.style==='ps1'?1:0;if(this.style==='ps1')prepareRetroMaterials(scene,this.retroEnabled,this.retroGrid,this.retroMaterials);else if(this.retroMaterials.size)restoreRetroMaterials(this.retroMaterials);if(this.style==='original'||this.style==='voxel'){r.render(scene,camera);return;}
+  r.getDrawingBufferSize(this.size);if(this.style==='ps1'){const aspect=this.size.x/this.size.y;this.size.set(Math.round(240*aspect),240);this.retroGrid.value.copy(this.size).multiplyScalar(.5);}else if(this.style==='painted'||this.style==='watercolor'){const scale=Math.min(1,960/this.size.x);this.size.multiplyScalar(scale).floor();}if(this.target.width!==this.size.x||this.target.height!==this.size.y){this.target.setSize(this.size.x,this.size.y);this.normalTarget.setSize(this.size.x,this.size.y);}
   this.uniforms.resolution.value.copy(this.size);this.uniforms.clip.value.set(camera.near,camera.far);
   camera.updateMatrixWorld();
   this.uniforms.inverseProjection.value.copy(camera.projectionMatrixInverse);this.uniforms.cameraWorld.value.copy(camera.matrixWorld);
