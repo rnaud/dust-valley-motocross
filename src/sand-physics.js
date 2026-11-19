@@ -13,19 +13,30 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 export class SandSurface {
  constructor(baseHeight,{maxStoredTiles=128,soil={}}={}){
   this.baseHeight=baseHeight;this.maxStoredTiles=Math.max(16,maxStoredTiles);
-  this.profile={...DEFAULT_SOIL,...soil};
+  this.profile={...DEFAULT_SOIL,...soil};this.baseCache=new Map();
   this.soil=new Map();this.tiles=new Map();this.version=0;this.bounds=null;
   this.previous=[null,null];this.dirty=new Set();this.changed=new Map();this.center='';
   // Optional observers: onCells(cells) sees every changed soil node before collision refresh;
   // events collects body impacts (x,z,vx,vz,amount) for spray effects.
   this.onCells=null;this.events=[];
  }
+ // Base terrain heights are cached per 64×64-node tile: procedural terrain
+ // (the jump park especially) is far too slow to re-evaluate per node.
+ base(ix,iz){
+  const tx=Math.floor(ix/64),tz=Math.floor(iz/64),id=key(tx,tz),i=(iz-tz*64)*64+ix-tx*64;
+  let cache=this.baseCache.get(id);
+  if(!cache){
+   cache=new Float64Array(4096);for(let j=0;j<64;j++)for(let k=0;k<64;k++)cache[j*64+k]=this.baseHeight((tx*64+k)*.25,(tz*64+j)*.25);
+   this.baseCache.set(id,cache);if(this.baseCache.size>this.maxStoredTiles*2)this.baseCache.delete(this.baseCache.keys().next().value);
+  }
+  return cache[i];
+ }
  node(ix,iz){
   const tx=Math.floor(ix/64),tz=Math.floor(iz/64),tile=this.soil.get(key(tx,tz));
-  return this.baseHeight(ix*.25,iz*.25)+(tile?.delta[(iz-tz*64)*64+ix-tx*64]??0);
+  return this.base(ix,iz)+(tile?.delta[(iz-tz*64)*64+ix-tx*64]??0);
  }
  deltaAt(ix,iz){const tx=Math.floor(ix/64),tz=Math.floor(iz/64);return this.soil.get(key(tx,tz))?.delta[(iz-tz*64)*64+ix-tx*64]??0;}
- displacementAt(x,z){return this.sample(x,z,(ix,iz)=>this.node(ix,iz)-this.baseHeight(ix*.25,iz*.25));}
+ displacementAt(x,z){return this.sample(x,z,(ix,iz)=>this.node(ix,iz)-this.base(ix,iz));}
  height(x,z){return this.sample(x,z,(ix,iz)=>this.node(ix,iz));}
  sample(x,z,node){
   const gx=x/.25,gz=-z/.25,ix=Math.floor(gx),iz=Math.floor(gz),u=gx-ix,v=gz-iz;
@@ -174,6 +185,7 @@ export class SandSurface {
   }
   // Full refresh is only needed on rare cache eviction, never for ordinary ruts.
   for(const id of this.dirty){
+   this.baseCache.delete(id);
    const tile=this.tiles.get(id);if(!tile)continue;
    for(let i=0;i<=64;i++)for(let j=0;j<=64;j++)tile.data[i][j]=this.node(tile.x/.25+i,tile.z/.25-j);
    tile.shape.update();touched.add(tile);

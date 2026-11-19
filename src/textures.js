@@ -96,7 +96,15 @@ export function createTextures(renderer,mobile){
 const emptyTrack=new THREE.DataTexture(new Uint8Array(4),1,1);emptyTrack.needsUpdate=true;
 const emptyFlow=new THREE.DataTexture(new Float32Array(4),1,1,THREE.RGBAFormat,THREE.FloatType);emptyFlow.needsUpdate=true;
 // flowField: the GPU sand flow state (R bed, G rolling layer) for the coarse terrain.
-export const soilUniforms={cascadeFar:uniform(720),flowField:tslTexture(emptyFlow),flowEnabled:uniform(0),terrainShadow:tslTexture(emptyTrack),shadowEnabled:uniform(0),flowTexel:uniform(1/1024),trackMap:tslTexture(emptyTrack),trackTexel:uniform(1),rippleStrength:uniform(0),windDir:uniform(new THREE.Vector2(1,0)),sparkle:uniform(0),sunDir:uniform(new THREE.Vector3(0,1,0))};
+export const soilUniforms={sandAlbedo:uniform(new THREE.Color('#e2c79e')),sandAlbedoOn:uniform(0),cascadeFar:uniform(720),flowField:tslTexture(emptyFlow),flowEnabled:uniform(0),terrainShadow:tslTexture(emptyTrack),shadowEnabled:uniform(0),flowTexel:uniform(1/1024),trackMap:tslTexture(emptyTrack),trackTexel:uniform(1),rippleStrength:uniform(0),windDir:uniform(new THREE.Vector2(1,0)),sparkle:uniform(0),sunDir:uniform(new THREE.Vector3(0,1,0))};
+// Coarse field height (h + r), bilinear between cell centres (vertex-safe).
+function bilinearField(U,xz){
+ const n=float(1).div(U.flowTexel),t=xz.add(450).div(900).mul(n).sub(.5),i=floor(t),f=fract(t);
+ const at=o=>{const c=U.flowField.sample(i.add(o).add(.5).div(n)).level(0);return c.x.add(c.y);};
+ return mix(mix(at(vec2(0,0)),at(vec2(1,0)),f.x),mix(at(vec2(0,1)),at(vec2(1,1)),f.x),f.y);
+}
+// Freshly flowing (rolling-layer) sand in the coarse field, 0..1.
+const field_fresh=(U,uvNode)=>smoothstep(0,.02,U.flowField.sample(uvNode).y).mul(U.flowEnabled);
 // Asymmetric sand-wave slope: gentle stoss over [0,k), steep lee over [k,1).
 const waveSlope=(f,k)=>select(f.lessThan(k),f.div(k).mul(float(1).sub(f.div(k))).mul(6/k),f.sub(k).div(1-k).mul(float(1).sub(f.sub(k).div(1-k))).mul(-6/(1-k)));
 // Procedural soil as a TSL node material (WebGPU, with WebGL2 fallback).
@@ -134,11 +142,13 @@ export function applyTerrainTexture(material,textures,{trackStrength=0}={}){
   material.receivedShadowNode=Fn(([shadow])=>shadow.mul(mix(float(1),U.terrainShadow.sample(trackUV).r,U.shadowEnabled.mul(beyondCascades))));
   // Discard the coarse terrain under the live sand patch.
   material.maskNode=sb.y.greaterThan(sb.x).and(P.x.greaterThan(sb.x.add(.125))).and(P.x.lessThan(sb.y.sub(.125))).and(P.z.greaterThan(sb.z.add(.125))).and(P.z.lessThan(sb.w.sub(.125))).not();
-  material.colorNode=vec4(soilMap.rgb
+  // Texture-free sand where the map says sand (GPU sand path); paint elsewhere.
+  const paintOrSand=mix(soilMap.rgb,U.sandAlbedo.mul(float(1).add(field_fresh(U,trackUV).mul(.1))),soilMap.a.mul(U.sandAlbedoOn));
+  material.colorNode=vec4(paintOrSand
     // Far ruts: darker, damp-looking trench floors and pale berm crests.
     .mul(float(1).sub(ts.mul(record.r.mul(.5).add(disturbed.mul(.06))))).mul(float(1).add(ts.mul(record.g).mul(.22)))
     // Dirt grain belongs to the basin soil; clean sand only keeps a trace of it.
-    .mul(mix(vec3(1),grain.mul(1.65),mix(.65,.1,tslClamp(sandiness,0,1)))).mul(mix(vec3(1),broad.mul(1.5),mix(.2,.05,tslClamp(sandiness,0,1))))
+    .mul(mix(vec3(1),grain.mul(1.65),mix(.65,.1,tslClamp(sandiness.add(soilMap.a.mul(U.sandAlbedoOn).mul(4)),0,1)))).mul(mix(vec3(1),broad.mul(1.5),mix(.2,.05,tslClamp(sandiness.add(soilMap.a.mul(U.sandAlbedoOn).mul(4)),0,1))))
     .mul(float(1).sub(ripple.mul(select(rippleF.greaterThan(.6),.03,-.008))).sub(mega.mul(select(megaF.greaterThan(.7),.02,0)))),1);
   // Recorded trench walls/berms and the ripple faces tilt the normal.
   const t=U.trackTexel,height=c=>c.g.mul(.25).sub(c.r.mul(.4));
@@ -151,7 +161,7 @@ export function applyTerrainTexture(material,textures,{trackStrength=0}={}){
    // and the normal comes from the field gradient (plus the relief detail).
    const flowOn=U.flowEnabled.greaterThan(.5),field=U.flowField,ft=U.flowTexel,fieldUV=positionGeometry.xz.add(450).div(900);
    const cellHeight=c=>c.x.add(c.y),sampleField=o=>cellHeight(field.sample(trackUV.add(o)));
-   material.positionNode=select(flowOn,vec3(positionGeometry.x,cellHeight(field.sample(fieldUV).level(0)),positionGeometry.z),positionGeometry);
+   material.positionNode=select(flowOn,vec3(positionGeometry.x,bilinearField(U,positionGeometry.xz),positionGeometry.z),positionGeometry);
    const span=ft.mul(1800),fieldNormal=normalize(vec3(sampleField(vec2(ft.negate(),0)).sub(sampleField(vec2(ft,0))).div(span),1,sampleField(vec2(0,ft.negate())).sub(sampleField(vec2(0,ft))).div(span)));
    baseNormal=select(flowOn,normalize(cameraViewMatrix.mul(vec4(fieldNormal,0)).xyz.add(baseNormal.sub(normalView))),baseNormal);
    // Freshly flowing sand (grainflow tongues) reads a little paler.

@@ -66,7 +66,8 @@ export function trackDistance(x,z) { return nearestTrack(x,z).distance; }
 // to the terrain and airborne steering cannot change the flight trajectory.
 export function createState(options={}) {
   const baseHeight=options.height || terrain;
-  const sand=options.sand!==false?new SandSurface(baseHeight,{soil:options.soil,maxStoredTiles:options.sandTiles}):null;
+  // options.sandSurface injects another sand implementation (GPU sand on wild maps).
+  const sand=options.sandSurface??(options.sand!==false?new SandSurface(baseHeight,{soil:options.soil,maxStoredTiles:options.sandTiles}):null);
   const height=sand?(x,z)=>sand.height(x,z):baseHeight;
   const world=new C.World({gravity:new C.Vec3(0,-9.81,0)});
   world.solver.iterations=12;

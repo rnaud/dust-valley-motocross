@@ -134,16 +134,18 @@ export class SandFlowGPU{
  }
  // Recompute terrain shadows for sun direction (unit, world) every quarter second.
  shadows(sun,frameDt){
-  if(!this.enabled)return;this.shadowClock+=frameDt;if(this.shadowClock<.25)return;this.shadowClock=0;
+  if(!this.enabled)return;this.shadowClock+=frameDt;if(this.shadowClock<2)return;this.shadowClock=0;
   const horizontal=Math.hypot(sun.x,sun.z)||1;this.sunXZ.value.set(sun.x/horizontal,sun.z/horizontal);this.sunTan.value=sun.y/horizontal;
   this.stateNode.value=this.targets[this.current].texture;this.pass(this.shadowMaterial,this.shadowTarget);
  }
  // Fixed 60 Hz steps, at most two per frame.
  update(frameDt){
   if(!this.enabled)return;
-  this.accumulator=Math.min(this.accumulator+frameDt,2/60);let first=true;
-  while(this.accumulator>=1/60){
-   this.accumulator-=1/60;this.time+=1/60;
+  // 30 Hz is plenty for dune-scale avalanches and halves the GPU cost.
+  const step=1/30;this.u.dt.value=step;
+  this.accumulator=Math.min(this.accumulator+frameDt,2*step);let first=true;
+  while(this.accumulator>=step){
+   this.accumulator-=step;this.time+=step;
    if(first)this.stageInjection();else this.rect.value.set(-1,-1,-1,-1);first=false;
    const src=this.targets[this.current],dst=this.targets[1-this.current];
    this.stateNode.value=src.texture;this.pass(this.fluxMaterial,this.fluxTarget);
@@ -166,6 +168,14 @@ export class SandFlowGPU{
    }
    return changed;
   }finally{this.reading=false;}
+ }
+ // CPU height of the coarse field (h + r), bilinear between cell centres:
+ // the same surface the GPU renders, so physics and visuals agree.
+ heightAt(x,z){
+  if(!this.base)return 0;
+  const n=this.n,gx=(x+this.extent/2)/this.dx-.5,gz=(z+this.extent/2)/this.dx-.5,i=Math.floor(gx),j=Math.floor(gz),u=gx-i,v=gz-j;
+  const at=(a,b)=>{const k=Math.min(n-1,Math.max(0,b))*n+Math.min(n-1,Math.max(0,a));return this.base[k]+(this.offsets?.[k]??0);};
+  return (at(i,j)*(1-u)+at(i+1,j)*u)*(1-v)+(at(i,j+1)*(1-u)+at(i+1,j+1)*u)*v;
  }
  // Flow-only height change at a world point (bilinear between cell centres).
  offsetAt(x,z){
