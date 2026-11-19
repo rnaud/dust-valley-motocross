@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {texture as tslTexture,uniform,positionWorld,positionGeometry,normalView,normalWorld,cameraPosition,cameraViewMatrix,fwidth,fract,floor,smoothstep,mix,step,sin,dot,length,normalize,pow,max,select,vec2,vec3,vec4,float,normalMap} from 'three/tsl';
+import {Fn,mx_noise_float,clamp as tslClamp,texture as tslTexture,uniform,positionWorld,positionGeometry,normalView,normalWorld,cameraPosition,cameraViewMatrix,fwidth,fract,floor,smoothstep,mix,step,sin,dot,length,normalize,pow,max,select,vec2,vec3,vec4,float,normalMap} from 'three/tsl';
 import { track, TAU } from './world.js';
 
 // Seeded value noise: all artwork is generated locally; no downloaded assets.
@@ -96,7 +96,7 @@ export function createTextures(renderer,mobile){
 const emptyTrack=new THREE.DataTexture(new Uint8Array(4),1,1);emptyTrack.needsUpdate=true;
 const emptyFlow=new THREE.DataTexture(new Float32Array(4),1,1,THREE.RGBAFormat,THREE.FloatType);emptyFlow.needsUpdate=true;
 // flowField: the GPU sand flow state (R bed, G rolling layer) for the coarse terrain.
-export const soilUniforms={flowField:tslTexture(emptyFlow),flowEnabled:uniform(0),flowTexel:uniform(1/1024),trackMap:tslTexture(emptyTrack),trackTexel:uniform(1),rippleStrength:uniform(0),windDir:uniform(new THREE.Vector2(1,0)),sparkle:uniform(0),sunDir:uniform(new THREE.Vector3(0,1,0))};
+export const soilUniforms={flowField:tslTexture(emptyFlow),flowEnabled:uniform(0),terrainShadow:tslTexture(emptyTrack),shadowEnabled:uniform(0),flowTexel:uniform(1/1024),trackMap:tslTexture(emptyTrack),trackTexel:uniform(1),rippleStrength:uniform(0),windDir:uniform(new THREE.Vector2(1,0)),sparkle:uniform(0),sunDir:uniform(new THREE.Vector3(0,1,0))};
 // Asymmetric sand-wave slope: gentle stoss over [0,k), steep lee over [k,1).
 const waveSlope=(f,k)=>select(f.lessThan(k),f.div(k).mul(float(1).sub(f.div(k))).mul(6/k),f.sub(k).div(1-k).mul(float(1).sub(f.sub(k).div(1-k))).mul(-6/(1-k)));
 // Procedural soil as a TSL node material (WebGPU, with WebGL2 fallback).
@@ -117,24 +117,31 @@ export function applyTerrainTexture(material,textures,{trackStrength=0}={}){
   const sandiness=soilMap.a.mul(U.rippleStrength);
   // Wind ripples: asymmetric sand waves (0.6 m, plus 2.4 m megaripples that
   // carry the striped look into the distance), warped so crests wander.
-  const warp=tslTexture(detail,P.xz.mul(.011)).r.sub(.5).mul(7).add(tslTexture(detail,P.xz.mul(.041)).g.sub(.5).mul(1.6));
-  const along=dot(P.xz,U.windDir),ripplePhase=along.div(.6).add(warp),megaPhase=along.div(2.4).add(warp.mul(.45));
+  // Smooth procedural warp: the photographic detail texture is full of cracks
+  // and broke the ripple crests into blotches.
+  const warp=mx_noise_float(vec3(P.xz.mul(.018),0)).mul(7).add(mx_noise_float(vec3(P.xz.mul(.07),7)).mul(1.8)).add(mx_noise_float(vec3(P.xz.mul(.3),3)).mul(.4));
+  // Rotating the crest direction made concentric 'fingerprint' rings; sinuous
+  // crests come from the multi-scale phase warp alone.
+  const rippleDir=U.windDir,along=dot(P.xz,rippleDir),ripplePhase=along.div(.45).add(warp),megaPhase=along.div(3.1).add(warp.mul(.3));
   const rippleF=fract(ripplePhase),megaF=fract(megaPhase);
   const rippleBase=sandiness.mul(smoothstep(.8,.94,normalWorld.y)).mul(float(1).sub(disturbed));
-  const ripple=rippleBase.mul(float(1).sub(smoothstep(.3,.7,fwidth(ripplePhase))));
-  const mega=rippleBase.mul(float(1).sub(smoothstep(.3,.7,fwidth(megaPhase))));
+  const ripple=rippleBase.mul(float(1).sub(smoothstep(.35,.9,fwidth(ripplePhase))));
+  const mega=rippleBase.mul(float(1).sub(smoothstep(.4,1,fwidth(megaPhase))));
+  // Dune-on-dune shadows from the GPU field multiply the sun's shadow term.
+  material.receivedShadowNode=Fn(([shadow])=>shadow.mul(mix(float(1),U.terrainShadow.sample(trackUV).r,U.shadowEnabled)));
   // Discard the coarse terrain under the live sand patch.
   material.maskNode=sb.y.greaterThan(sb.x).and(P.x.greaterThan(sb.x.add(.125))).and(P.x.lessThan(sb.y.sub(.125))).and(P.z.greaterThan(sb.z.add(.125))).and(P.z.lessThan(sb.w.sub(.125))).not();
   material.colorNode=vec4(soilMap.rgb
     // Far ruts: darker, damp-looking trench floors and pale berm crests.
     .mul(float(1).sub(ts.mul(record.r.mul(.5).add(disturbed.mul(.06))))).mul(float(1).add(ts.mul(record.g).mul(.22)))
-    .mul(mix(vec3(1),grain.mul(1.65),.65)).mul(mix(vec3(1),broad.mul(1.5),.2))
-    .mul(float(1).sub(ripple.mul(select(rippleF.greaterThan(.72),.16,-.03))).sub(mega.mul(select(megaF.greaterThan(.7),.1,0)))),1);
+    // Dirt grain belongs to the basin soil; clean sand only keeps a trace of it.
+    .mul(mix(vec3(1),grain.mul(1.65),mix(.65,.1,tslClamp(sandiness,0,1)))).mul(mix(vec3(1),broad.mul(1.5),mix(.2,.05,tslClamp(sandiness,0,1))))
+    .mul(float(1).sub(ripple.mul(select(rippleF.greaterThan(.6),.03,-.008))).sub(mega.mul(select(megaF.greaterThan(.7),.02,0)))),1);
   // Recorded trench walls/berms and the ripple faces tilt the normal.
   const t=U.trackTexel,height=c=>c.g.mul(.25).sub(c.r.mul(.4));
   const trackGrad=vec2(height(U.trackMap.sample(trackUV.add(vec2(t,0)))).sub(height(U.trackMap.sample(trackUV.sub(vec2(t,0))))),
     height(U.trackMap.sample(trackUV.add(vec2(0,t)))).sub(height(U.trackMap.sample(trackUV.sub(vec2(0,t)))))).div(t.mul(1800));
-  const grad=trackGrad.mul(ts).mul(2.5).add(U.windDir.mul(waveSlope(rippleF,.72).mul(.035/.6).mul(ripple).add(waveSlope(megaF,.7).mul(.07/2.4).mul(mega))));
+  const grad=trackGrad.mul(ts).mul(2.5).add(rippleDir.mul(waveSlope(rippleF,.6).mul(.022/.45).mul(ripple))).add(U.windDir.mul(waveSlope(megaF,.7).mul(.035/3.1).mul(mega)));
   let baseNormal=normalMap(tslTexture(textures.soilRelief.normal),vec2(.6,.6));
   if(trackStrength>0){
    // Coarse terrain follows the GPU sand flow: vertices take the field height
@@ -154,7 +161,9 @@ export function applyTerrainTexture(material,textures,{trackStrength=0}={}){
   const halfVector=normalize(U.sunDir.add(normalize(cameraPosition.sub(P))));
   const glint=pow(max(dot(facet,halfVector),0),48).mul(step(.986,grainHash));
   const glintFade=float(1).sub(smoothstep(14,40,length(cameraPosition.sub(P)))).mul(float(1).sub(smoothstep(.6,1.4,fwidth(P.x.mul(24)))));
-  material.emissiveNode=vec3(1,.94,.82).mul(glint).mul(glintFade).mul(U.sparkle).mul(select(sandiness.greaterThan(0),1,.25)).mul(2.2);
+  // Glints are emissive, so gate them by the dune shadow and sun-facing surfaces.
+  const sunlit=mix(float(1),U.terrainShadow.sample(trackUV).r,U.shadowEnabled).mul(smoothstep(0,.15,dot(normalWorld,U.sunDir)));
+  material.emissiveNode=vec3(1,.94,.82).mul(glint).mul(glintFade).mul(sunlit).mul(U.sparkle).mul(select(sandiness.greaterThan(0),1,.25)).mul(2.2);
   material.needsUpdate=true;
 }
 export function createSkyTexture(){

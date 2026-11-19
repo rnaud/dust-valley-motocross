@@ -29,8 +29,10 @@ test('every map spawns on gentle ground inside the recovery radius',()=>{
 
 test('signature features: dune slip faces, quarry benches, gorge walls, baja whoops',()=>{
  const dunes=terrainMap('dunes').height;let steep=0,gentle=0;
- for(let x=-300;x<=300;x+=3){const s=slopeAt(dunes,x,120);if(s>.5)steep++;else if(s<.35)gentle++;}
- assert.ok(steep>5&&gentle>steep*2,'dunes have short steep faces and long windward ramps');
+ for(let x=-400;x<=400;x+=3)for(const z of [-200,0,120,300]){const s=slopeAt(dunes,x,z);if(s>.5)steep++;else if(s<.35)gentle++;}
+ let peak=0;for(let x=-400;x<=400;x+=2)for(const z of [-200,0,120,300])peak=Math.max(peak,slopeAt(dunes,x,z));
+ assert.ok(Math.atan(peak)*180/Math.PI<35.5,'authored slip faces stay at the angle of repose');
+ assert.ok(steep>10&&gentle>steep*2,'dunes have short steep faces and long windward ramps');
  const quarry=terrainMap('quarry').height;
  assert.ok(quarry(0,200)<-28,'pit floor is deep');assert.ok(Math.abs(quarry(0,0))<6,'start is on the rim plateau');
  const levels=new Set();for(let z=60;z<=200;z+=2)levels.add(Math.round(quarry(60,z)/2));assert.ok(levels.size>=5,'benches step down');

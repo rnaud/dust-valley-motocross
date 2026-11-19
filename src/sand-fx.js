@@ -34,13 +34,13 @@ export class SandSpray{
   if(dustiness>0)(ctx.contacts??[]).forEach((hit,i)=>{
    if(!hit)return;
    // Rear tire (index 0) throws most of the dust, more under power.
-   const rate=dustiness*clamp((speed-1.5)/8,0,1)*(i===0?55+70*(ctx.throttle??0):22);
+   const rate=dustiness*clamp((speed-1.5)/8,0,1)*(i===0?70+90*(ctx.throttle??0):26);
    this.carry[i]+=rate*dt;
    while(this.carry[i]>=1){
     this.carry[i]--;const a=rand()*TAU,side=(rand()-.5)*1.6;
     this.emitDust(hit.x+Math.cos(a)*.25,hit.y+.1,hit.z+Math.sin(a)*.25,
      -fx*speed*(.18+rand()*.12)+fz*side,.5+rand()*1.4,-fz*speed*(.18+rand()*.12)-fx*side,
-     .8+rand()*.7,1.6+rand()*1.8,3+rand()*2.8,.5+rand()*.25);
+     1+rand()*.8,2.2+rand()*2.4,3.5+rand()*3,.55+rand()*.25);
    }
    // Roost: grains and small clods kicked back from the driven tire.
    if(i===0&&roost>0&&(ctx.throttle??0)>.2&&speed>2){
@@ -78,7 +78,7 @@ export class SandSpray{
 
 export class SandFx{
  constructor(scene,{mobile=false,dustTexture}={}){
-  this.spray=new SandSpray({dustCount:mobile?160:420,clodCount:mobile?80:220});
+  this.spray=new SandSpray({dustCount:mobile?200:720,clodCount:mobile?80:220});
   // Instanced sprites (see sized-points.js); sizes are world metres, converted
   // to point units from the camera field of view every frame.
   this.points=createSizedPoints({count:this.spray.dust.length,map:dustTexture,color:'#e2c79a'});

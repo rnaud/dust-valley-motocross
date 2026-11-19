@@ -1,5 +1,5 @@
-import {DataTexture,FloatType,NearestFilter,NodeMaterial,QuadMesh,RGBAFormat,RedFormat,RenderTarget,Vector4} from 'three/webgpu';
-import {Fn,float,length,max,min,select,sqrt,texture,uniform,uv,vec2,vec4} from 'three/tsl';
+import {DataTexture,FloatType,HalfFloatType,LinearFilter,NearestFilter,NodeMaterial,QuadMesh,RGBAFormat,RedFormat,RenderTarget,Vector2,Vector4} from 'three/webgpu';
+import {Fn,Loop,clamp,float,length,max,min,select,sqrt,texture,uniform,uv,vec2,vec4} from 'three/tsl';
 import {FLOW} from './sand-flow-model.js';
 
 // GPU sand step: the rules of sand-flow-model.js as TSL fragment passes on
@@ -65,6 +65,20 @@ export class SandFlowGPU{
    return vec4(h,r,rock,select(stops,0,1));
   })();
   this.initMaterial=new NodeMaterial();this.initNode=texture(this.initTexture);this.initMaterial.fragmentNode=this.initNode.sample(uv());
+  // Pass 3: terrain self-shadowing. March from each cell toward the sun over
+  // the field; the penumbra widens with distance. 1 = lit, 0 = in shadow.
+  this.shadowTarget=new RenderTarget(size,size,{type:HalfFloatType,format:RGBAFormat,minFilter:LinearFilter,magFilter:LinearFilter,depthBuffer:false,generateMipmaps:false});
+  this.sunXZ=uniform(new Vector2(1,0));this.sunTan=uniform(.25);this.shadowClock=1;
+  this.shadowMaterial=new NodeMaterial();
+  this.shadowMaterial.fragmentNode=Fn(()=>{
+   const p=uv(),cellHeight=q=>{const c=this.stateNode.sample(q);return c.x.add(c.y);},h0=cellHeight(p),occlusion=float(0).toVar();
+   Loop({start:1,end:48,type:'int'},({i})=>{
+    const step=float(i),d=step.mul(step).mul(.12).add(step.mul(.9));
+    const excess=cellHeight(p.add(this.sunXZ.mul(d.div(extent)))).sub(h0.add(d.mul(this.sunTan)).add(.15));
+    occlusion.assign(max(occlusion,excess.div(d.mul(.03).add(.25))));
+   });
+   return vec4(clamp(float(1).sub(occlusion),0,1),0,0,1);
+  })();
   this.quad=new QuadMesh();
  }
  get texture(){return this.targets[this.current].texture;}
@@ -115,6 +129,12 @@ export class SandFlowGPU{
   for(let j=b.minY;j<b.maxY;j++)for(let i=b.minX;i<b.maxX;i++){if(i<b.minX+w&&j<b.minY+h)continue;if(this.pending[j*n+i]===0)continue;box=box?{minX:Math.min(box.minX,i),minY:Math.min(box.minY,j),maxX:Math.max(box.maxX,i+1),maxY:Math.max(box.maxY,j+1)}:{minX:i,minY:j,maxX:i+1,maxY:j+1};}
   return box;
  }
+ // Recompute terrain shadows for sun direction (unit, world) every quarter second.
+ shadows(sun,frameDt){
+  if(!this.enabled)return;this.shadowClock+=frameDt;if(this.shadowClock<.25)return;this.shadowClock=0;
+  const horizontal=Math.hypot(sun.x,sun.z)||1;this.sunXZ.value.set(sun.x/horizontal,sun.z/horizontal);this.sunTan.value=sun.y/horizontal;
+  this.stateNode.value=this.targets[this.current].texture;this.pass(this.shadowMaterial,this.shadowTarget);
+ }
  // Fixed 60 Hz steps, at most two per frame.
  update(frameDt){
   if(!this.enabled)return;
@@ -150,6 +170,12 @@ export class SandFlowGPU{
   const n=this.n,gx=(x+this.extent/2)/this.dx-.5,gz=(z+this.extent/2)/this.dx-.5,i=Math.floor(gx),j=Math.floor(gz),u=gx-i,v=gz-j;
   const at=(a,b)=>this.offsets[Math.min(n-1,Math.max(0,b))*n+Math.min(n-1,Math.max(0,a))];
   return (at(i,j)*(1-u)+at(i+1,j)*u)*(1-v)+(at(i,j+1)*(1-u)+at(i+1,j+1)*u)*v;
+ }
+ // Diagnostics: share of shadowed cells in the terrain shadow map.
+ async shadowStats(){
+  const px=await this.renderer.readRenderTargetPixelsAsync(this.shadowTarget,0,0,this.n,this.n);let dark=0,partial=0;
+  for(let k=0;k<this.n*this.n;k++){const v=px[k*4];if(v<.05)dark++;else if(v<.95)partial++;}
+  return {dark:dark/(this.n*this.n),partial:partial/(this.n*this.n),sunXZ:this.sunXZ.value.toArray(),sunTan:this.sunTan.value};
  }
  // Diagnostics: whole-field totals (one full readback; not for every frame).
  async totals(){
