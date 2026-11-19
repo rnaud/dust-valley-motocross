@@ -39,7 +39,9 @@ export class SandSurface {
     geo.setAttribute('position',new THREE.BufferAttribute(positions,3));geo.setAttribute('uv',new THREE.BufferAttribute(uv,2));geo.setIndex(indices);
     mesh=new THREE.Mesh(geo,this.material);mesh.receiveShadow=true;mesh.castShadow=true;mesh.userData.revision=-1;this.scene.add(mesh);this.meshes.set(key,mesh);
    }
-   if(mesh.userData.revision!==tile.revision||boundsChanged){
+   // Rebuild a tile's geometry at most 20 times a second (physics deforms at 120 Hz).
+   const now=performance.now(),due=!mesh.userData.built||now-mesh.userData.built>50;
+   if((mesh.userData.revision!==tile.revision&&due)||boundsChanged){mesh.userData.built=now;
     // Match the distant patch boundary to the actual coarse triangles. A
     // vertical skirt alone closes holes but remains visible as a lit ribbon.
     const visualHeight=(x,z,height)=>{

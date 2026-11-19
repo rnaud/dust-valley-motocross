@@ -36,7 +36,8 @@ export class TireTracks {
       this.distance[wheel]=v1;this.last[wheel]={...p};
       this.cursor=(this.cursor+1)%this.capacity;this.count=Math.min(this.capacity,this.count+1);
       this.geometry.setDrawRange(0,this.count*6);
-      this.geometry.attributes.position.needsUpdate=true;this.geometry.attributes.uv.needsUpdate=true;
+      // Upload only the new segment, not the whole 6000-segment ring.
+      const pa=this.geometry.attributes.position,ua=this.geometry.attributes.uv;pa.addUpdateRange(base,18);ua.addUpdateRange(uvBase,12);pa.needsUpdate=true;ua.needsUpdate=true;
     }
   }
 }

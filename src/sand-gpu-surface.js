@@ -16,7 +16,8 @@ import {FINE_CELL,OP} from './sand-fine-gpu.js';
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const SPAN=96,TILE=64;
 export class GpuSandSurface{
- constructor(fine,coarseHeight,{soil={},flipRows=false}={}){
+ constructor(fine,coarseHeight,{soil={},flipRows=false,residual=null}={}){
+  this.residualFn=residual;
   this.isGpuSand=true;this.fine=fine;this.coarseHeight=coarseHeight;this.profile={...DEFAULT_SOIL,...soil};this.flipRows=flipRows;
   this.d=new Float32Array(SPAN*SPAN);this.g=new Float32Array(SPAN*SPAN);this.b=new Float32Array(SPAN*SPAN);this.i0=0;this.j0=0;this.placed=false;
   this.previous=[null,null];this.events=[];this.dirty=new Set();this.onCells=null;this.tiles=new Map();this.version=0;
@@ -24,7 +25,8 @@ export class GpuSandSurface{
  }
  local(ix,iz){const i=ix-this.i0,j=iz-this.j0;return i<0||j<0||i>=SPAN||j>=SPAN?-1:j*SPAN+i;}
  deltaAt(ix,iz){const k=this.local(ix,iz);return k<0?0:this.d[k];}
- node(ix,iz){return this.coarseHeight(ix*FINE_CELL,iz*FINE_CELL)+this.deltaAt(ix,iz);}
+ // Surface = coarse field + exact-terrain residual + fine detail (as on the GPU).
+ node(ix,iz){const x=ix*FINE_CELL,z=iz*FINE_CELL;return this.coarseHeight(x,z)+(this.residualFn?this.residualFn(x,z):0)+this.deltaAt(ix,iz);}
  sample(x,z,node){
   const gx=x/FINE_CELL,gz=-z/FINE_CELL,ix=Math.floor(gx),iz=Math.floor(gz),u=gx-ix,v=gz-iz;
   const a=node(ix,-iz),b=node(ix+1,-iz),c=node(ix,-iz-1),d=node(ix+1,-iz-1);

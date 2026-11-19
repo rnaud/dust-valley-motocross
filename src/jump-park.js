@@ -18,13 +18,17 @@ export const jumps=[
  {x:0,z:300,yaw:0,height:3.2,up:10,top:4,down:20,width:18},
 ];
 function coordinates(j,x,z){const dx=x-j.x,dz=z-j.z;return {along:dx*Math.sin(j.yaw)+dz*Math.cos(j.yaw),across:dx*Math.cos(j.yaw)-dz*Math.sin(j.yaw)};}
+// Per-jump orientation and a conservative bounding box, precomputed: the sand
+// model samples this function for every 25 cm node it builds.
+const prepared=jumps.map(j=>{const end=j.up+j.top+j.down,reach=Math.hypot(end,j.width+8);return {...j,sin:Math.sin(j.yaw),cos:Math.cos(j.yaw),end,reach};});
 export function parkHeight(x,z,natural){
  const blend=1-smooth((Math.hypot(x,z)-140)/70);
  const basin=1.8+.35*Math.sin(x*.025)+.45*Math.sin(z*.02);
  let height=natural+(basin-natural)*blend;
- for(const j of jumps){
-  const {along:t,across}=coordinates(j,x,z),end=j.up+j.top+j.down;
-  if(t<0||t>end||Math.abs(across)>j.width+8)continue;
+ for(const j of prepared){
+  const dx=x-j.x,dz=z-j.z;if(dx>j.reach||dx<-j.reach||dz>j.reach||dz<-j.reach)continue;
+  const t=dx*j.sin+dz*j.cos,across=dx*j.cos-dz*j.sin;
+  if(t<0||t>j.end||Math.abs(across)>j.width+8)continue;
   const lateral=1-smooth((Math.abs(across)-j.width*.65)/(j.width*.35+8));
   const profile=t<j.up?Math.pow(t/j.up,1.5):t<j.up+j.top?1:1-smooth((t-j.up-j.top)/j.down);
   height+=j.height*profile*lateral;

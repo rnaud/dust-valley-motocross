@@ -158,7 +158,8 @@ applyTerrainTexture(materials.dirt,textures,{trackStrength:1});
 // Every rut is also written to a world-space track map so trenches stay
 // visible on the coarse terrain far behind the live sand patch.
 const trackMap=new TrackMap(mobile?1024:2048),trackTexture=new THREE.DataTexture(trackMap.data,trackMap.size,trackMap.size);
-trackTexture.magFilter=THREE.LinearFilter;trackTexture.minFilter=THREE.LinearMipmapLinearFilter;trackTexture.generateMipmaps=true;trackTexture.needsUpdate=true;
+// No mipmaps: each staged update would otherwise rebuild the whole 2048² chain.
+trackTexture.magFilter=THREE.LinearFilter;trackTexture.minFilter=THREE.LinearFilter;trackTexture.generateMipmaps=false;trackTexture.needsUpdate=true;
 soilUniforms.trackMap.value=trackTexture;soilUniforms.trackTexel.value=1/trackMap.size;
 // WebGPU has no partial CPU upload, so changed texels go through a small
 // staging texture and a GPU-side copy into the full track map.
@@ -681,10 +682,11 @@ async function start(){
  gpuSand=null;
  if(sandFlow?.enabled&&debugParams.get('gpusand')!=='0'){
   fineSand??=new FineSandGPU(renderer,{size:mobile?256:512});
-  fineSand.reset(trackTexture,{wind:wild.view.wind,ripples:(wild.view.ripple??0)>0,maxDepth:wild.soil.maxDepth,maxLift:wild.soil.maxLift});
+  const map=wild,residual=(x,z)=>map.height(x,z)-sandFlow.baseAt(x,z);
+  fineSand.reset(trackTexture,{wind:wild.view.wind,ripples:(wild.view.ripple??0)>0,maxDepth:wild.soil.maxDepth,maxLift:wild.soil.maxLift,residual});
   if(!fineMesh){fineMesh=createFineSandMesh(fineSand,{albedo:'#e2c79e',soilMap:wildTexture(wild)});scene.add(fineMesh.mesh);}
   fineMesh.soil.value=wildTexture(wild);fineMesh.albedo.value.set(wild.view.sandColor??'#e2c79e');
-  gpuSand=new GpuSandSurface(fineSand,(x,z)=>sandFlow.heightAt(x,z),{soil:wild.soil,flipRows:sandFlow.flipRows});
+  gpuSand=new GpuSandSurface(fineSand,(x,z)=>sandFlow.heightAt(x,z),{soil:wild.soil,flipRows:sandFlow.flipRows,residual});
  }
  const spawnPoint=track(0),spawn=wild?wild.spawn:mode==='free'?{x:0,z:0,yaw:0}:{x:spawnPoint.x,z:spawnPoint.z,yaw:Math.atan2(spawnPoint.tx,spawnPoint.tz)};
  state=remix?createState({physicsMode:'classic',sand:false,flat:true,customWorld:true,height:remix.height,spawn:remix.spawn}):physicsMode==='mcm-preview'?corePreview.createMcmCoreState(coreScene,{spawn,sand:$('sand-mode').checked}):createState({physicsMode,sand:$('sand-mode').checked,...(mode==='free'?{height:flowHeight??freeHeight,spawn}:{}),...(wild?{soil:wild.soil,heroRocks:false,sandTiles:mobile?192:512}:{}),...(gpuSand?{sandSurface:gpuSand}:{})});
@@ -983,12 +985,12 @@ const linkage=bikeLinkagePoints(bike.position,bike.quaternion,wheels[0],wheels[1
 
 sun.position.set(state.x+sunOffset.x,state.y+sunOffset.y,state.z+sunOffset.z);sun.target.position.set(state.x,state.y,state.z);soilUniforms.sunDir.value.copy(sunDir);skyUniforms.time.value+=dt;
 if(gpuSand&&state.physics.sand===gpuSand&&phase==='playing'){
- fineSand.update(dt);fineMesh.update();if(((animate.frame=(animate.frame??0)+1)%3)===0)gpuSand.sync();
+ fineSand.update(dt);fineMesh.update();if(debugParams.get('fineread')!=='0'&&((animate.frame=(animate.frame??0)+1)%3)===0)gpuSand.sync();
 }
 if(sandFlow?.enabled&&phase==='playing'){
  sandFlow.update(dt);soilUniforms.flowField.value=sandFlow.texture;if(debugParams.get('shadowpass')!=='0')sandFlow.shadows(sunDir,dt);
  // Avalanches near the bike feed back into the 25 cm physics/render patch.
- if((flowReadClock+=dt)>.2&&!sandFlow.reading){flowReadClock=0;const sand=state.physics.sand;sandFlow.readAround(state.x,state.z).then(changed=>{
+ if(debugParams.get('flowread')!=='0'&&(flowReadClock+=dt)>.2&&!sandFlow.reading){flowReadClock=0;const sand=state.physics.sand;sandFlow.readAround(state.x,state.z).then(changed=>{
   if(!changed?.length||state.physics.sand!==sand)return;const n=sandFlow.n,dx=sandFlow.dx;
   for(const c of changed){const x=-450+(c%n+.5)*dx,z=-450+(Math.floor(c/n)+.5)*dx;for(const ox of [-dx,dx])for(const oz of [-dx,dx])sand.dirty.add(`${Math.floor((x+ox)/16)},${Math.floor((z+oz)/16)}`);}
  }).catch(()=>{});}
@@ -1008,4 +1010,4 @@ requestAnimationFrame(animate);
 // Read-only diagnostics for smoke tests and performance inspection.
 // Start on the sand: Sidewinder Dunes unless the rider last chose another terrain.
 {const saved=readSetting('dust-valley-terrain','dunes');$('terrain-map').value=saved==='basin'?'':terrainMap(saved)?saved:'dunes';$('terrain-map').onchange();}
-window.__game={trackMap,soil:soilUniforms,place:(x,z,yaw)=>{resetBike(state,x,z,yaw);ridePose.reset(state);cameraReady=false;accumulator=0;},backend:()=>rendererBackend,flow:()=>sandFlow?.totals()??null,shadowStats:()=>sandFlow?.shadowStats()??null,sandFx:()=>({dust:sandFx.spray.activeDust,clods:sandFx.spray.activeClods,visible:sandFx.root.visible}),remix:()=>remix?.diagnostics()??null,presentation:()=>({style:artRenderer.style,particles:recoveredParticles.count,nativeParticles:recoveredParticles.nativeCount,particleTexture:recoveredParticles.textureName,particleSprites:[...new Set(recoveredParticles.rows.map(r=>r.sprite))]}),audio:()=>rideAudio.original?.diagnostics()??{ready:false},sandSample:(x,z)=>activeSand?{height:activeSand.height(x,z),displacement:activeSand.displacementAt(x,z),compaction:activeSand.compaction(x,z)}:null,environment:()=>({sand:activeSand?{version:activeSand.version,tiles:activeSand.tiles.size,renderedTiles:sandSurface.meshes.size}:null,trackVisible:trackObjects.visible,trackTexture:materials.dirt.map===textures.macro,height:state.physics.height(state.x,state.z),visualHeight:terrain(state.x,state.z),mountains:mountains.map(m=>({x:m.position.x,z:m.position.z,radius:m.userData.radius*Math.max(m.scale.x,m.scale.z),foundation:m.userData.foundation}))}),snapshot:()=>({phase,mode,elapsed,lap,nextGate,score,countdown,originalAssets:state.physicsBackend==='recovered-core'?{map:coreScene.mapId??'quarries-dunes',rider:$('mcm-rider').value,bike:$('mcm-bike').value,parts:originalModels?.parts,opponentVisible:opponentModels?.root.visible??false,sceneSettings:coreScene.sceneSettings?.source??null,fogColor:coreScene.sceneSettings?.fogColor??null,proceduralScenery:heroGroup.visible,terrainTextures:!!originalTerrainTextures,missingTerrainTextures:originalTerrainTextures?.missing}:null,tireTrackSegments:tireTracks.count,...state}),renderer};
+window.__game={trackMap,soil:soilUniforms,scene,place:(x,z,yaw)=>{resetBike(state,x,z,yaw);ridePose.reset(state);cameraReady=false;accumulator=0;},backend:()=>rendererBackend,flow:()=>sandFlow?.totals()??null,shadowStats:()=>sandFlow?.shadowStats()??null,sandFx:()=>({dust:sandFx.spray.activeDust,clods:sandFx.spray.activeClods,visible:sandFx.root.visible}),remix:()=>remix?.diagnostics()??null,presentation:()=>({style:artRenderer.style,particles:recoveredParticles.count,nativeParticles:recoveredParticles.nativeCount,particleTexture:recoveredParticles.textureName,particleSprites:[...new Set(recoveredParticles.rows.map(r=>r.sprite))]}),audio:()=>rideAudio.original?.diagnostics()??{ready:false},sandSample:(x,z)=>activeSand?{height:activeSand.height(x,z),displacement:activeSand.displacementAt(x,z),compaction:activeSand.compaction(x,z)}:null,environment:()=>({sand:activeSand?{version:activeSand.version,tiles:activeSand.tiles.size,renderedTiles:sandSurface.meshes.size}:null,trackVisible:trackObjects.visible,trackTexture:materials.dirt.map===textures.macro,height:state.physics.height(state.x,state.z),visualHeight:terrain(state.x,state.z),mountains:mountains.map(m=>({x:m.position.x,z:m.position.z,radius:m.userData.radius*Math.max(m.scale.x,m.scale.z),foundation:m.userData.foundation}))}),snapshot:()=>({phase,mode,elapsed,lap,nextGate,score,countdown,originalAssets:state.physicsBackend==='recovered-core'?{map:coreScene.mapId??'quarries-dunes',rider:$('mcm-rider').value,bike:$('mcm-bike').value,parts:originalModels?.parts,opponentVisible:opponentModels?.root.visible??false,sceneSettings:coreScene.sceneSettings?.source??null,fogColor:coreScene.sceneSettings?.fogColor??null,proceduralScenery:heroGroup.visible,terrainTextures:!!originalTerrainTextures,missingTerrainTextures:originalTerrainTextures?.missing}:null,tireTrackSegments:tireTracks.count,...state}),renderer};

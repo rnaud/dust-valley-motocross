@@ -67,7 +67,9 @@ export class SandFlowGPU{
   this.initMaterial=new NodeMaterial();this.initNode=texture(this.initTexture);this.initMaterial.fragmentNode=this.initNode.sample(uv());
   // Pass 3: terrain self-shadowing. March from each cell toward the sun over
   // the field; the penumbra widens with distance. 1 = lit, 0 = in shadow.
-  this.shadowTarget=new RenderTarget(size,size,{type:HalfFloatType,format:RGBAFormat,minFilter:LinearFilter,magFilter:LinearFilter,depthBuffer:false,generateMipmaps:false});
+  // Half resolution: only used beyond the shadow cascades, so 1.76 m cells suffice.
+  const shadowSize=Math.max(256,size/2);
+  this.shadowTarget=new RenderTarget(shadowSize,shadowSize,{type:HalfFloatType,format:RGBAFormat,minFilter:LinearFilter,magFilter:LinearFilter,depthBuffer:false,generateMipmaps:false});
   this.sunXZ=uniform(new Vector2(1,0));this.sunTan=uniform(.25);this.shadowClock=1;
   this.shadowMaterial=new NodeMaterial();
   this.shadowMaterial.fragmentNode=Fn(()=>{
@@ -76,8 +78,8 @@ export class SandFlowGPU{
    const n=this.n,cellHeight=q=>{const t=q.mul(n).sub(.5),i=floor(t),f=fract(t),at=o=>{const c=this.stateNode.sample(i.add(o).add(.5).div(n));return c.x.add(c.y);};
     return mix(mix(at(vec2(0,0)),at(vec2(1,0)),f.x),mix(at(vec2(0,1)),at(vec2(1,1)),f.x),f.y);};
    const p=uv(),h0=cellHeight(p),horizon=float(-10).toVar();
-   Loop({start:1,end:48,type:'int'},({i})=>{
-    const step=float(i),d=step.mul(step).mul(.12).add(step.mul(.9));
+   Loop({start:1,end:32,type:'int'},({i})=>{
+    const step=float(i),d=step.mul(step).mul(.25).add(step.mul(1.4));
     horizon.assign(max(horizon,cellHeight(p.add(this.sunXZ.mul(d.div(extent)))).sub(h0.add(.05)).div(d)));
    });
    return vec4(smoothstep(horizon.sub(.025),horizon.add(.025),this.sunTan),0,0,1);
@@ -168,6 +170,14 @@ export class SandFlowGPU{
    }
    return changed;
   }finally{this.reading=false;}
+ }
+ // Initial coarse surface (no avalanches), bilinear: the reference that fine
+ // nodes store their exact-terrain residual against.
+ baseAt(x,z){
+  if(!this.base)return 0;
+  const n=this.n,gx=(x+this.extent/2)/this.dx-.5,gz=(z+this.extent/2)/this.dx-.5,i=Math.floor(gx),j=Math.floor(gz),u=gx-i,v=gz-j;
+  const at=(a,b)=>this.base[Math.min(n-1,Math.max(0,b))*n+Math.min(n-1,Math.max(0,a))];
+  return (at(i,j)*(1-u)+at(i+1,j)*u)*(1-v)+(at(i,j+1)*(1-u)+at(i+1,j+1)*u)*v;
  }
  // CPU height of the coarse field (h + r), bilinear between cell centres:
  // the same surface the GPU renders, so physics and visuals agree.

@@ -5,7 +5,9 @@ import {Fn,Loop,If,abs,dot,float,floor,fract,int,length,max,min,mix,mod,mx_noise
 // Fine sand field on the GPU: 25 cm nodes in a window that scrolls with the
 // bike (toroidal storage, so scrolling never copies data). Each texel holds
 //   R  d   height relative to the coarse avalanche field (ripples, ruts, berms)
-//   G  compaction (0..1), B  disturbance (1 = freshly worked, fades as ripples return).
+//   G  compaction (0..1), B  disturbance (1 = freshly worked, fades as ripples return),
+//   A  residual: exact terrain minus the bilinear coarse field (crisp crests).
+//      Static per node; the surface is coarse + A + R.
 // Nodes sit at world (I·0.25, J·0.25), the same lattice as the CPU sand model, so
 // CPU-predicted deformation and the GPU state agree node for node.
 //
@@ -21,7 +23,7 @@ import {Fn,Loop,If,abs,dot,float,floor,fract,int,length,max,min,mix,mod,mx_noise
 export const FINE_CELL=.25;
 export const OP={DIG:0,RING:1,DISC:2};
 export const MAX_OPS=24;
-export const RIPPLE=Object.freeze({hop:5,emission:2.2e-5,growth:1.6,amplitude:.045,creep:.012,wavelength:1.25});
+export const RIPPLE=Object.freeze({hop:5,emission:2.2e-5,growth:1.6,amplitude:.045,creep:.00015,wavelength:1.25});
 
 export class FineSandGPU{
  constructor(renderer,{size=512}={}){
@@ -34,6 +36,8 @@ export class FineSandGPU{
   this.maxDepth=uniform(.34);this.maxLift=uniform(.22);this.opCount=uniform(0,'int');
   this.opData=Array.from({length:MAX_OPS*2},()=>new THREE.Vector4());this.ops=uniformArray(this.opData,'vec4');
   this.trackNode=texture(new THREE.DataTexture(new Uint8Array(4),1,1));this.stateNode=texture(this.targets[0].texture);
+  this.residual=new THREE.DataTexture(new Float32Array(size*size),size,size,THREE.RedFormat,THREE.FloatType);this.residual.magFilter=this.residual.minFilter=NearestFilter;
+  this.residualNode=texture(this.residual);this.residualFn=null;this.residualOrigin=null;
   this.queue=[];this.material=this.buildMaterial();this.quad=new QuadMesh(this.material);
  }
  buildMaterial(){
@@ -54,7 +58,8 @@ export class FineSandGPU{
    const phase=fract(dot(pos,this.wind).div(RIPPLE.wavelength).add(warp));
    // Asymmetric ripple: long stoss slope, short steep lee face.
    const ripple=select(phase.lessThan(.78),smoothstep(0,.78,phase),float(1).sub(smoothstep(.78,1,phase))).sub(.5).mul(RIPPLE.amplitude*2).mul(this.windOn);
-   const seeded=vec4(record.g.mul(.25).sub(record.r.mul(.4)).add(ripple.mul(float(1).sub(record.b))),record.b.mul(.5),record.b,0);
+   const residual=this.residualNode.sample(mod(world,n).add(.5).div(n)).r;
+   const seeded=vec4(record.g.mul(.25).sub(record.r.mul(.4)).add(ripple.mul(float(1).sub(record.b))),record.b.mul(.5),record.b,residual);
    const state=select(wasInside,self,seeded).toVar();
    const d=state.x.toVar(),packed=state.y.toVar(),disturbed=state.z.toVar();
    // 2. Deformation ops.
@@ -86,20 +91,32 @@ export class FineSandGPU{
    const upwind=mix(mix(sd(vec2(0,0)),sd(vec2(1,0)),sf.x),mix(sd(vec2(0,1)),sd(vec2(1,1)),sf.x),sf.y);
    const creep=dE.add(dW).add(dN).add(dS).sub(d.mul(4)).mul(RIPPLE.creep);
    const next=d.add(slumped).add(emit(upwind).sub(emit(d))).add(creep);
-   return vec4(next,packed,max(0,disturbed.sub(.0004)),0);
+   return vec4(next,packed,max(0,disturbed.sub(.0004)),state.w);
   })();
   return material;
  }
  // track: the world rut record (TrackMap texture) used to seed entering nodes.
- reset(track,{wind={x:1,z:0},ripples=true,maxDepth=.34,maxLift=.22}={}){
+ reset(track,{wind={x:1,z:0},ripples=true,maxDepth=.34,maxLift=.22,residual=null}={}){
+  this.residualFn=residual;this.residualOrigin=null;
   this.trackNode.value=track;this.wind.value.set(wind.x,wind.z).normalize();this.windOn.value=ripples?1:0;
   this.maxDepth.value=maxDepth;this.maxLift.value=maxLift;this.previousOrigin.value.set(-1e7,-1e7);this.queue=[];this.step=0;this.enabled=true;this.needsSeed=true;
  }
  // Centre the window on a world point (snapped to 4-node steps).
  center(x,z){
   const half=this.n/2,i=Math.round(x/FINE_CELL/4)*4-half,j=Math.round(z/FINE_CELL/4)*4-half;
+  this.fillResidual(i,j);
   if(this.needsSeed){this.origin.value.set(i,j);return;}
   this.pendingOrigin=[i,j];
+ }
+ // Exact-terrain residual for nodes entering the window (toroidal layout).
+ fillResidual(i0,j0){
+  if(!this.residualFn)return;const n=this.n,data=this.residual.image.data,prev=this.residualOrigin;
+  if(prev&&prev[0]===i0&&prev[1]===j0)return;
+  for(let j=j0;j<j0+n;j++)for(let i=i0;i<i0+n;i++){
+   if(prev&&i>=prev[0]&&i<prev[0]+n&&j>=prev[1]&&j<prev[1]+n)continue;
+   data[(((j%n)+n)%n)*n+(((i%n)+n)%n)]=this.residualFn(i*FINE_CELL,j*FINE_CELL);
+  }
+  this.residualOrigin=[i0,j0];this.residual.needsUpdate=true;
  }
  push(kind,x,z,radius,p){this.queue.push({kind,x,z,radius,p,step:this.step});}
  pass(target){const r=this.renderer,previous=r.getRenderTarget();r.setRenderTarget(target);this.quad.render(r);r.setRenderTarget(previous);}

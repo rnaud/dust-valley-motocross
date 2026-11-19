@@ -40,7 +40,7 @@ export class SandSpray{
     this.carry[i]--;const a=rand()*TAU,side=(rand()-.5)*1.6;
     this.emitDust(hit.x+Math.cos(a)*.25,hit.y+.1,hit.z+Math.sin(a)*.25,
      -fx*speed*(.18+rand()*.12)+fz*side,.5+rand()*1.4,-fz*speed*(.18+rand()*.12)-fx*side,
-     1+rand()*.8,2.2+rand()*2.4,3.5+rand()*3,.55+rand()*.25);
+     .9+rand()*.7,1.6+rand()*1.6,2.8+rand()*2.4,.6+rand()*.25);
    }
    // Roost: grains and small clods kicked back from the driven tire.
    if(i===0&&roost>0&&(ctx.throttle??0)>.2&&speed>2){
@@ -78,7 +78,7 @@ export class SandSpray{
 
 export class SandFx{
  constructor(scene,{mobile=false,dustTexture}={}){
-  this.spray=new SandSpray({dustCount:mobile?200:720,clodCount:mobile?80:220});
+  this.spray=new SandSpray({dustCount:mobile?160:360,clodCount:mobile?80:220});
   // Instanced sprites (see sized-points.js); sizes are world metres, converted
   // to point units from the camera field of view every frame.
   this.points=createSizedPoints({count:this.spray.dust.length,map:dustTexture,color:'#e2c79a'});
@@ -94,7 +94,9 @@ export class SandFx{
   this.time+=dt;this.spray.step(dt,ctx);
   const toPoints=1/Math.tan(THREE.MathUtils.degToRad(camera.fov)/2),{positions,sizes,alphas}=this.points;
   this.spray.dust.forEach((p,i)=>{
-   if(p.life>0){const look=SandSpray.dustLook(p);positions[i*3]=p.x;positions[i*3+1]=p.y;positions[i*3+2]=p.z;sizes[i]=look.size*toPoints;alphas[i]=look.alpha;}
+   if(p.life>0){const look=SandSpray.dustLook(p),near=Math.hypot(p.x-camera.position.x,p.y-camera.position.y,p.z-camera.position.z);
+    // Puffs right at the camera fill the screen for little visual gain: fade and cull them.
+    const fade=Math.min(1,Math.max(0,(near-2.5)/6));positions[i*3]=p.x;positions[i*3+1]=fade>0?p.y:-1e4;positions[i*3+2]=p.z;sizes[i]=look.size*toPoints;alphas[i]=look.alpha*fade;}
    else{positions[i*3+1]=-1e4;alphas[i]=0;sizes[i]=0;}
   });
   this.points.update();

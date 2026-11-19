@@ -33,11 +33,11 @@ export function createFineSandMesh(fine,{albedo='#e2c79e',soilMap}){
  const cellAt=o=>state.sample(mod(node.add(o),n).add(.5).div(n)).level(0);
  const here=cellAt(vec2(0,0)),world=node.mul(FINE_CELL);
  // 9 texture reads per vertex: coarse height+slope (4) and fine node + 4 neighbours.
- const coarse=coarseFieldSample(world),dE=cellAt(vec2(1,0)).x,dW=cellAt(vec2(-1,0)).x,dN=cellAt(vec2(0,1)).x,dS=cellAt(vec2(0,-1)).x;
- const slopeX=coarse.y.add(dE.sub(dW).mul(fade).div(FINE_CELL*2)),slopeZ=coarse.z.add(dN.sub(dS).mul(fade).div(FINE_CELL*2));
+ const coarse=coarseFieldSample(world),detail=c=>c.x.mul(fade).add(c.w),dE=detail(cellAt(vec2(1,0))),dW=detail(cellAt(vec2(-1,0))),dN=detail(cellAt(vec2(0,1))),dS=detail(cellAt(vec2(0,-1)));
+ const slopeX=coarse.y.add(dE.sub(dW).div(FINE_CELL*2)),slopeZ=coarse.z.add(dN.sub(dS).div(FINE_CELL*2));
  const normal=varying(normalize(vec3(slopeX.negate(),1,slopeZ.negate()))),sim=varying(vec3(here.y,here.z,fade));
  const material=new MeshStandardNodeMaterial({roughness:.93,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2});
- material.positionNode=vec3(world.x,coarse.x.add(here.x.mul(fade)),world.y);
+ material.positionNode=vec3(world.x,coarse.x.add(here.x.mul(fade)).add(here.w),world.y);
  material.normalNode=normalize(cameraViewMatrix.mul(vec4(normal,0)).xyz);
  // Map paint (alpha = sandiness) only for rock and soil; sand is texture-free.
  const paint=soil.sample(vec2(world.x.add(450).div(900),float(1).sub(world.y.add(450).div(900)))),sandiness=paint.a;
