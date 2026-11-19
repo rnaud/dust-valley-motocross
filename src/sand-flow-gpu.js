@@ -1,5 +1,5 @@
 import {DataTexture,FloatType,HalfFloatType,LinearFilter,NearestFilter,NodeMaterial,QuadMesh,RGBAFormat,RedFormat,RenderTarget,Vector2,Vector4} from 'three/webgpu';
-import {Fn,Loop,clamp,float,length,max,min,select,sqrt,texture,uniform,uv,vec2,vec4} from 'three/tsl';
+import {Fn,Loop,clamp,float,floor,fract,length,max,min,mix,select,smoothstep,sqrt,texture,uniform,uv,vec2,vec4} from 'three/tsl';
 import {FLOW} from './sand-flow-model.js';
 
 // GPU sand step: the rules of sand-flow-model.js as TSL fragment passes on
@@ -71,13 +71,16 @@ export class SandFlowGPU{
   this.sunXZ=uniform(new Vector2(1,0));this.sunTan=uniform(.25);this.shadowClock=1;
   this.shadowMaterial=new NodeMaterial();
   this.shadowMaterial.fragmentNode=Fn(()=>{
-   const p=uv(),cellHeight=q=>{const c=this.stateNode.sample(q);return c.x.add(c.y);},h0=cellHeight(p),occlusion=float(0).toVar();
+   // Bilinear heights (the field is nearest-filtered) and an angular test:
+   // lit when the sun is above the steepest occluder, with a soft penumbra.
+   const n=this.n,cellHeight=q=>{const t=q.mul(n).sub(.5),i=floor(t),f=fract(t),at=o=>{const c=this.stateNode.sample(i.add(o).add(.5).div(n));return c.x.add(c.y);};
+    return mix(mix(at(vec2(0,0)),at(vec2(1,0)),f.x),mix(at(vec2(0,1)),at(vec2(1,1)),f.x),f.y);};
+   const p=uv(),h0=cellHeight(p),horizon=float(-10).toVar();
    Loop({start:1,end:48,type:'int'},({i})=>{
     const step=float(i),d=step.mul(step).mul(.12).add(step.mul(.9));
-    const excess=cellHeight(p.add(this.sunXZ.mul(d.div(extent)))).sub(h0.add(d.mul(this.sunTan)).add(.15));
-    occlusion.assign(max(occlusion,excess.div(d.mul(.03).add(.25))));
+    horizon.assign(max(horizon,cellHeight(p.add(this.sunXZ.mul(d.div(extent)))).sub(h0.add(.05)).div(d)));
    });
-   return vec4(clamp(float(1).sub(occlusion),0,1),0,0,1);
+   return vec4(smoothstep(horizon.sub(.025),horizon.add(.025),this.sunTan),0,0,1);
   })();
   this.quad=new QuadMesh();
  }

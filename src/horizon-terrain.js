@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import {DataTexture,FloatType,HalfFloatType,LinearFilter,NearestFilter,MeshStandardNodeMaterial,NodeMaterial,QuadMesh,RedFormat,RGBAFormat,RenderTarget} from 'three/webgpu';
-import {Fn,Loop,clamp,float,max,positionWorld,texture,uniform,uv,vec4} from 'three/tsl';
+import {Fn,Loop,cameraPosition,float,floor,fract,length,max,mix,positionWorld,smoothstep,texture,uniform,uv,vec2,vec4} from 'three/tsl';
+import {soilUniforms} from './textures.js';
 
 // Horizon terrain for wild maps: a static height grid out to the map's view
 // distance (512² cells, ~13 m on the dunes) with GPU-marched sun shadows, so
@@ -32,18 +33,21 @@ export class HorizonTerrain{
   this.sunXZ=uniform(new THREE.Vector2(1,0));this.sunTan=uniform(.25);
   const heightNode=texture(heightTexture),shadowMaterial=new NodeMaterial();
   shadowMaterial.fragmentNode=Fn(()=>{
-   const p=uv(),h0=heightNode.sample(p).r,occlusion=float(0).toVar();
+   const height=q=>{const t=q.mul(n).sub(.5),i=floor(t),f=fract(t),at=o=>heightNode.sample(i.add(o).add(.5).div(n)).r;
+    return mix(mix(at(vec2(0,0)),at(vec2(1,0)),f.x),mix(at(vec2(0,1)),at(vec2(1,1)),f.x),f.y);};
+   const p=uv(),h0=height(p),horizon=float(-10).toVar();
    Loop({start:1,end:48,type:'int'},({i})=>{
     const k=float(i),d=k.mul(k).mul(.6).add(k.mul(8));
-    const excess=heightNode.sample(p.add(this.sunXZ.mul(d.div(extent)))).r.sub(h0.add(d.mul(this.sunTan)).add(1));
-    occlusion.assign(max(occlusion,excess.div(d.mul(.025).add(1.5))));
+    horizon.assign(max(horizon,height(p.add(this.sunXZ.mul(d.div(extent)))).sub(h0.add(.4)).div(d)));
    });
-   return vec4(clamp(float(1).sub(occlusion),0,1),0,0,1);
+   return vec4(smoothstep(horizon.sub(.02),horizon.add(.02),this.sunTan),0,0,1);
   })();
   this.shadowMaterial=shadowMaterial;this.quad=new QuadMesh(shadowMaterial);
   const shadow=texture(this.shadowTarget.texture),material=new MeshStandardNodeMaterial({vertexColors:true,roughness:1});
-  material.receivedShadowNode=Fn(([s])=>s.mul(shadow.sample(positionWorld.xz.add(half).div(extent)).r));
-  this.mesh=new THREE.Mesh(geo,material);this.mesh.name='horizon-'+map.id;this.mesh.receiveShadow=true;this.mesh.visible=false;
+  // Inside the cascades the shadow maps already carry the dune shadows.
+  const beyond=smoothstep(soilUniforms.cascadeFar.mul(.7),soilUniforms.cascadeFar.mul(.95),length(cameraPosition.sub(positionWorld)));
+  material.receivedShadowNode=Fn(([s])=>s.mul(mix(float(1),shadow.sample(positionWorld.xz.add(half).div(extent)).r,beyond)));
+  this.mesh=new THREE.Mesh(geo,material);this.mesh.name='horizon-'+map.id;this.mesh.receiveShadow=true;this.mesh.castShadow=true;this.mesh.visible=false;
  }
  // Recompute the horizon shadows for a sun direction (unit, world).
  shade(sun){

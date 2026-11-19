@@ -28,6 +28,7 @@ import {TrackMap} from './sand-trackmap.js';
 import {SandFx} from './sand-fx.js';
 import {SandFlowGPU} from './sand-flow-gpu.js';
 import {HorizonTerrain} from './horizon-terrain.js';
+import {CSMShadowNode} from 'three/addons/csm/CSMShadowNode.js';
 import {fog as fogNode,densityFogFactor,uniform as tslUniform} from 'three/tsl';
 import {createSizedPoints} from './sized-points.js';
 import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
@@ -84,7 +85,7 @@ let renderer;
 // WebGPU first; three falls back to its WebGL2 backend where WebGPU is missing.
 try{renderer=new THREE.WebGPURenderer({canvas:$('game'),antialias:true,powerPreference:'high-performance'});await renderer.init();}catch(e){$('menu').innerHTML='<h2>3D graphics are unavailable</h2><p>Please open this game in a browser with WebGPU or WebGL 2 and hardware acceleration enabled.</p>';throw e;}
 const rendererBackend=renderer.backend?.isWebGPUBackend?'webgpu':'webgl2';
-renderer.setPixelRatio(Math.min(devicePixelRatio,mobile?1.5:2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.VSMShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
+renderer.setPixelRatio(Math.min(devicePixelRatio,mobile?1.5:2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
 const artRenderer=new ArtStyleRenderer(renderer);artRenderer.setStyle(settings.art);settings.art=artRenderer.style;
 for(const [id,title]of artStyles){const option=document.createElement('option');option.value=id;option.textContent=title;$('art-style').append(option);}
 const sky=new THREE.Mesh(new THREE.SphereGeometry(650,32,16),new THREE.MeshBasicNodeMaterial({map:createSkyTexture(),side:THREE.BackSide,depthWrite:false,fog:false}));scene.add(sky);
@@ -98,7 +99,7 @@ const sunOffset=new THREE.Vector3(-110,62,48),sunDir=sunOffset.clone().normalize
 const sunGlow=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTexture,color:'#ffcf8a',transparent:true,opacity:.34,depthWrite:false,blending:THREE.AdditiveBlending,fog:false}));sunGlow.scale.set(170,170,1);scene.add(sunGlow);
 const sunCore=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTexture,color:'#fff0c8',transparent:true,opacity:.85,depthWrite:false,blending:THREE.AdditiveBlending,fog:false}));sunCore.scale.set(42,42,1);scene.add(sunCore);
 const camera=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,.1,1000);
-const hemi=new THREE.HemisphereLight('#d7e7f0','#7a5638',1.35);scene.add(hemi);const sun=new THREE.DirectionalLight('#ffd6a3',2.35);sun.position.set(-110,62,48);sun.castShadow=true;sun.shadow.radius=5;sun.shadow.blurSamples=10;sun.shadow.mapSize.set(mobile?1024:2048,mobile?1024:2048);Object.assign(sun.shadow.camera,{left:-24,right:24,top:24,bottom:-24,near:1,far:320});sun.shadow.bias=-.00012;sun.shadow.normalBias=.035;scene.add(sun);scene.add(sun.target);
+const hemi=new THREE.HemisphereLight('#d7e7f0','#7a5638',1.35);scene.add(hemi);const sun=new THREE.DirectionalLight('#ffd6a3',2.35);sun.position.set(-110,62,48);sun.castShadow=true;sun.shadow.radius=2;sun.shadow.mapSize.set(mobile?1024:2048,mobile?1024:2048);Object.assign(sun.shadow.camera,{left:-24,right:24,top:24,bottom:-24,near:1,far:320});sun.shadow.bias=-.00012;sun.shadow.normalBias=.035;scene.add(sun);scene.add(sun.target);
 const timePresets={
  dawn:{sun:'#ffd6a3',sunI:2.35,hemiSky:'#d7e7f0',hemiGround:'#7a5638',hemiI:1.35,fog:'#d8c0a0',exposure:1.08,sky:'#ffffff',glow:'#ffcf8a'},
  day:{sun:'#fff4dc',sunI:2.8,hemiSky:'#e5f1f7',hemiGround:'#8b6946',hemiI:1.5,fog:'#cfd6c3',exposure:1.15,sky:'#ffffff',glow:'#fff3cf'},
@@ -118,12 +119,25 @@ function applyTime(value=settings.time){
  environmentSky.material.color.set(p.sky);const old=environmentTarget;environmentTarget=environmentGenerator.fromScene(environmentScene,.04,.1,1000);scene.environment=environmentTarget.texture;scene.environmentIntensity=light?.env??.45;if(old)old.dispose();
 }
 applyTime();
+// Cascaded sun shadows: three cascades to 720 m on desktop (two to 260 m on
+// mobile/Low). Terrain casts into them, so dunes shadow dunes at shadow-map
+// resolution; the heightfield march only fills in beyond the last cascade.
+let cascades=null;
+function configureCascades(low,mapSize){
+ const count=low||mobile?2:3,maxFar=low||mobile?260:720;
+ if(cascades&&cascades.cascades===count&&cascades.maxFar===maxFar&&sun.shadow.mapSize.x===mapSize)return;
+ cascades?.dispose();
+ sun.shadow.mapSize.set(mapSize,mapSize);sun.shadow.camera.near=1;sun.shadow.camera.far=maxFar*2.6+200;sun.shadow.camera.updateProjectionMatrix();
+ // A grazing sun on smooth sand needs normal bias to avoid acne.
+ sun.shadow.bias=-.0003;sun.shadow.normalBias=.35;
+ cascades=new CSMShadowNode(sun,{cascades:count,maxFar,mode:'practical',lightMargin:200});cascades.fade=true;sun.shadow.shadowNode=cascades;
+ soilUniforms.cascadeFar.value=maxFar;
+}
 function applyQuality(value=settings.quality){
  const low=value==='low',high=value==='high';
  const cap=low?1:high?2:(mobile?1.5:2);
  renderer.setPixelRatio(Math.min(devicePixelRatio,cap));
- const shadow=low?512:(mobile?1024:2048);
- if(sun.shadow.mapSize.x!==shadow){sun.shadow.mapSize.set(shadow,shadow);if(sun.shadow.map){sun.shadow.map.dispose();sun.shadow.map=null;}}
+ const shadow=low?1024:(mobile?1024:2048);configureCascades(low,shadow);
  viewLow=low;syncView();
  if(typeof artRenderer!=='undefined')artRenderer.useCinematic=!low&&!mobile&&debugParams.get('post')!=='0';
  if(typeof boulderMesh!=='undefined')boulderMesh.count=low?220:520;
@@ -177,7 +191,7 @@ materials.green.map=textures.cactus;materials.green.color.set('#ffffff');materia
 materials.dark.map=textures.rubber;materials.dark.color.set('#ffffff');
 // 1.25 m ground grid on desktop so GPU-field dune crests stay sharp (2.5 m on mobile).
 const GROUND_SEGMENTS=+debugParams.get('grid')||(mobile?360:720),GROUND_SPACING=900/GROUND_SEGMENTS;
-const groundGeo=new THREE.PlaneGeometry(900,900,GROUND_SEGMENTS,GROUND_SEGMENTS);groundGeo.rotateX(-Math.PI/2);groundGeo.setIndex(terrainIndices(GROUND_SEGMENTS));const pos=groundGeo.attributes.position,colors=[];const c=new THREE.Color();for(let i=0;i<pos.count;i++){const x=pos.getX(i),z=pos.getZ(i);pos.setY(i,terrain(x,z));const d=trackDistance(x,z);c.set(d<10?'#a66b42':d<12?'#be8a57':'#c49765');c.multiplyScalar(.94+.07*Math.sin(x*3+z*6));colors.push(c.r,c.g,c.b);}groundGeo.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));groundGeo.computeVertexNormals();const ground=new THREE.Mesh(groundGeo,materials.dirt);ground.receiveShadow=true;scene.add(ground);
+const groundGeo=new THREE.PlaneGeometry(900,900,GROUND_SEGMENTS,GROUND_SEGMENTS);groundGeo.rotateX(-Math.PI/2);groundGeo.setIndex(terrainIndices(GROUND_SEGMENTS));const pos=groundGeo.attributes.position,colors=[];const c=new THREE.Color();for(let i=0;i<pos.count;i++){const x=pos.getX(i),z=pos.getZ(i);pos.setY(i,terrain(x,z));const d=trackDistance(x,z);c.set(d<10?'#a66b42':d<12?'#be8a57':'#c49765');c.multiplyScalar(.94+.07*Math.sin(x*3+z*6));colors.push(c.r,c.g,c.b);}groundGeo.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));groundGeo.computeVertexNormals();const ground=new THREE.Mesh(groundGeo,materials.dirt);ground.receiveShadow=true;ground.castShadow=true;scene.add(ground);
 const sandSurface=new SandSurface(scene,textures,materials.dirt,{coarseHeight:(x,z)=>sampleGrid(i=>pos.getY(i),x,z,GROUND_SEGMENTS,GROUND_SPACING)});
 const classicSandMaterial=sandSurface.material;let originalTerrainTextures,originalTerrainMaterials=[];
 function updateOriginalTerrainMaterials(){

@@ -37,7 +37,7 @@ export class SandSurface {
     geo.userData.skirtSources=skirtSources;
     geo.setAttribute('color',new THREE.BufferAttribute(new Float32Array(positions.length).fill(1),3));
     geo.setAttribute('position',new THREE.BufferAttribute(positions,3));geo.setAttribute('uv',new THREE.BufferAttribute(uv,2));geo.setIndex(indices);
-    mesh=new THREE.Mesh(geo,this.material);mesh.receiveShadow=true;mesh.userData.revision=-1;this.scene.add(mesh);this.meshes.set(key,mesh);
+    mesh=new THREE.Mesh(geo,this.material);mesh.receiveShadow=true;mesh.castShadow=true;mesh.userData.revision=-1;this.scene.add(mesh);this.meshes.set(key,mesh);
    }
    if(mesh.userData.revision!==tile.revision||boundsChanged){
     // Match the distant patch boundary to the actual coarse triangles. A

@@ -96,7 +96,7 @@ export function createTextures(renderer,mobile){
 const emptyTrack=new THREE.DataTexture(new Uint8Array(4),1,1);emptyTrack.needsUpdate=true;
 const emptyFlow=new THREE.DataTexture(new Float32Array(4),1,1,THREE.RGBAFormat,THREE.FloatType);emptyFlow.needsUpdate=true;
 // flowField: the GPU sand flow state (R bed, G rolling layer) for the coarse terrain.
-export const soilUniforms={flowField:tslTexture(emptyFlow),flowEnabled:uniform(0),terrainShadow:tslTexture(emptyTrack),shadowEnabled:uniform(0),flowTexel:uniform(1/1024),trackMap:tslTexture(emptyTrack),trackTexel:uniform(1),rippleStrength:uniform(0),windDir:uniform(new THREE.Vector2(1,0)),sparkle:uniform(0),sunDir:uniform(new THREE.Vector3(0,1,0))};
+export const soilUniforms={cascadeFar:uniform(720),flowField:tslTexture(emptyFlow),flowEnabled:uniform(0),terrainShadow:tslTexture(emptyTrack),shadowEnabled:uniform(0),flowTexel:uniform(1/1024),trackMap:tslTexture(emptyTrack),trackTexel:uniform(1),rippleStrength:uniform(0),windDir:uniform(new THREE.Vector2(1,0)),sparkle:uniform(0),sunDir:uniform(new THREE.Vector3(0,1,0))};
 // Asymmetric sand-wave slope: gentle stoss over [0,k), steep lee over [k,1).
 const waveSlope=(f,k)=>select(f.lessThan(k),f.div(k).mul(float(1).sub(f.div(k))).mul(6/k),f.sub(k).div(1-k).mul(float(1).sub(f.sub(k).div(1-k))).mul(-6/(1-k)));
 // Procedural soil as a TSL node material (WebGPU, with WebGL2 fallback).
@@ -128,7 +128,10 @@ export function applyTerrainTexture(material,textures,{trackStrength=0}={}){
   const ripple=rippleBase.mul(float(1).sub(smoothstep(.35,.9,fwidth(ripplePhase))));
   const mega=rippleBase.mul(float(1).sub(smoothstep(.4,1,fwidth(megaPhase))));
   // Dune-on-dune shadows from the GPU field multiply the sun's shadow term.
-  material.receivedShadowNode=Fn(([shadow])=>shadow.mul(mix(float(1),U.terrainShadow.sample(trackUV).r,U.shadowEnabled)));
+  // Cascaded shadow maps cover the near/middle range; the heightfield march
+  // only takes over where the last cascade ends.
+  const beyondCascades=smoothstep(U.cascadeFar.mul(.7),U.cascadeFar.mul(.95),length(cameraPosition.sub(P)));
+  material.receivedShadowNode=Fn(([shadow])=>shadow.mul(mix(float(1),U.terrainShadow.sample(trackUV).r,U.shadowEnabled.mul(beyondCascades))));
   // Discard the coarse terrain under the live sand patch.
   material.maskNode=sb.y.greaterThan(sb.x).and(P.x.greaterThan(sb.x.add(.125))).and(P.x.lessThan(sb.y.sub(.125))).and(P.z.greaterThan(sb.z.add(.125))).and(P.z.lessThan(sb.w.sub(.125))).not();
   material.colorNode=vec4(soilMap.rgb
@@ -162,7 +165,7 @@ export function applyTerrainTexture(material,textures,{trackStrength=0}={}){
   const glint=pow(max(dot(facet,halfVector),0),48).mul(step(.986,grainHash));
   const glintFade=float(1).sub(smoothstep(14,40,length(cameraPosition.sub(P)))).mul(float(1).sub(smoothstep(.6,1.4,fwidth(P.x.mul(24)))));
   // Glints are emissive, so gate them by the dune shadow and sun-facing surfaces.
-  const sunlit=mix(float(1),U.terrainShadow.sample(trackUV).r,U.shadowEnabled).mul(smoothstep(0,.15,dot(normalWorld,U.sunDir)));
+  const sunlit=mix(float(1),U.terrainShadow.sample(trackUV).r,U.shadowEnabled.mul(beyondCascades)).mul(smoothstep(0,.15,dot(normalWorld,U.sunDir)));
   material.emissiveNode=vec3(1,.94,.82).mul(glint).mul(glintFade).mul(sunlit).mul(U.sparkle).mul(select(sandiness.greaterThan(0),1,.25)).mul(2.2);
   material.needsUpdate=true;
 }
