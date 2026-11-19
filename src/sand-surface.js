@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {MeshStandardNodeMaterial} from 'three/webgpu';
 import {applyTerrainTexture} from './textures.js';
 
 // Render CPU collision samples, with a distant edge transition to the coarse mesh.
@@ -6,7 +7,7 @@ export class SandSurface {
  constructor(scene,textures,coarseMaterial,{coarseHeight}={}){
   this.coarseHeight=coarseHeight;
   this.scene=scene;this.meshes=new Map();this.coarseMaterial=coarseMaterial;
-  this.material=new THREE.MeshStandardMaterial({roughness:1,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1});
+  this.material=new MeshStandardNodeMaterial({roughness:1,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1});
   applyTerrainTexture(this.material,textures);this.material.map=textures.freeMacro;this.material.vertexColors=true;
  }
  update(sand){

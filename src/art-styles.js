@@ -1,103 +1,127 @@
-import {createAsciiAtlas,experimentalHelpers,experimentalColor,prepareRetroMaterials,restoreRetroMaterials} from './art-style-experiments.js';
+import {prepareRetroMaterials,restoreRetroMaterials} from './art-style-experiments.js';
 import * as THREE from 'three';
-export const artStyles=[['original','Original','Current terrain, textures and lighting.'],['comic','Desert comic','Bold ink contours, poster colors and printed halftones.'],['woodcut','Ink woodcut','Warm paper, black ink and carved crosshatching.'],['neon','Neon night','Ultraviolet shadows, glowing cyan contours and scanlines.'],['blueprint','Blueprint','Technical cyan linework, contour bands and a drafting grid.'],['handheld','Pocket desert','Chunky pixels, ordered dithering and four green shades.'],['moebius','Hiraeth / Moebius','Pale sand, lavender shade, fine ink and landscape-anchored stipple.'],['voxel','Voxel dunes','Experimental block-built terrain over the existing riding surface.'],['painted','Painted landscape','Directional brushwork, rich pigment and softened detail.'],['watercolor','Watercolor','Pale washes, pooled pigment and delicate paper highlights.'],['ps1','PS1 motocross','Low resolution, dithered color and snapping geometry.'],['pixel','Outlined pixel art','Chunky full-color pixels with crisp silhouette outlines.'],['ascii','ASCII world','The desert drawn in glowing text characters.']];
+import {RenderPipeline} from 'three/webgpu';
+import {Fn,If,abs,clamp,dot,exp,float,floor,fract,fwidth,getViewPosition,length,log,max,min,mix,mod,mrt,normalView,normalize,output,packNormalToRGB,pass,perspectiveDepthToViewZ,pow,screenUV,select,sin,smoothstep,step,texture,uniform,unpackRGBToNormal,vec2,vec3,vec4} from 'three/tsl';
+
+export const artStyles=[['original','Original','Current terrain, textures and lighting.'],['neon','Neon night','Ultraviolet shadows, glowing cyan contours and scanlines.'],['moebius','Hiraeth / Moebius','Pale sand, lavender shade, fine ink and landscape-anchored stipple.'],['voxel','Voxel dunes','Experimental block-built terrain over the existing riding surface.'],['painted','Painted landscape','Directional brushwork, rich pigment and softened detail.'],['ps1','PS1 motocross','Low resolution, dithered color and snapping geometry.'],['pixel','Outlined pixel art','Chunky full-color pixels with crisp silhouette outlines.']];
+
+const lightness=c=>dot(c,vec3(.299,.587,.114));
+const hash=p=>fract(sin(dot(p,vec2(127.1,311.7))).mul(43758.5453));
+const chroma=c=>max(c.r,max(c.g,c.b)).sub(min(c.r,min(c.g,c.b)));
+const bayer=p=>{const a=mod(floor(p),2),b=mod(floor(p.div(2)),2);return mod(a.x.add(a.y.mul(2)),4).mul(4).add(mod(b.x.add(b.y.mul(2)),4)).div(16);};
+// Screen uv with y up, as the GLSL styles were written (sky gradients etc.).
+const upY=uv=>uv.y.oneMinus();
+
+// Post-processing art styles as TSL graphs (WebGPU / WebGL2). Each style is
+// built on first use; the scene renders once into a half-float pass with
+// depth (and view normals for Hiraeth/Moebius).
 export class ArtStyleRenderer{
  constructor(renderer){
-  this.retroMaterials=new Set();this.retroEnabled={value:0};this.retroGrid={value:new THREE.Vector2(160,120)};
   this.renderer=renderer;this.style='original';this.size=new THREE.Vector2();
-  this.target=new THREE.WebGLRenderTarget(1,1,{type:THREE.HalfFloatType,depthTexture:new THREE.DepthTexture(1,1,THREE.UnsignedIntType)});
-  this.normalTarget=new THREE.WebGLRenderTarget(1,1);this.normalMaterial=new THREE.MeshNormalMaterial();
-  this.uniforms={asciiAtlas:{value:createAsciiAtlas()},normals:{value:this.normalTarget.texture},inverseProjection:{value:new THREE.Matrix4()},cameraWorld:{value:new THREE.Matrix4()},sceneColor:{value:this.target.texture},sceneDepth:{value:this.target.depthTexture},resolution:{value:new THREE.Vector2(1,1)},style:{value:1},clip:{value:new THREE.Vector2(.1,1000)}};
-  this.material=new THREE.ShaderMaterial({depthTest:false,depthWrite:false,uniforms:this.uniforms,vertexShader:'varying vec2 screenUV; void main(){screenUV=uv;gl_Position=vec4(position.xy,0.,1.);}',fragmentShader:`
-   varying vec2 screenUV; uniform sampler2D sceneColor,sceneDepth,normals; uniform mat4 inverseProjection,cameraWorld; uniform vec2 resolution,clip; uniform int style;
-   float lightness(vec3 c){return dot(c,vec3(.299,.587,.114));}
-   float noise(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
-   vec3 colorAt(vec2 uv){vec3 c=texture2D(sceneColor,uv).rgb;return pow(max(c/(1.+c),vec3(0.)),vec3(1./2.2));}
-   float distanceAt(vec2 uv){float z=texture2D(sceneDepth,uv).x*2.-1.;return 2.*clip.x*clip.y/(clip.y+clip.x-z*(clip.y-clip.x));}
-   ${experimentalHelpers}
-   void main(){
-    vec2 px=screenUV*resolution,stepUV=1./resolution,uv=screenUV;
-    if(style==10)uv=(floor(px)+.5)/resolution;
-    if(style==5)uv=(floor(px/4.)*4.+2.)/resolution;
-    vec3 c=colorAt(uv);float l=lightness(c),d=distanceAt(uv);
-    float ex=abs(distanceAt(uv+vec2(stepUV.x*1.5,0.))-d),ey=abs(distanceAt(uv+vec2(0.,stepUV.y*1.5))-d);
-    float edge=smoothstep(.008,.045,max(ex,ey)/max(d,.1));
-    float ink=smoothstep(.035,.15,abs(lightness(colorAt(uv+stepUV*2.))-l));edge=max(edge,ink*.65);
-    vec3 outColor=c;
-    if(style==1){
-     float bands=floor(l*5.)/4.;outColor=mix(vec3(.08,.16,.29),vec3(1.,.78,.31),bands);
-     outColor=mix(outColor,c*1.25,.25);float dots=length(fract(px/6.)-.5);
-     outColor*=mix(.45,1.,smoothstep(.14,.24,dots)+step(.58,l));outColor=mix(outColor,vec3(.025,.035,.06),edge);
-    }else if(style==2){
-     float hatch=step(.72,fract((px.x+px.y)*.17)),crossHatch=step(.79,fract((px.x-px.y)*.14));
-     float marks=max(hatch*(1.-smoothstep(.32,.76,l)),crossHatch*(1.-smoothstep(.2,.55,l)));
-     float paper=smoothstep(.24,.7,l)*(1.-marks);paper*=1.-edge;
-     outColor=mix(vec3(.055,.045,.035),vec3(.94,.88,.71),paper)+(noise(px)-.5)*.035;
-    }else if(style==3){
-     vec3 base=mix(vec3(.025,.005,.09),vec3(.43,.025,.51),pow(l,2.));
-     float glow=0.;for(int i=1;i<=3;i++){vec2 offset=stepUV*float(i)*3.;glow+=max(0.,lightness(colorAt(uv+offset))-l)+max(0.,lightness(colorAt(uv-offset))-l);}
-     outColor=base+vec3(.02,.85,1.)*edge+vec3(.85,.03,.55)*glow*.8;
-     outColor*=.9+.1*sin(px.y*3.14159);outColor+=pow(max(l-.73,0.),2.)*vec3(2.,.5,1.);
-    }else if(style==4){
-     float grid=max(1.-step(1.,mod(px.x,32.)),1.-step(1.,mod(px.y,32.)));
-     float contour=(1.-smoothstep(.025,.09,abs(fract(log(1.+d)*8.)-.5)))*step(d,500.);
-     outColor=vec3(.015,.065,.15)+vec3(.055,.2,.29)*grid+vec3(.24,.86,.95)*max(edge,contour*.45);
-     outColor+=vec3(.03,.1,.15)*floor(l*4.)/4.;
-    }else if(style==5){
-     vec2 cell=mod(floor(px/4.),4.);float threshold=mod(cell.x*2.+cell.y*3.,4.)/4.;
-     float level=floor(clamp(l*.92+(threshold-.5)*.2-edge*.25,0.,.999)*4.);
-     outColor=level<1.?vec3(.06,.17,.16):level<2.?vec3(.19,.36,.26):level<3.?vec3(.53,.65,.32):vec3(.84,.9,.56);
-    }
-    if(style==6){
-     // Adapted from Hiraeth's print pipeline: reciprocal-depth Laplacian
-     // rejects false ink on planar ground; world-space marks stay on surfaces.
-     vec2 dx=vec2(stepUV.x,0.),dy=vec2(0.,stepUV.y);
-     float inv=1./d;
-     float lap=abs(1./distanceAt(uv+dx)+1./distanceAt(uv-dx)+1./distanceAt(uv+dy)+1./distanceAt(uv-dy)-4.*inv)/max(inv,.0001);
-     vec3 n=texture2D(normals,uv).xyz*2.-1.;
-     float crease=max(length(n-(texture2D(normals,uv+dx).xyz*2.-1.)),length(n-(texture2D(normals,uv+dy).xyz*2.-1.)));
-     float line=max(smoothstep(.025,.1,lap),smoothstep(.35,.65,crease));
-     vec4 view=inverseProjection*vec4(uv*2.-1.,texture2D(sceneDepth,uv).x*2.-1.,1.);
-     vec3 world=(cameraWorld*vec4(view.xyz/view.w,1.)).xyz;
-     vec3 normal=normalize(mat3(cameraWorld)*n);
-     float sun=dot(normal,normalize(vec3(-.5,.8,.35)));
-     float shade=smoothstep(.2,.5,sun);
-     float saturation=max(c.r,max(c.g,c.b))-min(c.r,min(c.g,c.b));
-     vec3 pigment=mix(vec3(.94,.79,.56),floor(c*5.+.5)/5.,smoothstep(.15,.38,saturation));
-     outColor=mix(pigment*vec3(.65,.65,.87),pigment,shade);
-     float spacing=.28,footprint=length(fwidth(world.xz))/spacing;
-     vec2 cell=world.xz/spacing,center=floor(cell);
-     vec2 jitter=vec2(noise(center),noise(center+31.))*.5+.25;
-     float dotMask=(1.-smoothstep(.025,.075,length(fract(cell)-jitter)))*step(.65,noise(center+75.));
-     float hatch=1.-smoothstep(.04,.1,abs(fract((world.x+world.z)*3.)-.5));
-     float marks=max(dotMask*.28,hatch*(1.-shade)*.25)*(1.-smoothstep(.25,.8,footprint));
-     outColor=mix(outColor,vec3(.23,.23,.32),marks);
-     float haze=1.-exp(-d*.0025);vec3 horizon=vec3(.81,.87,.84);
-     outColor=mix(outColor,horizon,haze*.7);
-     outColor=mix(outColor,vec3(.17,.13,.12),line*(1.-haze)*.8);
-     if(texture2D(sceneDepth,uv).x>.99999)outColor=mix(horizon,vec3(.36,.67,.8),smoothstep(.25,1.,uv.y));
-    }else if(style==7){
-     outColor=floor(c*9.+.5)/9.;
-    }
-    ${experimentalColor}
-    gl_FragColor=vec4(clamp(outColor,0.,1.),1.);
-   }`});
-  this.scene=new THREE.Scene();this.scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),this.material));this.camera=new THREE.Camera();
+  this.retroMaterials=new Map();this.retroGrid=uniform(new THREE.Vector2(160,120));
+  this.resolution=uniform(new THREE.Vector2(1,1));
+  this.pipeline=new RenderPipeline(renderer);this.pipeline.outputColorTransform=false;
+  this.passes=new Map();this.nodes=new Map();this.current=null;
+  // Scene-camera uniforms: inside the post quad, TSL's camera* nodes refer to
+  // the quad's own camera, so depth→distance/world must use these instead.
+  this.view={near:uniform(.1),far:uniform(1000),projectionInverse:uniform(new THREE.Matrix4()),world:uniform(new THREE.Matrix4())};
  }
- setStyle(id){this.style=artStyles.some(s=>s[0]===id)?id:'original';this.uniforms.style.value=artStyles.findIndex(s=>s[0]===this.style);}
+ setStyle(id){this.style=artStyles.some(s=>s[0]===id)?id:'original';}
+ // Moebius gets its own pass with a second (normal) render output. Toggling
+ // MRT on a shared pass leaves stale pipelines with mismatched attachments.
+ scenePass(scene,camera,normals){
+  const key=scene.uuid+camera.uuid+(normals?'|n':'');let p=this.passes.get(key);
+  if(!p){p=pass(scene,camera);if(normals)p.setMRT(mrt({output,normal:packNormalToRGB(normalView)}));this.passes.set(key,p);}
+  return p;
+ }
+ build(style,scenePass){
+  const res=this.resolution,view=this.view,color=scenePass.getTextureNode('output'),depthTex=scenePass.getTextureNode('depth');
+  const normalTex=style==='moebius'?scenePass.getTextureNode('normal'):null;
+  const colorAt=uv=>{const c=color.sample(uv).rgb;return pow(max(c.div(c.add(1)),vec3(0)),vec3(1/2.2));};
+  const depthAt=uv=>depthTex.sample(uv).r;
+  const distanceAt=uv=>perspectiveDepthToViewZ(depthAt(uv),view.near,view.far).negate();
+  const worldAt=uv=>view.world.mul(vec4(getViewPosition(uv,depthAt(uv),view.projectionInverse),1)).xyz;
+  const isSky=uv=>depthAt(uv).greaterThan(.99999);
+  return Fn(()=>{
+   const px=screenUV.mul(res),stepUV=vec2(1).div(res);
+   const uv=style==='ps1'?floor(px).add(.5).div(res):screenUV;
+   const c=colorAt(uv),l=lightness(c),d=distanceAt(uv);
+   const ex=abs(distanceAt(uv.add(vec2(stepUV.x.mul(1.5),0))).sub(d)),ey=abs(distanceAt(uv.add(vec2(0,stepUV.y.mul(1.5)))).sub(d));
+   const ink=smoothstep(.035,.15,abs(lightness(colorAt(uv.add(stepUV.mul(2)))).sub(l)));
+   const edge=max(smoothstep(.008,.045,max(ex,ey).div(max(d,.1))),ink.mul(.65));
+   let out=c;
+   if(style==='neon'){
+    let glow=float(0);
+    for(let i=1;i<=3;i++){const o=stepUV.mul(i*3);glow=glow.add(max(0,lightness(colorAt(uv.add(o))).sub(l))).add(max(0,lightness(colorAt(uv.sub(o))).sub(l)));}
+    out=mix(vec3(.025,.005,.09),vec3(.43,.025,.51),pow(l,2)).add(vec3(.02,.85,1).mul(edge)).add(vec3(.85,.03,.55).mul(glow).mul(.8));
+    out=out.mul(sin(px.y.mul(Math.PI)).mul(.1).add(.9)).add(vec3(2,.5,1).mul(pow(max(l.sub(.73),0),2)));
+   }else if(style==='moebius'){
+    // Adapted from Hiraeth's print pipeline: reciprocal-depth Laplacian
+    // rejects false ink on planar ground; world-space marks stay on surfaces.
+    const dx=vec2(stepUV.x,0),dy=vec2(0,stepUV.y),inv=float(1).div(d);
+    const lap=abs(float(1).div(distanceAt(uv.add(dx))).add(float(1).div(distanceAt(uv.sub(dx)))).add(float(1).div(distanceAt(uv.add(dy)))).add(float(1).div(distanceAt(uv.sub(dy)))).sub(inv.mul(4))).div(max(inv,.0001));
+    const n=unpackRGBToNormal(normalTex.sample(uv).rgb);
+    const crease=max(length(n.sub(unpackRGBToNormal(normalTex.sample(uv.add(dx)).rgb))),length(n.sub(unpackRGBToNormal(normalTex.sample(uv.add(dy)).rgb))));
+    const line=max(smoothstep(.025,.1,lap),smoothstep(.35,.65,crease));
+    const world=worldAt(uv),normal=normalize(view.world.mul(vec4(n,0)).xyz);
+    const shade=smoothstep(.2,.5,dot(normal,normalize(vec3(-.5,.8,.35))));
+    const pigment=mix(vec3(.94,.79,.56),floor(c.mul(5).add(.5)).div(5),smoothstep(.15,.38,chroma(c)));
+    out=mix(pigment.mul(vec3(.65,.65,.87)),pigment,shade);
+    const spacing=.28,footprint=length(fwidth(world.xz)).div(spacing),cellP=world.xz.div(spacing),center=floor(cellP);
+    const jitter=vec2(hash(center),hash(center.add(31))).mul(.5).add(.25);
+    const dotMask=smoothstep(.025,.075,length(fract(cellP).sub(jitter))).oneMinus().mul(step(.65,hash(center.add(75))));
+    const hatch=smoothstep(.04,.1,abs(fract(world.x.add(world.z).mul(3)).sub(.5))).oneMinus();
+    const marks=max(dotMask.mul(.28),hatch.mul(shade.oneMinus()).mul(.25)).mul(smoothstep(.25,.8,footprint).oneMinus());
+    out=mix(out,vec3(.23,.23,.32),marks);
+    const haze=exp(d.mul(-.0025)).oneMinus(),horizon=vec3(.81,.87,.84);
+    out=mix(out,horizon,haze.mul(.7));out=mix(out,vec3(.17,.13,.12),line.mul(haze.oneMinus()).mul(.8));
+    out=select(isSky(uv),mix(horizon,vec3(.36,.67,.8),smoothstep(.25,1,upY(uv))),out);
+   }else if(style==='painted'){
+    // Bounded quadrant Kuwahara along the local luminance gradient.
+    const pixel=stepUV,g=vec2(lightness(colorAt(uv.add(vec2(pixel.x.mul(3),0)))).sub(lightness(colorAt(uv.sub(vec2(pixel.x.mul(3),0))))),lightness(colorAt(uv.add(vec2(0,pixel.y.mul(3))))).sub(lightness(colorAt(uv.sub(vec2(0,pixel.y.mul(3)))))));
+    const tangent=normalize(vec2(g.y.negate(),g.x).add(.0001)),bitangent=vec2(tangent.y.negate(),tangent.x);
+    let best=float(100).toVar(),painted=vec3(0).toVar();
+    for(let q=0;q<4;q++){
+     const sx=q%2<1?-1:1,sy=q<2?-1:1;let sum=vec3(0),square=vec3(0);
+     for(let y=0;y<3;y++)for(let x=0;x<3;x++){const o=tangent.mul(x*2.5*sx).add(bitangent.mul(y*1.4*sy)),s=colorAt(uv.add(o.mul(pixel)));sum=sum.add(s);square=square.add(s.mul(s));}
+     const mean=sum.div(9),variance=dot(abs(square.div(9).sub(mean.mul(mean))),vec3(1));
+     If(variance.lessThan(best),()=>{best.assign(variance);painted.assign(mean);});
+    }
+    const world=worldAt(uv),grainV=hash(floor(world.xz.mul(19))),strokes=sin(world.x.mul(24).add(sin(world.z.mul(5)).mul(2)));
+    const fade=smoothstep(.4,1.3,length(fwidth(world.xz)).mul(24)).oneMinus();
+    out=painted.mul(grainV.mul(.07).mul(fade).add(.96)).add(strokes.mul(.025).mul(fade));
+    out=pow(max(out,vec3(0)),vec3(.78)).mul(vec3(1.12,1.02,.88));out=mix(vec3(lightness(out)),out,1.35);
+    out=mix(out,c,smoothstep(.25,.45,chroma(c)).mul(.5));
+    out=select(isSky(uv),mix(vec3(.83,.86,.7),vec3(.42,.7,.78),smoothstep(.15,1,upY(uv))),out);
+   }else if(style==='ps1'){
+    // 15-bit color and ordered dithering, over a genuinely low-resolution render.
+    out=floor(clamp(c.add(bayer(px).sub(.5).div(31)),0,1).mul(31).add(.5)).div(31);
+    out=mix(out,vec3(.68,.73,.69),smoothstep(65,210,d).mul(.5));
+   }else if(style==='pixel'){
+    const block=vec2(4),center=floor(px.div(block)).add(.5).mul(block).div(res),z=distanceAt(center),sb=block.div(res);
+    const boundary=abs(float(1).div(distanceAt(center.add(vec2(sb.x,0)))).add(float(1).div(distanceAt(center.sub(vec2(sb.x,0))))).add(float(1).div(distanceAt(center.add(vec2(0,sb.y))))).add(float(1).div(distanceAt(center.sub(vec2(0,sb.y))))).sub(float(4).div(z))).mul(z);
+    let base=colorAt(center);base=mix(vec3(lightness(base)),base,1.3);
+    out=mix(floor(base.mul(7).add(.5)).div(7),vec3(.1,.14,.19),smoothstep(.055,.22,boundary).mul(.9));
+   }
+   return vec4(clamp(out,0,1),1);
+  })();
+ }
  render(scene,camera){
-  const r=this.renderer;this.retroEnabled.value=this.style==='ps1'?1:0;if(this.style==='ps1')prepareRetroMaterials(scene,this.retroEnabled,this.retroGrid,this.retroMaterials);else if(this.retroMaterials.size)restoreRetroMaterials(this.retroMaterials);if(this.style==='original'||this.style==='voxel'){r.render(scene,camera);return;}
-  r.getDrawingBufferSize(this.size);if(this.style==='ps1'){const aspect=this.size.x/this.size.y;this.size.set(Math.round(240*aspect),240);this.retroGrid.value.copy(this.size).multiplyScalar(.5);}else if(this.style==='painted'||this.style==='watercolor'){const scale=Math.min(1,960/this.size.x);this.size.multiplyScalar(scale).floor();}if(this.target.width!==this.size.x||this.target.height!==this.size.y){this.target.setSize(this.size.x,this.size.y);this.normalTarget.setSize(this.size.x,this.size.y);}
-  this.uniforms.resolution.value.copy(this.size);this.uniforms.clip.value.set(camera.near,camera.far);
-  camera.updateMatrixWorld();
-  this.uniforms.inverseProjection.value.copy(camera.projectionMatrixInverse);this.uniforms.cameraWorld.value.copy(camera.matrixWorld);
-  const previous=r.getRenderTarget();
-  if(this.style==='moebius'){
-   const hidden=[],override=scene.overrideMaterial;
-   scene.traverse(o=>{if(o.visible&&o.material&&(Array.isArray(o.material)?o.material.some(m=>m.transparent):o.material.transparent)){hidden.push(o);o.visible=false;}});
-   try{scene.overrideMaterial=this.normalMaterial;r.setRenderTarget(this.normalTarget);r.render(scene,camera);}
-   finally{scene.overrideMaterial=override;hidden.forEach(o=>o.visible=true);r.setRenderTarget(previous);}
+  const r=this.renderer,style=this.style;
+  if(style==='ps1')prepareRetroMaterials(scene,r,this.retroGrid,this.retroMaterials);else if(this.retroMaterials.size)restoreRetroMaterials(this.retroMaterials);
+  if(style==='original'||style==='voxel'){r.render(scene,camera);return;}
+  r.getDrawingBufferSize(this.size);
+  camera.updateMatrixWorld();this.view.near.value=camera.near;this.view.far.value=camera.far;this.view.projectionInverse.value.copy(camera.projectionMatrixInverse);this.view.world.value.copy(camera.matrixWorld);
+  const scenePass=this.scenePass(scene,camera,style==='moebius');
+  let scale=1;
+  if(style==='ps1'){scale=240/this.size.y;this.retroGrid.value.set(Math.round(240*this.size.x/this.size.y),240).multiplyScalar(.5);}
+  else if(style==='painted')scale=Math.min(1,960/this.size.x);
+  scenePass.setResolutionScale(scale);this.resolution.value.set(Math.max(1,Math.floor(this.size.x*scale)),Math.max(1,Math.floor(this.size.y*scale)));
+  const key=style+scenePass.id;
+  if(this.current!==key){
+   if(!this.nodes.has(key))this.nodes.set(key,this.build(style,scenePass));
+   this.pipeline.outputNode=this.nodes.get(key);this.pipeline.needsUpdate=true;this.current=key;
   }
- r.setRenderTarget(this.target);r.render(scene,camera);r.setRenderTarget(previous);r.render(this.scene,this.camera);
+  this.pipeline.render();
  }
 }

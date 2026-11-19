@@ -10,7 +10,7 @@ try{
  await page.goto(url);await page.click('#start');await page.waitForFunction(()=>window.__game?.snapshot().phase==='playing');
  await page.keyboard.down('KeyW');await page.waitForFunction(()=>__game.snapshot().frame>=65);await page.keyboard.up('KeyW');await page.keyboard.press('Escape');
  const before=await page.evaluate(()=>({frame:__game.snapshot().frame,presentation:__game.presentation()}));assert.ok(before.presentation.nativeParticles>0);assert.ok(before.presentation.particles>0);
- const selectedStyles=process.env.ART_STYLES?.split(',')??['original','comic','woodcut','neon','blueprint','handheld','moebius','voxel','painted','watercolor','ps1','pixel','ascii'];
+ const selectedStyles=process.env.ART_STYLES?.split(',')??['original','neon','moebius','voxel','painted','ps1','pixel'];
  for(const id of selectedStyles){
   await page.click('#settings-pause');await page.selectOption('#art-style',id);await page.click('#settings-close');await page.click('#photo');
   await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {texture as tslTexture,uniform,positionWorld,positionGeometry,normalView,normalWorld,cameraPosition,cameraViewMatrix,fwidth,fract,floor,smoothstep,mix,step,sin,dot,length,normalize,pow,max,select,vec2,vec3,vec4,float,normalMap} from 'three/tsl';
 import { track, TAU } from './world.js';
 
 // Seeded value noise: all artwork is generated locally; no downloaded assets.
@@ -10,7 +11,7 @@ function texture(c,anisotropy,repeat=1){const t=new THREE.CanvasTexture(c);t.col
 function pixels(size,fn){const c=canvas(size),ctx=c.getContext('2d'),image=ctx.createImageData(size,size);for(let y=0;y<size;y++)for(let x=0;x<size;x++){const color=fn(x,y);const i=(y*size+x)*4;for(let k=0;k<3;k++)image.data[i+k]=color[k];image.data[i+3]=255;}ctx.putImageData(image,0,0);return c;}
 
 export function createTextures(renderer,mobile){
-  const aniso=Math.min(8,renderer.capabilities.getMaxAnisotropy());
+  const aniso=Math.min(8,renderer.getMaxAnisotropy());
   // A world-space color map gives each part of the basin its own soil and scrub.
   const size=mobile?1024:1536;
   const terrainCanvas=pixels(size,(px,py)=>{
@@ -90,25 +91,72 @@ export function createTextures(renderer,mobile){
   return {macro,freeMacro,detail:aiDetail,rock:aiRock,cactus,rubber,soilRelief:relief(),rockRelief:relief(true)};
 }
 
-export function applyTerrainTexture(material,textures){
-  material.normalMap=textures.soilRelief.normal;material.normalScale.set(.6,.6);material.roughnessMap=textures.soilRelief.roughness;
-  material.userData.sandBounds={value:new THREE.Vector4(0,0,0,0)};
-  material.map=textures.macro;material.color.set('#ffffff');material.vertexColors=false;material.flatShading=false;
-  // Fine detail is projected in world space, independently of the large color map.
-  material.onBeforeCompile=shader=>{
-    shader.uniforms.soilDetail={value:textures.detail};shader.uniforms.sandBounds=material.userData.sandBounds;
-    shader.vertexShader='varying vec3 soilPosition;\n'+shader.vertexShader;
-    shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nsoilPosition = (modelMatrix * vec4(position, 1.0)).xyz;');
-    shader.fragmentShader='uniform sampler2D soilDetail;\nuniform vec4 sandBounds;\nvarying vec3 soilPosition;\n'+shader.fragmentShader;
-    shader.fragmentShader=shader.fragmentShader.replace('#include <map_fragment>',`#include <map_fragment>
-      if (sandBounds.y > sandBounds.x && soilPosition.x > sandBounds.x + 0.125 && soilPosition.x < sandBounds.y - 0.125 && soilPosition.z > sandBounds.z + 0.125 && soilPosition.z < sandBounds.w - 0.125) discard;
-      vec3 grain = texture2D(soilDetail, soilPosition.xz * .22).rgb;
-      vec3 broadGrain = texture2D(soilDetail, soilPosition.xz * .043).rgb;
-      diffuseColor.rgb *= mix(vec3(1.0), grain * 1.65, .65) * mix(vec3(1.0), broadGrain * 1.5, .2);`);
-  };
-  material.customProgramCacheKey=()=> 'procedural-soil-v2';
+// Uniforms shared by every soil material: the world rut record, the active
+// map's wind ripples and sun glints. Values change per map, not per material.
+const emptyTrack=new THREE.DataTexture(new Uint8Array(4),1,1);emptyTrack.needsUpdate=true;
+const emptyFlow=new THREE.DataTexture(new Float32Array(4),1,1,THREE.RGBAFormat,THREE.FloatType);emptyFlow.needsUpdate=true;
+// flowField: the GPU sand flow state (R bed, G rolling layer) for the coarse terrain.
+export const soilUniforms={flowField:tslTexture(emptyFlow),flowEnabled:uniform(0),flowTexel:uniform(1/1024),trackMap:tslTexture(emptyTrack),trackTexel:uniform(1),rippleStrength:uniform(0),windDir:uniform(new THREE.Vector2(1,0)),sparkle:uniform(0),sunDir:uniform(new THREE.Vector3(0,1,0))};
+// Asymmetric sand-wave slope: gentle stoss over [0,k), steep lee over [k,1).
+const waveSlope=(f,k)=>select(f.lessThan(k),f.div(k).mul(float(1).sub(f.div(k))).mul(6/k),f.sub(k).div(1-k).mul(float(1).sub(f.sub(k).div(1-k))).mul(-6/(1-k)));
+// Procedural soil as a TSL node material (WebGPU, with WebGL2 fallback).
+// trackStrength 1: shade recorded ruts from the track map (coarse terrain).
+// trackStrength 0: geometry already carries the ruts (live sand patch).
+export function applyTerrainTexture(material,textures,{trackStrength=0}={}){
+  const U=soilUniforms,P=positionWorld,soilMap=tslTexture(textures.macro),detail=textures.detail;
+  material.userData.sandBounds=uniform(new THREE.Vector4(0,0,0,0));
+  material.userData.trackStrength=uniform(trackStrength);
+  material.userData.soilMap=soilMap;
+  // material.map keeps working for callers; it retargets the soil colour map.
+  Object.defineProperty(material,'map',{configurable:true,get:()=>soilMap.value,set:value=>{if(value)soilMap.value=value;}});
+  material.roughnessMap=textures.soilRelief.roughness;material.color.set('#ffffff');material.flatShading=false;
+  const ts=material.userData.trackStrength,sb=material.userData.sandBounds;
+  const trackUV=P.xz.add(450).div(900),record=U.trackMap.sample(trackUV),disturbed=record.b;
+  const grain=tslTexture(detail,P.xz.mul(.22)).rgb,broad=tslTexture(detail,P.xz.mul(.043)).rgb;
+  // Wild maps carry sandiness (where ripples form) in the colour map's alpha.
+  const sandiness=soilMap.a.mul(U.rippleStrength);
+  // Wind ripples: asymmetric sand waves (0.6 m, plus 2.4 m megaripples that
+  // carry the striped look into the distance), warped so crests wander.
+  const warp=tslTexture(detail,P.xz.mul(.011)).r.sub(.5).mul(7).add(tslTexture(detail,P.xz.mul(.041)).g.sub(.5).mul(1.6));
+  const along=dot(P.xz,U.windDir),ripplePhase=along.div(.6).add(warp),megaPhase=along.div(2.4).add(warp.mul(.45));
+  const rippleF=fract(ripplePhase),megaF=fract(megaPhase);
+  const rippleBase=sandiness.mul(smoothstep(.8,.94,normalWorld.y)).mul(float(1).sub(disturbed));
+  const ripple=rippleBase.mul(float(1).sub(smoothstep(.3,.7,fwidth(ripplePhase))));
+  const mega=rippleBase.mul(float(1).sub(smoothstep(.3,.7,fwidth(megaPhase))));
+  // Discard the coarse terrain under the live sand patch.
+  material.maskNode=sb.y.greaterThan(sb.x).and(P.x.greaterThan(sb.x.add(.125))).and(P.x.lessThan(sb.y.sub(.125))).and(P.z.greaterThan(sb.z.add(.125))).and(P.z.lessThan(sb.w.sub(.125))).not();
+  material.colorNode=vec4(soilMap.rgb
+    // Far ruts: darker, damp-looking trench floors and pale berm crests.
+    .mul(float(1).sub(ts.mul(record.r.mul(.5).add(disturbed.mul(.06))))).mul(float(1).add(ts.mul(record.g).mul(.22)))
+    .mul(mix(vec3(1),grain.mul(1.65),.65)).mul(mix(vec3(1),broad.mul(1.5),.2))
+    .mul(float(1).sub(ripple.mul(select(rippleF.greaterThan(.72),.16,-.03))).sub(mega.mul(select(megaF.greaterThan(.7),.1,0)))),1);
+  // Recorded trench walls/berms and the ripple faces tilt the normal.
+  const t=U.trackTexel,height=c=>c.g.mul(.25).sub(c.r.mul(.4));
+  const trackGrad=vec2(height(U.trackMap.sample(trackUV.add(vec2(t,0)))).sub(height(U.trackMap.sample(trackUV.sub(vec2(t,0))))),
+    height(U.trackMap.sample(trackUV.add(vec2(0,t)))).sub(height(U.trackMap.sample(trackUV.sub(vec2(0,t)))))).div(t.mul(1800));
+  const grad=trackGrad.mul(ts).mul(2.5).add(U.windDir.mul(waveSlope(rippleF,.72).mul(.035/.6).mul(ripple).add(waveSlope(megaF,.7).mul(.07/2.4).mul(mega))));
+  let baseNormal=normalMap(tslTexture(textures.soilRelief.normal),vec2(.6,.6));
+  if(trackStrength>0){
+   // Coarse terrain follows the GPU sand flow: vertices take the field height
+   // and the normal comes from the field gradient (plus the relief detail).
+   const flowOn=U.flowEnabled.greaterThan(.5),field=U.flowField,ft=U.flowTexel,fieldUV=positionGeometry.xz.add(450).div(900);
+   const cellHeight=c=>c.x.add(c.y),sampleField=o=>cellHeight(field.sample(trackUV.add(o)));
+   material.positionNode=select(flowOn,vec3(positionGeometry.x,cellHeight(field.sample(fieldUV).level(0)),positionGeometry.z),positionGeometry);
+   const span=ft.mul(1800),fieldNormal=normalize(vec3(sampleField(vec2(ft.negate(),0)).sub(sampleField(vec2(ft,0))).div(span),1,sampleField(vec2(0,ft.negate())).sub(sampleField(vec2(0,ft))).div(span)));
+   baseNormal=select(flowOn,normalize(cameraViewMatrix.mul(vec4(fieldNormal,0)).xyz.add(baseNormal.sub(normalView))),baseNormal);
+   // Freshly flowing sand (grainflow tongues) reads a little paler.
+   material.colorNode=material.colorNode.mul(vec4(vec3(float(1).add(select(flowOn,smoothstep(0,.02,field.sample(trackUV).y).mul(.12),0))),1));
+  }
+  material.normalNode=normalize(baseNormal.add(cameraViewMatrix.mul(vec4(grad.x.negate(),0,grad.y.negate(),0)).xyz));
+  // Sun glints: a sparse set of grains with random facets catch the light.
+  const cell=floor(P.xz.mul(24)),grainHash=fract(sin(dot(cell,vec2(12.9898,78.233))).mul(43758.5453));
+  const facet=normalize(normalWorld.add(vec3(fract(grainHash.mul(37)),fract(grainHash.mul(91)),fract(grainHash.mul(53))).sub(.5).mul(1.1)));
+  const halfVector=normalize(U.sunDir.add(normalize(cameraPosition.sub(P))));
+  const glint=pow(max(dot(facet,halfVector),0),48).mul(step(.986,grainHash));
+  const glintFade=float(1).sub(smoothstep(14,40,length(cameraPosition.sub(P)))).mul(float(1).sub(smoothstep(.6,1.4,fwidth(P.x.mul(24)))));
+  material.emissiveNode=vec3(1,.94,.82).mul(glint).mul(glintFade).mul(U.sparkle).mul(select(sandiness.greaterThan(0),1,.25)).mul(2.2);
+  material.needsUpdate=true;
 }
-
 export function createSkyTexture(){
   const c=document.createElement('canvas');c.width=1024;c.height=512;
   const ctx=c.getContext('2d'),image=ctx.createImageData(c.width,c.height);

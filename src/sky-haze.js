@@ -1,13 +1,9 @@
-// Blend the visible sky into the same output color used by Three's fog chunk.
-// Fog is blended after output encoding; encode our linear Color uniform too.
-// The local sphere direction stays stable as the sky follows the camera.
+import {mix,normalize,positionLocal,smoothstep,texture,uniform,vec4} from 'three/tsl';
+// Blend the visible sky into the fog colour at the horizon. Node fog is mixed
+// in linear space before tone mapping, so the horizon blend is linear too and
+// both pass through the same output transform. fogColor is the live fog Color.
 export function matchSkyHorizon(material,fogColor){
- material.onBeforeCompile=shader=>{
-  shader.uniforms.horizonFog={value:fogColor};
-  shader.vertexShader='varying float skyElevation;\n'+shader.vertexShader;
-  shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nskyElevation=normalize(position).y;');
-  shader.fragmentShader='varying float skyElevation;\nuniform vec3 horizonFog;\n'+shader.fragmentShader;
-  shader.fragmentShader=shader.fragmentShader.replace('#include <fog_fragment>','#include <fog_fragment>\ngl_FragColor.rgb=mix(linearToOutputTexel(vec4(horizonFog,1.0)).rgb,gl_FragColor.rgb,smoothstep(0.0,0.18,skyElevation));');
- };
- material.customProgramCacheKey=()=> 'sky-horizon-fog-v2';
+ const sky=texture(material.map),horizon=uniform(fogColor);
+ material.colorNode=vec4(mix(horizon,sky.rgb,smoothstep(0,.18,normalize(positionLocal).y)),1);
+ material.needsUpdate=true;
 }

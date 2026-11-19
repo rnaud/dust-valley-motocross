@@ -7,7 +7,7 @@ try{
  await page.addInitScript(()=>{localStorage.setItem('dust-valley-tutorial','1');localStorage.setItem('dust-valley-quality','low');});
  await page.goto(process.env.GAME_URL||'http://127.0.0.1:5197');await page.click('#start');await page.waitForFunction(()=>window.__game?.snapshot().frame>=10);
  const reports=[];
- for(const style of ['painted','watercolor','ps1','pixel','ascii','original']){
+ for(const style of ['painted','ps1','pixel','original']){
   await page.click('#pause');await page.click('#settings-pause');await page.selectOption('#art-style',style);await page.click('#settings-close');await page.click('#resume');
   const start=await page.evaluate(()=>__game.snapshot().frame);await page.waitForFunction(start=>__game.snapshot().frame>=start+3,start);
   assert.equal(await page.evaluate(()=>__game.presentation().style),style);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);

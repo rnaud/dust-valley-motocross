@@ -1,7 +1,7 @@
 import {chromium} from '@playwright/test';
 import fs from 'node:fs';
 const directory=process.env.SCREENSHOT_DIR||'/tmp/mcm-art-styles';
-const styles=[['original','Original'],['painted','Painted landscape'],['watercolor','Watercolor'],['ps1','PS1 motocross'],['pixel','Outlined pixel art'],['ascii','ASCII world']];
+const styles=[['original','Original'],['painted','Painted landscape'],['ps1','PS1 motocross'],['pixel','Outlined pixel art'],];
 const browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});
 try{
  const page=await browser.newPage({viewport:{width:1440,height:800},deviceScaleFactor:1});

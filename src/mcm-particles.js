@@ -10,7 +10,7 @@ export class McmParticles{
   this.centers=new Float32Array(3000);this.colors=new Float32Array(4000);this.sizes=new Float32Array(1000);this.sprites=new Float32Array(1000);this.uvRects=new Float32Array(4000);this.assets=null;this.textureName=null;
   for(const [name,array,size]of [['center',this.centers,3],['tint',this.colors,4],['radius',this.sizes,1],['sprite',this.sprites,1],['uvRect',this.uvRects,4]])g.setAttribute(name,new THREE.InstancedBufferAttribute(array,size).setUsage(THREE.DynamicDrawUsage));
   g.instanceCount=0;
-  const m=new THREE.ShaderMaterial({transparent:true,depthWrite:false,fog:true,uniforms:{...THREE.UniformsLib.fog,atlas:{value:null}},vertexShader:`
+  const m=new THREE.ShaderMaterial({transparent:true,depthWrite:false,fog:true,uniforms:{...(THREE.UniformsLib?.fog),atlas:{value:null}},vertexShader:`
    attribute vec3 center;attribute vec4 tint,uvRect;attribute float radius;
    varying vec2 spriteUV;varying vec4 rgba;
    #include <fog_pars_vertex>

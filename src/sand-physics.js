@@ -1,20 +1,30 @@
 import {Body,Heightfield} from 'cannon-es';
 
 // Bounded deterministic soil approximation, separate from MCM parity. Wheel load
-// settles the bed; drive demand deepens ruts. Not a granular or wheel-slip solver.
+// settles the bed; drive demand deepens ruts. Optional per-map soil profiles add
+// angle-of-repose slumping of rut walls and roost thrown behind the driven wheel.
+// Not a granular or wheel-slip solver.
 export const SAND_SPACING=.25,SAND_SEGMENTS=64,SAND_TILE_SIZE=16;
+// Defaults reproduce the original soil exactly. repose (degrees) and roost are
+// off unless a map asks for them.
+export const DEFAULT_SOIL=Object.freeze({maxDepth:.14,maxLift:.045,settle:.045,dig:.075,lip:.012,plough:.06,packRelief:.025,repose:0,roost:0,gouge:0,sideLip:false,conserve:false,terra:null});
 const key=(x,z)=>`${x},${z}`;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 export class SandSurface {
- constructor(baseHeight,{maxStoredTiles=128}={}){
+ constructor(baseHeight,{maxStoredTiles=128,soil={}}={}){
   this.baseHeight=baseHeight;this.maxStoredTiles=Math.max(16,maxStoredTiles);
+  this.profile={...DEFAULT_SOIL,...soil};
   this.soil=new Map();this.tiles=new Map();this.version=0;this.bounds=null;
   this.previous=[null,null];this.dirty=new Set();this.changed=new Map();this.center='';
+  // Optional observers: onCells(cells) sees every changed soil node before collision refresh;
+  // events collects body impacts (x,z,vx,vz,amount) for spray effects.
+  this.onCells=null;this.events=[];
  }
  node(ix,iz){
   const tx=Math.floor(ix/64),tz=Math.floor(iz/64),tile=this.soil.get(key(tx,tz));
   return this.baseHeight(ix*.25,iz*.25)+(tile?.delta[(iz-tz*64)*64+ix-tx*64]??0);
  }
+ deltaAt(ix,iz){const tx=Math.floor(ix/64),tz=Math.floor(iz/64);return this.soil.get(key(tx,tz))?.delta[(iz-tz*64)*64+ix-tx*64]??0;}
  displacementAt(x,z){return this.sample(x,z,(ix,iz)=>this.node(ix,iz)-this.baseHeight(ix*.25,iz*.25));}
  height(x,z){return this.sample(x,z,(ix,iz)=>this.node(ix,iz));}
  sample(x,z,node){
@@ -35,9 +45,11 @@ export class SandSurface {
   return {tile,index:(iz-tz*64)*64+ix-tx*64};
  }
  mark(ix,iz){this.changed.set(key(ix,iz),[ix,iz]);}
- stamp(x,z,load,demand,dt){
-  const pressure=clamp(load/1000,0,2),target=.045+.075*clamp(demand,0,1);
-  if(pressure<=0)return;
+ stamp(x,z,load,demand,dt,dir=null,sinkage){
+  const soil=this.profile,low=-soil.maxDepth,high=soil.maxLift;
+  // Terramechanics soils sink to the Bekker depth; others use tuned settle/dig.
+  const pressure=clamp(load/1000,0,2),target=sinkage>0?Math.min(sinkage,soil.maxDepth):soil.settle+soil.dig*clamp(demand,0,1);
+  if(pressure<=0)return 0;
   let removed=0;
   for(let ix=Math.floor((x-.4)/.25);ix<=Math.ceil((x+.4)/.25);ix++)for(let iz=Math.floor((z-.4)/.25);iz<=Math.ceil((z+.4)/.25);iz++){
    const r=Math.hypot(ix*.25-x,iz*.25-z)/.4;if(r>=1)continue;
@@ -45,14 +57,72 @@ export class SandSurface {
    // Settle within a rolling tire's short contact time; slow settling hid ruts at riding speed.
    const amount=Math.max(0,target*weight-depth)*(1-Math.exp(-dt*pressure*35));
    if(amount<1e-8)continue;
-   tile.delta[index]=clamp(old-amount,-.14,.045);tile.compaction[index]=clamp(tile.compaction[index]+amount*5,0,1);
+   tile.delta[index]=clamp(old-amount,low,high);tile.compaction[index]=clamp(tile.compaction[index]+amount*5,0,1);
    removed+=amount;this.mark(ix,iz);
   }
   // A broad lip makes displacement readable; settling accounts for the remainder.
   // This bounded approximation does not claim volume conservation.
-  if(removed>0)for(let ix=Math.floor((x-.7)/.25);ix<=Math.ceil((x+.7)/.25);ix++)for(let iz=Math.floor((z-.7)/.25);iz<=Math.ceil((z+.7)/.25);iz++){
-   const r=Math.hypot(ix*.25-x,iz*.25-z);if(r<.42||r>.7)continue;
-   const {tile,index}=this.cell(ix,iz);tile.delta[index]=clamp(tile.delta[index]+removed*.012,-.14,.045);this.mark(ix,iz);
+  // sideLip soils push the berm out to both sides of the direction of travel
+  // instead of a ring, so the trench ahead is not refilled.
+  const side=soil.sideLip&&dir;
+  if(removed>0){
+   const ring=[];let weights=0;
+   for(let ix=Math.floor((x-.7)/.25);ix<=Math.ceil((x+.7)/.25);ix++)for(let iz=Math.floor((z-.7)/.25);iz<=Math.ceil((z+.7)/.25);iz++){
+    const ox=ix*.25-x,oz=iz*.25-z,r=Math.hypot(ox,oz);if(r<.42||r>.7)continue;
+    const w=side?2.4*((ox*dir.z-oz*dir.x)/r)**2:1;if(w<.05)continue;ring.push([ix,iz,w]);weights+=w;
+   }
+   // conserve: every bit dug lands in the berms, less the share thrown as roost.
+   const share=soil.conserve?removed*(1-clamp(demand,0,1)*soil.roost)/weights:null;
+   for(const [ix,iz,w] of ring){const {tile,index}=this.cell(ix,iz);tile.delta[index]=clamp(tile.delta[index]+(share!==null?share*w:removed*soil.lip*w),low,high);this.mark(ix,iz);}
+  }
+  return removed;
+ }
+ // Roost: a share of the sand dug by the driven tire lands in a soft mound
+ // behind it, along the direction of travel.
+ throwRoost(x,z,dx,dz,amount){
+  const soil=this.profile,length=Math.hypot(dx,dz);if(!(amount>0)||length<1e-6)return;
+  const cx=x-dx/length*1.15,cz=z-dz/length*1.15,mass=amount*soil.roost;let weightSum=0;const cells=[];
+  for(let ix=Math.floor((cx-.5)/.25);ix<=Math.ceil((cx+.5)/.25);ix++)for(let iz=Math.floor((cz-.5)/.25);iz<=Math.ceil((cz+.5)/.25);iz++){
+   const r=Math.hypot(ix*.25-cx,iz*.25-cz)/.5;if(r>=1)continue;const w=(1-r*r)**2;weightSum+=w;cells.push([ix,iz,w]);
+  }
+  for(const [ix,iz,w] of cells){const {tile,index}=this.cell(ix,iz);tile.delta[index]=clamp(tile.delta[index]+mass*w/weightSum,-soil.maxDepth,soil.maxLift);this.mark(ix,iz);}
+ }
+ // Sand landing from the air (clods, spray) rebuilds a soft mound.
+ deposit(x,z,volume,radius=.35){
+  const soil=this.profile;if(!(volume>0))return;let sum=0;const cells=[];
+  for(let ix=Math.floor((x-radius)/.25);ix<=Math.ceil((x+radius)/.25);ix++)for(let iz=Math.floor((z-radius)/.25);iz<=Math.ceil((z+radius)/.25);iz++){const r=Math.hypot(ix*.25-x,iz*.25-z)/radius;if(r>=1)continue;const w=(1-r*r)**2;sum+=w;cells.push([ix,iz,w]);}
+  for(const [ix,iz,w] of cells){const {tile,index}=this.cell(ix,iz);tile.delta[index]=clamp(tile.delta[index]+volume/.0625*w/sum,-soil.maxDepth,soil.maxLift);tile.compaction[index]*=.5;this.mark(ix,iz);}
+ }
+ // A sliding chassis or tumbling rider ploughs a crater and bulldozes the
+ // sand ahead of it. Returns the volume dug (m³) and records a spray event.
+ gouge(x,z,vx,vz,dt){
+  const soil=this.profile,speed=Math.hypot(vx,vz);if(!(soil.gouge>0)||speed<.8)return 0;
+  const low=-soil.maxDepth,target=Math.min(soil.maxDepth,soil.gouge*(.05+.025*Math.min(speed,8)));let removed=0;
+  for(let ix=Math.floor((x-.45)/.25);ix<=Math.ceil((x+.45)/.25);ix++)for(let iz=Math.floor((z-.45)/.25);iz<=Math.ceil((z+.45)/.25);iz++){
+   const r=Math.hypot(ix*.25-x,iz*.25-z)/.45;if(r>=1)continue;
+   const {tile,index}=this.cell(ix,iz),old=tile.delta[index],goal=-target*(1-r*r);if(old<=goal)continue;
+   const amount=(old-goal)*(1-Math.exp(-dt*speed*6));tile.delta[index]=clamp(old-amount,low,soil.maxLift);tile.compaction[index]*=.3;removed+=amount*.0625;this.mark(ix,iz);
+  }
+  if(removed>0){this.deposit(x+vx/speed*.75,z+vz/speed*.75,removed*.55,.55);this.events.push({x,z,vx,vz,amount:removed*.45});if(this.events.length>64)this.events.shift();}
+  return removed;
+ }
+ // Angle-of-repose slumping. Only the rider-made displacement is relaxed, so
+ // steep authored terrain (slip faces, canyon walls) never starts flowing.
+ // Transfers are pairwise and volume conserving within the soil bounds.
+ slump(passes=2){
+  const soil=this.profile;if(!(soil.repose>0)||!this.changed.size)return;
+  const limit=Math.tan(soil.repose*Math.PI/180)*.25,low=-soil.maxDepth,high=soil.maxLift;
+  const get=(ix,iz)=>{const tile=this.soil.get(key(Math.floor(ix/64),Math.floor(iz/64)));return tile?.delta[(iz-Math.floor(iz/64)*64)*64+ix-Math.floor(ix/64)*64]??0;};
+  for(let pass=0;pass<passes;pass++){
+   const cells=[...this.changed.values()];
+   for(const [ix,iz] of cells)for(const [nx,nz] of [[ix+1,iz],[ix-1,iz],[ix,iz+1],[ix,iz-1]]){
+    const a=get(ix,iz),b=get(nx,nz),diff=a-b;if(Math.abs(diff)<=limit)continue;
+    const [hx,hz,lx,lz]=diff>0?[ix,iz,nx,nz]:[nx,nz,ix,iz],hi=Math.max(a,b),lo=Math.min(a,b);
+    const move=Math.min((Math.abs(diff)-limit)*.5,hi-low,high-lo);if(move<1e-7)continue;
+    const h=this.cell(hx,hz),l=this.cell(lx,lz);h.tile.delta[h.index]-=move;l.tile.delta[l.index]+=move;
+    // Fresh slumped sand is loose again.
+    l.tile.compaction[l.index]*=.85;this.mark(hx,hz);this.mark(lx,lz);
+   }
   }
  }
  deform(contacts,dt){
@@ -62,12 +132,15 @@ export class SandSurface {
    const distance=prev?Math.hypot(hit.x-prev.x,hit.z-prev.z):0;
    // Bridge fast travel, but never draw across recovery teleports.
    const steps=distance<=4?Math.max(1,Math.ceil(distance/.125)):1;
+   let removed=0;const dir=prev&&distance>1e-3&&distance<=4?{x:(hit.x-prev.x)/distance,z:(hit.z-prev.z)/distance}:null;
    for(let n=1;n<=steps;n++){
     const t=n/steps,x=steps>1?prev.x+(hit.x-prev.x)*t:hit.x,z=steps>1?prev.z+(hit.z-prev.z)*t:hit.z;
-    this.stamp(x,z,hit.load,hit.demand??0,dt/steps);
+    removed+=this.stamp(x,z,hit.load,hit.demand??0,dt/steps,dir,hit.sinkage);
    }
+   if(this.profile.roost>0&&prev&&distance>1e-3&&distance<=4&&(hit.demand??0)>0)this.throwRoost(hit.x,hit.z,hit.x-prev.x,hit.z-prev.z,removed*(hit.demand??0));
    this.previous[i]={x:hit.x,z:hit.z};
   }
+  this.slump();
   while(this.soil.size>this.maxStoredTiles){
    const oldest=this.soil.keys().next().value;this.soil.delete(oldest);
    const [tx,tz]=oldest.split(',').map(Number);
@@ -90,6 +163,7 @@ export class SandSurface {
  }
  refresh(){
   const touched=new Set();
+  if(this.onCells&&this.changed.size)this.onCells([...this.changed.values()],this);
   for(const [ix,iz] of this.changed.values()){
    const tx=Math.floor(ix/64),tz=Math.floor(iz/64),height=this.node(ix,iz);
    const xs=ix%64===0?[tx-1,tx]:[tx],zs=iz%64===0?[tz-1,tz]:[tz];

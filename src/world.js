@@ -10,6 +10,9 @@ import {BikeVehicle} from './bike-vehicle.js';
 import {MCM_HANDLING,advanceLean} from './mcm-handling.js';
 import {createDrivetrain,stepDrivetrain} from './drivetrain.js';
 import {tireForces} from './tires.js';
+import {tireOnSand} from './terramechanics.js';
+// Tire section width b and diameter D used for sand contact (physics radius .61 m).
+const SAND_TIRES=[{b:.14,D:1.22},{b:.09,D:1.22}];
 import {getBalanceSteer,getSafeBrakeFactor} from './controller.js';
 import {TAU,trackAt,track,trackLength,trackGrade,trackCurvature,raceFeatures,nearestTrack} from './track.js';
 import {heroRocks} from './props.js';
@@ -63,7 +66,7 @@ export function trackDistance(x,z) { return nearestTrack(x,z).distance; }
 // to the terrain and airborne steering cannot change the flight trajectory.
 export function createState(options={}) {
   const baseHeight=options.height || terrain;
-  const sand=options.sand!==false?new SandSurface(baseHeight):null;
+  const sand=options.sand!==false?new SandSurface(baseHeight,{soil:options.soil,maxStoredTiles:options.sandTiles}):null;
   const height=sand?(x,z)=>sand.height(x,z):baseHeight;
   const world=new C.World({gravity:new C.Vec3(0,-9.81,0)});
   world.solver.iterations=12;
@@ -85,7 +88,7 @@ export function createState(options={}) {
   chassis.inertia.set(110*inertiaScale,100*inertiaScale,75*inertiaScale);chassis.invInertia.set(1/(110*inertiaScale),1/(100*inertiaScale),1/(75*inertiaScale));chassis.updateInertiaWorld(true);
   chassis.position.set(p.x,height(p.x,p.z)+1.15,p.z);chassis.quaternion.setFromEuler(0,yaw,0);
   // A handful of large boulders are real colliders; the rest of the scatter is scenery.
-  for(const rock of options.flat||options.customWorld?[]:heroRocks){
+  for(const rock of options.flat||options.customWorld||options.heroRocks===false?[]:heroRocks){
    const q=trackAt(rock.s),x=q.x+q.tz*rock.side,z=q.z-q.tx*rock.side,b=new C.Body({mass:0});
    b.addShape(new C.Sphere(rock.r*.78));b.position.set(x,height(x,z)+rock.r*.55,z);world.addBody(b);
   }
@@ -94,6 +97,7 @@ export function createState(options={}) {
   vehicle.recoveredPreview=options.physicsMode==='mcm-preview';
   vehicle.addToWorld(world);
   const s={x:p.x,z:p.z,y:chassis.position.y-.5,yaw:0,speed:0,vy:0,pitch:0,roll:0,air:false,airtime:0,boost:100,steer:0,throttle:0,contacts:0,crashed:false,crashTime:0,slip:0,compression:[0,0],gear:1,rpm:1200,quaternion:{x:0,y:0,z:0,w:1},wheelTransforms:[],landingRecovery:0,wheelContacts:[],balanceRoll:0,tireLoads:[0,0],wheelOmega:[0,0],slipRatio:[0,0],engine:options.physicsMode==='mcm-preview'?createMcmPreviewEngine():createDrivetrain(),physicsMode:options.physicsMode==='mcm-preview'?'mcm-preview':'classic',requestedLean:0};
+  s.sandContact=[null,null];
   if(s.physicsMode==='mcm-preview')installMcmPreviewLinear(chassis,()=>!s.crashed);
   s.recoveredAir=s.physicsMode==='mcm-preview'?createMcmPreviewAir():null;
   s.recoveredAcceleration=[0,0,0];
@@ -112,6 +116,19 @@ export function createState(options={}) {
   sync(s);return s;
 }
 function sync(s){const {chassis:b,vehicle:v}=s.physics;const f=b.quaternion.vmult(new C.Vec3(0,0,1)),up=b.quaternion.vmult(new C.Vec3(0,1,0));s.x=b.position.x;s.y=b.position.y-.5;s.z=b.position.z;s.yaw=Math.atan2(f.x,f.z);s.pitch=Math.asin(Math.max(-1,Math.min(1,f.y)));s.roll=Math.atan2(-up.x*Math.cos(s.yaw)+up.z*Math.sin(s.yaw),up.y);s.speed=Math.hypot(b.velocity.x,b.velocity.z);s.vy=b.velocity.y;s.yawRate=b.angularVelocity.y+(s.recoveredTurnRate||0);s.gear=s.engine.gear;s.rpm=Math.round(s.engine.rpm);s.quaternion={...b.quaternion};s.wheelTransforms=v.wheelInfos.map((w,i)=>{v.updateWheelTransform(i);return {position:{...w.worldTransform.position},quaternion:{...w.worldTransform.quaternion},direction:{...w.directionWorld}};});s.compression=v.wheelInfos.map(w=>Math.max(0,1-w.suspensionLength/.55));}
+// Points on the chassis box, bars and rider that can plough soft sand when
+// the bike slides on its side or tumbles. Local to the chassis body.
+const GOUGE_POINTS=[[-.28,-.32,-.72],[.28,-.32,-.72],[-.28,-.32,.72],[.28,-.32,.72],[-.28,.32,-.72],[.28,.32,-.72],[-.28,.32,.72],[.28,.32,.72],[-.5,.8,.7],[.5,.8,.7],[-.32,1.15,-.15],[.32,1.15,-.15],[0,1.45,-.1]].map(p=>new C.Vec3(...p));
+const gougeWorld=new C.Vec3(),gougeArm=new C.Vec3(),gougeVel=new C.Vec3();
+function gougeSand(s,dt){
+  const {chassis:b,sand}=s.physics;
+  for(const local of GOUGE_POINTS){
+    b.quaternion.vmult(local,gougeArm);b.position.vadd(gougeArm,gougeWorld);
+    const gap=gougeWorld.y-sand.height(gougeWorld.x,gougeWorld.z);if(gap>.12)continue;
+    b.angularVelocity.cross(gougeArm,gougeVel);gougeVel.vadd(b.velocity,gougeVel);
+    sand.gouge(gougeWorld.x,gougeWorld.z,gougeVel.x,gougeVel.z,dt);
+  }
+}
 export function resetBike(s,x,z,yaw){const {chassis:b,height}=s.physics;s.physics.sand?.resetContacts();s.physics.sand?.follow(x,z,s.physics.world);b.position.set(x,height(x,z)+1.2,z);b.quaternion.setFromEuler(0,yaw,0);b.velocity.setZero();b.angularVelocity.setZero();b.force.setZero();b.torque.setZero();s.crashed=false;s.crashTime=0;s.previewHeadingTarget=null;s.recoveredContact=null;s.recoveredTurnRate=0;s.recoveredAcceleration=[0,0,0];s.recoveredAir=s.physicsMode==='mcm-preview'?createMcmPreviewAir():null;s.recoveredBalance=s.physicsMode==='mcm-preview'?createMcmPreviewBalance():null;s.physics.vehicle.recoveredMassShares=[.5,.5];s.airtime=0;s.landingRecovery=0;s.wheelContacts=[];s.throttle=0;s.steer=0;s.balanceRoll=0;s.tireLoads=[0,0];s.engine=s.physicsMode==='mcm-preview'?createMcmPreviewEngine():createDrivetrain();s.requestedLean=0;s.wheelOmega=[0,0];s.slipRatio=[0,0];s.contacts=0;s.air=false;for(const w of s.physics.vehicle.wheelInfos){w.isInContact=false;w.raycastResult.reset();w.suspensionForce=0;}b.wakeUp();sync(s);}
 export function stepBike(s,input,dt) {
   const {world,chassis:b,vehicle:v}=s.physics;
@@ -226,10 +243,20 @@ export function stepBike(s,input,dt) {
           recoveredContacts[i]={velocity:tangentVelocity.toArray(),axis:wheelForward.toArray(),arm:lever.toArray(),load};
         }
         const groundSpeed=velocity.dot(wheelForward),rolling=groundSpeed/.61;
+        s.sandContact[i]=null;
         if(s.physics.sand&&wheel.raycastResult.body?.sandSurface===s.physics.sand){
-          const hit=wheel.raycastResult.hitPointWorld,packed=s.physics.sand.compaction(hit.x,hit.z);
-          // Tuned ploughing resistance diminishes as repeated passes pack the bed.
-          forces.longitudinal-=Math.tanh(groundSpeed)*load*(.06-.025*packed);
+          const hit=wheel.raycastResult.hitPointWorld,packed=s.physics.sand.compaction(hit.x,hit.z),soil=s.physics.sand.profile;
+          if(soil.terra){
+            // Terramechanics: Bekker sinkage/compaction resistance and a cone-index
+            // traction limit. Packed ruts have already sunk, so they resist less.
+            const sand=tireOnSand(load,Math.max(0,s.slipRatio[i]),SAND_TIRES[i],soil.terra);s.sandContact[i]=sand;
+            forces.longitudinal-=Math.tanh(groundSpeed)*sand.resistance*(1-.75*packed);
+            const used=Math.hypot(forces.longitudinal,forces.lateral/.9);
+            if(used>sand.tractionLimit){const k=sand.tractionLimit/used;forces.longitudinal*=k;forces.lateral*=k;}
+          }else{
+            // Tuned ploughing resistance diminishes as repeated passes pack the bed.
+            forces.longitudinal-=Math.tanh(groundSpeed)*load*(soil.plough-soil.packRelief*packed);
+          }
         }
         const driven=i===0?s.throttle*(1-Math.min(1,Math.abs(groundSpeed)/18))*16:0;
         s.wheelOmega[i]=rolling+driven;
@@ -333,10 +360,11 @@ export function stepBike(s,input,dt) {
       }
     }
   }
+  if(s.physics.sand?.profile.gouge>0)gougeSand(s,dt);
   if(s.physics.sand){
     s.physics.sand.deform(v.wheelInfos.map((wheel,i)=>wheel.isInContact&&wheel.raycastResult.body?.sandSurface===s.physics.sand?{
       x:wheel.raycastResult.hitPointWorld.x,z:wheel.raycastResult.hitPointWorld.z,
-      load:wheel.suspensionForce,demand:i===0?s.throttle:0,
+      load:wheel.suspensionForce,demand:i===0?s.throttle:0,sinkage:s.sandContact?.[i]?.sinkage,
     }:null),dt);
   }
   s.wheelContacts=v.wheelInfos.map(w=>w.isInContact?{x:w.raycastResult.hitPointWorld.x,y:w.raycastResult.hitPointWorld.y,z:w.raycastResult.hitPointWorld.z,normal:{...w.raycastResult.hitNormalWorld}}:null);
