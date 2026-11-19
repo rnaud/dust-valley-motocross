@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {FloatType,NearestFilter,NodeMaterial,QuadMesh,RGBAFormat,RenderTarget,RepeatWrapping} from 'three/webgpu';
+import {rippleHeight} from './ripple-seed.js';
 import {Fn,Loop,If,abs,dot,float,floor,fract,int,length,max,min,mix,mod,mx_noise_float,select,smoothstep,texture,uniform,uniformArray,uv,vec2,vec3,vec4} from 'three/tsl';
 
 // Fine sand field on the GPU: 25 cm nodes in a window that scrolls with the
@@ -38,6 +39,7 @@ export class FineSandGPU{
   this.trackNode=texture(new THREE.DataTexture(new Uint8Array(4),1,1));this.stateNode=texture(this.targets[0].texture);
   this.residual=new THREE.DataTexture(new Float32Array(size*size),size,size,THREE.RedFormat,THREE.FloatType);this.residual.magFilter=this.residual.minFilter=NearestFilter;
   this.residualNode=texture(this.residual);this.residualFn=null;this.residualOrigin=null;
+  this.residualStaging=new THREE.DataTexture(new Float32Array(64*64),64,64,THREE.RedFormat,THREE.FloatType);this.stageRegion=new THREE.Box2();this.stageOrigin=new THREE.Vector2();this.residualReady=false;
   this.queue=[];this.material=this.buildMaterial();this.quad=new QuadMesh(this.material);
  }
  buildMaterial(){
@@ -54,10 +56,7 @@ export class FineSandGPU{
    const pos=world.mul(FINE_CELL);
    // 1. Seed for nodes entering the window: recorded ruts + a ripple train.
    const record=this.trackNode.sample(pos.add(450).div(900));
-   const warp=mx_noise_float(vec3(pos.mul(.018),0)).mul(7).add(mx_noise_float(vec3(pos.mul(.07),7)).mul(1.8));
-   const phase=fract(dot(pos,this.wind).div(RIPPLE.wavelength).add(warp));
-   // Asymmetric ripple: long stoss slope, short steep lee face.
-   const ripple=select(phase.lessThan(.78),smoothstep(0,.78,phase),float(1).sub(smoothstep(.78,1,phase))).sub(.5).mul(RIPPLE.amplitude*2).mul(this.windOn);
+   const ripple=rippleHeight(pos,this.wind,float(RIPPLE.amplitude)).mul(this.windOn);
    const residual=this.residualNode.sample(mod(world,n).add(.5).div(n)).r;
    const seeded=vec4(record.g.mul(.25).sub(record.r.mul(.4)).add(ripple.mul(float(1).sub(record.b))),record.b.mul(.5),record.b,residual);
    const state=select(wasInside,self,seeded).toVar();
@@ -109,14 +108,29 @@ export class FineSandGPU{
   this.pendingOrigin=[i,j];
  }
  // Exact-terrain residual for nodes entering the window (toroidal layout).
+ // Only the strips that scroll in are computed and uploaded (staging copies);
+ // re-uploading the whole 1 MB texture on every shift caused periodic hitches.
  fillResidual(i0,j0){
   if(!this.residualFn)return;const n=this.n,data=this.residual.image.data,prev=this.residualOrigin;
   if(prev&&prev[0]===i0&&prev[1]===j0)return;
+  const full=!prev||Math.abs(i0-prev[0])>=n||Math.abs(j0-prev[1])>=n,rects=[];
   for(let j=j0;j<j0+n;j++)for(let i=i0;i<i0+n;i++){
-   if(prev&&i>=prev[0]&&i<prev[0]+n&&j>=prev[1]&&j<prev[1]+n)continue;
+   if(!full&&i>=prev[0]&&i<prev[0]+n&&j>=prev[1]&&j<prev[1]+n)continue;
    data[(((j%n)+n)%n)*n+(((i%n)+n)%n)]=this.residualFn(i*FINE_CELL,j*FINE_CELL);
   }
-  this.residualOrigin=[i0,j0];this.residual.needsUpdate=true;
+  this.residualOrigin=[i0,j0];
+  if(full||!this.residualReady){this.residual.needsUpdate=true;this.residualReady=false;return;}
+  // Entering columns and rows, as texel rectangles (each may wrap once).
+  const wrap=(start,len)=>{const a=((start%n)+n)%n;return a+len<=n?[[a,len]]:[[a,n-a],[0,a+len-n]];};
+  const di=i0-prev[0],dj=j0-prev[1];
+  if(di)for(const [x,w] of wrap(di>0?prev[0]+n:i0,Math.abs(di)))rects.push([x,0,w,n]);
+  if(dj)for(const [y,h] of wrap(dj>0?prev[1]+n:j0,Math.abs(dj)))rects.push([0,y,n,h]);
+  for(const [x0,y0,w,h] of rects)for(let y=y0;y<y0+h;y+=64)for(let x=x0;x<x0+w;x+=64){
+   const tw=Math.min(64,x0+w-x),th=Math.min(64,y0+h-y),stage=this.residualStaging.image.data;
+   for(let r=0;r<th;r++)stage.set(data.subarray((y+r)*n+x,(y+r)*n+x+tw),r*64);
+   this.residualStaging.needsUpdate=true;this.stageRegion.min.set(0,0);this.stageRegion.max.set(tw,th);this.stageOrigin.set(x,y);
+   this.renderer.copyTextureToTexture(this.residualStaging,this.residual,this.stageRegion,this.stageOrigin);
+  }
  }
  push(kind,x,z,radius,p){this.queue.push({kind,x,z,radius,p,step:this.step});}
  pass(target){const r=this.renderer,previous=r.getRenderTarget();r.setRenderTarget(target);this.quad.render(r);r.setRenderTarget(previous);}
@@ -127,7 +141,7 @@ export class FineSandGPU{
    this.accumulator=Math.max(0,this.accumulator-1/60);
    const o=this.origin.value;this.previousOrigin.value.copy(this.needsSeed?new THREE.Vector2(-1e7,-1e7):o);
    if(this.pendingOrigin){o.set(...this.pendingOrigin);this.pendingOrigin=null;}
-   this.needsSeed=false;
+   this.needsSeed=false;if(this.residual.version>0&&!this.residualReady){this.renderer.initTexture(this.residual);this.residualReady=true;}
    // Ops beyond MAX_OPS spill into extra passes in the same step.
    let batch=this.queue.splice(0,MAX_OPS);
    do{

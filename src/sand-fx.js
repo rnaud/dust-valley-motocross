@@ -1,5 +1,18 @@
 import * as THREE from 'three';
 import {createSizedPoints} from './sized-points.js';
+import {fbm} from './terrain-maps.js';
+
+// A cloudy puff: fractal noise inside a soft radial falloff (reads as billowing
+// dust rather than a flat disc). Alpha only; colour comes from the tint.
+export function createCloudTexture(size=64){
+ const data=new Uint8Array(size*size*4);
+ for(let y=0;y<size;y++)for(let x=0;x<size;x++){
+  const u=(x+.5)/size*2-1,v=(y+.5)/size*2-1,r=Math.hypot(u,v),fall=Math.max(0,1-r*r);
+  const n=fbm(u*2.2+7,v*2.2-3,4,11),a=Math.max(0,Math.min(1,fall*fall*(.35+1.1*n)));
+  data.set([255,255,255,Math.round(a*255)],(y*size+x)*4);
+ }
+ const t=new THREE.DataTexture(data,size,size);t.magFilter=t.minFilter=THREE.LinearFilter;t.needsUpdate=true;return t;
+}
 
 // Sand spray for soft-soil maps:
 //  - dust: soft billboards that billow out behind the tires, grow, drift
@@ -81,7 +94,7 @@ export class SandFx{
   this.spray=new SandSpray({dustCount:mobile?160:360,clodCount:mobile?80:220});
   // Instanced sprites (see sized-points.js); sizes are world metres, converted
   // to point units from the camera field of view every frame.
-  this.points=createSizedPoints({count:this.spray.dust.length,map:dustTexture,color:'#e2c79a'});
+  this.points=createSizedPoints({count:this.spray.dust.length,map:createCloudTexture(),color:'#e2c79a'});this.baseTint=new THREE.Color('#e2c79a');this.forward=new THREE.Vector3();
   this.points.object.name='sand-dust';this.points.object.renderOrder=2;
   this.clodMaterial=new THREE.MeshStandardMaterial({color:'#d9bd8e',roughness:1,flatShading:true});
   this.clodMesh=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1,0),this.clodMaterial,this.spray.clods.length);
@@ -89,9 +102,11 @@ export class SandFx{
   this.root=new THREE.Group();this.root.add(this.points.object,this.clodMesh);scene.add(this.root);
   this.matrix=new THREE.Matrix4();this.quat=new THREE.Quaternion();this.euler=new THREE.Euler();this.pos=new THREE.Vector3();this.scaleV=new THREE.Vector3();this.time=0;
  }
- setLook({dust='#e2c79a',clod='#d9bd8e',wind={x:0,z:0}}={}){this.points.tint.value.set(dust);this.clodMaterial.color.set(clod);this.spray.wind={x:wind.x*.9,z:wind.z*.9};}
- update(dt,ctx,camera){
+ setLook({dust='#e2c79a',clod='#d9bd8e',wind={x:0,z:0}}={}){this.baseTint.set(dust);this.points.tint.value.set(dust);this.clodMaterial.color.set(clod);this.spray.wind={x:wind.x*.9,z:wind.z*.9};}
+ update(dt,ctx,camera,sunDir){
   this.time+=dt;this.spray.step(dt,ctx);
+  // Backlit dust glows (forward scattering): brighten as the view turns toward the sun.
+  if(sunDir){camera.getWorldDirection(this.forward);const back=Math.max(0,this.forward.dot(sunDir));this.points.tint.value.copy(this.baseTint).multiplyScalar(.88+.75*back*back);}
   const toPoints=1/Math.tan(THREE.MathUtils.degToRad(camera.fov)/2),{positions,sizes,alphas}=this.points;
   this.spray.dust.forEach((p,i)=>{
    if(p.life>0){const look=SandSpray.dustLook(p),near=Math.hypot(p.x-camera.position.x,p.y-camera.position.y,p.z-camera.position.z);

@@ -706,9 +706,9 @@ async function start(){
  document.body.classList.add('playing');for(const id of ['menu','location','footer','overlay','tutorial'])$(id).hidden=true;for(const id of ['hud','pause'])$(id).hidden=false;$('touch').hidden=!mobile;
  $('lap-label').textContent=remix?'REMIX LAP':mode==='free'?'STUNT SCORE':'LAP';$('resume').hidden=false;$('wrong').hidden=true;$('combo').hidden=true;$('share').hidden=true;$('leaderboard').hidden=true;
  highlight();
- // Compile every pipeline up front (spray, clods and dust included) so first
- // appearances do not hitch mid-ride.
- {const spray=sandFx.root.visible;sandFx.root.visible=true;renderer.compileAsync(scene,camera).catch(()=>{}).finally(()=>{sandFx.root.visible=spray;});}
+ // Compile every pipeline before the ride starts (spray, clods and dust
+ // included) so first appearances do not hitch mid-ride.
+ {const spray=sandFx.root.visible;sandFx.root.visible=true;try{await renderer.compileAsync(scene,camera);}catch(e){}sandFx.root.visible=spray;}
  if(!readSetting('dust-valley-tutorial','')){
   phase='tutorial';$('tutorial').hidden=false;$('lights').hidden=true;
  }else{phase='playing';$('lights').hidden=mode==='free';setLights(3,false);if(mode==='daily')beginDaily();}
@@ -996,7 +996,7 @@ if(sandFlow?.enabled&&phase==='playing'){
  }).catch(()=>{});}
 }
 const sprayOn=!!(wild&&state.physics?.sand&&phase!=='menu');sandFx.root.visible=sprayOn;
-if(sprayOn&&phase==='playing'){const sand=state.physics.sand;sandFx.update(dt,{soil:sand.profile,contacts:countdown<=0&&!state.crashed?state.wheelContacts:[],velocity:state.physics.chassis.velocity,throttle:state.throttle,events:sand.events.splice(0),height:(x,z)=>sand.height(x,z),deposit:(x,z,volume)=>sand.deposit(x,z,volume)},camera);}
+if(sprayOn&&phase==='playing'){const sand=state.physics.sand;sandFx.update(dt,{soil:sand.profile,contacts:countdown<=0&&!state.crashed?state.wheelContacts:[],velocity:state.physics.chassis.velocity,throttle:state.throttle,events:sand.events.splice(0),height:(x,z)=>sand.height(x,z),deposit:(x,z,volume)=>sand.deposit(x,z,volume)},camera,sunDir);}
 if(!sprayOn&&state.physicsBackend!=='recovered-core'&&phase==='playing'&&state.speed>4&&!state.air&&countdown<=0){
   const back=1.05;
   puff(state.x-Math.sin(state.yaw)*back,state.y-.55,state.z-Math.cos(state.yaw)*back,input.boost?3:2,.3,.7);

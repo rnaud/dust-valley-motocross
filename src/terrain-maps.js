@@ -45,10 +45,10 @@ function dunesHeight(x,z){
  const horns=.5+.5*fbm(across*.014,along*.008,2,3);
  // Broad draa-scale swells under the dunes add ~20 m of slow relief.
  const pan=2.2*fbm(x*.01,z*.01,2,4)+20*fbm(x*.0022+40,z*.0022-13,2,6);
- // A second, smaller dune set (~70 m apart, crests to ~5 m) fills the troughs
+ // A second, smaller dune set (~85 m apart, crests 3–8 m) fills the troughs
  // between the big ridges, so the middle distance reads as a busy dune sea.
- const p2=fract((along*1.07+across*.18+17*fbm(across*.012+5,along*.01,2,7))/70),w2=p2/.72,q2=(p2-.72)/.28;
- const small=(p2<.72?w2*w2*(1.6-.6*w2):(1-q2)*(1-q2))*(2+3*fbm(across*.02+1,along*.015,2,8));
+ const p2=fract((along*1.07+across*.18+17*fbm(across*.012+5,along*.01,2,7))/85),w2=p2/.72,q2=(p2-.72)/.28;
+ const small=(p2<.72?w2*w2*(1.6-.6*w2):(1-q2)*(1-q2))*(3+5*fbm(across*.02+1,along*.015,2,8));
  const trough=1-smooth(profile*1.6);
  const dune=pan+profile*crest*horns+small*trough;
  const r=Math.hypot(x,z);

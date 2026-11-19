@@ -29,7 +29,7 @@ export function createFineSandMesh(fine,{albedo='#e2c79e',soilMap}){
  geo.boundingSphere=new THREE.Sphere(new THREE.Vector3(),1e6);
  const state=texture(fine.texture),albedoU=uniform(new THREE.Color(albedo)),soil=texture(soilMap??new THREE.DataTexture(new Uint8Array([255,255,255,255]),1,1));
  const local=positionGeometry.xz,node=fine.origin.add(local),edge=min(min(local.x,local.y),min(float(n-1).sub(local.x),float(n-1).sub(local.y)));
- const fade=smoothstep(0,24,edge);
+ const fade=smoothstep(0,8,edge);
  const cellAt=o=>state.sample(mod(node.add(o),n).add(.5).div(n)).level(0);
  const here=cellAt(vec2(0,0)),world=node.mul(FINE_CELL);
  // 9 texture reads per vertex: coarse height+slope (4) and fine node + 4 neighbours.

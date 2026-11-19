@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import {Fn,mx_noise_float,clamp as tslClamp,texture as tslTexture,uniform,positionWorld,positionGeometry,normalView,normalWorld,cameraPosition,cameraViewMatrix,fwidth,fract,floor,smoothstep,mix,step,sin,dot,length,normalize,pow,max,select,vec2,vec3,vec4,float,normalMap} from 'three/tsl';
+import {rippleHeight,RIPPLE_WAVELENGTH} from './ripple-seed.js';
+import {Fn,dFdx,dFdy,mx_noise_float,clamp as tslClamp,texture as tslTexture,uniform,positionWorld,positionGeometry,normalView,normalWorld,cameraPosition,cameraViewMatrix,fwidth,fract,floor,smoothstep,mix,step,sin,dot,length,normalize,pow,max,select,vec2,vec3,vec4,float,normalMap} from 'three/tsl';
 import { track, TAU } from './world.js';
 
 // Seeded value noise: all artwork is generated locally; no downloaded assets.
@@ -164,6 +165,12 @@ export function applyTerrainTexture(material,textures,{trackStrength=0}={}){
    material.positionNode=select(flowOn,vec3(positionGeometry.x,bilinearField(U,positionGeometry.xz),positionGeometry.z),positionGeometry);
    const span=ft.mul(1800),fieldNormal=normalize(vec3(sampleField(vec2(ft.negate(),0)).sub(sampleField(vec2(ft,0))).div(span),1,sampleField(vec2(0,ft.negate())).sub(sampleField(vec2(0,ft))).div(span)));
    baseNormal=select(flowOn,normalize(cameraViewMatrix.mul(vec4(fieldNormal,0)).xyz.add(baseNormal.sub(normalView))),baseNormal);
+   // Beyond the fine window, the same ripple pattern continues as shading so
+   // ripples run to the horizon without a seam (slope from screen derivatives).
+   const rippleH=rippleHeight(P.xz,U.windDir,float(.045)),dpx=dFdx(P),dpy=dFdy(P),dhx=dFdx(rippleH),dhy=dFdy(rippleH);
+   const det=dpx.x.mul(dpy.z).sub(dpx.z.mul(dpy.x)),gx=dhx.mul(dpy.z).sub(dhy.mul(dpx.z)).div(det),gz=dpx.x.mul(dhy).sub(dpy.x.mul(dhx)).div(det);
+   const rippleFade=soilMap.a.mul(U.sandAlbedoOn).mul(float(1).sub(smoothstep(.25,.6,fwidth(dot(P.xz,U.windDir).div(RIPPLE_WAVELENGTH))))).mul(select(det.abs().greaterThan(1e-8),1,0));
+   baseNormal=normalize(baseNormal.add(cameraViewMatrix.mul(vec4(gx.negate(),0,gz.negate(),0)).xyz.mul(rippleFade)));
    // Freshly flowing sand (grainflow tongues) reads a little paler.
    material.colorNode=material.colorNode.mul(vec4(vec3(float(1).add(select(flowOn,smoothstep(0,.02,field.sample(trackUV).y).mul(.12),0))),1));
   }
