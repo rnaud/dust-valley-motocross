@@ -45,7 +45,12 @@ function dunesHeight(x,z){
  const horns=.5+.5*fbm(across*.014,along*.008,2,3);
  // Broad draa-scale swells under the dunes add ~20 m of slow relief.
  const pan=2.2*fbm(x*.01,z*.01,2,4)+20*fbm(x*.0022+40,z*.0022-13,2,6);
- const dune=pan+profile*crest*horns;
+ // A second, smaller dune set (~70 m apart, crests to ~5 m) fills the troughs
+ // between the big ridges, so the middle distance reads as a busy dune sea.
+ const p2=fract((along*1.07+across*.18+17*fbm(across*.012+5,along*.01,2,7))/70),w2=p2/.72,q2=(p2-.72)/.28;
+ const small=(p2<.72?w2*w2*(1.6-.6*w2):(1-q2)*(1-q2))*(2+3*fbm(across*.02+1,along*.015,2,8));
+ const trough=1-smooth(profile*1.6);
+ const dune=pan+profile*crest*horns+small*trough;
  const r=Math.hypot(x,z);
  return lerp(pan,dune,smooth((r-22)/42))-20*fbm(40,-13,2,6);
 }
@@ -159,7 +164,7 @@ function bajaPaint(x,z,h,slope){
 function bajaSand(x,z,h,slope){const {lateral}=trailCoords(x,z),n=fbm(x*.006+5,z*.006-3,2,42),wash=1-smooth(Math.abs(n-.5)/.06);return clamp(.3+wash*.7,0,1)*smooth((.5-slope)/.3)*smooth((lateral-3)/4);}
 
 export const terrainMaps=[
- {id:'dunes',name:'Sidewinder Dunes',tag:'SOFT SAND · BIG CRESTS',description:'An open dune sea. Climb the long windward ramps and launch off the crests; deep sand ruts, slumps and roosts.',height:dunesHeight,paint:dunesPaint,sand:dunesSand,flow:{depth:40},view:{light:{elevation:13,sun:'#ffe2b8',sunI:4,hemiSky:'#9dbde6',hemiGround:'#c9ad80',hemiI:.55,env:.3,fog:'#c8d6e2',exposure:.98,glow:'#ffe6b8',zenith:'#21539e',horizon:'#c3d3e2',clouds:.5},ripple:1,wind:WIND,sparkle:1,fog:[600,3000],far:3400,spray:{dust:'#e6cfa6',clod:'#dcc092'}},spawn:{x:0,z:0,yaw:Math.atan2(WIND.x,WIND.z)},
+ {id:'dunes',name:'Sidewinder Dunes',tag:'SOFT SAND · BIG CRESTS',description:'An open dune sea. Climb the long windward ramps and launch off the crests; deep sand ruts, slumps and roosts.',height:dunesHeight,paint:dunesPaint,sand:dunesSand,flow:{depth:40},view:{light:{elevation:13,sun:'#ffe2b8',sunI:4,hemiSky:'#9dbde6',hemiGround:'#c9ad80',hemiI:.55,env:.3,fog:'#c8d6e2',exposure:.98,glow:'#ffe6b8',zenith:'#21539e',horizon:'#c3d3e2',clouds:.5},haze:.00022,ripple:1,wind:WIND,sparkle:1,fog:[600,3000],far:5200,spray:{dust:'#e6cfa6',clod:'#dcc092'}},spawn:{x:0,z:0,yaw:Math.atan2(WIND.x,WIND.z)},
   soil:{maxDepth:.34,maxLift:.22,settle:.1,dig:.2,lip:.05,sideLip:true,plough:.11,packRelief:.05,repose:31,roost:.55,gouge:1,dust:1,conserve:true,terra:{...DRY_SAND,CI:60e3,slipSink:1.6,gripAssist:1.15}},
   scenery:{buttes:false,boulders:false,decorations:false,grass:false,arch:false,groundDetail:false},clear:()=>false},
  {id:'quarry',name:'Breaker Quarry',tag:'HARDPACK · TERRACED PIT',description:'A four-bench open pit. Take the spiral haul road down or drop the bench faces; gravel mounds on the floor.',height:quarryHeight,paint:quarryPaint,sand:()=>0,view:{light:{elevation:30,sun:'#fff1d8',sunI:3,hemiSky:'#bcd0e2',hemiGround:'#9e9584',hemiI:.85,fog:'#cfd8dc',exposure:1.02,glow:'#fff2d4',zenith:'#4a78b8',horizon:'#dbe3e6',clouds:.35},ripple:0,wind:{x:1,z:0},sparkle:.35,fog:[200,1250],far:1700,spray:{dust:'#d3cbbb',clod:'#bdb3a2'}},spawn:{x:0,z:0,yaw:0},
@@ -168,7 +173,7 @@ export const terrainMaps=[
  {id:'canyon',name:'Red Gorge',tag:'SANDY WASH · STEP LEDGES',description:'A winding gorge through red sandstone. Hit the rock steps in the wash and climb the side gullies to the plateau.',height:canyonHeight,paint:canyonPaint,sand:canyonSand,flow:{depth:1.5},view:{light:{elevation:19,sun:'#ffd9a8',sunI:3.6,hemiSky:'#a9c4e2',hemiGround:'#b06a46',hemiI:.5,env:.28,fog:'#d4cfc8',exposure:1,glow:'#ffdcae',zenith:'#3f6fb2',horizon:'#dcd9d2',clouds:.45},ripple:.7,wind:{x:.2,z:.98},sparkle:.7,fog:[220,1400],far:1900,spray:{dust:'#dcae86',clod:'#c98e62'}},spawn:{x:gorgeCenter(0),z:0,yaw:Math.atan2(gorgeSlope(0),1)},
   soil:{maxDepth:.18,maxLift:.09,settle:.06,dig:.11,lip:.035,sideLip:true,plough:.075,packRelief:.03,repose:34,roost:.35,gouge:.7,dust:.75,conserve:true,terra:{n:1,kc:2.5e3,kphi:2.2e6,CI:150e3,slipSink:1.2,gripAssist:1.25}},
   scenery:{buttes:false,boulders:true,decorations:true,grass:true,arch:false},clear:(x,z)=>gorgeCoords(x,z).wall<4},
- {id:'baja',name:'Long Wash',tag:'OPEN DESERT · WHOOPS',description:'A long desert loop past mesas and dry washes. Skim the whoop sections and cut across the open ground.',height:bajaHeight,paint:bajaPaint,sand:bajaSand,flow:{depth:.4},view:{light:{elevation:17,sun:'#ffdfb2',sunI:3.7,hemiSky:'#abc7e6',hemiGround:'#bf9a6c',hemiI:.5,env:.28,fog:'#cfd7dd',exposure:1,glow:'#ffe2b4',zenith:'#3c6cb1',horizon:'#d6e0e6',clouds:.5},ripple:.6,wind:{x:.7,z:.71},sparkle:.6,fog:[260,2100],far:2800,spray:{dust:'#d8bf96',clod:'#c9a676'}},spawn:{x:trailRadius(0),z:0,yaw:0},
+ {id:'baja',name:'Long Wash',tag:'OPEN DESERT · WHOOPS',description:'A long desert loop past mesas and dry washes. Skim the whoop sections and cut across the open ground.',height:bajaHeight,paint:bajaPaint,sand:bajaSand,flow:{depth:.4},view:{light:{elevation:17,sun:'#ffdfb2',sunI:3.7,hemiSky:'#abc7e6',hemiGround:'#bf9a6c',hemiI:.5,env:.28,fog:'#cfd7dd',exposure:1,glow:'#ffe2b4',zenith:'#3c6cb1',horizon:'#d6e0e6',clouds:.5},haze:.00045,ripple:.6,wind:{x:.7,z:.71},sparkle:.6,fog:[260,2100],far:4200,spray:{dust:'#d8bf96',clod:'#c9a676'}},spawn:{x:trailRadius(0),z:0,yaw:0},
   soil:{maxDepth:.12,maxLift:.06,settle:.045,dig:.08,lip:.03,sideLip:true,plough:.05,packRelief:.02,repose:33,roost:.3,gouge:.6,dust:.85,conserve:true,terra:{n:.9,kc:3e4,kphi:3e6,CI:400e3,slipSink:.9,gripAssist:1.35}},
   scenery:{buttes:false,boulders:true,decorations:true,grass:true,arch:false},clear:(x,z)=>trailCoords(x,z).lateral<9}
 ];

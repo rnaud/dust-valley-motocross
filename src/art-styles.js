@@ -1,7 +1,10 @@
 import {prepareRetroMaterials,restoreRetroMaterials} from './art-style-experiments.js';
 import * as THREE from 'three';
 import {RenderPipeline} from 'three/webgpu';
-import {Fn,If,abs,clamp,dot,exp,float,floor,fract,fwidth,getViewPosition,length,log,max,min,mix,mod,mrt,normalView,normalize,output,packNormalToRGB,pass,perspectiveDepthToViewZ,pow,screenUV,select,sin,smoothstep,step,texture,uniform,unpackRGBToNormal,vec2,vec3,vec4} from 'three/tsl';
+import {ao} from 'three/addons/tsl/display/GTAONode.js';
+import {bloom} from 'three/addons/tsl/display/BloomNode.js';
+import {fxaa} from 'three/addons/tsl/display/FXAANode.js';
+import {Fn,If,abs,clamp,luminance,renderOutput,dot,exp,float,floor,fract,fwidth,getViewPosition,length,log,max,min,mix,mod,mrt,normalView,normalize,output,packNormalToRGB,pass,perspectiveDepthToViewZ,pow,screenUV,select,sin,smoothstep,step,texture,uniform,unpackRGBToNormal,vec2,vec3,vec4} from 'three/tsl';
 
 export const artStyles=[['original','Original','Current terrain, textures and lighting.'],['neon','Neon night','Ultraviolet shadows, glowing cyan contours and scanlines.'],['moebius','Hiraeth / Moebius','Pale sand, lavender shade, fine ink and landscape-anchored stipple.'],['voxel','Voxel dunes','Experimental block-built terrain over the existing riding surface.'],['painted','Painted landscape','Directional brushwork, rich pigment and softened detail.'],['ps1','PS1 motocross','Low resolution, dithered color and snapping geometry.'],['pixel','Outlined pixel art','Chunky full-color pixels with crisp silhouette outlines.']];
 
@@ -21,12 +24,34 @@ export class ArtStyleRenderer{
   this.retroMaterials=new Map();this.retroGrid=uniform(new THREE.Vector2(160,120));
   this.resolution=uniform(new THREE.Vector2(1,1));
   this.pipeline=new RenderPipeline(renderer);this.pipeline.outputColorTransform=false;
-  this.passes=new Map();this.nodes=new Map();this.current=null;
+  this.passes=new Map();this.nodes=new Map();this.current=null;this.useCinematic=false;
+  this.grade={ao:uniform(.75),bloom:uniform(1),saturation:uniform(1.08),contrast:uniform(1.06),vignette:uniform(.22)};
   // Scene-camera uniforms: inside the post quad, TSL's camera* nodes refer to
   // the quad's own camera, so depth→distance/world must use these instead.
   this.view={near:uniform(.1),far:uniform(1000),projectionInverse:uniform(new THREE.Matrix4()),world:uniform(new THREE.Matrix4())};
  }
  setStyle(id){this.style=artStyles.some(s=>s[0]===id)?id:'original';}
+ // Cinematic finish for the Original style: GTAO ambient occlusion (half
+ // resolution, normals from depth), bloom, a filmic grade with warm highlights
+ // and cool shadows, a soft vignette, tone mapping, then FXAA.
+ cinematicPipeline(scene,camera){
+  const key=scene.uuid+camera.uuid;if(this.cinematicKey===key)return this.cinematic;
+  const scenePass=pass(scene,camera),color=scenePass.getTextureNode('output'),depth=scenePass.getTextureNode('depth');
+  const occlusion=ao(depth,null,camera);occlusion.resolutionScale=.5;occlusion.radius.value=1.2;occlusion.distanceExponent.value=1.6;occlusion.thickness.value=2.5;occlusion.samples.value=12;
+  const g=this.grade;
+  const graded=Fn(()=>{
+   let c=color.rgb.mul(mix(float(1),occlusion.getTextureNode().sample(screenUV).r,g.ao));
+   c=c.add(bloom(vec4(c,1),.22,.45,.9).rgb.mul(g.bloom));
+   const l=luminance(c);
+   c=mix(vec3(l),c,g.saturation);
+   c=pow(max(c.div(.18),vec3(0)),vec3(g.contrast)).mul(.18);
+   const tone=smoothstep(.02,.6,l);c=c.mul(mix(vec3(.94,.98,1.06),vec3(1.05,1,.93),tone));
+   c=c.mul(float(1).sub(smoothstep(.45,1.05,length(screenUV.sub(.5).mul(vec2(1.25,1)))).mul(g.vignette)));
+   return vec4(c,1);
+  })();
+  const pipeline=new RenderPipeline(this.renderer);pipeline.outputColorTransform=false;pipeline.outputNode=fxaa(renderOutput(graded));
+  this.cinematic=pipeline;this.cinematicKey=key;return pipeline;
+ }
  // Moebius gets its own pass with a second (normal) render output. Toggling
  // MRT on a shared pass leaves stale pipelines with mismatched attachments.
  scenePass(scene,camera,normals){
@@ -109,6 +134,7 @@ export class ArtStyleRenderer{
  render(scene,camera){
   const r=this.renderer,style=this.style;
   if(style==='ps1')prepareRetroMaterials(scene,r,this.retroGrid,this.retroMaterials);else if(this.retroMaterials.size)restoreRetroMaterials(this.retroMaterials);
+  if(style==='original'&&this.useCinematic){this.cinematicPipeline(scene,camera).render();return;}
   if(style==='original'||style==='voxel'){r.render(scene,camera);return;}
   r.getDrawingBufferSize(this.size);
   camera.updateMatrixWorld();this.view.near.value=camera.near;this.view.far.value=camera.far;this.view.projectionInverse.value.copy(camera.projectionMatrixInverse);this.view.world.value.copy(camera.matrixWorld);

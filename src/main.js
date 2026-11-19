@@ -27,6 +27,8 @@ import { createTextures, applyTerrainTexture, createSkyTexture, createDustTextur
 import {TrackMap} from './sand-trackmap.js';
 import {SandFx} from './sand-fx.js';
 import {SandFlowGPU} from './sand-flow-gpu.js';
+import {HorizonTerrain} from './horizon-terrain.js';
+import {fog as fogNode,densityFogFactor,uniform as tslUniform} from 'three/tsl';
 import {createSizedPoints} from './sized-points.js';
 import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
 import {SandSurface} from './sand-surface.js';
@@ -82,7 +84,7 @@ let renderer;
 // WebGPU first; three falls back to its WebGL2 backend where WebGPU is missing.
 try{renderer=new THREE.WebGPURenderer({canvas:$('game'),antialias:true,powerPreference:'high-performance'});await renderer.init();}catch(e){$('menu').innerHTML='<h2>3D graphics are unavailable</h2><p>Please open this game in a browser with WebGPU or WebGL 2 and hardware acceleration enabled.</p>';throw e;}
 const rendererBackend=renderer.backend?.isWebGPUBackend?'webgpu':'webgl2';
-renderer.setPixelRatio(Math.min(devicePixelRatio,mobile?1.5:2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
+renderer.setPixelRatio(Math.min(devicePixelRatio,mobile?1.5:2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.VSMShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
 const artRenderer=new ArtStyleRenderer(renderer);artRenderer.setStyle(settings.art);settings.art=artRenderer.style;
 for(const [id,title]of artStyles){const option=document.createElement('option');option.value=id;option.textContent=title;$('art-style').append(option);}
 const sky=new THREE.Mesh(new THREE.SphereGeometry(650,32,16),new THREE.MeshBasicNodeMaterial({map:createSkyTexture(),side:THREE.BackSide,depthWrite:false,fog:false}));scene.add(sky);
@@ -96,7 +98,7 @@ const sunOffset=new THREE.Vector3(-110,62,48),sunDir=sunOffset.clone().normalize
 const sunGlow=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTexture,color:'#ffcf8a',transparent:true,opacity:.34,depthWrite:false,blending:THREE.AdditiveBlending,fog:false}));sunGlow.scale.set(170,170,1);scene.add(sunGlow);
 const sunCore=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTexture,color:'#fff0c8',transparent:true,opacity:.85,depthWrite:false,blending:THREE.AdditiveBlending,fog:false}));sunCore.scale.set(42,42,1);scene.add(sunCore);
 const camera=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,.1,1000);
-const hemi=new THREE.HemisphereLight('#d7e7f0','#7a5638',1.35);scene.add(hemi);const sun=new THREE.DirectionalLight('#ffd6a3',2.35);sun.position.set(-110,62,48);sun.castShadow=true;sun.shadow.mapSize.set(mobile?1024:2048,mobile?1024:2048);Object.assign(sun.shadow.camera,{left:-24,right:24,top:24,bottom:-24,near:1,far:320});sun.shadow.bias=-.00012;sun.shadow.normalBias=.035;scene.add(sun);scene.add(sun.target);
+const hemi=new THREE.HemisphereLight('#d7e7f0','#7a5638',1.35);scene.add(hemi);const sun=new THREE.DirectionalLight('#ffd6a3',2.35);sun.position.set(-110,62,48);sun.castShadow=true;sun.shadow.radius=5;sun.shadow.blurSamples=10;sun.shadow.mapSize.set(mobile?1024:2048,mobile?1024:2048);Object.assign(sun.shadow.camera,{left:-24,right:24,top:24,bottom:-24,near:1,far:320});sun.shadow.bias=-.00012;sun.shadow.normalBias=.035;scene.add(sun);scene.add(sun.target);
 const timePresets={
  dawn:{sun:'#ffd6a3',sunI:2.35,hemiSky:'#d7e7f0',hemiGround:'#7a5638',hemiI:1.35,fog:'#d8c0a0',exposure:1.08,sky:'#ffffff',glow:'#ffcf8a'},
  day:{sun:'#fff4dc',sunI:2.8,hemiSky:'#e5f1f7',hemiGround:'#8b6946',hemiI:1.5,fog:'#cfd6c3',exposure:1.15,sky:'#ffffff',glow:'#fff3cf'},
@@ -123,6 +125,7 @@ function applyQuality(value=settings.quality){
  const shadow=low?512:(mobile?1024:2048);
  if(sun.shadow.mapSize.x!==shadow){sun.shadow.mapSize.set(shadow,shadow);if(sun.shadow.map){sun.shadow.map.dispose();sun.shadow.map=null;}}
  viewLow=low;syncView();
+ if(typeof artRenderer!=='undefined')artRenderer.useCinematic=!low&&!mobile&&debugParams.get('post')!=='0';
  if(typeof boulderMesh!=='undefined')boulderMesh.count=low?220:520;
  if(typeof grassMesh!=='undefined')grassMesh.count=low?Math.min(420,grassData.length):grassData.length;
  if(typeof dust!=='undefined')dust.visible=!low;
@@ -150,25 +153,15 @@ function flushTrackMap(){
   renderer.copyTextureToTexture(trackStaging,trackTexture,trackRegion,trackOrigin);
  }
 }
-// Wild terrains extend to a low-detail horizon ring (30 m grid) beyond the
-// 900 m terrain square, so the dune sea reaches kilometres out under fog.
+// Wild terrains extend to a shadowed horizon grid beyond the 900 m terrain
+// square, so the dune sea reaches kilometres out (see horizon-terrain.js).
 const farTerrainCache=new Map();
 function farTerrainFor(map){
- if(farTerrainCache.has(map.id))return farTerrainCache.get(map.id);
- const step=30,extent=Math.ceil(map.view.far/step)*step,n=extent*2/step,positions=[],colors=[],indices=[],c=new THREE.Color();
- for(let j=0;j<=n;j++)for(let i=0;i<=n;i++){
-  const x=-extent+i*step,z=-extent+j*step,h=map.height(x,z),slope=Math.hypot(map.height(x+step/2,z)-map.height(x-step/2,z),map.height(x,z+step/2)-map.height(x,z-step/2))/step;
-  const inside=Math.abs(x)<=450&&Math.abs(z)<=450,rgb=map.paint(x,z,h,slope);
-  positions.push(x,inside?h-1:h,z);c.setRGB(rgb[0]/255,rgb[1]/255,rgb[2]/255,THREE.SRGBColorSpace);colors.push(c.r,c.g,c.b);
- }
- for(let j=0;j<n;j++)for(let i=0;i<n;i++){
-  const x0=-extent+i*step,z0=-extent+j*step;if(x0>=-450&&x0+step<=450&&z0>=-450&&z0+step<=450)continue;
-  const a=j*(n+1)+i,b=a+1,d=a+n+1,e=d+1;indices.push(a,d,b,b,d,e);
- }
- const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geo.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));geo.setIndex(indices);geo.computeVertexNormals();
- const mesh=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({vertexColors:true,roughness:1}));mesh.name='far-terrain-'+map.id;mesh.visible=false;scene.add(mesh);
- farTerrainCache.set(map.id,mesh);return mesh;
+ if(!farTerrainCache.has(map.id)){const horizon=new HorizonTerrain(renderer,map,{size:mobile?256:512});scene.add(horizon.mesh);farTerrainCache.set(map.id,horizon);}
+ const horizon=farTerrainCache.get(map.id);horizon.shade(sunDir);return horizon.mesh;
 }
+// Exponential-squared haze for wild maps (aerial perspective); linear fog elsewhere.
+const hazeDensity=tslUniform(.0004),hazeFog=fogNode(tslUniform(scene.fog.color),densityFogFactor(hazeDensity));
 // Fog, draw distance, wind ripples and glints follow the active wild map.
 function syncView(){
  const v=wild&&mode==='free'&&!previewHeight&&!remix?wild.view:null,low=viewLow;
@@ -177,6 +170,7 @@ function syncView(){
  if(activeLight()!==syncView.light){syncView.light=activeLight();applyTime();}
  soilUniforms.rippleStrength.value=v?v.ripple:0;soilUniforms.sparkle.value=v?v.sparkle:0;soilUniforms.windDir.value.set(v?v.wind.x:1,v?v.wind.z:0).normalize();
  if(farTerrainMesh)farTerrainMesh.visible=false;farTerrainMesh=v?farTerrainFor(wild):null;if(farTerrainMesh)farTerrainMesh.visible=true;
+ const haze=v?.haze??null;if(haze)hazeDensity.value=haze*(low?1.6:1);if((scene.fogNode===hazeFog)!==!!haze)scene.fogNode=haze?hazeFog:null;
 }
 materials.rock.map=textures.rock;materials.rock.color.set('#ffffff');materials.rock.normalMap=textures.rockRelief.normal;materials.rock.normalScale.set(.85,.85);materials.rock.roughnessMap=textures.rockRelief.roughness;
 materials.green.map=textures.cactus;materials.green.color.set('#ffffff');materials.green.bumpMap=textures.cactus;materials.green.bumpScale=.06;
