@@ -501,7 +501,9 @@ async function start(){
  state=corePreview.createMcmCoreState(coreScene,{spawn:customMcm?wild.spawn:{x:0,z:0,yaw:0},sand:$('sand-mode').checked});
  soilUniforms.sandAlbedoOn.value=0;soilUniforms.flowEnabled.value=0;soilUniforms.shadowEnabled.value=0;
  if(wild)sandFx.setLook({...wild.view.spray,wind:wild.view.wind});
- setupGpuSand();
+ if(customMcm){setupGpuSand();}
+ else{sandFlow?.disable();fineSand?.disable();gpuSand=null;}
+ if(fineMesh)fineMesh.mesh.visible=!!gpuSand;
  if(gpuSand)gpuSand.follow(state.x,state.z,state.physics.tileWorld);
  updateOriginalTerrainMaterials();
  previewHeight=state.physics.baseHeight;
@@ -672,7 +674,7 @@ else{
 
 
 sun.position.set(state.x+sunOffset.x,state.y+sunOffset.y,state.z+sunOffset.z);sun.target.position.set(state.x,state.y,state.z);soilUniforms.sunDir.value.copy(sunDir);skyUniforms.time.value+=dt;
-if(fineMesh&&phase==='playing'){
+if(fineMesh?.mesh.visible&&fineSand&&gpuSand&&phase==='playing'){
  fineSand.update(dt);fineMesh.update();
  if(debugParams.get('fineread')!=='0'&&((animate.frame=(animate.frame??0)+1)%3)===0)gpuSand.sync();
 }
