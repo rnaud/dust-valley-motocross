@@ -15,6 +15,7 @@ import {terrainIndices,sampleGrid} from './height-grid.js';
 import {inJumpZone,jumps} from './jump-park.js';
 import {heroRocks} from './props.js';
 import {createMcmTerrainTextures,createMcmTerrainMaterial} from './mcm-terrain-material.js';
+import {createCustomMcmTerrain,createMcmTerrainStub} from './mcm-custom-terrain.js';
 import {mcmMaps} from './mcm-map-catalog.js';
 import {loadMcmOriginalModels,createMcmOriginalModels} from './mcm-original-models.js';
 import {createRider} from './rider.js';
@@ -40,7 +41,7 @@ import {RideAudio} from './audio.js';
 import {track,terrain as raceTerrain,freeTerrain,trackDistance,nearestTrack,createState,resetBike,stepBike,TAU} from './world.js';
 let activeSand=null,corePreview=null,coreScene=null;
 let previewHeight=null,remix=null,wild=null,farTerrainMesh=null,viewLow=false,sandFlow=null,flowReadClock=0,fineSand=null,fineMesh=null,gpuSand=null;
-let starting=false;
+let starting=false,customMcm=false;
 let mode='free';
 let physicsMode='classic';
 const simulationStep=()=>physicsMode==='mcm-preview'?.02:1/120;
@@ -50,12 +51,19 @@ const freeHeight=(x,z)=>wild?wild.height(x,z):freeTerrain(x,z);
 const freeClear=(x,z)=>wild?wild.clear(x,z):inJumpZone(x,z);
 const $=id=>document.getElementById(id);
 let originalModels,opponentModels;
-for(const map of mcmMaps){const option=document.createElement('option');option.value=map.id;option.textContent=map.title;$('mcm-map').append(option);}$('mcm-map').value='quarries-dunes';
+for(const map of mcmMaps){const option=document.createElement('option');option.value=map.id;option.textContent=map.title;$('mcm-map').append(option);}$('mcm-map').insertAdjacentHTML('afterbegin','<option value="custom-sidewinder">Sidewinder Dunes · custom map</option>');$('mcm-map').value='quarries-dunes';
 function updateMcmScenes(){$('world-start-note').hidden=$('mcm-map').value!=='quarries-dunes';const select=$('mcm-scene');select.replaceChildren();const variants=mcmSceneVariants[$('mcm-map').value]??[];for(const scene of variants){const option=document.createElement('option');option.value=scene.source;option.textContent=scene.title??scene.source;select.append(option);}select.disabled=variants.length===0;if(!variants.length){const option=document.createElement('option');option.textContent='Default practice environment';select.append(option);}}
 $('mcm-map').addEventListener('change',updateMcmScenes);updateMcmScenes();
 const mapCache=new Map();
 async function loadSelectedMcmMap(base){const id=$('mcm-map').value;let asset=mapCache.get(id);if(!asset){const response=await fetch(mcmMaps.find(m=>m.id===id).url);if(!response.ok)throw Error('Original terrain download failed');asset=await new Response(response.body.pipeThrough(new DecompressionStream('gzip'))).json();mapCache.set(id,asset);}const settings=mcmSceneVariants[id]?.find(scene=>scene.source===$('mcm-scene').value)??mcmSceneSettings[id];const shadow=settings?.lights.find(light=>light.type==='ObjectPoint'&&light.castsShadows)?.position??asset.shadowTarget;return {...base,mapId:id,terrainMode:asset.terrainMode,shadowTarget:shadow,sceneSettings:settings,rendering:asset.rendering,terrain:asset.terrain};}
 
+// A custom map keeps the recovered bike but replaces the original terrace with
+// a height field generated from Dust Valley's own terrain.
+function customMcmScene(base){
+ const stub=createMcmTerrainStub(),map=terrainMap('dunes');
+ return {...base,mapId:'custom-sidewinder',terrainMode:0,shadowTarget:null,sceneSettings:null,rendering:null,terrain:stub,
+  terrainFactory:({initial,nativeToWorld})=>createCustomMcmTerrain({heightAtWorld:(x,z)=>map.height(x,z),nativeToWorld,initial,cells:1024,worldToGrid:stub.worldToGrid})};
+}
 $('physics-mode').onchange=()=>{if($('physics-mode').value==='mcm-preview'&&$('terrain-map')?.value&&$('terrain-map').onchange){$('terrain-map').value='';$('terrain-map').onchange();}$('mcm-assets').hidden=$('physics-mode').value!=='mcm-preview';physicsMode=$('physics-mode').value;syncSandOption();$('physics-note').textContent=physicsMode==='mcm-preview'?'Original bike and rider physics, maps and sounds. Full matching is still in progress.':'Original Dust Valley handling.';$('menu-extra-control').innerHTML=physicsMode==='mcm-preview'?'I / K <b>Rider lean</b>':'SPACE <b>Boost</b>';$('tutorial-throttle').textContent=physicsMode==='mcm-preview'?'Hold W or GAS. Release to coast; S or BRAKE slows down.':'Hold W or GAS. Tap SPACE for boost.';};
 function syncSandOption(){$('sand-option').hidden=false;$('sand-mode').disabled=false;$('sand-note').textContent='Tires carve soft sand in every mode. Switch off for hardpack.';}
 $('physics-mode').onchange();
@@ -207,7 +215,7 @@ const classicSandMaterial=sandSurface.material;let originalTerrainTextures,origi
 function updateOriginalTerrainMaterials(){
  originalTerrainMaterials.forEach(m=>m.dispose());originalTerrainMaterials=[];originalTerrainTextures?.dispose();originalTerrainTextures=null;
  ground.material=materials.dirt;sandSurface.material=classicSandMaterial;
- if(state.physicsBackend==='recovered-core'){
+ if(state.physicsBackend==='recovered-core'&&state.physics.scene.rendering){
   originalTerrainTextures=createMcmTerrainTextures(state.physics.scene);
   ground.material=createMcmTerrainMaterial(originalTerrainTextures,state,{bounds:materials.dirt.userData.sandBounds});
   sandSurface.material=createMcmTerrainMaterial(originalTerrainTextures,state,{dense:true});
@@ -652,7 +660,7 @@ function updateEnvironment(){
   placeBoulders();placeHeroRocks();placeGrass();arch.position.y=terrain(arch.position.x,arch.position.z);groundDetail.update(state.x,state.z,true);
   decorations.forEach(o=>{o.position.y=terrain(o.position.x,o.position.z)+o.userData.groundOffset;o.visible=mode==='free'?!freeClear(o.position.x,o.position.z):!o.userData.onTrack;});
   rebuildDecorationBatches();
-  const original=!!previewHeight;
+  const original=!!previewHeight&&!customMcm;
   for(const object of [...mountainBatches,...decorationBatches,boulderMesh,heroGroup,arch,grassMesh,groundDetail.pebbles,groundDetail.scrub])object.visible=!original;
   if(wild&&!original){const show=wild.scenery;mountainBatches.forEach(o=>o.visible=show.buttes);decorationBatches.forEach(o=>o.visible=show.decorations);boulderMesh.visible=show.boulders;grassMesh.visible=show.grass;arch.visible=show.arch;heroGroup.visible=false;groundDetail.pebbles.visible=groundDetail.scrub.visible=show.groundDetail!==false;}
   const rgb=original?coreScene.sceneSettings?.fogColor:null;
@@ -663,10 +671,11 @@ function updateEnvironment(){
 async function start(){
  if(starting)return;starting=true;
  remix?.dispose();remix=$('remix-level').value?new RemixWorld($('remix-level').value):null;physicsMode=remix?'classic':$('physics-mode').value;if(remix)mode='free';$('remix-choice').hidden=true;
- wild=!remix&&$('terrain-map').value?terrainMap($('terrain-map').value):null;if(wild){physicsMode='classic';mode='free';}
+ customMcm=!remix&&$('physics-mode').value==='mcm-preview'&&$('mcm-map').value==='custom-sidewinder';
+ wild=customMcm?terrainMap('dunes'):!remix&&$('terrain-map').value?terrainMap($('terrain-map').value):null;if(wild&&!customMcm){physicsMode='classic';mode='free';}if(customMcm){mode='free';$('mcm-assets').hidden=false;}
  const startButton=$('start'),startLabel=startButton.innerHTML;startButton.disabled=true;
  try{
- if(physicsMode==='mcm-preview'){startButton.textContent='LOADING ORIGINAL PHYSICS…';corePreview??=await import('./mcm-core-preview.js');coreScene=await loadSelectedMcmMap(await corePreview.loadMcmCoreScene());coreScene.particleAssets=await loadMcmParticleAssets();recoveredParticles.setAssets(coreScene.particleAssets);if(coreScene.mapId==='quarries-dunes')coreScene.worldFiles=await corePreview.loadMcmWorldScene();if(!originalModels){const assets=await loadMcmOriginalModels();originalModels=createMcmOriginalModels(assets);opponentModels=createMcmOriginalModels(assets);opponentModels.root.name='mcm-opponent-models';scene.add(originalModels.root,opponentModels.root);}}
+ if(physicsMode==='mcm-preview'){startButton.textContent='LOADING ORIGINAL PHYSICS…';corePreview??=await import('./mcm-core-preview.js');const baseScene=await corePreview.loadMcmCoreScene();coreScene=customMcm?customMcmScene(baseScene):await loadSelectedMcmMap(baseScene);coreScene.particleAssets=await loadMcmParticleAssets();recoveredParticles.setAssets(coreScene.particleAssets);if(coreScene.mapId==='quarries-dunes')coreScene.worldFiles=await corePreview.loadMcmWorldScene();if(!originalModels){const assets=await loadMcmOriginalModels();originalModels=createMcmOriginalModels(assets);opponentModels=createMcmOriginalModels(assets);opponentModels.root.name='mcm-opponent-models';scene.add(originalModels.root,opponentModels.root);}}
  }
  catch(error){console.error(error);toast('Original physics could not load. Please try again.',5);return;}
  finally{starting=false;startButton.disabled=false;startButton.innerHTML=startLabel;}
@@ -675,7 +684,7 @@ async function start(){
  laps=mode==='daily'?1:3;
  // Full-terrain sand flow on the GPU for wild maps with erodible sand.
  // Every wild map gets the GPU terrain field (shadows); only erodible sand flows.
- if(wild&&$('sand-mode').checked){sandFlow??=new SandFlowGPU(renderer,{size:mobile?512:1024});const map=wild;sandFlow.reset(map.height,(x,z,h,slope)=>(map.flow?.depth??0)*(map.sand?.(x,z,h,slope)??0));}else sandFlow?.disable();
+ if(wild&&!customMcm&&$('sand-mode').checked){sandFlow??=new SandFlowGPU(renderer,{size:mobile?512:1024});const map=wild;sandFlow.reset(map.height,(x,z,h,slope)=>(map.flow?.depth??0)*(map.sand?.(x,z,h,slope)??0));}else sandFlow?.disable();
  const flowHeight=sandFlow?.enabled?(x,z)=>wild.height(x,z)+sandFlow.offsetAt(x,z):null;
  // GPU sand: a 25 cm field that scrolls with the bike carries ripples, ruts and
  // berms; physics rides it through a readback-backed surface.
@@ -995,7 +1004,7 @@ if(sandFlow?.enabled&&phase==='playing'){
   for(const c of changed){const x=-450+(c%n+.5)*dx,z=-450+(Math.floor(c/n)+.5)*dx;for(const ox of [-dx,dx])for(const oz of [-dx,dx])sand.dirty.add(`${Math.floor((x+ox)/16)},${Math.floor((z+oz)/16)}`);}
  }).catch(()=>{});}
 }
-const sprayOn=!!(wild&&state.physics?.sand&&phase!=='menu');sandFx.root.visible=sprayOn;
+const sprayOn=!!(wild&&state.physicsBackend!=='recovered-core'&&state.physics?.sand&&phase!=='menu');sandFx.root.visible=sprayOn;
 if(sprayOn&&phase==='playing'){const sand=state.physics.sand;sandFx.update(dt,{soil:sand.profile,contacts:countdown<=0&&!state.crashed?state.wheelContacts:[],velocity:state.physics.chassis.velocity,throttle:state.throttle,events:sand.events.splice(0),height:(x,z)=>sand.height(x,z),deposit:(x,z,volume)=>sand.deposit(x,z,volume)},camera,sunDir);}
 if(!sprayOn&&state.physicsBackend!=='recovered-core'&&phase==='playing'&&state.speed>4&&!state.air&&countdown<=0){
   const back=1.05;
@@ -1010,4 +1019,4 @@ requestAnimationFrame(animate);
 // Read-only diagnostics for smoke tests and performance inspection.
 // Start on the sand: Sidewinder Dunes unless the rider last chose another terrain.
 {const saved=readSetting('dust-valley-terrain','dunes');$('terrain-map').value=saved==='basin'?'':terrainMap(saved)?saved:'dunes';$('terrain-map').onchange();}
-window.__game={trackMap,soil:soilUniforms,scene,place:(x,z,yaw)=>{resetBike(state,x,z,yaw);ridePose.reset(state);cameraReady=false;accumulator=0;},backend:()=>rendererBackend,flow:()=>sandFlow?.totals()??null,shadowStats:()=>sandFlow?.shadowStats()??null,sandFx:()=>({dust:sandFx.spray.activeDust,clods:sandFx.spray.activeClods,visible:sandFx.root.visible}),remix:()=>remix?.diagnostics()??null,presentation:()=>({style:artRenderer.style,particles:recoveredParticles.count,nativeParticles:recoveredParticles.nativeCount,particleTexture:recoveredParticles.textureName,particleSprites:[...new Set(recoveredParticles.rows.map(r=>r.sprite))]}),audio:()=>rideAudio.original?.diagnostics()??{ready:false},sandSample:(x,z)=>activeSand?{height:activeSand.height(x,z),displacement:activeSand.displacementAt(x,z),compaction:activeSand.compaction(x,z)}:null,environment:()=>({sand:activeSand?{version:activeSand.version,tiles:activeSand.tiles.size,renderedTiles:sandSurface.meshes.size}:null,trackVisible:trackObjects.visible,trackTexture:materials.dirt.map===textures.macro,height:state.physics.height(state.x,state.z),visualHeight:terrain(state.x,state.z),mountains:mountains.map(m=>({x:m.position.x,z:m.position.z,radius:m.userData.radius*Math.max(m.scale.x,m.scale.z),foundation:m.userData.foundation}))}),snapshot:()=>({phase,mode,elapsed,lap,nextGate,score,countdown,originalAssets:state.physicsBackend==='recovered-core'?{map:coreScene.mapId??'quarries-dunes',rider:$('mcm-rider').value,bike:$('mcm-bike').value,parts:originalModels?.parts,opponentVisible:opponentModels?.root.visible??false,sceneSettings:coreScene.sceneSettings?.source??null,fogColor:coreScene.sceneSettings?.fogColor??null,proceduralScenery:heroGroup.visible,terrainTextures:!!originalTerrainTextures,missingTerrainTextures:originalTerrainTextures?.missing}:null,tireTrackSegments:tireTracks.count,...state}),renderer};
+window.__game={trackMap,soil:soilUniforms,scene,place:(x,z,yaw)=>{resetBike(state,x,z,yaw);ridePose.reset(state);cameraReady=false;accumulator=0;},backend:()=>rendererBackend,camera:()=>({x:camera.position.x,y:camera.position.y,z:camera.position.z,fov:camera.fov,look:{x:look.x,y:look.y,z:look.z}}),flow:()=>sandFlow?.totals()??null,shadowStats:()=>sandFlow?.shadowStats()??null,sandFx:()=>({dust:sandFx.spray.activeDust,clods:sandFx.spray.activeClods,visible:sandFx.root.visible}),remix:()=>remix?.diagnostics()??null,presentation:()=>({style:artRenderer.style,particles:recoveredParticles.count,nativeParticles:recoveredParticles.nativeCount,particleTexture:recoveredParticles.textureName,particleSprites:[...new Set(recoveredParticles.rows.map(r=>r.sprite))]}),audio:()=>rideAudio.original?.diagnostics()??{ready:false},sandSample:(x,z)=>activeSand?{height:activeSand.height(x,z),displacement:activeSand.displacementAt(x,z),compaction:activeSand.compaction(x,z)}:null,environment:()=>({sand:activeSand?{version:activeSand.version,tiles:activeSand.tiles.size,renderedTiles:sandSurface.meshes.size}:null,trackVisible:trackObjects.visible,trackTexture:materials.dirt.map===textures.macro,height:state.physics.height(state.x,state.z),visualHeight:terrain(state.x,state.z),mountains:mountains.map(m=>({x:m.position.x,z:m.position.z,radius:m.userData.radius*Math.max(m.scale.x,m.scale.z),foundation:m.userData.foundation}))}),snapshot:()=>({phase,mode,elapsed,lap,nextGate,score,countdown,originalAssets:state.physicsBackend==='recovered-core'?{map:coreScene.mapId??'quarries-dunes',rider:$('mcm-rider').value,bike:$('mcm-bike').value,parts:originalModels?.parts,opponentVisible:opponentModels?.root.visible??false,sceneSettings:coreScene.sceneSettings?.source??null,fogColor:coreScene.sceneSettings?.fogColor??null,proceduralScenery:heroGroup.visible,terrainTextures:!!originalTerrainTextures,missingTerrainTextures:originalTerrainTextures?.missing}:null,tireTrackSegments:tireTracks.count,...state}),renderer};

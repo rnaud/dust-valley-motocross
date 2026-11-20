@@ -44,21 +44,34 @@ export function createMcmCoreState(scene,{spawn={x:0,z:0,yaw:0},sand:trueSand=tr
  const simulation=shared?connectMcmWorldSimulation(shared,JSON.parse(scene.worldFiles['world-camera-initial.json']),terrain,{initialFiles:scene.worldFiles}):null;
  const child=scene.particleAssets&&!scene.child.sprayHex?{...scene.child,sprayAddress:scene.row.visualEffects[1].address,sprayHex:scene.row.visualEffects[1].hex+scene.particleAssets.sprayTail}:scene.child;
  const runtime=shared?shared.bikes.get(shared.world.entry.bikes[0]):createCapturedFrameRuntime({...scene.input,terrain},scene.row,child),c=runtime.loaded.context;
- if(scene.mapId&&scene.mapId!=='quarries-dunes'){const center=(16**(terrain.root.level+1)/2)/terrain.worldToGrid;c.pose={position:[...(scene.sceneSettings?.defaultStartPosition??[center,100,center])],forward:[...(scene.sceneSettings?.defaultStartDirection??[0,0,1])],up:[0,1,0]};resetMcmBikePose(c);c.contactPhase.normalEventDecision.terrainMode=scene.terrainMode;runtime.loaded.environment.terrainMode=scene.terrainMode;c.frameEffects.occlusion=!!scene.shadowTarget;if(scene.shadowTarget)c.frameEffects.resolveTarget=()=>scene.shadowTarget.map(Math.fround);}
- const initial=[...c.bike.position],ground=queryMcmTerrainHeight({...terrain,point:initial})[1];
+ if(scene.mapId&&scene.mapId!=='quarries-dunes'&&!scene.terrainFactory){const center=(16**(terrain.root.level+1)/2)/terrain.worldToGrid;c.pose={position:[...(scene.sceneSettings?.defaultStartPosition??[center,100,center])],forward:[...(scene.sceneSettings?.defaultStartDirection??[0,0,1])],up:[0,1,0]};resetMcmBikePose(c);c.contactPhase.normalEventDecision.terrainMode=scene.terrainMode;runtime.loaded.environment.terrainMode=scene.terrainMode;c.frameEffects.occlusion=!!scene.shadowTarget;if(scene.shadowTarget)c.frameEffects.resolveTarget=()=>scene.shadowTarget.map(Math.fround);}
+ const initial=[...c.bike.position];
  const angle=(spawn.yaw??0)-Math.atan2(c.bike.forward[0],c.bike.forward[2]),rotation=new Quaternion().setFromAxisAngle(new Vector3(0,1,0),angle),inverse=rotation.clone().invert();
  const vector=v=>new Vector3(...v).applyQuaternion(rotation);
+ const horizontal=(nx,nz)=>vector([nx-initial[0],0,nz-initial[2]]).multiplyScalar(METRES).add(new Vector3(spawn.x,0,spawn.z));
+ // A custom map replaces the original terrain tree before any height is read;
+ // the bootstrap above only needed a placeholder so the wheel contacts could load.
+ // The contact phase and rider tick keep this terrain object, so a custom map
+ // must replace its root in place rather than hand back a new object.
+ if(scene.terrainFactory){
+  const built=scene.terrainFactory({initial,nativeToWorld:horizontal});terrain.root=built.root;terrain.heightScale=built.heightScale;terrain.worldToGrid=built.worldToGrid;
+  // The captured pose was taken standing on the original course; drop the bike
+  // onto the generated one at the same place with the recovered reset routine.
+  c.pose={position:[initial[0],100,initial[2]],forward:[...c.bike.forward],up:[0,1,0]};resetMcmBikePose(c);
+ }
+ const active=terrain;
+ const ground=queryMcmTerrainHeight({...active,point:initial})[1];
  const position=v=>vector([v[0]-initial[0],v[1]-ground,v[2]-initial[2]]).multiplyScalar(METRES).add(new Vector3(spawn.x,0,spawn.z));
  const nativePoint=(x,z)=>new Vector3(x-spawn.x,0,z-spawn.z).multiplyScalar(1/METRES).applyQuaternion(inverse).add(new Vector3(initial[0],ground,initial[2]));
- const originalTerrain={...terrain};
+ const originalTerrain={...active};
  const baseHeight=(x,z)=>{const p=nativePoint(x,z);return (displayMcmHeight(originalTerrain,p.x,p.z)-ground)*METRES;};
  const renderSurface=new SandSurface(baseHeight),sand=trueSand?renderSurface:null;
- if(sand){const original={...terrain};terrain.root=deformableMcmTerrain(original,sand,position).root;}
+ if(sand){const original={...active};active.root=deformableMcmTerrain(original,sand,position).root;}
  // Sand mesh tiles use their existing display cache. Cannon never advances this bike.
  const tileWorld={addBody(){},removeBody(){}};
  const state={physicsMode:'mcm-preview',physicsBackend:'recovered-core',x:0,y:0,z:0,yaw:0,pitch:0,roll:0,speed:0,vy:0,yawRate:0,gear:1,rpm:0,boost:100,steer:0,throttle:0,contacts:0,crashed:false,crashTime:0,air:false,airtime:0,slip:0,slipRatio:[0,0],wheelOmega:[0,0],tireLoads:[0,0],compression:[0,0],wheelContacts:[],wheelTransforms:[],quaternion:{x:0,y:0,z:0,w:1},landingRecovery:0,requestedLean:0,frame:0,
   engine:{gear:1,rpm:0,force:0,recovered:{released:1,randomState:12345}},visualWheelRadii:[c.contactPhase.rearRadius*METRES,c.contactPhase.radius*METRES]};
- Object.defineProperty(state,'physics',{value:{runtime,simulation,shared,terrain,height:sand?(x,z)=>sand.height(x,z):baseHeight,baseHeight,sand,renderSurface,nativePoint,position,vector,rotation,tileWorld,scene,spawn},enumerable:false});
+ Object.defineProperty(state,'physics',{value:{runtime,simulation,shared,terrain:active,height:sand?(x,z)=>sand.height(x,z):baseHeight,baseHeight,sand,renderSurface,nativePoint,position,vector,rotation,tileWorld,scene,spawn},enumerable:false});
  state.opponents=[];
  if(shared)for(const address of shared.world.entry.bikes.slice(1)){
   const opponent={...state,opponents:[],engine:{gear:1,rpm:0,force:0,recovered:{}}};

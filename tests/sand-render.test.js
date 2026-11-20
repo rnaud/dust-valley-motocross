@@ -27,6 +27,9 @@ test('deformed collision vertices also update the rendered surface and disturbed
  const geo=surface.meshes.get('0,0').geometry,index=64*65;
  assert.equal(geo.attributes.position.getY(index),0);assert.equal(geo.attributes.color.getX(index),1);
  for(let i=0;i<12;i++)soil.deform([{x:0,z:0,load:1000,demand:1},null],1/120);
+ // Tiles rebuild at most 20 times a second; wait past that window or a fast
+ // machine can observe the throttled (unrebuilt) geometry.
+ await new Promise(resolve=>setTimeout(resolve,60));
  surface.update(soil);
  assert.equal(geo.attributes.position.getY(index),Math.fround(soil.height(0,0)));
  assert.ok(geo.attributes.position.getY(index)<-.03);assert.ok(geo.attributes.color.getX(index)<.8);
