@@ -1,5 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import {gunzipSync} from 'node:zlib';
-import {createMcmTerrainTextures} from '../src/mcm-terrain-material.js';
+import * as THREE from 'three';
+import {createMcmTerrainTextures,createMcmTerrainMaterial} from '../src/mcm-terrain-material.js';
 test('all imported maps preserve palette pixels and leaf texture assignments in GPU resources',()=>{
  const catalog=JSON.parse(fs.readFileSync(new URL('../docs/mcm-map-assets.json',import.meta.url)));let count=0;
  for(const map of catalog){
@@ -20,4 +21,20 @@ test('all imported maps preserve palette pixels and leaf texture assignments in 
   assert.equal(r.missing,0,map.id);count+=scene.rendering.textures.length;r.dispose();
  }
  assert.equal(count,1068);
+});
+
+test('preview terrain textures are a TSL colour node, not a WebGL shader patch',()=>{
+ // The renderer is a WebGPURenderer, which never invokes onBeforeCompile. Expressing
+ // the original atlas as a colour node is what keeps the preview terrain textured.
+ const scene=JSON.parse(gunzipSync(fs.readFileSync(new URL('../src/assets/mcm-maps/quarries-dunes.bin',import.meta.url))));
+ const resources=createMcmTerrainTextures(scene),state={physics:{nativePoint:(x,z)=>new THREE.Vector3(x,0,z),terrain:{worldToGrid:1},scene:{terrainMode:0}}};
+ const coarse=createMcmTerrainMaterial(resources,state),dense=createMcmTerrainMaterial(resources,state,{dense:true,bounds:new THREE.Vector4(0,48,0,48)});
+ for(const material of [coarse,dense]){
+  assert.equal(material.isNodeMaterial,true);
+  assert.ok(material.colorNode);
+  assert.equal(material.onBeforeCompile,THREE.Material.prototype.onBeforeCompile,material.name);
+ }
+ assert.equal(coarse.side,THREE.FrontSide);assert.equal(coarse.polygonOffset,false);
+ assert.equal(dense.side,THREE.DoubleSide);assert.equal(dense.polygonOffset,true);
+ resources.dispose();
 });

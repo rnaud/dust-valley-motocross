@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import {MeshStandardNodeMaterial} from 'three/webgpu';
+import {Discard,Fn,attribute,clamp,dot,float,floor,mix,mod,positionWorld,select,texture as tslTexture,uniform,vec2,vec3} from 'three/tsl';
 const decode=text=>Uint8Array.from(atob(text),c=>c.charCodeAt(0));
 
 // Build a palette-expanded atlas and a leaf lookup without touching physics nodes.
@@ -27,47 +29,49 @@ export function createMcmTerrainTextures(scene){
  return {atlas,lookup,size,columns,rows,side,missing,dispose(){atlas.dispose();lookup.dispose();}};
 }
 
+// The renderer is a WebGPURenderer. It never runs Material.onBeforeCompile (that
+// hook only exists in the WebGLRenderer path), so the preview must express the
+// original texture lookup as a TSL colour node or the terrain renders untextured.
 export function createMcmTerrainMaterial(resources,state,{bounds,dense=false}={}){
  const physics=state.physics,a=physics.nativePoint(0,0),b=physics.nativePoint(1,0),c=physics.nativePoint(0,1),scale=physics.terrain.worldToGrid;
- const uniforms={mcmAtlas:{value:resources.atlas},mcmLeaves:{value:resources.lookup},mcmAtlasLayout:{value:new THREE.Vector4(resources.columns,resources.rows,resources.size,resources.side)},
-  mcmNativeX:{value:new THREE.Vector3((b.x-a.x)*scale,(c.x-a.x)*scale,a.x*scale)},mcmNativeZ:{value:new THREE.Vector3((b.z-a.z)*scale,(c.z-a.z)*scale,a.z*scale)},
-  mcmQuarter:{value:physics.scene.terrainMode===1?0:1},mcmBounds:bounds??{value:new THREE.Vector4()},mcmDense:{value:dense?1:0}};
- // A narrow overlap covers sample-coverage cracks at the coarse discard edge.
- // Depth bias keeps the dense surface stable where both meshes coincide.
- const material=new THREE.MeshStandardMaterial({roughness:1,vertexColors:dense,polygonOffset:dense,polygonOffsetFactor:-1,polygonOffsetUnits:-1,side:dense?THREE.DoubleSide:THREE.FrontSide});
- material.onBeforeCompile=shader=>{
-  Object.assign(shader.uniforms,uniforms);
-  shader.vertexShader='varying vec2 mcmWorld;\n'+shader.vertexShader;
-  shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nmcmWorld=(modelMatrix*vec4(position,1.0)).xz;');
-  shader.fragmentShader=`varying vec2 mcmWorld;
-   uniform sampler2D mcmAtlas,mcmLeaves;
-   uniform vec4 mcmAtlasLayout,mcmBounds;
-   uniform vec3 mcmNativeX,mcmNativeZ;
-   uniform float mcmQuarter,mcmDense;
-  `+shader.fragmentShader;
-  shader.fragmentShader=shader.fragmentShader.replace('#include <map_fragment>',`
-   if(mcmDense<0.5 && mcmBounds.y>mcmBounds.x && mcmWorld.x>mcmBounds.x+0.125 && mcmWorld.x<mcmBounds.y-0.125 && mcmWorld.y>mcmBounds.z+0.125 && mcmWorld.y<mcmBounds.w-0.125)discard;
-   vec2 grid=vec2(dot(mcmNativeX,vec3(mcmWorld,1.0)),dot(mcmNativeZ,vec3(mcmWorld,1.0)));
-   float extent=mcmAtlasLayout.w*16.0;
-   grid=clamp(grid,vec2(0.0),vec2(extent-0.0001));
-   vec2 leaf=floor(grid/16.0),local=grid-leaf*16.0;
-   vec4 info=texture2D(mcmLeaves,(leaf+0.5)/mcmAtlasLayout.w);
-   float texSize=mcmAtlasLayout.z;
-   vec2 region=vec2(mod(info.y,4.0),mod(floor(info.y/16.0),4.0))*mcmQuarter;
-   vec2 uv=(region*(texSize-2.0)*0.25+1.0)/texSize + local*((texSize-2.0)/texSize)*mix(0.0625,0.015625,mcmQuarter);
-   float orientation=info.z;
-   if(orientation==1.0)uv.y=1.0-uv.y;
-   else if(orientation==2.0)uv.x=1.0-uv.x;
-   else if(orientation==3.0)uv=1.0-uv;
-   else if(orientation==4.0)uv=vec2(uv.y,1.0-uv.x);
-   else if(orientation==5.0)uv=uv.yx;
-   else if(orientation==6.0)uv=1.0-uv.yx;
-   else if(orientation==7.0)uv=vec2(1.0-uv.y,uv.x);
-   vec2 cell=vec2(mod(info.x,mcmAtlasLayout.x),floor(info.x/mcmAtlasLayout.x));
-   vec3 originalColor=texture2D(mcmAtlas,(cell+uv)/mcmAtlasLayout.xy).rgb;
-   diffuseColor.rgb*=info.w>0.5 && info.x>=0.0?originalColor:vec3(0.35);
-  `);
- };
- material.customProgramCacheKey=()=>`mcm-original-terrain-${dense?'dense':'coarse'}-v2`;
+ // The coarse mesh discards where the dense sand patch covers it; SandSurface
+ // mutates this same Vector4 as the patch moves, so the uniform stays live.
+ const boundsValue=bounds?.isUniformNode?bounds.value:bounds instanceof THREE.Vector4?bounds:new THREE.Vector4();
+ const layout=uniform(new THREE.Vector4(resources.columns,resources.rows,resources.size,resources.side));
+ const nativeX=uniform(new THREE.Vector3((b.x-a.x)*scale,(c.x-a.x)*scale,a.x*scale));
+ const nativeZ=uniform(new THREE.Vector3((b.z-a.z)*scale,(c.z-a.z)*scale,a.z*scale));
+ const quarter=uniform(physics.scene.terrainMode===1?0:1);
+ const boundsNode=uniform(boundsValue);
+ const material=new MeshStandardNodeMaterial({name:`mcm-original-terrain-${dense?'dense':'coarse'}`,roughness:1,vertexColors:false,polygonOffset:dense,polygonOffsetFactor:-1,polygonOffsetUnits:-1,side:dense?THREE.DoubleSide:THREE.FrontSide});
+ // Native world coordinates for the original terrain grid: metres -> original units.
+ const world=positionWorld.xz,grid=vec2(dot(nativeX,vec3(world.x,world.y,float(1))),dot(nativeZ,vec3(world.x,world.y,float(1))));
+ const extent=layout.w.mul(16.0),clamped=clamp(grid,vec2(float(0)),vec2(extent.sub(0.0001)));
+ const leaf=floor(clamped.div(16.0)),local=clamped.sub(leaf.mul(16.0));
+ // Float leaf record: texture index, tile index, orientation, 1 when assigned.
+ const info=tslTexture(resources.lookup,leaf.add(0.5).div(layout.w)),size=layout.z;
+ const region=vec2(mod(info.y,4.0),mod(floor(info.y.div(16.0)),4.0)).mul(quarter);
+ const base=region.mul(size.sub(2.0)).mul(0.25).add(1.0).div(size);
+ const step=local.mul(size.sub(2.0).div(size)).mul(mix(0.0625,0.015625,quarter));
+ const uv=base.add(step),orientation=info.z;
+ // The stored orientation encodes a swap plus an optional per-axis flip.
+ const swapped=orientation.equal(4.0).or(orientation.equal(5.0)).or(orientation.equal(6.0)).or(orientation.equal(7.0));
+ const across=select(swapped,uv.y,uv.x),up=select(swapped,uv.x,uv.y);
+ const flipX=orientation.equal(2.0).or(orientation.equal(3.0)).or(orientation.equal(6.0)).or(orientation.equal(7.0));
+ const flipY=orientation.equal(1.0).or(orientation.equal(3.0)).or(orientation.equal(4.0)).or(orientation.equal(6.0));
+ const texel=vec2(select(flipX,float(1.0).sub(across),across),select(flipY,float(1.0).sub(up),up));
+ const cell=vec2(mod(info.x,layout.x),floor(info.x.div(layout.x)));
+ const original=tslTexture(resources.atlas,cell.add(texel).div(vec2(layout.x,layout.y))).rgb;
+ const assigned=info.w.greaterThan(0.5).and(info.x.greaterThanEqual(0.0));
+ // Unassigned leaves stay neutral grey rather than sampling a random atlas cell.
+ const tint=select(assigned,original,vec3(0.35)),colors=dense?tint.mul(attribute('color','vec3')):tint;
+ material.colorNode=Fn(()=>{
+  if(!dense){
+   // A narrow overlap covers sample-coverage cracks at the coarse discard edge.
+   Discard(boundsNode.y.greaterThan(boundsNode.x)
+    .and(world.x.greaterThan(boundsNode.x.add(0.125))).and(world.x.lessThan(boundsNode.y.sub(0.125)))
+    .and(world.y.greaterThan(boundsNode.z.add(0.125))).and(world.y.lessThan(boundsNode.w.sub(0.125))));
+  }
+  return colors;
+ })();
  return material;
 }
