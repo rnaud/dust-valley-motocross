@@ -6,18 +6,13 @@ An original, arcade-style motocross playground built in Three.js, inspired by th
 
 https://rnaud.github.io/dust-valley-motocross/
 
-- **Desert circuit:** three laps of a hand-authored 1.33 km circuit through twelve ordered gates, with rolling grade, seventeen jump features including sharp kickers and rollers, start lights, gate splits, a translucent best-lap ghost, best lap and a locally saved personal best.
-- **Free ride:** ride fifteen shaped jumps across several lines, follow the flags and compass markers, explore the outer hills, and build a combo multiplier from clean landings.
-- **Wild terrains:** four original procedural maps for free riding, each with its own soil: *Sidewinder Dunes* (transverse dunes with long windward ramps and steep slip faces; deep, soft sand), *Breaker Quarry* (a four-bench open pit with a spiral haul road; shallow hardpack), *Red Gorge* (a meandering sandstone gorge with step ledges in the wash and side gullies) and *Long Wash* (an open loop trail with whoop sections, dry washes and mesas). They use Dust Valley handling. Defined in `src/terrain-maps.js`.
-- **Retro '98 bike:** an original low-poly bike and rider with flat shading and 16-pixel textures, selectable in the menu and saved locally. It shares the modern bike's rig, so handling, suspension and rider IK are identical. See `src/retro-bike.js`.
-- **Deformable sand:** enabled by default in every mode, including MCM preview. Tires settle and carve the surface, repeated passes compact it, and soft soil adds rolling resistance. Uncheck the menu option for hardpack. Ruts persist during a ride within a bounded terrain cache; restarting clears them.
-- **Keyboard:** WASD or arrow keys to ride; Space to boost; R to recover; C cycles near/far/helmet cameras; P or Escape pauses; I/K shifts rider weight and adjusts pitch in the air. Land level; a hard impact or tipped chassis can cause a wipeout.
-- **Gamepad:** left stick steers and leans, RT/A throttles, LT/B brakes, RB/X boosts, Start pauses.
-- **Mobile:** drag the left thumb joystick for proportional steering (horizontal) and rider lean (vertical), while holding GAS on the right. BRAKE slows the bike; BOOST adds engine power. Use ↺ to recover. Portrait and landscape supported.
-- Sound is optional and starts only after pressing SOUND: RPM/gear-driven engine load and shifts, wind, tire roost and landing impacts. Camera shake follows hard landings.
-- **Daily sprint:** one lap of the circuit against today's local best, with a local top-five board and a share/download result card.
-- **Photo mode:** pause, hide the HUD, orbit/inspect the bike, and save a PNG.
-- **Settings:** near/far/helmet cameras, quality (auto/high/low), dawn/day/dusk light, touch sensitivity. First launch includes a three-step ride tutorial.
+- **One ride, one bike:** the recovered Motocross Madness bike, rider, suspension, engine and sounds on *Sidewinder Dunes*. Choose a rider and livery, then ride. `src/mcm-core-preview.js` owns the recovered runtime; `src/mcm-custom-terrain.js` generates its collision terrain from Dust Valley's dune height function.
+- **Deformable sand:** enabled by default. Wheels sink, carve ruts, throw roost and compact the surface; switch it off for hardpack. The same dune surface drives the recovered solver and the rendered sand.
+- **Scenery and light:** Dust Valley's procedural dunes, buttes, boulders, grass and haze, with dawn/day/dusk presets, quality settings, cameras, art styles and photo mode.
+- **Keyboard:** WASD or arrow keys to ride; Space to boost; R to recover; C cycles cameras; P or Escape pauses; I/K shifts rider weight and pitch.
+- **Gamepad and mobile:** left stick steers and leans, triggers throttle and brake; mobile uses a thumb joystick and pedals.
+
+There is no original-game circuit, Dust Valley arcade handling, retro bike or remix worlds any more: those modes were removed with their physics, bike models and modules.
 
 Rendering uses three.js `WebGPURenderer` (r187) with TSL node materials, and falls back automatically to its WebGL 2 backend where WebGPU is unavailable. Art styles: Original, Neon night, Hiraeth / Moebius, Voxel dunes, Painted landscape, PS1 motocross and Outlined pixel art, as TSL post-processing. Touch controls were checked using mobile browser emulation and simultaneous touch events; physical-device performance will vary.
 
