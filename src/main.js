@@ -64,7 +64,6 @@ async function loadSelectedMcmMap(base){
 }
 // The custom dunes keep Dust Valley's GPU sand: an avalanche field for the
 // ripples and slip faces, plus the 25 cm deformable field the wheels carve.
-const trackTexture=new THREE.DataTexture(new Uint8Array([0,0,0,255]),1,1);trackTexture.needsUpdate=true;
 function setupGpuSand(){
  if(!customMcm||!$('sand-mode').checked)return null;
  // The recovered bike's world is spawn-relative, so the sand field is too.
@@ -73,14 +72,34 @@ function setupGpuSand(){
  sandFlow.reset(base,(x,z,h,slope)=>(wild.flow?.depth??0)*(wild.sand?.(x,z,h,slope)??0));
  fineSand=new FineSandGPU(renderer,{size:mobile?256:512});
  const residual=(x,z)=>base(x,z)-sandFlow.baseAt(x,z);
- fineSand.reset(trackTexture,{wind:wild.view.wind,ripples:(wild.view.ripple??0)>0,maxDepth:wild.soil.maxDepth,maxLift:wild.soil.maxLift,residual});
+ fineSand.reset({wind:wild.view.wind,ripples:(wild.view.ripple??0)>0,maxDepth:wild.soil.maxDepth,maxLift:wild.soil.maxLift,residual});
  fineMesh=createFineSandMesh(fineSand,{albedo:'#e2c79e',soilMap:wildTexture(wild)});
  scene.add(fineMesh.mesh);
  fineMesh.soil.value=wildTexture(wild);fineMesh.albedo.value.set(wild.view.sandColor??'#e2c79e');
  gpuSand=new GpuSandSurface(fineSand,(x,z)=>sandFlow.heightAt(x,z),{soil:wild.soil,flipRows:sandFlow.flipRows,residual});
+ // Rider ruts feed the coarse avalanche field; the field's offsets feed back
+ // through heightAt(), so both fields stay on the same surface.
+ gpuSand.onCells=(cells,g)=>sandFlow.observe(cells,(ix,iz)=>g.deltaAt(ix,iz));
  soilUniforms.sandAlbedoOn.value=1;soilUniforms.flowEnabled.value=1;soilUniforms.shadowEnabled.value=1;
  soilUniforms.flowTexel.value=1/sandFlow.n;soilUniforms.terrainShadow.value=sandFlow.shadowTarget.texture;
+ soilUniforms.memoryTex.value=fineSand.memory.texture;soilUniforms.memoryInfo.value.copy(fineSand.memory.info);soilUniforms.memoryOn.value=1;
  return gpuSand;
+}
+// Fallback textures keep the soil materials valid while the sand fields are
+// disposed (menu, restart) without sampling a freed render target.
+const emptyFlowTex=new THREE.DataTexture(new Float32Array(4),1,1,THREE.RGBAFormat,THREE.FloatType);emptyFlowTex.needsUpdate=true;
+const emptyTrackTex=new THREE.DataTexture(new Uint8Array(4),1,1);emptyTrackTex.needsUpdate=true;
+function resetSandUniforms(){
+ soilUniforms.sandAlbedoOn.value=0;soilUniforms.flowEnabled.value=0;soilUniforms.shadowEnabled.value=0;
+ soilUniforms.flowField.value=emptyFlowTex;soilUniforms.terrainShadow.value=emptyTrackTex;
+ soilUniforms.memoryOn.value=0;soilUniforms.memoryTex.value=emptyFlowTex;
+}
+function disposeGpuSand(){
+ if(fineMesh){scene.remove(fineMesh.mesh);fineMesh.mesh.geometry.dispose();fineMesh.mesh.material.dispose();fineMesh=null;}
+ materials?.dirt?.userData?.sandBounds?.value?.set(0,0,0,0);
+ sandFlow?.dispose?.();fineSand?.dispose?.();
+ sandFlow=null;fineSand=null;gpuSand=null;activeSand=null;
+ resetSandUniforms();
 }
 function customMcmScene(base){
  const stub=createMcmTerrainStub(),map=terrainMap('dunes');
@@ -498,16 +517,17 @@ async function start(){
  catch(error){console.error(error);toast('The original bike could not load. Please try again.',5);return;}
  finally{starting=false;startButton.disabled=false;startButton.innerHTML=startLabel;}
  tireTracks.clear();
- state=corePreview.createMcmCoreState(coreScene,{spawn:customMcm?wild.spawn:{x:0,z:0,yaw:0},sand:$('sand-mode').checked});
- soilUniforms.sandAlbedoOn.value=0;soilUniforms.flowEnabled.value=0;soilUniforms.shadowEnabled.value=0;
+ disposeGpuSand();
  if(wild)sandFx.setLook({...wild.view.spray,wind:wild.view.wind});
- if(customMcm){setupGpuSand();}
- else{sandFlow?.disable();fineSand?.disable();gpuSand=null;}
- if(fineMesh)fineMesh.mesh.visible=!!gpuSand;
- if(gpuSand)gpuSand.follow(state.x,state.z,state.physics.tileWorld);
+ // The GPU fine field is created before the core state so the recovered terrain
+ // can wrap the same surface the renderer draws.
+ const gpuSurface=customMcm&&$('sand-mode').checked?setupGpuSand():null;
+ state=corePreview.createMcmCoreState(coreScene,{spawn:customMcm?wild.spawn:{x:0,z:0,yaw:0},sand:$('sand-mode').checked,sandSurface:gpuSurface});
+ if(fineMesh)fineMesh.mesh.visible=!!gpuSurface;
+ if(gpuSurface)gpuSurface.follow(state.x,state.z);
  updateOriginalTerrainMaterials();
  previewHeight=state.physics.baseHeight;
- activeSand=gpuSand??state.physics.renderSurface;
+ activeSand=gpuSurface??state.physics.renderSurface;
  sandSurface.update(activeSand?.isGpuSand?null:activeSand);
  updateEnvironment();
  document.querySelector('.map-panel>span').textContent=(wild?wild.name:coreScene.title??'ORIGINAL COURSE').toUpperCase()+' / LIVE';
@@ -526,18 +546,23 @@ $('start').onclick=start;$('restart').onclick=start;$('reset').onclick=()=>{if(p
 function recover(){
  if(!state.physics)return;
  const {scene,spawn,sand}=state.physics;
- state=corePreview.createMcmCoreState(scene,{spawn,sand:!!sand});
+ // Reuse the same GPU field, but recenter it on the reset position. Falling
+ // back to the CPU surface here used to leave the camera and the visible sand
+ // on different models after every crash.
+ state=corePreview.createMcmCoreState(scene,{spawn,sand:!!sand,sandSurface:gpuSand??null});
  updateOriginalTerrainMaterials();
- activeSand=state.physics.renderSurface;
+ activeSand=gpuSand??state.physics.renderSurface;
  previewHeight=state.physics.baseHeight;
  ridePose.reset(state);originalModels?.reset(state);
  accumulator=0;cameraReady=false;crashTimer=0;
  tireTracks.clear();
+ if(gpuSand)gpuSand.follow(state.x,state.z);
+ if(fineMesh)fineMesh.mesh.visible=!!gpuSand;
  sandSurface.update(activeSand?.isGpuSand?null:activeSand);
  toast('BACK TO THE START');
 }
 function togglePause(){if(phase==='playing'){phase='paused';clearInput();$('overlay').hidden=false;$('overlay-label').textContent='TAKE A BREATHER';$('overlay-title').textContent='Ride paused.';$('overlay-copy').textContent='The desert isn’t going anywhere.';$('resume').hidden=false;$('photo').hidden=false;}else if(phase==='paused'){phase='playing';$('overlay').hidden=true;}}$('pause').onclick=togglePause;$('resume').onclick=togglePause;
-$('home').onclick=()=>{sandFlow?.disable();fineSand?.disable();gpuSand=null;if(fineMesh)fineMesh.mesh.visible=false;soilUniforms.sandAlbedoOn.value=0;soilUniforms.flowEnabled.value=0;soilUniforms.shadowEnabled.value=0;activeSand=null;previewHeight=null;updateEnvironment();$('preview-badge').hidden=true;document.body.classList.remove('mcm-preview');phase='menu';clearInput();document.body.classList.remove('playing');for(const id of ['menu','location','footer'])$(id).hidden=false;for(const id of ['hud','pause','touch','overlay'])$(id).hidden=true;};
+$('home').onclick=()=>{disposeGpuSand();state=menuState;previewHeight=null;updateEnvironment();$('preview-badge').hidden=true;document.body.classList.remove('mcm-preview');phase='menu';clearInput();document.body.classList.remove('playing');for(const id of ['menu','location','footer'])$(id).hidden=false;for(const id of ['hud','pause','touch','overlay'])$(id).hidden=true;};
 const todayKey=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
 function finish(){
  phase='finished';clearInput();$('overlay').hidden=false;
@@ -585,7 +610,6 @@ if(phase==='playing'){
   let result;
   try{result=corePreview.stepMcmCoreState(state,input,.02);}
   catch(error){console.error(error);state.physicsError=error.message;phase='paused';clearInput();$('overlay').hidden=false;$('overlay-label').textContent='PHYSICS STOPPED';$('overlay-title').textContent='Recovered physics stopped.';$('overlay-copy').textContent='This riding path reached an unresolved original dependency. Restart to ride again.';$('resume').hidden=true;break;}
-  if(gpuSand)gpuSand.deform(state.wheelContacts.map((hit,i)=>hit?{...hit,load:state.tireLoads[i],demand:i===0?state.throttle:0}:null),.02);
   rideAudio.step(state,input,.02,camera.position);
   ridePose.push(state);originalModels?.push(state);
   // On soft sand the trenches are the tracks; tread decals stay off.
@@ -681,8 +705,22 @@ if(fineMesh?.mesh.visible&&fineSand&&gpuSand&&phase==='playing'){
 if(sandFlow?.enabled&&phase==='playing'){
  sandFlow.update(dt);soilUniforms.flowField.value=sandFlow.texture;
  if(debugParams.get('shadowpass')!=='0')sandFlow.shadows(sunDir,dt);
+ // Avalanche offsets are read back on a slower clock than the fine field.
+ if((animate.frame??0)%6===0)sandFlow.readAround(state.x,state.z,40,.004).then(changed=>{if(changed?.length&&gpuSand)gpuSand.version++;}).catch(()=>{});
 }
-sandFx.root.visible=false;
+sandFx.root.visible=phase==='playing'||phase==='paused';
+if(phase==='playing'){
+ const vx=Math.sin(state.yaw)*state.speed,vz=Math.cos(state.yaw)*state.speed;
+ sandFx.update(dt,{
+  soil:activeSand?.profile??wild?.soil,
+  contacts:state.wheelContacts,
+  velocity:{x:vx,y:state.vy,z:vz},
+  throttle:state.throttle??0,
+  events:activeSand?.events??[],
+  height:surfaceHeight,
+  deposit:(x,z,v)=>activeSand?.deposit?.(x,z,v)
+ },camera,sunDir);
+}
 if(phase==='playing'&&state.speed>4&&!state.air){
  const back=1.05;
  puff(state.x-Math.sin(state.yaw)*back,state.y-.55,state.z-Math.cos(state.yaw)*back,2,.3,.7);
@@ -701,4 +739,13 @@ function resize(){renderer.setSize(innerWidth,innerHeight);if(speedCanvas){speed
 requestAnimationFrame(animate);
 // Read-only diagnostics for smoke tests and performance inspection.
 // Start on the sand: Sidewinder Dunes unless the rider last chose another terrain.
-window.__game={soil:soilUniforms,scene,place:(x,z,yaw)=>{state.physics.spawn={x,z,yaw};ridePose.reset(state);cameraReady=false;accumulator=0;},backend:()=>rendererBackend,camera:()=>({x:camera.position.x,y:camera.position.y,z:camera.position.z,fov:camera.fov,look:{x:look.x,y:look.y,z:look.z}}),sandFx:()=>({dust:sandFx.spray.activeDust,clods:sandFx.spray.activeClods,visible:sandFx.root.visible}),presentation:()=>({style:artRenderer.style,particles:recoveredParticles.count,nativeParticles:recoveredParticles.nativeCount,particleTexture:recoveredParticles.textureName,particleSprites:[...new Set(recoveredParticles.rows.map(r=>r.sprite))]}),audio:()=>rideAudio.original?.diagnostics()??{ready:false},sandSample:(x,z)=>activeSand?{height:activeSand.height(x,z),displacement:activeSand.displacementAt(x,z),compaction:activeSand.compaction(x,z)}:null,environment:()=>({sand:activeSand?{version:activeSand.version,tiles:activeSand.tiles.size,renderedTiles:sandSurface.meshes.size}:null,height:state.physics.height(state.x,state.z),visualHeight:terrain(state.x,state.z),mountains:mountains.map(m=>({x:m.position.x,z:m.position.z,radius:m.userData.radius*Math.max(m.scale.x,m.scale.z),foundation:m.userData.foundation}))}),snapshot:()=>({phase,elapsed,countdown:0,originalAssets:{rider:$('mcm-rider').value,bike:$('mcm-bike').value,parts:originalModels?.parts,terrainTextures:!!originalTerrainTextures},tireTrackSegments:tireTracks.count,...state}),renderer};
+window.__game={soil:soilUniforms,scene,place:(x,z,yaw)=>{state.physics.spawn={x,z,yaw};ridePose.reset(state);cameraReady=false;accumulator=0;},backend:()=>rendererBackend,camera:()=>({x:camera.position.x,y:camera.position.y,z:camera.position.z,fov:camera.fov,look:{x:look.x,y:look.y,z:look.z}}),sandFx:()=>({dust:sandFx.spray.activeDust,clods:sandFx.spray.activeClods,visible:sandFx.root.visible}),presentation:()=>({style:artRenderer.style,particles:recoveredParticles.count,nativeParticles:recoveredParticles.nativeCount,particleTexture:recoveredParticles.textureName,particleSprites:[...new Set(recoveredParticles.rows.map(r=>r.sprite))]}),audio:()=>rideAudio.original?.diagnostics()??{ready:false},sandSample:(x,z)=>activeSand?{height:activeSand.height(x,z),displacement:activeSand.displacementAt(x,z),compaction:activeSand.compaction(x,z)}:null,
+ sandDebug:(x,z)=>{
+  const fine=gpuSand?.fine;if(!fine)return null;
+  const ix=Math.round(x/.25),iz=Math.round(z/.25),n=fine.n,mn=fine.memory.n;
+  const u=((ix%mn)+mn)%mn,v=((iz%mn)+mn)%mn;
+  const fu=((ix-fine.origin.value.x)%n+n)%n,fv=((iz-fine.origin.value.y)%n+n)%n;
+  return {ix,iz,origin:fine.origin.value.toArray(),gpu:gpuSand?{i0:gpuSand.i0,j0:gpuSand.j0,placed:gpuSand.placed,d:gpuSand.deltaAt(ix,iz),g:gpuSand.g[gpuSand.local(ix,iz)]??0,flip:gpuSand.flipRows,reading:gpuSand.reading,version:gpuSand.version}:null,memory:{u,v,n:mn,texel:fine.memory.texel},fine:{u:fu,v:fv,n},step:fine.step};
+ },
+ readMemoryAt:async(x,z)=>{const fine=gpuSand?.fine;if(!fine)return null;const m=fine.memory,ix=Math.round(x/.25),iz=Math.round(z/.25),u=((ix%m.n)+m.n)%m.n,v=((iz%m.n)+m.n)%m.n;const px=await renderer.readRenderTargetPixelsAsync(m.target,u,v,1,1);return [...px];},
+ readFineAt:async(x,z)=>{const fine=gpuSand?.fine;if(!fine)return null;const ix=Math.round(x/.25),iz=Math.round(z/.25),u=((ix-fine.origin.value.x)%fine.n+fine.n)%fine.n,v=((iz-fine.origin.value.y)%fine.n+fine.n)%fine.n;const px=await renderer.readRenderTargetPixelsAsync(fine.targets[fine.current],u,v,1,1);return [...px];},environment:()=>({sand:activeSand?{version:activeSand.version,tiles:activeSand.tiles?.size??0,renderedTiles:sandSurface.meshes.size}:null,height:state.physics?.height?state.physics.height(state.x,state.z):null,visualHeight:terrain(state.x,state.z),mountains:mountains.map(m=>({x:m.position.x,z:m.position.z,radius:m.userData.radius*Math.max(m.scale.x,m.scale.z),foundation:m.userData.foundation}))}),snapshot:()=>({phase,elapsed,countdown:0,originalAssets:{rider:$('mcm-rider').value,bike:$('mcm-bike').value,parts:originalModels?.parts,terrainTextures:!!originalTerrainTextures},tireTrackSegments:tireTracks.count,...state}),renderer};

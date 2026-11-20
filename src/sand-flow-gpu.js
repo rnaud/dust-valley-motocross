@@ -110,9 +110,10 @@ export class SandFlowGPU{
   const top=data[(n-1)*n*4],bottom=data[0];this.flipRows=Math.abs(row[0]-top)<Math.abs(row[0]-bottom)&&top!==bottom;
  }
  // Rider soil change at a 0.25 m node: dh metres over 0.0625 m².
- observe(cells,sand){
+ // cells are world 0.25 m node indices; deltaAt returns their current change.
+ observe(cells,deltaAt){
   for(const [ix,iz] of cells){
-   const key=ix+','+iz,d=sand.deltaAt(ix,iz),dd=d-(this.shadow.get(key)??0);if(dd===0)continue;this.shadow.set(key,d);
+   const key=ix+','+iz,d=deltaAt(ix,iz),dd=d-(this.shadow.get(key)??0);if(dd===0)continue;this.shadow.set(key,d);
    const k=this.cellOf(ix*.25,iz*.25);if(k<0)continue;
    this.pending[k]+=dd*.0625/(this.dx*this.dx);
    const i=k%this.n,j=(k-i)/this.n,b=this.pendingBox;
@@ -208,4 +209,11 @@ export class SandFlowGPU{
   const area=this.dx*this.dx;return {netChange:(volume-base-injected)*area,moved:volume*area,flowing,maxRolling:rolling,time:this.time,flipRows:this.flipRows};
  }
  disable(){this.enabled=false;this.offsets=null;}
+ dispose(){
+  this.disable();
+  for(const t of this.targets)t?.dispose();
+  this.fluxTarget?.dispose();this.shadowTarget?.dispose();
+  this.staging?.dispose();this.initTexture?.dispose();
+  for(const m of [this.fluxMaterial,this.updateMaterial,this.shadowMaterial,this.initMaterial])m?.dispose?.();
+ }
 }

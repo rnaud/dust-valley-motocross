@@ -20,10 +20,9 @@ test('sand rendering replaces equal-revision tiles on world reset and preserves 
 
 test('deformed collision vertices also update the rendered surface and disturbed-sand color',async()=>{
  const {SandSurface:Soil}=await import('../src/sand-physics.js');
- const {World}=await import('cannon-es');
  const texture=new THREE.Texture(),textures={macro:texture,freeMacro:texture,detail:texture,soilRelief:{normal:texture,roughness:texture}};
  const surface=new SandSurface(new THREE.Scene(),textures,{userData:{sandBounds:{value:new THREE.Vector4()}}});
- const soil=new Soil(()=>0);soil.follow(0,0,new World());surface.update(soil);
+ const soil=new Soil(()=>0);soil.follow(0,0);surface.update(soil);
  const geo=surface.meshes.get('0,0').geometry,index=64*65;
  assert.equal(geo.attributes.position.getY(index),0);assert.equal(geo.attributes.color.getX(index),1);
  for(let i=0;i<12;i++)soil.deform([{x:0,z:0,load:1000,demand:1},null],1/120);

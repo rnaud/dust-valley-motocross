@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {rippleHeight,RIPPLE_WAVELENGTH} from './ripple-seed.js';
-import {Fn,dFdx,dFdy,mx_noise_float,clamp as tslClamp,texture as tslTexture,uniform,positionWorld,positionGeometry,normalView,normalWorld,cameraPosition,cameraViewMatrix,fwidth,fract,floor,smoothstep,mix,step,sin,dot,length,normalize,pow,max,select,vec2,vec3,vec4,float,normalMap} from 'three/tsl';
+import {Fn,dFdx,dFdy,mx_noise_float,clamp as tslClamp,texture as tslTexture,uniform,positionWorld,positionGeometry,normalView,normalWorld,cameraPosition,cameraViewMatrix,fwidth,fract,floor,smoothstep,mix,step,sin,dot,length,normalize,pow,max,select,mod,vec2,vec3,vec4,float,normalMap} from 'three/tsl';
 const TAU=Math.PI*2;
 // The sky and dust artwork still paint a worn lane; with the circuit gone it is
 // a ring around the basin rather than the race course.
@@ -100,7 +100,7 @@ export function createTextures(renderer,mobile){
 const emptyTrack=new THREE.DataTexture(new Uint8Array(4),1,1);emptyTrack.needsUpdate=true;
 const emptyFlow=new THREE.DataTexture(new Float32Array(4),1,1,THREE.RGBAFormat,THREE.FloatType);emptyFlow.needsUpdate=true;
 // flowField: the GPU sand flow state (R bed, G rolling layer) for the coarse terrain.
-export const soilUniforms={sandAlbedo:uniform(new THREE.Color('#e2c79e')),sandAlbedoOn:uniform(0),cascadeFar:uniform(720),flowField:tslTexture(emptyFlow),flowEnabled:uniform(0),terrainShadow:tslTexture(emptyTrack),shadowEnabled:uniform(0),flowTexel:uniform(1/1024),trackMap:tslTexture(emptyTrack),trackTexel:uniform(1),rippleStrength:uniform(0),windDir:uniform(new THREE.Vector2(1,0)),sparkle:uniform(0),sunDir:uniform(new THREE.Vector3(0,1,0))};
+export const soilUniforms={sandAlbedo:uniform(new THREE.Color('#e2c79e')),sandAlbedoOn:uniform(0),cascadeFar:uniform(720),flowField:tslTexture(emptyFlow),flowEnabled:uniform(0),terrainShadow:tslTexture(emptyTrack),shadowEnabled:uniform(0),flowTexel:uniform(1/1024),trackMap:tslTexture(emptyTrack),trackTexel:uniform(1),rippleStrength:uniform(0),windDir:uniform(new THREE.Vector2(1,0)),sparkle:uniform(0),sunDir:uniform(new THREE.Vector3(0,1,0)),memoryTex:tslTexture(emptyFlow),memoryOn:uniform(0),memoryInfo:uniform(new THREE.Vector4(512,2048,.25,0))};
 // Coarse field height (h + r), bilinear between cell centres (vertex-safe).
 function bilinearField(U,xz){
  const n=float(1).div(U.flowTexel),t=xz.add(450).div(900).mul(n).sub(.5),i=floor(t),f=fract(t);
@@ -124,6 +124,11 @@ export function applyTerrainTexture(material,textures,{trackStrength=0}={}){
   material.roughnessMap=textures.soilRelief.roughness;material.color.set('#ffffff');material.flatShading=false;
   const ts=material.userData.trackStrength,sb=material.userData.sandBounds;
   const trackUV=P.xz.add(450).div(900),record=U.trackMap.sample(trackUV),disturbed=record.b;
+  // Persistent 25 cm ruts beyond the live window: sample the world-anchored
+  // memory map for a track-floor tint and a normal perturbation. The coarse
+  // mesh cannot resolve a 25 cm trench, but it can carry the line of it.
+  const memN=U.memoryInfo.y,memUV=vec2(mod(floor(P.x.mul(4)),memN).add(.5),mod(floor(P.z.mul(4)),memN).add(.5)).div(memN);
+  const mem=U.memoryTex.sample(memUV),memValid=trackStrength>0?mem.a.mul(U.memoryOn):float(0);
   const grain=tslTexture(detail,P.xz.mul(.22)).rgb,broad=tslTexture(detail,P.xz.mul(.043)).rgb;
   // Wild maps carry sandiness (where ripples form) in the colour map's alpha.
   const sandiness=soilMap.a.mul(U.rippleStrength);
@@ -153,7 +158,8 @@ export function applyTerrainTexture(material,textures,{trackStrength=0}={}){
     .mul(float(1).sub(ts.mul(record.r.mul(.5).add(disturbed.mul(.06))))).mul(float(1).add(ts.mul(record.g).mul(.22)))
     // Dirt grain belongs to the basin soil; clean sand only keeps a trace of it.
     .mul(mix(vec3(1),grain.mul(1.65),mix(.65,.1,tslClamp(sandiness.add(soilMap.a.mul(U.sandAlbedoOn).mul(4)),0,1)))).mul(mix(vec3(1),broad.mul(1.5),mix(.2,.05,tslClamp(sandiness.add(soilMap.a.mul(U.sandAlbedoOn).mul(4)),0,1))))
-    .mul(float(1).sub(ripple.mul(select(rippleF.greaterThan(.6),.03,-.008))).sub(mega.mul(select(megaF.greaterThan(.7),.02,0)))),1);
+    .mul(float(1).sub(ripple.mul(select(rippleF.greaterThan(.6),.03,-.008))).sub(mega.mul(select(megaF.greaterThan(.7),.02,0))))
+    .mul(float(1).sub(memValid.mul(max(0,mem.r.negate()).mul(.9).add(mem.b.mul(.08))))),1);
   // Recorded trench walls/berms and the ripple faces tilt the normal.
   const t=U.trackTexel,height=c=>c.g.mul(.25).sub(c.r.mul(.4));
   const trackGrad=vec2(height(U.trackMap.sample(trackUV.add(vec2(t,0)))).sub(height(U.trackMap.sample(trackUV.sub(vec2(t,0))))),

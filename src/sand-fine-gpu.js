@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import {FloatType,NearestFilter,NodeMaterial,QuadMesh,RGBAFormat,RenderTarget,RepeatWrapping} from 'three/webgpu';
 import {rippleHeight} from './ripple-seed.js';
-import {Fn,Loop,If,abs,dot,float,floor,fract,int,length,max,min,mix,mod,mx_noise_float,select,smoothstep,texture,uniform,uniformArray,uv,vec2,vec3,vec4} from 'three/tsl';
+import {SandMemory} from './sand-memory-gpu.js';
+import {Fn,Loop,If,abs,clamp,dot,float,floor,fract,int,length,max,min,mix,mod,mx_noise_float,select,smoothstep,texture,uniform,uniformArray,uv,vec2,vec3,vec4} from 'three/tsl';
 
 // Fine sand field on the GPU: 25 cm nodes in a window that scrolls with the
 // bike (toroidal storage, so scrolling never copies data). Each texel holds
@@ -22,7 +23,7 @@ import {Fn,Loop,If,abs,dot,float,floor,fract,int,length,max,min,mix,mod,mx_noise
 //     fixed distance downwind with height-dependent emission (crests emit
 //     more, which grows ripples at about the hop length), plus creep diffusion.
 export const FINE_CELL=.25;
-export const OP={DIG:0,RING:1,DISC:2};
+export const OP={DIG:0,RING:1,DISC:2,SWEEP:3,RINGSWEEP:4};
 export const MAX_OPS=24;
 export const RIPPLE=Object.freeze({hop:5,emission:2.2e-5,growth:1.6,amplitude:.045,creep:.00015,wavelength:1.25});
 
@@ -36,7 +37,9 @@ export class FineSandGPU{
   this.wind=uniform(new THREE.Vector2(1,0));this.windOn=uniform(1);this.limit=uniform(Math.tan(31*Math.PI/180)*FINE_CELL);
   this.maxDepth=uniform(.34);this.maxLift=uniform(.22);this.opCount=uniform(0,'int');
   this.opData=Array.from({length:MAX_OPS*2},()=>new THREE.Vector4());this.ops=uniformArray(this.opData,'vec4');
-  this.trackNode=texture(new THREE.DataTexture(new Uint8Array(4),1,1));this.stateNode=texture(this.targets[0].texture);
+  this.stateNode=texture(this.targets[0].texture);
+  // Persistent 25 cm world map, reused across window moves.
+  this.memory=new SandMemory(renderer,{size:size<=256?1024:2048});this.memoryNode=texture(this.memory.texture);this.memN=uniform(this.memory.n);
   this.residual=new THREE.DataTexture(new Float32Array(size*size),size,size,THREE.RedFormat,THREE.FloatType);this.residual.magFilter=this.residual.minFilter=NearestFilter;
   this.residualNode=texture(this.residual);this.residualFn=null;this.residualOrigin=null;
   this.residualStaging=new THREE.DataTexture(new Float32Array(64*64),64,64,THREE.RedFormat,THREE.FloatType);this.stageRegion=new THREE.Box2();this.stageOrigin=new THREE.Vector2();this.residualReady=false;
@@ -54,11 +57,12 @@ export class FineSandGPU{
    const self=at(world);
    const wasInside=world.x.greaterThanEqual(po.x).and(world.x.lessThan(po.x.add(n))).and(world.y.greaterThanEqual(po.y)).and(world.y.lessThan(po.y.add(n)));
    const pos=world.mul(FINE_CELL);
-   // 1. Seed for nodes entering the window: recorded ruts + a ripple train.
-   const record=this.trackNode.sample(pos.add(450).div(900));
+   // 1. Seed for nodes entering the window: the persistent 25 cm record if it
+   // has been written, otherwise a fresh ripple train.
    const ripple=rippleHeight(pos,this.wind,float(RIPPLE.amplitude)).mul(this.windOn);
    const residual=this.residualNode.sample(mod(world,n).add(.5).div(n)).r;
-   const seeded=vec4(record.g.mul(.25).sub(record.r.mul(.4)).add(ripple.mul(float(1).sub(record.b))),record.b.mul(.5),record.b,residual);
+   const mem=this.memoryNode.sample(mod(world,this.memN).add(.5).div(this.memN));
+   const seeded=select(mem.w.greaterThan(.5),vec4(mem.x,mem.y,mem.z,residual),vec4(ripple,0,0,residual));
    const state=select(wasInside,self,seeded).toVar();
    const d=state.x.toVar(),packed=state.y.toVar(),disturbed=state.z.toVar();
    // 2. Deformation ops.
@@ -73,8 +77,24 @@ export class FineSandGPU{
      const w=select(length(dir).greaterThan(.5),side.mul(side).mul(2.4),float(1));
      If(dist.greaterThanEqual(b.x).and(dist.lessThanEqual(a.w)).and(w.greaterThanEqual(.05)),()=>{d.assign(min(this.maxLift,d.add(b.y.mul(w))));disturbed.assign(1);});
     });
-    If(kind.greaterThan(1.5).and(r.lessThan(1)),()=>{
+    If(kind.greaterThan(1.5).and(kind.lessThan(2.5)).and(r.lessThan(1)),()=>{
      d.assign(min(this.maxLift,d.add(b.x.mul(float(1).sub(r.mul(r)).pow(2)))));packed.assign(packed.mul(.5));disturbed.assign(1);
+    });
+    // A swept wheel: from this op's centre to b.xy, depth b.z, packing b.w.
+    // Distance to the segment, not to a point, so a wheel at speed carves a
+    // continuous trench instead of a chain of discs.
+    const ab=vec2(b.x,b.y).sub(a.yz),len2=max(dot(ab,ab),1e-8),tRaw=dot(offset,ab).div(len2),tt=clamp(tRaw,0,1),rr=length(offset.sub(ab.mul(tt))).div(a.w);
+    If(kind.greaterThan(2.5).and(kind.lessThan(3.5)).and(rr.lessThan(1)),()=>{
+     const w=float(1).sub(rr.mul(rr)).pow(2),amount=max(0,b.z.mul(w).sub(max(0,d.negate())));
+     d.assign(max(this.maxDepth.negate(),d.sub(amount)));packed.assign(max(0,min(1,packed.add(amount.mul(b.w)))));disturbed.assign(1);
+    });
+    // A swept berm: a tube along the wheel path, only in the side band. This
+    // keeps the lip continuous instead of leaving one ring-shaped lump per
+    // physics step.
+    const distN=length(offset.sub(ab.mul(tt))),side=offset.x.mul(ab.y).sub(offset.y.mul(ab.x)).div(max(distN,1e-4));
+    If(kind.greaterThan(3.5).and(tRaw.greaterThan(0)).and(tRaw.lessThan(1)).and(distN.greaterThan(b.w)).and(distN.lessThan(a.w)),()=>{
+     const w=side.mul(side).mul(2.4);
+     d.assign(min(this.maxLift,d.add(b.z.mul(w))));packed.assign(packed.mul(.5));disturbed.assign(1);
     });
    });
    // Neighbour detail heights (outside the window: treat as this node).
@@ -94,11 +114,11 @@ export class FineSandGPU{
   })();
   return material;
  }
- // track: the world rut record (TrackMap texture) used to seed entering nodes.
- reset(track,{wind={x:1,z:0},ripples=true,maxDepth=.34,maxLift=.22,residual=null}={}){
+ reset({wind={x:1,z:0},ripples=true,maxDepth=.34,maxLift=.22,residual=null}={}){
   this.residualFn=residual;this.residualOrigin=null;
-  this.trackNode.value=track;this.wind.value.set(wind.x,wind.z).normalize();this.windOn.value=ripples?1:0;
+  this.wind.value.set(wind.x,wind.z).normalize();this.windOn.value=ripples?1:0;
   this.maxDepth.value=maxDepth;this.maxLift.value=maxLift;this.previousOrigin.value.set(-1e7,-1e7);this.queue=[];this.step=0;this.enabled=true;this.needsSeed=true;
+  this.memory.clear();
  }
  // Centre the window on a world point (snapped to 4-node steps).
  center(x,z){
@@ -140,7 +160,7 @@ export class FineSandGPU{
   while(this.accumulator>=1/60||this.needsSeed){
    this.accumulator=Math.max(0,this.accumulator-1/60);
    const o=this.origin.value;this.previousOrigin.value.copy(this.needsSeed?new THREE.Vector2(-1e7,-1e7):o);
-   if(this.pendingOrigin){o.set(...this.pendingOrigin);this.pendingOrigin=null;}
+   if(this.pendingOrigin){this.memory.write(this);o.set(...this.pendingOrigin);this.pendingOrigin=null;}
    this.needsSeed=false;if(this.residual.version>0&&!this.residualReady){this.renderer.initTexture(this.residual);this.residualReady=true;}
    // Ops beyond MAX_OPS spill into extra passes in the same step.
    let batch=this.queue.splice(0,MAX_OPS);
@@ -152,6 +172,7 @@ export class FineSandGPU{
     batch=this.queue.length?this.queue.splice(0,MAX_OPS):null;
    }while(batch);
    this.step++;
+   if(this.step%8===0)this.memory.write(this);
   }
  }
  get texture(){return this.targets[this.current].texture;}
@@ -159,7 +180,10 @@ export class FineSandGPU{
  // toroidal wrap (up to four rectangles) and bottom-up rows (WebGL).
  async read(i0,j0,w,h,flipRows){
   const n=this.n,step=this.step,target=this.targets[this.current],out=new Float32Array(w*h*4);
-  const ox=((i0%n)+n)%n,oy=((j0%n)+n)%n,xs=[[0,Math.min(w,n-ox)]],ys=[[0,Math.min(h,n-oy)]];
+  // i0/j0 are world node indices; the toroidal texture is indexed relative to
+  // the current window origin.
+  const ox=(((i0-this.origin.value.x)%n)+n)%n,oy=(((j0-this.origin.value.y)%n)+n)%n;
+  const xs=[[0,Math.min(w,n-ox)]],ys=[[0,Math.min(h,n-oy)]];
   if(xs[0][1]<w)xs.push([xs[0][1],w]);if(ys[0][1]<h)ys.push([ys[0][1],h]);
   await Promise.all(xs.flatMap(([xa,xb])=>ys.map(async([ya,yb])=>{
    const tx=(ox+xa)%n,ty=(oy+ya)%n,rw=xb-xa,rh=yb-ya,qy=flipRows?n-(ty+rh):ty;
@@ -169,4 +193,10 @@ export class FineSandGPU{
   return {data:out,i0,j0,w,h,step};
  }
  disable(){this.enabled=false;}
+ dispose(){
+  this.disable();
+  for(const t of this.targets)t?.dispose();
+  this.residual?.dispose();this.residualStaging?.dispose();
+  this.memory?.dispose();this.material?.dispose?.();
+ }
 }

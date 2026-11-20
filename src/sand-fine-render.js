@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {MeshStandardNodeMaterial} from 'three/webgpu';
-import {cameraPosition,cameraViewMatrix,dot,float,floor,fract,length,max,min,mix,mod,normalize,positionGeometry,pow,select,sin,smoothstep,step,texture,uniform,varying,vec2,vec3,vec4} from 'three/tsl';
+import {cameraPosition,cameraViewMatrix,clamp,dot,float,floor,fract,length,max,min,mix,mod,normalize,positionGeometry,pow,select,sin,smoothstep,step,texture,uniform,varying,vec2,vec3,vec4} from 'three/tsl';
 import {FINE_CELL} from './sand-fine-gpu.js';
 import {soilUniforms} from './textures.js';
 
@@ -36,12 +36,18 @@ export function createFineSandMesh(fine,{albedo='#e2c79e',soilMap}){
  const coarse=coarseFieldSample(world),detail=c=>c.x.mul(fade).add(c.w),dE=detail(cellAt(vec2(1,0))),dW=detail(cellAt(vec2(-1,0))),dN=detail(cellAt(vec2(0,1))),dS=detail(cellAt(vec2(0,-1)));
  const slopeX=coarse.y.add(dE.sub(dW).div(FINE_CELL*2)),slopeZ=coarse.z.add(dN.sub(dS).div(FINE_CELL*2));
  const normal=varying(normalize(vec3(slopeX.negate(),1,slopeZ.negate()))),sim=varying(vec3(here.y,here.z,fade));
+ // Depth-based ambient occlusion, interpolated from the mesh vertices. The
+ // Laplacian form gave hard triangle-shaped bands on this 25 cm grid; rut depth
+ // is smoother and enough to seat the trench in ambient light.
+ const ao=varying(mix(float(1),clamp(float(1).sub(max(0,here.x.negate()).mul(2.2)),float(.7),float(1)),fade));
+ // Deep fresh sand is a touch darker; flat/bermed sand a touch paler.
+ const trough=mix(float(.84),float(1.02),smoothstep(float(-.07),float(.01),here.x));
  const material=new MeshStandardNodeMaterial({roughness:.93,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2});
  material.positionNode=vec3(world.x,coarse.x.add(here.x.mul(fade)).add(here.w),world.y);
  material.normalNode=normalize(cameraViewMatrix.mul(vec4(normal,0)).xyz);
  // Map paint (alpha = sandiness) only for rock and soil; sand is texture-free.
  const paint=soil.sample(vec2(world.x.add(450).div(900),float(1).sub(world.y.add(450).div(900)))),sandiness=paint.a;
- const sand=albedoU.mul(float(1).add(sim.y.mul(.07))).mul(float(1).sub(sim.x.mul(.13)));
+ const sand=albedoU.mul(float(1).add(sim.y.mul(.07))).mul(float(1).sub(sim.x.mul(.13))).mul(trough).mul(ao);
  material.colorNode=vec4(mix(paint.rgb,sand,sandiness),1);
  // Sun glints from the simulated surface normal, only on sun-facing sand.
  const P=vec3(world.x,0,world.y),cell=floor(world.mul(4*24/4)),hash=fract(sin(dot(cell,vec2(12.9898,78.233))).mul(43758.5453));

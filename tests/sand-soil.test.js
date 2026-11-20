@@ -36,3 +36,12 @@ test('a driven rear tire throws roost behind itself',()=>{
  assert.ok(volume(thrown)>volume(none),'roost keeps dug sand on the surface');
  assert.equal(coasting.displacementAt(0,-1.1),0,'no roost without drive');
 });
+
+test('a swept wheel leaves one continuous trench, not a chain of pits',()=>{
+ const s=new SandSurface(()=>0,{soil:{...soft,repose:0,roost:0}});
+ for(let i=0;i<=24;i++)s.deform([{x:0,z:i*.25,load:1200,demand:1},null],1/60);
+ const line=[];for(let z=0;z<=5;z+=.05)line.push(s.displacementAt(0,z));
+ assert.ok(line.every(d=>d<-.02),`gaps in swept trench: ${Math.max(...line).toFixed(4)}`);
+ assert.ok(Math.min(...line)<-.08,'the trench should reach the sinkage target');
+ assert.equal(s.displacementAt(4,5),0,'the sweep must not extend past its capsule');
+});

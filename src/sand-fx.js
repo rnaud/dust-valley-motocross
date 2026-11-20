@@ -47,13 +47,13 @@ export class SandSpray{
   if(dustiness>0)(ctx.contacts??[]).forEach((hit,i)=>{
    if(!hit)return;
    // Rear tire (index 0) throws most of the dust, more under power.
-   const rate=dustiness*clamp((speed-1.5)/8,0,1)*(i===0?70+90*(ctx.throttle??0):26);
+   const rate=dustiness*clamp((speed-1.5)/8,0,1)*(i===0?26+34*(ctx.throttle??0):9);
    this.carry[i]+=rate*dt;
    while(this.carry[i]>=1){
     this.carry[i]--;const a=rand()*TAU,side=(rand()-.5)*1.6;
     this.emitDust(hit.x+Math.cos(a)*.25,hit.y+.1,hit.z+Math.sin(a)*.25,
      -fx*speed*(.18+rand()*.12)+fz*side,.5+rand()*1.4,-fz*speed*(.18+rand()*.12)-fx*side,
-     .9+rand()*.7,1.6+rand()*1.6,2.8+rand()*2.4,.6+rand()*.25);
+     .55+rand()*.4,.8+rand()*.6,1.7+rand()*1.1,.3+rand()*.16);
    }
    // Roost: grains and small clods kicked back from the driven tire.
    if(i===0&&roost>0&&(ctx.throttle??0)>.2&&speed>2){

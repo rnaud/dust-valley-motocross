@@ -3,10 +3,9 @@
 // second rigid-body solver or hidden force correction is involved.
 export function deformableMcmTerrain(original,sand,toDisplay){
  const cache=new Map(),metres=.3048,gridFeet=1/original.worldToGrid;
- const delta=(x,z)=>sand.sample(x,z,(ix,iz)=>{
-  const tx=Math.floor(ix/64),tz=Math.floor(iz/64),tile=sand.soil.get(`${tx},${tz}`);
-  return tile?.delta[(iz-tz*64)*64+ix-tx*64]??0;
- });
+ // Both sand surfaces expose the same world-space displacement query, so the
+ // recovered terrain does not care whether the sim lives on the CPU or GPU.
+ const delta=(x,z)=>sand.displacementAt(x,z);
  const at=(gx,gz)=>{const p=toDisplay([gx*gridFeet,0,gz*gridFeet]);return delta(p.x,p.z)/metres;};
  const wrap=raw=>{
   if(!raw)return null;if(cache.has(raw))return cache.get(raw);
@@ -15,7 +14,7 @@ export function deformableMcmTerrain(original,sand,toDisplay){
   let version=-1,heights=raw.heights,normals=raw.normals;
   const refresh=()=>{
    if(version===sand.version)return;version=sand.version;
-   if(!sand.soil.size||raw.scale===0){heights=raw.heights;normals=raw.normals;return;}
+   if(raw.scale===0){heights=raw.heights;normals=raw.normals;return;}
    heights=raw.heights.map((h,i)=>{
     const gx=raw.originX+i%17,gz=raw.originY+Math.floor(i/17),change=at(gx,gz);
     return Math.max(0,Math.min(65535,h+Math.round(change/(original.heightScale*raw.scale))));

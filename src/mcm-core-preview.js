@@ -31,7 +31,7 @@ export function loadMcmWorldScene(){
   return asset.files;
  }).catch(error=>{worldPromise=null;throw error;});
 }
-export function createMcmCoreState(scene,{spawn={x:0,z:0,yaw:0},sand:trueSand=true}={}){
+export function createMcmCoreState(scene,{spawn={x:0,z:0,yaw:0},sand:trueSand=true,sandSurface=null}={}){
  const cache=new Map(),node=id=>{
   if(id===null)return null;if(cache.has(id))return cache.get(id);
   const raw=scene.terrain.nodes[id];if(!raw)throw Error('Missing original terrain node');
@@ -65,7 +65,9 @@ export function createMcmCoreState(scene,{spawn={x:0,z:0,yaw:0},sand:trueSand=tr
  const nativePoint=(x,z)=>new Vector3(x-spawn.x,0,z-spawn.z).multiplyScalar(1/METRES).applyQuaternion(inverse).add(new Vector3(initial[0],ground,initial[2]));
  const originalTerrain={...active};
  const baseHeight=(x,z)=>{const p=nativePoint(x,z);return (displayMcmHeight(originalTerrain,p.x,p.z)-ground)*METRES;};
- const renderSurface=new SandSurface(baseHeight),sand=trueSand?renderSurface:null;
+ // A GPU fine field can be supplied as the single sand surface; otherwise the
+ // CPU soil is the surface (original courses, or sand disabled).
+ const renderSurface=sandSurface??new SandSurface(baseHeight),sand=trueSand?renderSurface:null;
  if(sand){const original={...active};active.root=deformableMcmTerrain(original,sand,position).root;}
  // Sand mesh tiles use their existing display cache. Cannon never advances this bike.
  const tileWorld={addBody(){},removeBody(){}};
