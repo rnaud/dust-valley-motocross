@@ -6,13 +6,13 @@ An original, arcade-style motocross playground built in Three.js, inspired by th
 
 https://rnaud.github.io/dust-valley-motocross/
 
-- **One ride, one bike:** the recovered Motocross Madness bike, rider, suspension, engine and sounds on *Sidewinder Dunes*. Choose a rider and livery, then ride. `src/mcm-core-preview.js` owns the recovered runtime; `src/mcm-custom-terrain.js` generates its collision terrain from Dust Valley's dune height function.
-- **Deformable sand:** enabled by default. Wheels sink, carve ruts, throw roost and compact the surface; switch it off for hardpack. The same dune surface drives the recovered solver and the rendered sand.
+- **One bike, every course:** the recovered Motocross Madness bike, rider, suspension, engine and sounds. Pick any of the 33 recovered courses (with its original terrain textures and environments) or **Sidewinder Dunes · custom**, a map generated from Dust Valley's own dune height function in `src/mcm-custom-terrain.js`. `src/mcm-core-preview.js` owns the recovered runtime.
+- **Deformable sand:** enabled by default on the custom dunes. The GPU sand field (`src/sand-flow-gpu.js`) runs wind ripples and avalanche slumping, and the 25 cm `src/sand-fine-gpu.js` field is carved by the wheels — ruts, berms and roost — rendered by `src/sand-fine-render.js`; switch it off for hardpack.
 - **Scenery and light:** Dust Valley's procedural dunes, buttes, boulders, grass and haze, with dawn/day/dusk presets, quality settings, cameras, art styles and photo mode.
 - **Keyboard:** WASD or arrow keys to ride; Space to boost; R to recover; C cycles cameras; P or Escape pauses; I/K shifts rider weight and pitch.
 - **Gamepad and mobile:** left stick steers and leans, triggers throttle and brake; mobile uses a thumb joystick and pedals.
 
-There is no original-game circuit, Dust Valley arcade handling, retro bike or remix worlds any more: those modes were removed with their physics, bike models and modules.
+Gone: the Dust Valley arcade handling, its procedural bike and rider, the retro '98 skin, the race circuit and the remix worlds. Their physics and modules were removed.
 
 Rendering uses three.js `WebGPURenderer` (r187) with TSL node materials, and falls back automatically to its WebGL 2 backend where WebGPU is unavailable. Art styles: Original, Neon night, Hiraeth / Moebius, Voxel dunes, Painted landscape, PS1 motocross and Outlined pixel art, as TSL post-processing. Touch controls were checked using mobile browser emulation and simultaneous touch events; physical-device performance will vary.
 

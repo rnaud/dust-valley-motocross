@@ -9,6 +9,9 @@ import './style.css';
 import {terrainIndices,sampleGrid} from './height-grid.js';
 import {createMcmTerrainTextures,createMcmTerrainMaterial} from './mcm-terrain-material.js';
 import {createCustomMcmTerrain,createMcmTerrainStub} from './mcm-custom-terrain.js';
+import {mcmMaps} from './mcm-map-catalog.js';
+import mcmSceneVariants from './mcm-scene-variants.json';
+import mcmSceneSettings from './mcm-scene-settings.json';
 import {loadMcmOriginalModels,createMcmOriginalModels} from './mcm-original-models.js';
 import {RidePose} from './ride-pose.js';
 import {batchMeshes} from './mesh-batch.js';
@@ -23,11 +26,15 @@ import {fog as fogNode,densityFogFactor,uniform as tslUniform} from 'three/tsl';
 import {createSizedPoints} from './sized-points.js';
 import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
 import {SandSurface} from './sand-surface.js';
+import {SandFlowGPU} from './sand-flow-gpu.js';
+import {FineSandGPU} from './sand-fine-gpu.js';
+import {GpuSandSurface} from './sand-gpu-surface.js';
+import {createFineSandMesh} from './sand-fine-render.js';
 import {RideAudio} from './audio.js';
 const TAU=Math.PI*2;
 let activeSand=null,corePreview=null,coreScene=null;
-let previewHeight=null,wild=null,farTerrainMesh=null,viewLow=false;
-let starting=false;
+let previewHeight=null,wild=null,farTerrainMesh=null,viewLow=false,sandFlow=null,fineSand=null,fineMesh=null,gpuSand=null;
+let starting=false,customMcm=true;
 const mode='free';
 // The one mode: recovered Motocross Madness bike on Dust Valley's dunes.
 const terrain=(x,z)=>activeSand?activeSand.height(x,z):(previewHeight?previewHeight(x,z):(wild?wild.height(x,z):0));
@@ -38,7 +45,43 @@ const spawnRing=t=>({x:startX()+Math.sin(t)*150,z:startZ()+Math.cos(t)*150,tx:Ma
 const freeClear=(x,z)=>wild?wild.clear(x,z):false;
 const $=id=>document.getElementById(id);
 let originalModels,opponentModels;
-// The game ships one mode: the recovered bike on a generated Sidewinder Dunes.
+// Terrain choices: the 33 recovered Motocross Madness courses, or a generated
+// Sidewinder Dunes field that rides on Dust Valley's own terrain and sand.
+const CUSTOM_MAP='custom-sidewinder';
+for(const map of mcmMaps){const option=document.createElement('option');option.value=map.id;option.textContent=map.title;$('mcm-map').append(option);}
+$('mcm-map').insertAdjacentHTML('afterbegin',`<option value="${CUSTOM_MAP}">Sidewinder Dunes · custom</option>`);
+$('mcm-map').value=CUSTOM_MAP;
+function updateMcmScenes(){const select=$('mcm-scene'),variants=mcmSceneVariants[$('mcm-map').value]??[];select.replaceChildren();for(const scene of variants){const option=document.createElement('option');option.value=scene.source;option.textContent=scene.title??scene.source;select.append(option);}select.disabled=variants.length===0;if(!variants.length){const option=document.createElement('option');option.textContent='Default practice environment';select.append(option);}}
+updateMcmScenes();
+$('mcm-map').addEventListener('change',updateMcmScenes);
+const mapCache=new Map();
+async function loadSelectedMcmMap(base){
+ const id=$('mcm-map').value;let asset=mapCache.get(id);
+ if(!asset){const response=await fetch(mcmMaps.find(m=>m.id===id).url);if(!response.ok)throw Error('Original terrain download failed');asset=await new Response(response.body.pipeThrough(new DecompressionStream('gzip'))).json();mapCache.set(id,asset);}
+ const settings=mcmSceneVariants[id]?.find(scene=>scene.source===$('mcm-scene').value)??mcmSceneSettings[id];
+ const shadow=settings?.lights.find(light=>light.type==='ObjectPoint'&&light.castsShadows)?.position??asset.shadowTarget;
+ return {...base,mapId:id,terrainMode:asset.terrainMode,shadowTarget:shadow,sceneSettings:settings,rendering:asset.rendering,terrain:asset.terrain};
+}
+// The custom dunes keep Dust Valley's GPU sand: an avalanche field for the
+// ripples and slip faces, plus the 25 cm deformable field the wheels carve.
+const trackTexture=new THREE.DataTexture(new Uint8Array([0,0,0,255]),1,1);trackTexture.needsUpdate=true;
+function setupGpuSand(){
+ if(!customMcm||!$('sand-mode').checked)return null;
+ // The recovered bike's world is spawn-relative, so the sand field is too.
+ const ground=wild.height(wild.spawn.x,wild.spawn.z),base=(x,z)=>wild.height(x,z)-ground;
+ sandFlow=new SandFlowGPU(renderer,{size:mobile?512:1024});
+ sandFlow.reset(base,(x,z,h,slope)=>(wild.flow?.depth??0)*(wild.sand?.(x,z,h,slope)??0));
+ fineSand=new FineSandGPU(renderer,{size:mobile?256:512});
+ const residual=(x,z)=>base(x,z)-sandFlow.baseAt(x,z);
+ fineSand.reset(trackTexture,{wind:wild.view.wind,ripples:(wild.view.ripple??0)>0,maxDepth:wild.soil.maxDepth,maxLift:wild.soil.maxLift,residual});
+ fineMesh=createFineSandMesh(fineSand,{albedo:'#e2c79e',soilMap:wildTexture(wild)});
+ scene.add(fineMesh.mesh);
+ fineMesh.soil.value=wildTexture(wild);fineMesh.albedo.value.set(wild.view.sandColor??'#e2c79e');
+ gpuSand=new GpuSandSurface(fineSand,(x,z)=>sandFlow.heightAt(x,z),{soil:wild.soil,flipRows:sandFlow.flipRows,residual});
+ soilUniforms.sandAlbedoOn.value=1;soilUniforms.flowEnabled.value=1;soilUniforms.shadowEnabled.value=1;
+ soilUniforms.flowTexel.value=1/sandFlow.n;soilUniforms.terrainShadow.value=sandFlow.shadowTarget.texture;
+ return gpuSand;
+}
 function customMcmScene(base){
  const stub=createMcmTerrainStub(),map=terrainMap('dunes');
  return {...base,mapId:'custom-sidewinder',terrainMode:0,shadowTarget:null,sceneSettings:null,rendering:null,terrain:stub,
@@ -309,6 +352,8 @@ const sandFx=new SandFx(scene,{mobile,dustTexture:createDustTexture()});
 const recoveredParticles=new McmParticles();scene.add(recoveredParticles.root);
 const voxelTerrain=new VoxelTerrain();scene.add(voxelTerrain.root);
 function renderArt(){
+ // The fine sand mesh replaces the coarse ground inside its window (minus a blend margin).
+ if(fineMesh?.mesh.visible&&fineSand){const o=fineSand.origin.value,c=.25,m=7;materials.dirt.userData.sandBounds.value.set(o.x*c+m,(o.x+fineSand.n)*c-m,o.y*c+m,(o.y+fineSand.n)*c-m);}
  voxelTerrain.root.visible=artRenderer.style==='voxel'&&phase!=='menu';
  const hidden=[];
 
@@ -429,8 +474,7 @@ function updateEnvironment(){
   placeBoulders();placeGrass();arch.position.y=terrain(arch.position.x,arch.position.z);groundDetail.update(state.x,state.z,true);
   decorations.forEach(o=>{o.position.y=terrain(o.position.x,o.position.z)+o.userData.groundOffset;o.visible=mode==='free'?!freeClear(o.position.x,o.position.z):!o.userData.onTrack;});
   rebuildDecorationBatches();
-  // The custom map always uses Dust Valley scenery, never the original course set.
-  const original=false;
+  const original=!!previewHeight&&!customMcm;
   for(const object of [...mountainBatches,...decorationBatches,boulderMesh,heroGroup,arch,grassMesh,groundDetail.pebbles,groundDetail.scrub])object.visible=!original;
   if(wild&&!original){const show=wild.scenery;mountainBatches.forEach(o=>o.visible=show.buttes);decorationBatches.forEach(o=>o.visible=show.decorations);boulderMesh.visible=show.boulders;grassMesh.visible=show.grass;arch.visible=show.arch;heroGroup.visible=false;groundDetail.pebbles.visible=groundDetail.scrub.visible=show.groundDetail!==false;}
   const rgb=original?coreScene.sceneSettings?.fogColor:null;
@@ -440,26 +484,31 @@ function updateEnvironment(){
 }
 async function start(){
  if(starting)return;starting=true;
- wild=terrainMap('dunes');$('mcm-assets').hidden=false;
+ customMcm=$('mcm-map').value===CUSTOM_MAP;
+ wild=customMcm?terrainMap('dunes'):null;
+ $('mcm-assets').hidden=false;
  const startButton=$('start'),startLabel=startButton.innerHTML;startButton.disabled=true;
  try{
   startButton.textContent='LOADING THE ORIGINAL BIKE…';corePreview??=await import('./mcm-core-preview.js');
-  coreScene=customMcmScene(await corePreview.loadMcmCoreScene());
+  const baseScene=await corePreview.loadMcmCoreScene();
+  coreScene=customMcm?customMcmScene(baseScene):await loadSelectedMcmMap(baseScene);
   coreScene.particleAssets=await loadMcmParticleAssets();recoveredParticles.setAssets(coreScene.particleAssets);
   if(!originalModels){const assets=await loadMcmOriginalModels();originalModels=createMcmOriginalModels(assets);scene.add(originalModels.root);}
  }
  catch(error){console.error(error);toast('The original bike could not load. Please try again.',5);return;}
  finally{starting=false;startButton.disabled=false;startButton.innerHTML=startLabel;}
  tireTracks.clear();
- state=corePreview.createMcmCoreState(coreScene,{spawn:wild.spawn,sand:$('sand-mode').checked});
+ state=corePreview.createMcmCoreState(coreScene,{spawn:customMcm?wild.spawn:{x:0,z:0,yaw:0},sand:$('sand-mode').checked});
  soilUniforms.sandAlbedoOn.value=0;soilUniforms.flowEnabled.value=0;soilUniforms.shadowEnabled.value=0;
- sandFx.setLook({...wild.view.spray,wind:wild.view.wind});
+ if(wild)sandFx.setLook({...wild.view.spray,wind:wild.view.wind});
+ setupGpuSand();
+ if(gpuSand)gpuSand.follow(state.x,state.z,state.physics.tileWorld);
  updateOriginalTerrainMaterials();
  previewHeight=state.physics.baseHeight;
- activeSand=state.physics.renderSurface;
+ activeSand=gpuSand??state.physics.renderSurface;
  sandSurface.update(activeSand?.isGpuSand?null:activeSand);
  updateEnvironment();
- document.querySelector('.map-panel>span').textContent=wild.name.toUpperCase()+' / LIVE';
+ document.querySelector('.map-panel>span').textContent=(wild?wild.name:coreScene.title??'ORIGINAL COURSE').toUpperCase()+' / LIVE';
  $('preview-badge').hidden=false;
  document.body.classList.add('mcm-preview');
  document.querySelector('.ride-hint').textContent='WASD ride · I / K rider lean · R recover';
@@ -486,7 +535,7 @@ function recover(){
  toast('BACK TO THE START');
 }
 function togglePause(){if(phase==='playing'){phase='paused';clearInput();$('overlay').hidden=false;$('overlay-label').textContent='TAKE A BREATHER';$('overlay-title').textContent='Ride paused.';$('overlay-copy').textContent='The desert isn’t going anywhere.';$('resume').hidden=false;$('photo').hidden=false;}else if(phase==='paused'){phase='playing';$('overlay').hidden=true;}}$('pause').onclick=togglePause;$('resume').onclick=togglePause;
-$('home').onclick=()=>{activeSand=null;previewHeight=null;updateEnvironment();$('preview-badge').hidden=true;document.body.classList.remove('mcm-preview');phase='menu';clearInput();document.body.classList.remove('playing');for(const id of ['menu','location','footer'])$(id).hidden=false;for(const id of ['hud','pause','touch','overlay'])$(id).hidden=true;};
+$('home').onclick=()=>{sandFlow?.disable();fineSand?.disable();gpuSand=null;if(fineMesh)fineMesh.mesh.visible=false;soilUniforms.sandAlbedoOn.value=0;soilUniforms.flowEnabled.value=0;soilUniforms.shadowEnabled.value=0;activeSand=null;previewHeight=null;updateEnvironment();$('preview-badge').hidden=true;document.body.classList.remove('mcm-preview');phase='menu';clearInput();document.body.classList.remove('playing');for(const id of ['menu','location','footer'])$(id).hidden=false;for(const id of ['hud','pause','touch','overlay'])$(id).hidden=true;};
 const todayKey=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
 function finish(){
  phase='finished';clearInput();$('overlay').hidden=false;
@@ -534,6 +583,7 @@ if(phase==='playing'){
   let result;
   try{result=corePreview.stepMcmCoreState(state,input,.02);}
   catch(error){console.error(error);state.physicsError=error.message;phase='paused';clearInput();$('overlay').hidden=false;$('overlay-label').textContent='PHYSICS STOPPED';$('overlay-title').textContent='Recovered physics stopped.';$('overlay-copy').textContent='This riding path reached an unresolved original dependency. Restart to ride again.';$('resume').hidden=true;break;}
+  if(gpuSand)gpuSand.deform(state.wheelContacts.map((hit,i)=>hit?{...hit,load:state.tireLoads[i],demand:i===0?state.throttle:0}:null),.02);
   rideAudio.step(state,input,.02,camera.position);
   ridePose.push(state);originalModels?.push(state);
   // On soft sand the trenches are the tracks; tread decals stay off.
@@ -622,6 +672,14 @@ else{
 
 
 sun.position.set(state.x+sunOffset.x,state.y+sunOffset.y,state.z+sunOffset.z);sun.target.position.set(state.x,state.y,state.z);soilUniforms.sunDir.value.copy(sunDir);skyUniforms.time.value+=dt;
+if(fineMesh&&phase==='playing'){
+ fineSand.update(dt);fineMesh.update();
+ if(debugParams.get('fineread')!=='0'&&((animate.frame=(animate.frame??0)+1)%3)===0)gpuSand.sync();
+}
+if(sandFlow?.enabled&&phase==='playing'){
+ sandFlow.update(dt);soilUniforms.flowField.value=sandFlow.texture;
+ if(debugParams.get('shadowpass')!=='0')sandFlow.shadows(sunDir,dt);
+}
 sandFx.root.visible=false;
 if(phase==='playing'&&state.speed>4&&!state.air){
  const back=1.05;
