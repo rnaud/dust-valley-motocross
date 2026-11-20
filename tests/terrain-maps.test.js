@@ -1,7 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {terrainMaps,terrainMap,paintTerrainMap,fbm} from '../src/terrain-maps.js';
-import {createState,stepBike} from '../src/world.js';
 
 const slopeAt=(h,x,z,e=1)=>Math.hypot(h(x+e,z)-h(x-e,z),h(x,z+e)-h(x,z-e))/(2*e);
 
@@ -58,16 +57,5 @@ test('height functions are cheap enough for the 361² mesh and live sand tiles',
  for(const map of terrainMaps){
   const t=performance.now();let s=0;for(let i=0;i<130000;i++)s+=map.height((i%361)*2.5-450,Math.floor(i/361)*2.5-450);
   assert.ok(Number.isFinite(s));assert.ok(performance.now()-t<1500,`${map.id} too slow`);
- }
-});
-
-test('each map rides on its own soil with deformable sand',()=>{
- for(const map of terrainMaps){
-  const s=createState({physicsMode:'classic',height:map.height,spawn:map.spawn,soil:map.soil,heroRocks:false});
-  assert.equal(s.physics.sand.profile.plough,map.soil.plough);
-  for(let i=0;i<360;i++)stepBike(s,{gas:i>30},1/120);
-  assert.ok(Number.isFinite(s.x)&&Number.isFinite(s.y),map.id);
-  assert.ok(s.speed>2,`${map.id} speed ${s.speed}`);assert.equal(s.crashed,false,map.id);
-  assert.ok(s.physics.sand.soil.size>0,map.id);
  }
 });

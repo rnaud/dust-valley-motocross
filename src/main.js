@@ -309,9 +309,6 @@ const sandFx=new SandFx(scene,{mobile,dustTexture:createDustTexture()});
 const recoveredParticles=new McmParticles();scene.add(recoveredParticles.root);
 const voxelTerrain=new VoxelTerrain();scene.add(voxelTerrain.root);
 function renderArt(){
- flushTrackMap();
- // The fine sand mesh replaces the coarse ground inside its window (minus a blend margin).
- if(fineMesh?.mesh.visible&&fineSand){const o=fineSand.origin.value,c=.25,m=7;materials.dirt.userData.sandBounds.value.set(o.x*c+m,(o.x+fineSand.n)*c-m,o.y*c+m,(o.y+fineSand.n)*c-m);}
  voxelTerrain.root.visible=artRenderer.style==='voxel'&&phase!=='menu';
  const hidden=[];
 
@@ -635,6 +632,9 @@ particles.forEach((p,i)=>{p.life-=dt*.62;if(p.life>0){p.x+=p.vx*dt;p.y+=p.vy*dt;
 rideAudio.update(state,input,phase==='playing');
 $('speed').textContent=Math.round(state.speed*3.6);$('time').textContent=formatTime(elapsed);
 $('gear').textContent=state.gear||1;$('rpm').style.width=Math.min(100,(state.rpm||1200)/10000*100)+'%';
+sandSurface.update(activeSand?.isGpuSand?null:activeSand);groundDetail.update(state.x,state.z);
+sky.position.copy(camera.position);sunGlow.position.copy(camera.position).addScaledVector(sunDir,560);sunCore.position.copy(sunGlow.position);
+drawMap();recoveredParticles.update(state,camera,renderAlpha);renderArt();
 if(!$('loading').hidden)$('loading').hidden=true;
 }
 function resize(){renderer.setSize(innerWidth,innerHeight);if(speedCanvas){speedCanvas.width=innerWidth;speedCanvas.height=innerHeight;}camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}window.addEventListener('resize',resize);resize();

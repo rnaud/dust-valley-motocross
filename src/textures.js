@@ -1,7 +1,10 @@
 import * as THREE from 'three';
 import {rippleHeight,RIPPLE_WAVELENGTH} from './ripple-seed.js';
 import {Fn,dFdx,dFdy,mx_noise_float,clamp as tslClamp,texture as tslTexture,uniform,positionWorld,positionGeometry,normalView,normalWorld,cameraPosition,cameraViewMatrix,fwidth,fract,floor,smoothstep,mix,step,sin,dot,length,normalize,pow,max,select,vec2,vec3,vec4,float,normalMap} from 'three/tsl';
-import { track, TAU } from './world.js';
+const TAU=Math.PI*2;
+// The sky and dust artwork still paint a worn lane; with the circuit gone it is
+// a ring around the basin rather than the race course.
+const track=a=>({x:Math.sin(a)*260,z:Math.cos(a)*260,tx:Math.cos(a),tz:-Math.sin(a)});
 
 // Seeded value noise: all artwork is generated locally; no downloaded assets.
 function hash(x,y){let n=Math.imul(x,374761393)+Math.imul(y,668265263);n=Math.imul(n^(n>>>13),1274126177);return ((n^(n>>>16))>>>0)/4294967295;}
